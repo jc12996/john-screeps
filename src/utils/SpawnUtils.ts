@@ -17,7 +17,7 @@ export enum PartCosts {
 const myFriends = ['kailin-limble','DonkeyKong', 'Xarroc'];
 
 export class SpawnUtils {
-    static SHOW_VISUAL_CREEP_ICONS: boolean = false;
+    static SHOW_VISUAL_CREEP_ICONS: boolean = true;
     public static FRIENDLY_OWNERS_FILTER(owner: Owner | undefined): boolean {
         if(!owner) {
             return false;
