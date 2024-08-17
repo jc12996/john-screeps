@@ -30,9 +30,10 @@ export class MovementUtils {
                 }
             });
 
-            if(friendlyRamparts && !friendlyRamparts.pos.isNearTo(creep.pos.x,creep.pos.y) && !creep.memory?.friendRampartEntered) {
-                creep.memory.friendRampartEntered = true
+            if(friendlyRamparts) {
+
                 creep.moveTo(friendlyRamparts);
+
             } else {
                 creep.moveTo(flag);
             }

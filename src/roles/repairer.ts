@@ -1,7 +1,13 @@
+import { SpawnUtils } from "utils/SpawnUtils";
 import { Upgrader } from "./upgrader";
 export class Repairer {
     public static run(creep: Creep) {
-        creep.say('🚧');
+
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say('🚧');
+        }
+
         if(creep.memory.repairing && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.repairing = false;
             creep.say('🔄 harvest');
@@ -104,14 +110,14 @@ export class Repairer {
             });
 
 
-            const droppedSources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+            //const droppedSources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
 
             if (target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                      creep.moveTo(target_storage[target_storage.length -1], {visualizePathStyle: {stroke: "#ffffff"}});
             }
-            else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
-            }
+            // else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
+            // }
             else {
                 Upgrader.run(creep);
             }

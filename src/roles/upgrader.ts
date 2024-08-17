@@ -1,8 +1,14 @@
 import { MovementUtils } from "utils/MovementUtils";
+import { SpawnUtils } from "utils/SpawnUtils";
 
 export class Upgrader {
     public static run(creep: Creep): void {
-        creep.say('⚡');
+
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say('⚡');
+        }
+
 
         if(creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.upgrading = false;

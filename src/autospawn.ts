@@ -60,30 +60,27 @@ export class AutoSpawn {
         if(!lowestBodyPartCreep) {
             lowestBodyPartCreep = _.find(carriers, (creep) => creep.room.energyAvailable >= 1300 && carriers.length == (EconomiesUtils.Carrier * RoomSources.length) && creep.getActiveBodyparts(CARRY) < 3);
         }
-        if(!lowestBodyPartCreep) {
-            lowestBodyPartCreep = _.find(builders, (creep) => creep.room.energyAvailable >= 1300 && builders.length == (EconomiesUtils.Builder * RoomSources.length) && creep.getActiveBodyparts(WORK) < 3);
-        }
-        if(!lowestBodyPartCreep) {
-            lowestBodyPartCreep = _.find(repairers, (creep) => creep.room.energyAvailable >= 1300 && repairers.length == (EconomiesUtils.Repairer * RoomSources.length) && creep.getActiveBodyparts(WORK) < 3);
-        }
-        if(!lowestBodyPartCreep) {
-            lowestBodyPartCreep = _.find(upgraders, (creep) => creep.room.energyAvailable >= 1300 && upgraders.length == (EconomiesUtils.Upgrader * RoomSources.length) && creep.getActiveBodyparts(WORK) < 3);
-        }
-        if(!lowestBodyPartCreep) {
-            lowestBodyPartCreep = _.find(defenders, (creep) => creep.room.energyAvailable >= 1300 && defenders.length == (EconomiesUtils.Defender * RoomSources.length) && creep.getActiveBodyparts(ATTACK) < 2);
-        }
+        // if(!lowestBodyPartCreep) {
+        //     lowestBodyPartCreep = _.find(builders, (creep) => creep.room.energyAvailable >= 1300 && builders.length == (EconomiesUtils.Builder * RoomSources.length) && creep.getActiveBodyparts(WORK) < 3);
+        // }
+        // if(!lowestBodyPartCreep) {
+        //     lowestBodyPartCreep = _.find(repairers, (creep) => creep.room.energyAvailable >= 1300 && repairers.length == (EconomiesUtils.Repairer * RoomSources.length) && creep.getActiveBodyparts(WORK) < 3);
+        // }
+        // if(!lowestBodyPartCreep) {
+        //     lowestBodyPartCreep = _.find(upgraders, (creep) => creep.room.energyAvailable >= 1300 && upgraders.length == (EconomiesUtils.Upgrader * RoomSources.length) && creep.getActiveBodyparts(WORK) < 3);
+        // }
+
 
         // console.log(`${spawn.name} weakest creep:`,lowestBodyPartCreep);
-        // if(energyAvailable >= 1300 && lowestBodyPartCreep && !spawn.spawning && spawn.room.energyAvailable >= 1300) {
-        //         console.log(spawn.name + ' suicide: ' + lowestBodyPartCreep.name);
-        //         lowestBodyPartCreep.suicide();
-        //         harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
-        //         carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
-        //         builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == spawn.room.name);
-        //         upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn.room.name);
-        //         repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.room.name == spawn.room.name);
-        //         defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && creep.room.name == spawn.room.name);
-        // }
+        if(energyAvailable >= 1300 && lowestBodyPartCreep && !spawn.spawning && spawn.room.energyAvailable >= 1300) {
+                console.log(spawn.name + ' suicide: ' + lowestBodyPartCreep.name);
+                lowestBodyPartCreep.suicide();
+                harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
+                carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
+                builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == spawn.room.name);
+                upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn.room.name);
+                repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.room.name == spawn.room.name);
+        }
 
         //console.log(`${spawn.name} number of sources:`,RoomSources.length);
         if (harvesters.length < 1) {
@@ -129,7 +126,7 @@ export class AutoSpawn {
             options = {memory: {role: 'claimer'}};
 
         }
-        else if (!Game.flags.draftFlag && defenders.length < (EconomiesUtils.Defender * RoomSources.length)) {
+        else if (defenders.length < (EconomiesUtils.Defender * RoomSources.length)) {
             name = 'Defender' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel);
             options = {memory: {role: 'defender'}};
@@ -173,7 +170,7 @@ export class AutoSpawn {
         if(spawn && spawn.spawning) {
 
             var spawningCreep = Game.creeps[spawn.spawning.name];
-            console.log(spawn.name + ' spawning new creep: ' + spawningCreep.name);
+            //console.log(spawn.name + ' spawning new creep: ' + spawningCreep.name);
             spawn.room.visual.text(
                 '🛠️' + spawningCreep.memory.role,
                 spawn.pos.x + 1,

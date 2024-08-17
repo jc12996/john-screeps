@@ -1,4 +1,5 @@
 import { MovementUtils } from "utils/MovementUtils";
+import { SpawnUtils } from "utils/SpawnUtils";
 
 export class Healer {
 
@@ -8,14 +9,18 @@ export class Healer {
             creep.moveTo(target);
             const healResult = creep.heal(target)
             if(healResult == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creeps[0], {visualizePathStyle: {stroke: '#ff0000'}});
+                creep.moveTo(creeps[0], {visualizePathStyle: {stroke: '#008000'}});
             }
         }
     }
 
     public static run(creep: Creep): void {
 
-        creep.say('🏥');
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say('🏥');
+        }
+
 
         var friendlyHurtCreeps = creep.room.find(FIND_MY_CREEPS, {
             filter: function(object) {
@@ -23,9 +28,15 @@ export class Healer {
             }
         });
 
+        var allyHurtCreeps = creep.room.find(FIND_CREEPS, {
+            filter: function(object) {
+                return object.hits < object.hitsMax &&  object.owner && SpawnUtils.FRIENDLY_OWNERS_FILTER(object.owner);
+            }
+        });
+
         if(friendlyHurtCreeps.length > 0) {
 
-            creep.say('heal!!');
+            creep.say('🏥 M',true);
             const myHurtCreeps = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
                 filter: function(object) {
                     return object.hits < object.hitsMax && (object.memory.role === 'healer' || object.memory.role === 'dismantler' || object.memory.role === 'attacker');
@@ -36,6 +47,17 @@ export class Healer {
             Healer.healTarget(friendlyHurtCreeps,creep,myHurtCreeps);
 
 
+        } else if(allyHurtCreeps.length > 0) {
+            creep.say('🏥 A',true);
+
+            const myAllyHurtCreeps = creep.pos.findClosestByPath(FIND_CREEPS, {
+                filter: function(object) {
+                    return object.hits < object.hitsMax &&  object.owner && SpawnUtils.FRIENDLY_OWNERS_FILTER(object.owner);
+                }
+            });
+
+
+            Healer.healTarget(friendlyHurtCreeps,creep,myAllyHurtCreeps);
         } else {
 
             const friendlyCreeps = creep.pos.findClosestByPath(FIND_MY_CREEPS, {

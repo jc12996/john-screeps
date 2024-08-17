@@ -1,10 +1,15 @@
 import { MovementUtils } from "utils/MovementUtils";
 import { Attacker } from "./attacker";
+import { SpawnUtils } from "utils/SpawnUtils";
 
 export class MeatGrinder {
     public static run(creep: Creep): void {
 
-            creep.say('🍖');
+
+
+            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+                creep.say('🍖');
+            }
 
             if(Game.flags?.attackFlag && Game.flags?.attackFlag.room !== creep.room) {
 

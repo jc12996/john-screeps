@@ -10,7 +10,10 @@ export class Claimer {
     public static run(creep: Creep): void {
 
 
-        creep.say('🚩');
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say('🚩');
+        }
 
         if(AutoSpawn.nextClaimFlag.room !== creep.room) {
             MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag)
@@ -21,8 +24,16 @@ export class Claimer {
 
 
         if(creep.room.controller && !creep.room.controller.my) {
-            creep.moveTo(creep.room.controller);
-            if(creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+
+            const enemyController = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                filter: function(object) {
+                    return object.structureType === STRUCTURE_CONTROLLER
+                }
+            });
+
+            if(enemyController && creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller);
+            }else if(creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
             }
 

@@ -1,3 +1,4 @@
+import { SpawnUtils } from "utils/SpawnUtils";
 import { Builder } from "./builder";
 import { Upgrader } from "./upgrader";
 
@@ -22,7 +23,11 @@ export class Harvester {
     };
 
     public static run(creep: Creep): void {
-        creep.say('🔄');
+
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say('🔄');
+        }
 
         if(creep.memory.delivering && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.delivering = false;

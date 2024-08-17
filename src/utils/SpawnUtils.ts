@@ -13,9 +13,11 @@ export enum PartCosts {
 
 }
 
+
 const myFriends = ['kailin-limble','DonkeyKong', 'Xarroc'];
 
 export class SpawnUtils {
+    static SHOW_VISUAL_CREEP_ICONS: boolean = false;
     public static FRIENDLY_OWNERS_FILTER(owner: Owner | undefined): boolean {
         if(!owner) {
             return false;
@@ -41,19 +43,19 @@ export class SpawnUtils {
 
         switch(archetype) {
             case 'claimer':
-                if(energyAvailable >= (PartCosts.CLAIM * 1) + (PartCosts.MOVE * 40)) {
-                    for (let i = 0; i < 40; i++) {
+                if(energyAvailable >= (PartCosts.CLAIM * 3) + (PartCosts.MOVE * 3)) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 3; i++) {
                         partsPattern.push(CLAIM);
                     }
                 }
-                else if(energyAvailable >= (PartCosts.CLAIM * 1) + (PartCosts.MOVE * 20)) {
-                    for (let i = 0; i < 20; i++) {
+                else if(energyAvailable >= (PartCosts.CLAIM * 2) + (PartCosts.MOVE * 1)) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 2; i++) {
                         partsPattern.push(CLAIM);
                     }
                 } else if(commandLevel < 4 && energyAvailable >= (PartCosts.CLAIM * 1) + (PartCosts.MOVE * 1)) {
@@ -111,21 +113,21 @@ export class SpawnUtils {
                 break;
             case 'carrier':
                  //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-                 if((commandLevel < 9 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 30) + (PartCosts.CARRY * 20)) {
+                 if((commandLevel < 9 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 40) + (PartCosts.CARRY * 10)) {
                     for (let i = 0; i < 40; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(CARRY);
                     }
-                } else if((commandLevel == 7 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 20) + (PartCosts.CARRY * 20)) {
+                } else if((commandLevel == 7 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 30) + (PartCosts.CARRY * 10)) {
                     for (let i = 0; i < 30; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(CARRY);
                     }
-                } else if((commandLevel >= 6 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) &&energyAvailable >= (PartCosts.MOVE * 16) + (PartCosts.CARRY * 20)) {
+                } else if((commandLevel >= 6 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) &&energyAvailable >= (PartCosts.MOVE * 26) + (PartCosts.CARRY * 10)) {
                     for (let i = 0; i < 26; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -133,7 +135,7 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                 }
-                else if((commandLevel >= 5 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 6) + (PartCosts.CARRY * 20)) {
+                else if((commandLevel >= 5 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 16) + (PartCosts.CARRY * 10)) {
                     for (let i = 0; i < 16; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -246,31 +248,33 @@ export class SpawnUtils {
             case 'defender':
 
                 if(energyAvailable >= 2000) {
-                    for (let i = 0; i < 22; i++) {
-                        partsPattern.push(MOVE);
-                    }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(TOUGH);
+                    }
+                    for (let i = 0; i < 22; i++) {
+                        partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(ATTACK);
                     }
                 } else if(energyAvailable >= 1500) {
-                    for (let i = 0; i < 12; i++) {
-                        partsPattern.push(MOVE);
-                    }
+
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(TOUGH);
+                    }
+                    for (let i = 0; i < 12; i++) {
+                        partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(ATTACK);
                     }
                 }  else if(energyAvailable >= 800) {
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(MOVE);
-                    }
+
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(TOUGH);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(ATTACK);
@@ -333,20 +337,20 @@ export class SpawnUtils {
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(TOUGH);
                     }
-                    for (let i = 0; i < 20; i++) {
+                    for (let i = 0; i < 28; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 20; i++) {
+                    for (let i = 0; i < 15; i++) {
                         partsPattern.push(ATTACK);
                     }
                 } else if(energyAvailable >= 1350) {
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(TOUGH);
                     }
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 12; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 9; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(ATTACK);
                     }
                 }

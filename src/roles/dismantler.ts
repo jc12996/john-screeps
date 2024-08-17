@@ -5,28 +5,19 @@ export class Dismantler {
 
 
     private static dismantleTarget( creep: Creep, target: any) {
-        if(target) {
-            creep.moveTo(target);
-            const dismantleTarget = creep.dismantle(target)
-            if(dismantleTarget == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ff0000'}});
-            }
 
-            if(dismantleTarget === OK) {
-                return;
-            }
-
-            if(dismantleTarget !== ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
-            }else {
-                console.log('Dismantle Error',dismantleTarget,creep.name,target)
-            }
+        if(creep.dismantle(target) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target, {visualizePathStyle: {stroke: '#ff0000'}});
         }
+
     }
 
     public static run(creep: Creep): void {
 
-        creep.say('🧱');
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say('🧱');
+        }
 
         const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
@@ -39,11 +30,6 @@ export class Dismantler {
             }
         });
 
-        const hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
-            }
-        });
 
         const findTowers = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
@@ -71,10 +57,7 @@ export class Dismantler {
 
 
         if(hostileStructures.length > 0) {
-            if(Game.flags?.dismantleFlag) {
-                creep.say('🧱 ⌖');
-                Dismantler.dismantleTarget(creep, Game.flags?.dismantleFlag);
-            }else if(findRamparts) {
+            if(findRamparts) {
                 creep.say('🧱 r');
                 Dismantler.dismantleTarget(creep,findRamparts);
             }
@@ -85,9 +68,6 @@ export class Dismantler {
             else if(findOther && findOther != enemyController) {
                 creep.say('🧱 o');
                 Dismantler.dismantleTarget(creep,findOther)
-            } else if (hostileSites) {
-                creep.say('🧱 s');
-                Dismantler.dismantleTarget(creep,hostileSites)
             }
             else if(findWalls) {
                 creep.say('🧱 w');

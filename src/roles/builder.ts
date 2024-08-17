@@ -1,7 +1,10 @@
+import { SpawnUtils } from "utils/SpawnUtils";
 import { Repairer } from "./repairer";
 export class Builder {
     public static run(creep: Creep) {
-        creep.say('🔨');
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say('🔨');
+        }
         if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.building = false;
             creep.say('🔄 harvest');

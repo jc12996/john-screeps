@@ -10,7 +10,11 @@ export class Settler {
 
 
     public static run(creep: Creep): void {
-        creep.say("🌎");
+
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("🌎");
+        }
 
 
         if(Game.flags.settlerFlag && AutoSpawn.nextClaimFlag.room !== creep.room) {

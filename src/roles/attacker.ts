@@ -7,7 +7,7 @@ export class Attacker {
 
     private static attackTarget(creep: Creep,target: any) {
         if(target) {
-            creep.moveTo(target);
+            creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
             const attackResult = creep.attack(target)
 
             if(attackResult === OK) {
@@ -15,7 +15,7 @@ export class Attacker {
             }
 
             if(attackResult !== ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
             }else {
                 console.log('Attack Error',attackResult,creep.name,target)
             }
@@ -37,7 +37,7 @@ export class Attacker {
         });
         var badStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType != STRUCTURE_CONTROLLER
             }
         });
         var findWalls = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -56,6 +56,13 @@ export class Attacker {
             }
         });
 
+        const hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+            }
+        });
+
+
 
         if (hostileCreeps) {
             creep.say('⚔ ⚔');
@@ -64,7 +71,11 @@ export class Attacker {
         else if(structures.length > 0 && badStructures) {
             creep.say('⚔ 🚧');
             Attacker.attackTarget(creep,badStructures)
-        }else if(invaderCore){
+        }
+        else if (hostileSites.length > 0) {
+            creep.say('⚔ 🚧');
+            Attacker.attackTarget(creep,hostileSites[0])
+        } else if(invaderCore){
             creep.say('⚔ I');
             Attacker.attackTarget(creep,invaderCore)
         } else if(Game.flags?.attackFlag) {
