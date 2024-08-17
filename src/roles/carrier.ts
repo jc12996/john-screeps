@@ -85,7 +85,7 @@ export class Carrier {
            })
 
 
-        if(!creep.memory.carrying && creep.store.getFreeCapacity() == 0) {
+        if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0 || (creep.store[RESOURCE_ENERGY] > 0 && creep.store[RESOURCE_ENERGY] <= 250))) {
             creep.memory.carrying = true;
 
         }
@@ -117,70 +117,71 @@ export class Carrier {
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
-            }else if(creep.memory.carrying) {
 
 
-                    if(towers && carriers[2] && creep.id === carriers[2].id ) {
-                        creep.memory.carryIndex = 2
-                    } else if((
-                        (carriers[0] && creep.id === carriers[0].id) ||
-                        (carriers[1] && creep.id === carriers[1].id)
-                    )) {
-                        creep.memory.carryIndex = 0
-                    } else if(
-                        nearestStorage
-                    ) {
-                        creep.memory.carryIndex = 1
-                    } else {
-                        creep.memory.carryIndex = 0
-                    }
+        } else if(creep.memory.carrying) {
+
+            if(towers && carriers[2] && creep.id === carriers[2].id ) {
+                creep.memory.carryIndex = 2
+            } else if((
+                (carriers[0] && creep.id === carriers[0].id) ||
+                (carriers[1] && creep.id === carriers[1].id)
+            )) {
+                creep.memory.carryIndex = 0
+            } else if(
+                nearestStorage
+            ) {
+                creep.memory.carryIndex = 1
+            } else {
+                creep.memory.carryIndex = 0
+            }
 
 
 
-                if(creep.memory.carryIndex == 1 && (storage || towers)) {
-                    if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 S');
-                        creep.moveTo(storage);
-                    } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 T');
-                        creep.moveTo(towers);
-                    } else if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 E');
-                        creep.moveTo(spanAndExtension);
-                    }
-
+            if(creep.memory.carryIndex == 1 && (storage || towers)) {
+                if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 S');
+                    creep.moveTo(storage);
+                } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 T');
+                    creep.moveTo(towers);
+                } else if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 E');
+                    creep.moveTo(spanAndExtension);
                 }
-                else if(creep.memory.carryIndex == 2 && (towers)) {
-                    if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 T');
-                        creep.moveTo(towers);
-                    } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 S');
-                        creep.moveTo(storage);
-                    } else if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 E');
-                        creep.moveTo(spanAndExtension);
-                    }
 
-                }
-                else if(creep.memory.carryIndex == 0 && (spanAndExtension || storage)) {
-                    if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 E');
-                        creep.moveTo(spanAndExtension);
-                    } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 T');
-                        creep.moveTo(towers);
-                    } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.say('🚚 S');
-                        creep.moveTo(storage);
-                    }
+            }
+            else if(creep.memory.carryIndex == 2 && (towers)) {
+                if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 T');
+                    creep.moveTo(towers);
                 } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(storage);
-                } else if(roomRallyPointFlag.length) {
-                    creep.moveTo(roomRallyPointFlag[0])
+                } else if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 E');
+                    creep.moveTo(spanAndExtension);
                 }
+
             }
+            else if(creep.memory.carryIndex == 0 && (spanAndExtension || storage)) {
+                if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 E');
+                    creep.moveTo(spanAndExtension);
+                } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 T');
+                    creep.moveTo(towers);
+                } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 S');
+                    creep.moveTo(storage);
+                }
+            } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 S');
+                creep.moveTo(storage);
+            } else if(roomRallyPointFlag.length) {
+                creep.moveTo(roomRallyPointFlag[0])
+            }
+        }
     }
 }
 

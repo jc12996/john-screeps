@@ -113,41 +113,41 @@ export class SpawnUtils {
                 break;
             case 'carrier':
                  //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-                 if((commandLevel < 9 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 40) + (PartCosts.CARRY * 10)) {
-                    for (let i = 0; i < 40; i++) {
+                 if((commandLevel < 9 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 45) + (PartCosts.CARRY * 5)) {
+                    for (let i = 0; i < 45; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(CARRY);
                     }
-                } else if((commandLevel == 7 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 30) + (PartCosts.CARRY * 10)) {
-                    for (let i = 0; i < 30; i++) {
+                } else if((commandLevel == 7 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 35) + (PartCosts.CARRY * 5)) {
+                    for (let i = 0; i < 35; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(CARRY);
                     }
-                } else if((commandLevel >= 6 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) &&energyAvailable >= (PartCosts.MOVE * 26) + (PartCosts.CARRY * 10)) {
-                    for (let i = 0; i < 26; i++) {
+                } else if((commandLevel >= 6 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) &&energyAvailable >= (PartCosts.MOVE * 31) + (PartCosts.CARRY * 5)) {
+                    for (let i = 0; i < 31; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                }
-                else if((commandLevel >= 5 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 16) + (PartCosts.CARRY * 10)) {
-                    for (let i = 0; i < 16; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(CARRY);
                     }
                 }
-                else if((commandLevel >= 4 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 6) + (PartCosts.CARRY * 10)) {
-                    for (let i = 0; i < 6; i++) {
+                else if((commandLevel >= 5 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 21) + (PartCosts.CARRY * 5)) {
+                    for (let i = 0; i < 21; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 5; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                }
+                else if((commandLevel >= 4 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 11) + (PartCosts.CARRY * 5)) {
+                    for (let i = 0; i < 11; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(CARRY);
                     }
                 } else if((commandLevel >= 3 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= 450) {

@@ -73,7 +73,10 @@ export class Harvester {
         });
 
         if(creep.memory.targetSource) {
-            creep.say("⛏");
+
+            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+                creep.say("⛏");
+            }
             targetSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE, {
                 filter:  (source) => {
                    return source.id == creep.memory.targetSource
