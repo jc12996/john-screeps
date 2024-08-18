@@ -78,6 +78,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
   // Creep behavior loop.
   for(var name in Game.creeps) {
     var creep = Game.creeps[name];
+
+
+
+
     if(creep.memory.role == 'harvester') {
       Harvester.run(creep);
     }

@@ -43,7 +43,7 @@ export class SpawnUtils {
 
         switch(archetype) {
             case 'claimer':
-                if(energyAvailable >= (PartCosts.CLAIM * 3) + (PartCosts.MOVE * 3)) {
+                if(energyAvailable >= 1850) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -51,14 +51,14 @@ export class SpawnUtils {
                         partsPattern.push(CLAIM);
                     }
                 }
-                else if(energyAvailable >= (PartCosts.CLAIM * 2) + (PartCosts.MOVE * 1)) {
+                else if(energyAvailable >= 1250) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(CLAIM);
                     }
-                } else if(commandLevel < 4 && energyAvailable >= (PartCosts.CLAIM * 1) + (PartCosts.MOVE * 1)) {
+                } else if(commandLevel < 4 && energyAvailable >= 650) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -185,33 +185,33 @@ export class SpawnUtils {
 
                 //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
                 if(energyAvailable >= 3500) {
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 26; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 20; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 20; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(CARRY);
                     }
                 } else if(energyAvailable >= 2000) {
-                    for (let i = 0; i < 9; i++) {
+                    for (let i = 0; i < 16; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 11; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(CARRY);
                     }
                 } else if(energyAvailable >= 1800) {
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 9; i++) {
+                    for (let i = 0; i < 12; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(CARRY);
                     }
                 }
@@ -219,14 +219,14 @@ export class SpawnUtils {
                     for (let i = 0; i < 6; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(CARRY);
                     }
                 }
-                else if(energyAvailable >= (PartCosts.MOVE * 4) + (PartCosts.WORK * 4) + (PartCosts.CARRY * 4)) {
+                else if(energyAvailable >= 800) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -343,7 +343,7 @@ export class SpawnUtils {
                     for (let i = 0; i < 15; i++) {
                         partsPattern.push(ATTACK);
                     }
-                } else if(energyAvailable >= 1350) {
+                } else if(energyAvailable >= 1320) {
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(TOUGH);
                     }
@@ -359,14 +359,14 @@ export class SpawnUtils {
                 }
                 break;
             case 'healer':
-                if(energyAvailable >= ((PartCosts.MOVE * 20) + (PartCosts.TOUGH * 10) + (PartCosts.HEAL * 20))) {
+                if(energyAvailable >= 2600) {
                     for (let i = 0; i < 20; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(TOUGH);
                     }
-                    for (let i = 0; i < 20; i++) {
+                    for (let i = 0; i < 6; i++) {
                         partsPattern.push(HEAL);
                     }
                 } else if(energyAvailable >= 1350) {

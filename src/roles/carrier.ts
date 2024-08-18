@@ -7,13 +7,13 @@ export class Carrier {
             creep.say("🚚🔄");
         }
         const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100); }
+            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100) && structure.room?.controller?.my; }
         });
 
         var spanAndExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                    structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN
+                    (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
 
 
                 ) &&
@@ -24,7 +24,7 @@ export class Carrier {
         const storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                   structure.structureType == STRUCTURE_STORAGE
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
 
 
                 ) &&
@@ -35,7 +35,7 @@ export class Carrier {
         const towers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                   structure.structureType == STRUCTURE_TOWER
+                   structure.structureType == STRUCTURE_TOWER && structure.room?.controller?.my
 
 
                 ) &&
@@ -46,7 +46,7 @@ export class Carrier {
         var nearestStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                   structure.structureType == STRUCTURE_STORAGE
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
 
 
                 )
@@ -60,14 +60,14 @@ export class Carrier {
 
 
                 ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 10000;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 10000 && structure.room?.controller?.my;
             }
         });
 
         var spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                    structure.structureType == STRUCTURE_SPAWN
+                    structure.structureType == STRUCTURE_SPAWN && structure.room?.controller?.my
 
 
                 )
@@ -80,7 +80,7 @@ export class Carrier {
 
         const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
             filter: (flag) => {
-                return (flag.color == COLOR_BLUE)
+                return (flag.color == COLOR_BLUE) && flag.room?.controller?.my
             }
            })
 
@@ -99,7 +99,7 @@ export class Carrier {
             const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
                 filter:  (source) => {
                     return (
-                        source.amount > 10
+                        source.amount > 10 && source.room?.controller?.my
 
 
                     )

@@ -18,7 +18,7 @@ export class Healer {
 
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say('🏥');
+            creep.say('🏥',true);
         }
 
 
@@ -66,8 +66,19 @@ export class Healer {
                 }
             });
 
+            var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+                filter:  (creep) => {
+                    return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+                }
+            });
 
-            if(Game.flags?.attackFlag) {
+            if(friendlyCreeps && hostileCreeps) {
+                creep.moveTo(friendlyCreeps)
+            }
+            else if(Game.flags?.healFlag) {
+                MovementUtils.defaultArmyMovement(creep,Game.flags?.healFlag);
+            }
+            else if(Game.flags?.attackFlag) {
                 MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
             } else if(Game.flags?.rallyFlag) {
                 MovementUtils.defaultArmyMovement(creep,Game.flags?.rallyFlag);

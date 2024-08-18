@@ -52,13 +52,17 @@ export class Harvester {
 
 
 
-        let sources = creep.room.find(FIND_SOURCES_ACTIVE);
+        let sources = creep.room.find(FIND_SOURCES_ACTIVE, {
+            filter: (source) => {
+                return source.room.controller?.my
+            }
+        });
 
         let chosenSource: any = {id:0, priority: 0};
         for(const source of sources) {
 
             const chosenPriority = this.sourcePriority(source);
-            if(((!chosenSource?.id && !chosenSource?.priority) || ((chosenSource?.id && chosenSource?.priority) && chosenPriority > chosenSource.priority)) && source.id && chosenPriority) {
+            if(((!chosenSource?.id && !chosenSource?.priority) || ((chosenSource?.id && chosenSource?.priority) && chosenPriority < chosenSource.priority)) && source.id && chosenPriority) {
                 chosenSource.id = source.id;
                 chosenSource.priority = chosenPriority;
             }
@@ -68,7 +72,7 @@ export class Harvester {
 
         let targetSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE, {
             filter: (source) => {
-                return source.id === chosenSource.id
+                return source.id === chosenSource.id && source.room.controller?.my
             }
         });
 
@@ -79,7 +83,7 @@ export class Harvester {
             }
             targetSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE, {
                 filter:  (source) => {
-                   return source.id == creep.memory.targetSource
+                   return source.id == creep.memory.targetSource && source.room.controller?.my
                 }
             });
         }

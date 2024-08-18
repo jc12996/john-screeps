@@ -126,11 +126,6 @@ export class AutoSpawn {
             options = {memory: {role: 'claimer'}};
 
         }
-        else if (defenders.length < (EconomiesUtils.Defender * RoomSources.length)) {
-            name = 'Defender' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel);
-            options = {memory: {role: 'defender'}};
-        }
         else if(settlers.length < EconomiesUtils.Settlers
             && ((
                 this.nextClaimFlag
@@ -141,6 +136,12 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('settler',spawn);
             options = {memory: {role: 'settler'}};
         }
+        else if (defenders.length < (EconomiesUtils.Defender * RoomSources.length)) {
+            name = 'Defender' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel);
+            options = {memory: {role: 'defender'}};
+        }
+
         else if (Game.flags.rallyFlag && meatGrinders.length < EconomiesUtils.TOTAL_MEAT_GRINDERS) {
             name = 'MeatGrinder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn);

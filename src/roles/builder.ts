@@ -175,9 +175,9 @@ export class Builder {
                 else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
-                // else if(creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
-                //     creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});
-                // }
+                else if(creep.memory.role === 'settler' && creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});
+                }
                 else {
                     Repairer.run(creep);
                 }

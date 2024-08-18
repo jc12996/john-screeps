@@ -27,27 +27,13 @@ export class Upgrader {
         }
         else {
 
-            let hasStorage = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => { return structure.structureType === STRUCTURE_STORAGE }
-            });
-            var spawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter:  (structure) => {
-                    return (
-                        structure.structureType == STRUCTURE_SPAWN
 
 
-                    )
-                }
-            });
-            const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
-                filter: (site) => {
-                    return (site.structureType == STRUCTURE_EXTENSION)
-                }
-            });
 
             const target_storage = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => { return (
-                    structure.structureType == STRUCTURE_STORAGE
+                    structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
                 //     ||
                 //     (spawn &&  ((structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 200) || structure.structureType == STRUCTURE_CONTAINER))  ||
                 // (!extensions && spawn &&
@@ -61,8 +47,26 @@ export class Upgrader {
                 }
                })
 
+               const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                filter:  (source) => {
+                    return (
+                        source.amount > 10 && source.room?.controller?.my
+
+
+                    )
+                }
+            });
+
+            const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100) && structure.room?.controller?.my; }
+            });
+
             if(target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target_storage[target_storage.length -1]);
+            } else if(containers && creep.withdraw(containers,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(containers);
+            } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources);
             }
             else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])

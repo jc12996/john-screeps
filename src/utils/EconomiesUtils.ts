@@ -1,12 +1,12 @@
 export enum EconomiesUtils {
-    Harvester = 2.5,// Per source
-    Carrier = 2,// Per Source
-    Upgrader = 1.5,// Per Source
-    Builder = 1,// Per Source
-    Repairer = 1,// Per Source
+    Harvester = 2,// Per source
+    Carrier = 2.5,// Per Source
+    Upgrader = 1,// Per Source
+    Builder = .5,// Per Source
+    Repairer = .5,// Per Source
     Defender = .5,// Per Source
-    Claimers = 1,
-    Settlers = 8,
+    Claimers = 0,
+    Settlers = 0,
 
     //ARMY Economy
     // TOTAL_ATTACKER_SIZE = 4,

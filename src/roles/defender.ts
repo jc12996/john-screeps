@@ -42,19 +42,8 @@ export class Defender {
         })
 
 
-        if(hostileActiveTowers.length > 0 && nearestExit) {
+        if(!Game.flags.attackFlag && hostileActiveTowers.length > 0 && nearestExit) {
             creep.moveTo(nearestExit);
-        } else if (badSpawns.length > 0 && hostileStructures.length < 3) {
-            creep.say('🛡 SPAWN!!');
-            let attackResult = null;
-            if(creep.getActiveBodyparts(RANGED_ATTACK) > 0) {
-                attackResult = creep.rangedAttack(badSpawns[0])
-            } else {
-                attackResult = creep.attack(badSpawns[0])
-            }
-            if(attackResult == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(badSpawns[0], {visualizePathStyle: {stroke: '#ff0000'}});
-            }
         } else if (hostileCreeps.length > 0) {
             // creep.say('🛡 defend!!');
             // let attackResult = null;
@@ -67,6 +56,17 @@ export class Defender {
             //         creep.moveTo(hostileCreeps[0], {visualizePathStyle: {stroke: '#ff0000'}});
             // }
             Attacker.run(creep);
+        } else if (badSpawns.length > 0 && hostileStructures.length < 3) {
+            creep.say('🛡 SPAWN!!');
+            let attackResult = null;
+            if(creep.getActiveBodyparts(RANGED_ATTACK) > 0) {
+                attackResult = creep.rangedAttack(badSpawns[0])
+            } else {
+                attackResult = creep.attack(badSpawns[0])
+            }
+            if(attackResult == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(badSpawns[0], {visualizePathStyle: {stroke: '#ff0000'}});
+            }
         }  else if (hostileStructures.length > 0) {
             creep.say('🛡 BUILDING!!');
             let attackResult = null;

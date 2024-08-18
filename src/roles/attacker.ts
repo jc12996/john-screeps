@@ -6,8 +6,24 @@ export class Attacker {
 
 
     private static attackTarget(creep: Creep,target: any) {
+
+        const nearestExit = creep.room.find(FIND_EXIT_TOP)
+
+
+
         if(target) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
+
+            let isNearExt = false;
+            nearestExit.forEach(exit => {
+                if(exit == target.pos) {
+                    isNearExt = true;
+                }
+            });
+
+            if(!isNearExt) {
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
+            }
+
             const attackResult = creep.attack(target)
 
             if(attackResult === OK) {
@@ -51,6 +67,12 @@ export class Attacker {
         });
 
         var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+            }
+        });
+
+        var hostileCreepsL = creep.room.find(FIND_HOSTILE_CREEPS, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
             }

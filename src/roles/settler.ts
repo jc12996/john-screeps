@@ -4,6 +4,8 @@ import { Repairer } from "./repairer";
 import { Harvester } from "./harvester";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { MovementUtils } from "utils/MovementUtils";
+import { Carrier } from "./carrier";
+import { Upgrader } from "./upgrader";
 
 export class Settler {
 
@@ -17,13 +19,16 @@ export class Settler {
         }
 
 
-        if(Game.flags.settlerFlag && AutoSpawn.nextClaimFlag.room !== creep.room) {
+        if(AutoSpawn.nextClaimFlag && Game.flags.settlerFlag && AutoSpawn.nextClaimFlag.room !== creep.room) {
             MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag)
+            return;
+        } else if (Game.flags.settlerFlag && Game.flags.settlerFlag.room !== creep.room) {
+            MovementUtils.goToFlag(creep,Game.flags.settlerFlag)
             return;
         }
 
 
-        if(Game.flags.settlerFlag && AutoSpawn.nextClaimFlag.room !== creep.room) {
+        if(AutoSpawn.nextClaimFlag && Game.flags?.settlerFlag && AutoSpawn.nextClaimFlag?.room !== creep.room) {
             var friendlyRamparts = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_RAMPART && site.owner && SpawnUtils.FRIENDLY_OWNERS_FILTER(site.owner))
@@ -130,13 +135,39 @@ export class Settler {
 
         }
 
+        const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            filter:  (source) => {
+                return (
+                    source.amount > 10 && source.room?.controller?.my
+
+
+                )
+            }
+        });
+
+        const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100) && creep.room?.controller?.my; }
+        });
 
 
         if(!creep.memory.delivering) {
-            // Harvester.run(creep);
-            let targetSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            let targetSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
+                filter:  (source) => {
+                    return (
+                        source.room?.controller?.my
+
+
+                    )
+                }
+            });
             if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else if(containers  && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(containers, {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else if(droppedSources  && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else {
+                Carrier.run(creep);
             }
         }else {
 
@@ -165,16 +196,22 @@ export class Settler {
                 filter: object => object.hits < object.hitsMax && object.hits <= maxRoadStrength && object.structureType == STRUCTURE_ROAD  && creep.memory.role !== 'builder'
             });
 
+
+
             if(containers.length) {
                 if(creep.repair(containers[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             } else if (roads.length && creep.repair(roads[0])  == ERR_NOT_IN_RANGE) {
                 creep.moveTo(roads[0], {visualizePathStyle: {stroke: '#ffffff'}});
-            } else if(targets.length) {
+            } else if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2) {
+                Upgrader.run(creep)
+            }  else if(targets.length) {
                 Builder.run(creep);
+            } else if(droppedSources && spawns[0].store.getFreeCapacity() == 0) {
+                Carrier.run(creep);
             } else {
-                Repairer.run(creep)
+                Upgrader.run(creep)
             }
 
         }
