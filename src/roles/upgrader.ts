@@ -18,10 +18,21 @@ export class Upgrader {
             creep.say('⚡ upgrade');
         }
 
+        const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
+            filter: (flag) => {
+                return (flag.color == COLOR_BLUE) && flag.room?.controller?.my
+            }
+           })
+
+
+
+
         if(creep.memory.upgrading) {
-            if(creep.room.controller &&
+            if(creep.room.controller && creep.room.controller.my &&
                 creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
+            } else if(roomRallyPointFlag.length) {
+                creep.moveTo(roomRallyPointFlag[0])
             }
         }
         else {
@@ -40,11 +51,7 @@ export class Upgrader {
             )}
             });
 
-            const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
-                filter: (flag) => {
-                    return (flag.color == COLOR_BLUE)
-                }
-               })
+
 
                const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
                 filter:  (source) => {
@@ -70,9 +77,9 @@ export class Upgrader {
             else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
-            else {
-                creep.move(MovementUtils.randomDirectionSelector())
-            }
+            // else {
+            //     creep.move(MovementUtils.randomDirectionSelector())
+            // }
         }
     }
 }

@@ -17,10 +17,10 @@ export class Repairer {
             creep.say('🚧 repair');
         }
 
-        var spawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        var spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                    structure.structureType == STRUCTURE_SPAWN
+                    structure.structureType == STRUCTURE_SPAWN  && creep.room.controller?.my
 
 
                 )
@@ -50,16 +50,16 @@ export class Repairer {
             const maxRoadStrength = 50;
 
             const containers = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxContainerStrength && object.structureType == STRUCTURE_CONTAINER && creep.memory.role !== 'builder'
+                filter: object => object.hits < object.hitsMax && object.hits <= maxContainerStrength && creep.room.controller?.my && object.structureType == STRUCTURE_CONTAINER && creep.memory.role !== 'builder'
             });
             const ramparts = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxRampartStrength && object.structureType == STRUCTURE_RAMPART
+                filter: object => object.hits < object.hitsMax && object.hits <= maxRampartStrength && creep.room.controller?.my && object.structureType == STRUCTURE_RAMPART
             });
             const walls = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxWallStrength && object.structureType == STRUCTURE_WALL
+                filter: object => object.hits < object.hitsMax && object.hits <= maxWallStrength && creep.room.controller?.my && object.structureType == STRUCTURE_WALL
             });
             const roads = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxRoadStrength && object.structureType == STRUCTURE_ROAD  && creep.memory.role !== 'builder'
+                filter: object => object.hits < object.hitsMax && object.hits <= maxRoadStrength && creep.room.controller?.my && object.structureType == STRUCTURE_ROAD  && creep.memory.role !== 'builder'
             });
 
             var extensions = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -69,7 +69,7 @@ export class Repairer {
 
 
                     ) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && creep.room.controller?.my;
                 }
             });
 
@@ -95,17 +95,17 @@ export class Repairer {
         }
         else {
             var extensions = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: (structure) => { return (structure.structureType == STRUCTURE_EXTENSION) && structure.store[RESOURCE_ENERGY] > 0; }
+                filter: (structure) => { return (structure.structureType == STRUCTURE_EXTENSION) && structure.store[RESOURCE_ENERGY] > 0 && creep.room.controller?.my; }
             });
             let hasStorage = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => { return structure.structureType === STRUCTURE_STORAGE }
+                filter: (structure) => { return structure.structureType === STRUCTURE_STORAGE && creep.room.controller?.my }
             });
             const target_storage = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => { return (
-                    structure.structureType == STRUCTURE_STORAGE ||
-                    (spawn &&  ((structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 200) || structure.structureType == STRUCTURE_CONTAINER))  ||
+                    (structure.structureType == STRUCTURE_STORAGE && creep.room.controller?.my) ||
+                    (spawn && creep.room.controller?.my &&  ((structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 200) || structure.structureType == STRUCTURE_CONTAINER))  ||
                 (!extensions && spawn &&
-                    structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0; }
+                    structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0 && creep.room.controller?.my; }
             });
 
 

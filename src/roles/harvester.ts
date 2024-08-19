@@ -55,7 +55,7 @@ export class Harvester {
             }
         });
 
-        let finalSource:Source = Harvester.findTargetSource(creep) ?? sources[0];
+        let finalSource:Source = sources[0];
 
 
 
@@ -70,6 +70,8 @@ export class Harvester {
                 }
             }) ?? sources[0];
 
+        }else if(!creep.memory.targetSource) {
+            finalSource = Harvester.findTargetSource(creep) ?? sources[0];
         }
 
 
@@ -79,17 +81,18 @@ export class Harvester {
 
             if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(creep.memory.role !== 'settler' && finalSource && creep.harvest(finalSource) === OK) {
+            } else if(creep.memory.targetSource && creep.memory.role !== 'settler' && creep.memory.targetSource && finalSource && creep.harvest(finalSource) === OK) {
                 creep.drop(RESOURCE_ENERGY,creep.store.energy);
+            } else {
+                creep.memory.delivering = true;
             }
 
             // if(!creep.memory.targetSource && creep.room.name === 'W5N4') {
             //     console.log(finalSource.pos.x,finalSource.pos.y,finalSource.id,creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2))
             // }
 
-            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2)) {
+            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,1)) {
                 creep.memory.targetSource = finalSource.id;
-                return;
             }
 
 
@@ -150,11 +153,7 @@ export class Harvester {
 
     private static findTargetSource(creep:Creep): Source | null {
 
-        let sources = creep.room.find(FIND_SOURCES, {
-            filter: (source) => {
-                return source.room.controller?.my
-            }
-        });
+        let sources = creep.room.find(FIND_SOURCES_ACTIVE);
 
         for (const source of sources) {
 

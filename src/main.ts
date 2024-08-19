@@ -82,7 +82,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
     var creep = Game.creeps[name];
 
 
-
+    // if(!creep.room.controller?.my) {
+    //   creep.suicide();
+    // }
 
     if(creep.memory.role == 'harvester') {
       Harvester.run(creep);
