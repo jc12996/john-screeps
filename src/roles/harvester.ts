@@ -84,9 +84,9 @@ export class Harvester {
                 creep.drop(RESOURCE_ENERGY,creep.store.energy);
             }
 
-            if(!creep.memory.targetSource && creep.room.name === 'W5N4') {
-                console.log(finalSource.pos.x,finalSource.pos.y,finalSource.id,creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2))
-            }
+            // if(!creep.memory.targetSource && creep.room.name === 'W5N4') {
+            //     console.log(finalSource.pos.x,finalSource.pos.y,finalSource.id,creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2))
+            // }
 
             if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2)) {
                 creep.memory.targetSource = finalSource.id;
