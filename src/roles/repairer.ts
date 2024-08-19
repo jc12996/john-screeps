@@ -17,7 +17,6 @@ export class Repairer {
             creep.say('🚧 repair');
         }
 
-
         var spawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (

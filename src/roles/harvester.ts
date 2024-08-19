@@ -39,7 +39,6 @@ export class Harvester {
             creep.say('⚡ deliver');
         }
 
-
         var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
@@ -88,8 +87,9 @@ export class Harvester {
             //     console.log(finalSource.pos.x,finalSource.pos.y,finalSource.id,creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2))
             // }
 
-            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2)) {
+            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2)) {
                 creep.memory.targetSource = finalSource.id;
+                return;
             }
 
 
@@ -185,9 +185,9 @@ export class Harvester {
 
                 if(hasCreep.length == 0) {
 
-                    const finalSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE, {
+                    const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
                         filter:  (ssss) => {
-                           return ssss.id == source.id
+                           return ssss.id == source.id && creep.room.controller?.my
                         }
                     }) ?? source;
 
