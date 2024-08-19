@@ -13,6 +13,7 @@ import { Healer } from "roles/healer";
 import { Dismantler } from "roles/dismantler";
 import { MeatGrinder } from "roles/meatGrinder";
 import { Carrier } from "roles/carrier";
+import { handleRamparts } from "ramparts";
 
 declare global {
   /*
@@ -66,11 +67,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
   AutoSpawn.run();
 
   for(var room_it in Game.rooms) {
-      var room = Game.rooms[room_it]
+    const room: Room = Game.rooms[room_it]
       var spawn = room.find(FIND_MY_SPAWNS)[0];
       if(!spawn) {
           continue;
       }
+      handleRamparts({ room: room });
       Tower.defendMyRoom(room_it)
   }
 

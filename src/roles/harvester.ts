@@ -1,6 +1,7 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Builder } from "./builder";
 import { Upgrader } from "./upgrader";
+import { Position } from "source-map";
 
 export class Harvester {
 
@@ -49,64 +50,48 @@ export class Harvester {
             }
         });
 
-
-
-
         let sources = creep.room.find(FIND_SOURCES_ACTIVE, {
             filter: (source) => {
                 return source.room.controller?.my
             }
         });
 
-        let chosenSource: any = {id:0, priority: 0};
-        for(const source of sources) {
-
-            const chosenPriority = this.sourcePriority(source);
-            if(((!chosenSource?.id && !chosenSource?.priority) || ((chosenSource?.id && chosenSource?.priority) && chosenPriority < chosenSource.priority)) && source.id && chosenPriority) {
-                chosenSource.id = source.id;
-                chosenSource.priority = chosenPriority;
-            }
+        let finalSource:Source = Harvester.findTargetSource(creep) ?? sources[0];
 
 
-        }
-
-        let targetSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE, {
-            filter: (source) => {
-                return source.id === chosenSource.id && source.room.controller?.my
-            }
-        });
 
         if(creep.memory.targetSource) {
 
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("⛏");
             }
-            targetSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE, {
+            finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
                 filter:  (source) => {
                    return source.id == creep.memory.targetSource && source.room.controller?.my
                 }
-            });
+            }) ?? sources[0];
+
         }
-
-
-
-        // console.log(chosenSource.id, chosenSource.priority);
-
 
 
         if(!creep.memory.delivering) {
 
-            if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targetSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(creep.memory.role !== 'settler' && targetSource && creep.harvest(targetSource) === OK) {
+
+
+            if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else if(creep.memory.role !== 'settler' && finalSource && creep.harvest(finalSource) === OK) {
                 creep.drop(RESOURCE_ENERGY,creep.store.energy);
-            } else if(creep.memory.role !== 'settler' && !container && creep.store.getFreeCapacity() > 0) {
-                creep.memory.delivering = true;
             }
 
-            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && targetSource?.pos && creep.pos.isNearTo(targetSource.pos.x, targetSource.pos.y)) {
-                creep.memory.targetSource = targetSource.id;
+            if(!creep.memory.targetSource && creep.room.name === 'W5N4') {
+                console.log(finalSource.pos.x,finalSource.pos.y,finalSource.id,creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2))
             }
+
+            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2)) {
+                creep.memory.targetSource = finalSource.id;
+            }
+
 
             if(creep.memory.role === 'settler') {
                 return;
@@ -162,4 +147,59 @@ export class Harvester {
             }
         }
     }
+
+    private static findTargetSource(creep:Creep): Source | null {
+
+        let sources = creep.room.find(FIND_SOURCES, {
+            filter: (source) => {
+                return source.room.controller?.my
+            }
+        });
+
+        for (const source of sources) {
+
+
+
+            const top = { x: source.pos.x, y: source.pos.y + 1, hasPlain: false };
+            const topLeft = { x: source.pos.x -1 , y: source.pos.y + 1, hasPlain: false };
+            const topRight = { x: source.pos.x +1 , y: source.pos.y + 1, hasPlain: false };
+            const right = { x: source.pos.x +1 , y: source.pos.y, hasPlain: false };
+            const left = { x: source.pos.x +1 , y: source.pos.y, hasPlain: false };
+            const bottom = { x: source.pos.x , y: source.pos.y -1, hasPlain: false };
+            const bottomLeft = { x: source.pos.x-1 , y: source.pos.y -1, hasPlain: false };
+            const bottomRight = { x: source.pos.x+1 , y: source.pos.y -1, hasPlain: false };
+
+            const squareAreas = [top,topLeft,topRight,right,left,bottom,bottomLeft,bottomRight];
+
+            for(const area of squareAreas) {
+                const areaPostion: Terrain[] = creep.room.lookForAt(LOOK_TERRAIN,area.x,area.y)
+                if(areaPostion.includes('plain')) {
+                    area.hasPlain = true;
+                }
+            }
+
+            const areasWithPlains = squareAreas.filter((area) => area.hasPlain == true);
+
+            for(const areawithPlain of areasWithPlains) {
+                const hasCreep: Creep[] = creep.room.lookForAt(LOOK_CREEPS,areawithPlain.x,areawithPlain.y);
+
+                if(hasCreep.length == 0) {
+
+                    const finalSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE, {
+                        filter:  (ssss) => {
+                           return ssss.id == source.id
+                        }
+                    }) ?? source;
+
+                    return finalSource;
+
+
+                }
+
+            }
+        }
+        return null;
+
+    }
+
 }
