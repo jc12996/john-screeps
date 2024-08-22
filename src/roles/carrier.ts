@@ -5,13 +5,13 @@ export class Carrier {
 
     public static run(creep: Creep): void {
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("🚚🔄");
+            creep.say("🚚");
         }
         const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100) && structure.room?.controller?.my; }
         });
 
-        var spanAndExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        var spawnAndExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
                     (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
@@ -118,22 +118,23 @@ export class Carrier {
 
         } else if(creep.memory.carrying) {
 
-            if(creep.memory.carryIndex === null || creep.memory.carryIndex === undefined) {
-                if(towers && carriers[2] && creep.id === carriers[2].id ) {
-                    creep.memory.carryIndex = 2
-                } else if((
-                    (carriers[0] && creep.id === carriers[0].id) ||
-                    (carriers[1] && creep.id === carriers[1].id)
-                )) {
-                    creep.memory.carryIndex = 0
-                } else if(
-                    nearestStorage
-                ) {
-                    creep.memory.carryIndex = 1
-                } else {
-                    creep.memory.carryIndex = 0
-                }
+
+            if(towers && carriers[2] && creep.id === carriers[2].id ) {
+                creep.memory.carryIndex = 2
+            } else if((
+                (carriers[0] && creep.id === carriers[0].id) ||
+                (carriers[1] && creep.id === carriers[1].id) ||
+                (carriers[3] && creep.id === carriers[3].id)
+            )) {
+                creep.memory.carryIndex = 0
+            } else if(
+                nearestStorage
+            ) {
+                creep.memory.carryIndex = 1
+            } else {
+                creep.memory.carryIndex = 0
             }
+
 
 
 
@@ -145,9 +146,9 @@ export class Carrier {
                 } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
-                } else if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
-                    creep.moveTo(spanAndExtension);
+                    creep.moveTo(spawnAndExtension);
                 }
                 return;
 
@@ -161,18 +162,18 @@ export class Carrier {
                 } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(storage);
-                } else if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
-                    creep.moveTo(spanAndExtension);
+                    creep.moveTo(spawnAndExtension);
                 }
                 return;
 
             }
 
             if(creep.memory.carryIndex == 0) {
-                if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
-                    creep.moveTo(spanAndExtension);
+                    creep.moveTo(spawnAndExtension);
                 } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
