@@ -65,7 +65,7 @@ export class Harvester {
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("⛏");
             }
-            finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
+            finalSource = creep.pos.findClosestByPath(FIND_SOURCES, {
                 filter:  (source) => {
                    return source.id == creep.memory.targetSource && source.room.controller?.my
                 }
@@ -75,6 +75,21 @@ export class Harvester {
             finalSource = Harvester.findTargetSource(creep) ?? sources[0];
         }
 
+
+        if(finalSource?.pos && creep.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,1) && creep.memory.targetSource) {
+            let sources = creep.room.find(FIND_SOURCES_ACTIVE, {
+                filter: (source) => {
+                    return source.id === creep.memory.targetSource
+                }
+            });
+            if(!sources.length) {
+                return;
+            }
+
+        }else if(finalSource?.pos && creep.pos && !creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,1) && creep.memory.targetSource) {
+            creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            return;
+        }
 
         if(!creep.memory.delivering) {
 
@@ -92,7 +107,7 @@ export class Harvester {
             //     console.log(finalSource.pos.x,finalSource.pos.y,finalSource.id,creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2))
             // }
 
-            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,1)) {
+            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos?.inRangeTo(finalSource.pos?.x, finalSource.pos?.y,2)) {
                 creep.memory.targetSource = finalSource.id;
             }
 
