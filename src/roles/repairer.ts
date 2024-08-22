@@ -108,15 +108,9 @@ export class Repairer {
                     structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0 && creep.room.controller?.my; }
             });
 
-
-            //const droppedSources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
-
             if (target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                      creep.moveTo(target_storage[target_storage.length -1], {visualizePathStyle: {stroke: "#ffffff"}});
             }
-            // else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-            //     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
-            // }
             else {
                 Upgrader.run(creep);
             }

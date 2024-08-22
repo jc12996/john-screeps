@@ -78,9 +78,9 @@ export class Upgrader {
             else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
-            // else {
-            //     creep.move(MovementUtils.randomDirectionSelector())
-            // }
+            else {
+                creep.move(MovementUtils.randomDirectionSelector())
+            }
         }
     }
 }

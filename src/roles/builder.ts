@@ -120,78 +120,37 @@ export class Builder {
             }
         }
         else {
-            // if(creep.memory.repairing) {
-            //     let controllers = creep.room.find(FIND_MY_STRUCTURES, {
-            //         filter: { structureType: STRUCTURE_CONTROLLER }
-            //     });
-            //     controllers = controllers.filter(
-            //         object => {object.hits < object.hitsMax}
-            //     )
+            let sources = creep.room.find(FIND_SOURCES_ACTIVE);
+            const extensions  = creep.room.find(FIND_STRUCTURES, {
+                filter: { structureType: STRUCTURE_EXTENSION }
+            });
+            const target_storage = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => { return (
+                    structure.structureType == STRUCTURE_STORAGE ||
+                    (spawn &&  ((structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 200)))  ||
+                (!extensions && spawn &&
+                    structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0; }
+            });
 
-            //     let containers = creep.room.find(FIND_MY_STRUCTURES, {
-            //         filter: { structureType: STRUCTURE_CONTAINER }
-            //     });
-            //     containers = containers.filter(
-            //         object => {object.hits < object.hitsMax}
-            //     )
-
-            //     let otherbuildings = creep.room.find(FIND_MY_STRUCTURES);
-            //     otherbuildings = otherbuildings.filter(
-            //         object => {object.hits < object.hitsMax}
-            //     )
+            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
 
 
+                if (target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(target_storage[target_storage.length -1], {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+            else if(!target_storage && sources[sources.length-1] && creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+            else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
+            }
+            else if(creep.memory.role === 'settler' && creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+            else {
+                Repairer.run(creep);
+            }
 
-            //     if(controllers.length) {
-            //         if(creep.repair(controllers[0]) == ERR_NOT_IN_RANGE) {
-            //             creep.moveTo(controllers[0], {visualizePathStyle: {stroke: '#ffffff'}});
-            //         }
-            //     }
-            //     else if (containers.length) {
-            //         if(creep.repair(containers[0]) == ERR_NOT_IN_RANGE) {
-            //             creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffffff'}});
-            //         }
-            //     }
-            //     else if (otherbuildings.length) {
-            //         if(creep.repair(otherbuildings[0]) == ERR_NOT_IN_RANGE) {
-            //             creep.moveTo(otherbuildings[0], {visualizePathStyle: {stroke: '#ffffff'}});
-            //         }
-            //     } else {
-            //         Repairer.run(creep);
-            //     }
-            // }
-            // else {
-                let sources = creep.room.find(FIND_SOURCES_ACTIVE);
-                const extensions  = creep.room.find(FIND_STRUCTURES, {
-                    filter: { structureType: STRUCTURE_EXTENSION }
-                });
-                const target_storage = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => { return (
-                        structure.structureType == STRUCTURE_STORAGE ||
-                        (spawn &&  ((structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 200)))  ||
-                    (!extensions && spawn &&
-                        structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0; }
-                });
-
-                const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-
-
-                 if (target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                         creep.moveTo(target_storage[target_storage.length -1], {visualizePathStyle: {stroke: "#ffffff"}});
-                }
-                else if(!target_storage && sources[sources.length-1] && creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});
-                }
-                else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-                else if(creep.memory.role === 'settler' && creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});
-                }
-                else {
-                    Repairer.run(creep);
-                }
-            //}
         }
     }
 }

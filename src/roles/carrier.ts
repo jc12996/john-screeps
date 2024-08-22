@@ -1,4 +1,5 @@
 import { SpawnUtils } from "utils/SpawnUtils";
+import { Upgrader } from "./upgrader";
 
 export class Carrier {
 
@@ -106,10 +107,6 @@ export class Carrier {
                 }
             });
 
-
-            // if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-            //     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
-            // }
             if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(droppedSources);
             } else if(containers && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -178,8 +175,8 @@ export class Carrier {
             } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 S');
                 creep.moveTo(storage);
-            } else if(roomRallyPointFlag.length) {
-                creep.moveTo(roomRallyPointFlag[0])
+            } else {
+                Upgrader.run(creep)
             }
         }
     }
