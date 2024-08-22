@@ -64,7 +64,7 @@ export class Upgrader {
             });
 
             const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100) && structure.room?.controller?.my; }
+                filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
             });
 
             if(target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
