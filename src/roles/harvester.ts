@@ -2,6 +2,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { Builder } from "./builder";
 import { Upgrader } from "./upgrader";
 import { Position } from "source-map";
+import { EconomiesUtils } from "utils/EconomiesUtils";
 
 export class Harvester {
 
@@ -70,7 +71,7 @@ export class Harvester {
                 }
             }) ?? sources[0];
 
-        }else if(!creep.memory.targetSource) {
+        }else {
             finalSource = Harvester.findTargetSource(creep) ?? sources[0];
         }
 
@@ -79,7 +80,7 @@ export class Harvester {
 
 
 
-            if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
+            if(creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if(creep.memory.targetSource && creep.memory.role !== 'settler' && creep.memory.targetSource && finalSource && creep.harvest(finalSource) === OK) {
                 creep.drop(RESOURCE_ENERGY,creep.store.energy);
@@ -159,25 +160,25 @@ export class Harvester {
 
 
 
-            const top = { x: source.pos.x, y: source.pos.y + 1, hasPlain: false };
-            const topLeft = { x: source.pos.x -1 , y: source.pos.y + 1, hasPlain: false };
-            const topRight = { x: source.pos.x +1 , y: source.pos.y + 1, hasPlain: false };
-            const right = { x: source.pos.x +1 , y: source.pos.y, hasPlain: false };
-            const left = { x: source.pos.x +1 , y: source.pos.y, hasPlain: false };
-            const bottom = { x: source.pos.x , y: source.pos.y -1, hasPlain: false };
-            const bottomLeft = { x: source.pos.x-1 , y: source.pos.y -1, hasPlain: false };
-            const bottomRight = { x: source.pos.x+1 , y: source.pos.y -1, hasPlain: false };
+            const top = { x: source.pos.x, y: source.pos.y + 1, hasPlain: 0 };
+            const topLeft = { x: source.pos.x -1 , y: source.pos.y + 1, hasPlain: 0 };
+            const topRight = { x: source.pos.x +1 , y: source.pos.y + 1, hasPlain: 0 };
+            const right = { x: source.pos.x +1 , y: source.pos.y, hasPlain: 0 };
+            const left = { x: source.pos.x +1 , y: source.pos.y, hasPlain: 0 };
+            const bottom = { x: source.pos.x , y: source.pos.y -1, hasPlain: 0 };
+            const bottomLeft = { x: source.pos.x-1 , y: source.pos.y -1, hasPlain: 0 };
+            const bottomRight = { x: source.pos.x+1 , y: source.pos.y -1, hasPlain: 0 };
 
             const squareAreas = [top,topLeft,topRight,right,left,bottom,bottomLeft,bottomRight];
 
             for(const area of squareAreas) {
                 const areaPostion: Terrain[] = creep.room.lookForAt(LOOK_TERRAIN,area.x,area.y)
                 if(areaPostion.includes('plain')) {
-                    area.hasPlain = true;
+                    area.hasPlain++;
                 }
             }
 
-            const areasWithPlains = squareAreas.filter((area) => area.hasPlain == true);
+            const areasWithPlains = squareAreas.filter((area) => area.hasPlain > 0);
 
             for(const areawithPlain of areasWithPlains) {
                 const hasCreep: Creep[] = creep.room.lookForAt(LOOK_CREEPS,areawithPlain.x,areawithPlain.y);

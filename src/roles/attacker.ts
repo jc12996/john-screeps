@@ -66,6 +66,10 @@ export class Attacker {
             filter: { owner: { username: 'Invader' } }
         });
 
+        const hostilesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS,3, {
+            filter: (creep) => creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+        });
+
         var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
@@ -86,7 +90,7 @@ export class Attacker {
 
 
 
-        if (hostileCreeps) {
+        if (hostileCreeps && hostilesInRange.length > 0) {
             creep.say('⚔ ⚔');
             Attacker.attackTarget(creep,hostileCreeps)
         }

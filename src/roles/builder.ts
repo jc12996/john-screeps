@@ -32,6 +32,12 @@ export class Builder {
                 }
             });
 
+            var storageSite = creep.room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (site) => {
+                    return (site.structureType == STRUCTURE_STORAGE)
+                }
+            });
+
             var container = creep.room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_CONTAINER)
@@ -77,6 +83,10 @@ export class Builder {
             else if(extensions.length){
                 if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            } else if(storageSite.length){
+                if(creep.build(storageSite[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(storageSite[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             } else if(container.length){
                 if(creep.build(container[0]) == ERR_NOT_IN_RANGE) {

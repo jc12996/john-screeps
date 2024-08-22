@@ -69,9 +69,10 @@ export class Upgrader {
 
             if(target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target_storage[target_storage.length -1]);
-            } else if(containers && creep.withdraw(containers,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            } else if(!target_storage && containers && creep.withdraw(containers,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(containers);
-            } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+            }
+            else if(!target_storage && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(droppedSources);
             }
             else if(roomRallyPointFlag.length) {

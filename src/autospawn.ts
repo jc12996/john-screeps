@@ -73,15 +73,15 @@ export class AutoSpawn {
 
 
 
-        if(energyAvailable >= 1300 && lowestBodyPartCreep && !spawn.spawning && spawn.room.energyAvailable >= 1300) {
-                console.log(spawn.name + ' suicide: ' + lowestBodyPartCreep.name);
-                lowestBodyPartCreep.suicide();
-                harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
-                carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
-                builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == spawn.room.name);
-                upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn.room.name);
-                repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.room.name == spawn.room.name);
-        }
+        // if(energyAvailable >= 1300 && lowestBodyPartCreep && !spawn.spawning && spawn.room.energyAvailable >= 1300) {
+        //         console.log(spawn.name + ' suicide: ' + lowestBodyPartCreep.name);
+        //         lowestBodyPartCreep.suicide();
+        //         harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
+        //         carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
+        //         builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == spawn.room.name);
+        //         upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn.room.name);
+        //         repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.room.name == spawn.room.name);
+        // }
 
         //console.log(`${spawn.name} number of sources:`,RoomSources.length);
         if (harvesters.length < 1) {
