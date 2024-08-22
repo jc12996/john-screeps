@@ -118,24 +118,27 @@ export class Carrier {
 
         } else if(creep.memory.carrying) {
 
-            if(towers && carriers[2] && creep.id === carriers[2].id ) {
-                creep.memory.carryIndex = 2
-            } else if((
-                (carriers[0] && creep.id === carriers[0].id) ||
-                (carriers[1] && creep.id === carriers[1].id)
-            )) {
-                creep.memory.carryIndex = 0
-            } else if(
-                nearestStorage
-            ) {
-                creep.memory.carryIndex = 1
-            } else {
-                creep.memory.carryIndex = 0
+            if(creep.memory.carryIndex === null || creep.memory.carryIndex === undefined) {
+                if(towers && carriers[2] && creep.id === carriers[2].id ) {
+                    creep.memory.carryIndex = 2
+                } else if((
+                    (carriers[0] && creep.id === carriers[0].id) ||
+                    (carriers[1] && creep.id === carriers[1].id)
+                )) {
+                    creep.memory.carryIndex = 0
+                } else if(
+                    nearestStorage
+                ) {
+                    creep.memory.carryIndex = 1
+                } else {
+                    creep.memory.carryIndex = 0
+                }
             }
 
 
 
-            if(creep.memory.carryIndex == 1 && (storage || towers)) {
+
+            if(creep.memory.carryIndex == 1) {
                 if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(storage);
@@ -146,9 +149,12 @@ export class Carrier {
                     creep.say('🚚 E');
                     creep.moveTo(spanAndExtension);
                 }
+                return;
 
             }
-            else if(creep.memory.carryIndex == 2 && (towers)) {
+
+
+            if(creep.memory.carryIndex == 2) {
                 if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
@@ -159,9 +165,11 @@ export class Carrier {
                     creep.say('🚚 E');
                     creep.moveTo(spanAndExtension);
                 }
+                return;
 
             }
-            else if(creep.memory.carryIndex == 0 && (spanAndExtension || storage)) {
+
+            if(creep.memory.carryIndex == 0) {
                 if(spanAndExtension && creep.transfer(spanAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
                     creep.moveTo(spanAndExtension);
@@ -172,9 +180,14 @@ export class Carrier {
                     creep.say('🚚 S');
                     creep.moveTo(storage);
                 }
-            } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                return;
+            }
+
+            if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 S');
                 creep.moveTo(storage);
+            } else if(roomRallyPointFlag.length) {
+                creep.moveTo(roomRallyPointFlag[0])
             } else {
                 Upgrader.run(creep)
             }
