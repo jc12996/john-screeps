@@ -114,6 +114,8 @@ export class Harvester {
 
             if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos?.inRangeTo(finalSource.pos?.x, finalSource.pos?.y,1)) {
                 creep.memory.targetSource = finalSource.id;
+            } else if (finalSource?.pos && creep.pos && !creep.pos?.inRangeTo(finalSource.pos?.x, finalSource.pos?.y,1)) {
+                creep.memory.targetSource = undefined;
             }
 
 
@@ -174,10 +176,9 @@ export class Harvester {
 
     private static findTargetSource(creep:Creep): Source | null {
 
-        let sources = creep.room.find(FIND_SOURCES_ACTIVE);
+        let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
-        for (const source of sources) {
-
+        if(source !== null) {
             const areasWithPlains = RoomUtils.getCreepProspectingSlots(source);
 
             for(const areawithPlain of areasWithPlains) {
@@ -187,9 +188,13 @@ export class Harvester {
 
                     const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
                         filter:  (ssss) => {
-                           return ssss.id == source.id && creep.room.controller?.my
+                           return source && ssss.id == source.id && creep.room.controller?.my
                         }
                     }) ?? source;
+
+                    if(finalSource && creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos) {
+                        creep.memory.targetSource = finalSource.id;
+                    }
 
                     return finalSource;
 
@@ -198,6 +203,8 @@ export class Harvester {
 
             }
         }
+
+
         return null;
 
     }
