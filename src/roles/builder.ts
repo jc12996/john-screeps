@@ -26,32 +26,32 @@ export class Builder {
 
         if(creep.memory.building) {
 
-            var constructSpawn = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            var constructSpawn = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_SPAWN || site.structureType == STRUCTURE_TOWER)
                 }
             });
 
-            var storageSite = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            var storageSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_STORAGE)
                 }
             });
 
-            var container = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            var container = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_CONTAINER)
                 }
             });
 
-            const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            const extensions = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_EXTENSION)
                 }
             });
 
 
-            var targets = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            var targets = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType !== STRUCTURE_ROAD && site.structureType !== STRUCTURE_RAMPART && site.structureType !== STRUCTURE_WALL)
                 }
@@ -75,29 +75,29 @@ export class Builder {
                 }
             });
 
-            if(constructSpawn.length) {
-                if(creep.build(constructSpawn[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(constructSpawn[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            if(constructSpawn) {
+                if(creep.build(constructSpawn) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(extensions.length){
-                if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(extensions){
+                if(creep.build(extensions) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(extensions, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
-            } else if(storageSite.length){
-                if(creep.build(storageSite[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(storageSite[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            } else if(storageSite){
+                if(creep.build(storageSite) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(storageSite, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
-            } else if(container.length){
-                if(creep.build(container[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            } else if(container){
+                if(creep.build(container) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(targets.length) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(targets) {
+                if(creep.build(targets) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
-            }  else if(ramparts.length) {
+            }  else if(ramparts) {
                 if(creep.build(ramparts[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(ramparts[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
