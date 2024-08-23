@@ -33,21 +33,29 @@ export class Repairer {
         if(creep.memory.repairing) {
             const energyAvailable = creep.room.energyAvailable;
             let maxWallStrength = 100000;
+            let maxContainerStrength = 50000;
+            let maxRoadStrength = 50;
             if(energyAvailable > 1000) {
                 maxWallStrength = 1000000;
             }
             if(energyAvailable > 2000) {
                 maxWallStrength = 2000000;
+                maxContainerStrength = 10000;
+                maxRoadStrength = 100;
             }
             if(energyAvailable > 3000) {
                 maxWallStrength = 3000000;
+                maxContainerStrength = 20000;
+                maxRoadStrength = 150;
             }
             if(energyAvailable > 4000) {
                 maxWallStrength = 40000000;
+                maxContainerStrength = 25000;
+                maxRoadStrength = 200;
             }
             const maxRampartStrength = maxWallStrength / 1.5
-            const maxContainerStrength = 50000;
-            const maxRoadStrength = 50;
+
+
 
             const containers = creep.room.find(FIND_STRUCTURES, {
                 filter: object => object.hits < object.hitsMax && object.hits <= maxContainerStrength && creep.room.controller?.my && object.structureType == STRUCTURE_CONTAINER && creep.memory.role !== 'builder'

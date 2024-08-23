@@ -44,7 +44,7 @@ export class AutoSpawn {
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
-        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn) * 0.75;
+        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn) * 0.5;
 
         //console.log(spawn.name, numberOfNeededHarvesters)
         for (let i = 0; i < 10; i++) {
@@ -60,6 +60,17 @@ export class AutoSpawn {
             }
         }
 
+        //if(harvesters.length > (EconomiesUtils.Harvester * RoomSources.length)) {
+        //     for(const harvester of harvesters) {
+        //         if(harvesters.length > (EconomiesUtils.Harvester * RoomSources.length)) {
+        //             harvester.suicide()
+        //             harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
+        //         }
+
+
+        //     }
+        // }
+
         //console.log(`${spawn.name} number of sources:`,RoomSources.length);
         if (harvesters.length < 1) {
             name = 'Harvester' + Game.time;
@@ -69,7 +80,7 @@ export class AutoSpawn {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
-        } else if (!spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0) {
+        } else if (harvesters.length < (EconomiesUtils.Harvester * RoomSources.length) && !spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0) {
             name = 'Harvester' + Game.time;
             console.log(spawn.name,"needed harvesters",numberOfNeededHarvesters);
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)

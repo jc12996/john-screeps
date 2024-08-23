@@ -132,7 +132,16 @@ export class Builder {
                     structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0; }
             });
 
-            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+
+            const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10, {
+                filter:  (source) => {
+                    return (
+                        source.amount > 10 && source.room?.controller?.my
+
+
+                    )
+                }
+            });
 
 
                 if (target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -141,8 +150,8 @@ export class Builder {
             else if(!target_storage && sources[sources.length-1] && creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});
             }
-            else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(droppedSources && creep.pickup(droppedSources[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources[0], {visualizePathStyle: {stroke: '#ffffff'}});
             }
             else if(creep.memory.role === 'settler' && creep.harvest(sources[sources.length-1]) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[sources.length-1], {visualizePathStyle: {stroke: "#ffffff"}});

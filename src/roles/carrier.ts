@@ -97,7 +97,7 @@ export class Carrier {
 
 
         if(!creep.memory.carrying) {
-            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10, {
                 filter:  (source) => {
                     return (
                         source.amount > 10 && source.room?.controller?.my
@@ -107,10 +107,16 @@ export class Carrier {
                 }
             });
 
-            if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources);
-            } else if(containers && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+                filter:  (creep) => {
+                    return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+                }
+            });
+
+            if(containers && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(containers);
+            } else if(!hostileCreeps && droppedSources.length && creep.pickup(droppedSources[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources[0]);
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
@@ -123,7 +129,8 @@ export class Carrier {
                 creep.memory.carryIndex = 2
             } else if((
                 (carriers[0] && creep.id === carriers[0].id) ||
-                (carriers[1] && creep.id === carriers[1].id)
+                (carriers[1] && creep.id === carriers[1].id) ||
+                (carriers[6] && creep.id === carriers[6].id)
             )) {
                 creep.memory.carryIndex = 0
             } else if(

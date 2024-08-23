@@ -52,8 +52,7 @@ export class Upgrader {
             });
 
 
-
-               const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10, {
                 filter:  (source) => {
                     return (
                         source.amount > 10 && source.room?.controller?.my
@@ -72,8 +71,8 @@ export class Upgrader {
             } else if(!target_storage && containers && creep.withdraw(containers,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(containers);
             }
-            else if(!target_storage && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources);
+            else if(!target_storage && droppedSources && creep.pickup(droppedSources[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources[0]);
             }
             else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])

@@ -98,6 +98,10 @@ export class Harvester {
 
             if(creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else if(creep.pos && container?.pos && creep?.pos.inRangeTo(container.pos.x,container.pos.y, 1)) {
+                if(creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             } else if(creep.memory.targetSource && creep.memory.role !== 'settler' && creep.memory.targetSource && finalSource && creep.harvest(finalSource) === OK) {
                 creep.drop(RESOURCE_ENERGY,creep.store.energy);
             } else {
