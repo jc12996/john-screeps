@@ -1,4 +1,5 @@
 import { EconomiesUtils } from "./EconomiesUtils";
+import { RoomUtils } from "./RoomUtils";
 
 export enum PartCosts {
     TOUGH = 10,
@@ -31,7 +32,7 @@ export class SpawnUtils {
     * TODO: Use factory pattern or something to get rid of the switch statements. For example, each role can be required to describe it's parts pattern.
     */
 
-    public static getBodyPartsForArchetype(archetype: string, spawn: any, commandLevel: number = 1): Array<BodyPartConstant> | null {
+    public static getBodyPartsForArchetype(archetype: string, spawn: any, commandLevel: number = 1, numberOfNeededHarvesters:number): Array<BodyPartConstant> | null {
         let partsPattern = new Array<BodyPartConstant>();
         let bodyParts = new Array<BodyPartConstant>();
         let defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && spawn.room.name == creep.room.name);
@@ -161,7 +162,7 @@ export class SpawnUtils {
             case 'harvester':
                 //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
 
-                if((commandLevel >= 3 || harvesters.length < (EconomiesUtils.Harvester * RoomSources.length)) && energyAvailable >= ((PartCosts.MOVE * 2) + (PartCosts.CARRY * 2) + (PartCosts.WORK * 6))) {
+                if((commandLevel >= 3 || harvesters.length < numberOfNeededHarvesters) && energyAvailable >= ((PartCosts.MOVE * 2) + (PartCosts.CARRY * 2) + (PartCosts.WORK * 6))) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -171,9 +172,9 @@ export class SpawnUtils {
                     for (let i = 0; i < 6; i++) {
                         partsPattern.push(WORK);
                     }
-                } else if((commandLevel < 3 || harvesters.length < (EconomiesUtils.Harvester * RoomSources.length)) && energyAvailable >= 450) {
+                } else if((commandLevel < 3 || harvesters.length < numberOfNeededHarvesters) && energyAvailable >= 450) {
                     partsPattern = [MOVE,CARRY,CARRY,WORK,WORK,WORK];
-                } else if((commandLevel < 3 || harvesters.length < (EconomiesUtils.Harvester * RoomSources.length)) && energyAvailable > 200){
+                } else if((commandLevel < 3 || harvesters.length < numberOfNeededHarvesters) && energyAvailable > 200){
                     partsPattern = [MOVE,WORK,CARRY];
                 } else {
                     return null;

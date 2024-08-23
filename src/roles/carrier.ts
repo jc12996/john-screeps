@@ -123,8 +123,7 @@ export class Carrier {
                 creep.memory.carryIndex = 2
             } else if((
                 (carriers[0] && creep.id === carriers[0].id) ||
-                (carriers[1] && creep.id === carriers[1].id) ||
-                (carriers[3] && creep.id === carriers[3].id)
+                (carriers[1] && creep.id === carriers[1].id)
             )) {
                 creep.memory.carryIndex = 0
             } else if(
