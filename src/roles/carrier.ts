@@ -22,6 +22,17 @@ export class Carrier {
             }
         });
 
+        var spawns = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    (structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        });
+
         const storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
@@ -152,6 +163,9 @@ export class Carrier {
                 } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
+                } else if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 ES');
+                    creep.moveTo(spawns);
                 } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
                     creep.moveTo(spawnAndExtension);
@@ -165,19 +179,25 @@ export class Carrier {
                 if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
-                } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('🚚 S');
-                    creep.moveTo(storage);
+                } else if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 ES');
+                    creep.moveTo(spawns);
                 } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
                     creep.moveTo(spawnAndExtension);
+                } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 S');
+                    creep.moveTo(storage);
                 }
                 return;
 
             }
 
             if(creep.memory.carryIndex == 0) {
-                if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 ES');
+                    creep.moveTo(spawns);
+                } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
                     creep.moveTo(spawnAndExtension);
                 } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -193,6 +213,9 @@ export class Carrier {
             if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 S');
                 creep.moveTo(storage);
+            } else if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 ES');
+                creep.moveTo(spawns);
             } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 E');
                 creep.moveTo(spawnAndExtension);
