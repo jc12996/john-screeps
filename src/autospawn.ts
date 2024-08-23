@@ -71,7 +71,7 @@ export class AutoSpawn {
         //     }
         // }
 
-        var constructionSites = spawn.room.find(FIND_MY_CONSTRUCTION_SITES);
+        var constructionSites = spawn.room.find(FIND_CONSTRUCTION_SITES);
 
         //console.log(`${spawn.name} number of sources:`,RoomSources.length);
         if (harvesters.length < 1) {
