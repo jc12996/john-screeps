@@ -31,7 +31,7 @@ export class Tower {
 
         const roads = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_ROAD && structure.hits < 1000
+                return structure.structureType === STRUCTURE_ROAD && structure.hits < 100
             }
         });
 
