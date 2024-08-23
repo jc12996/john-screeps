@@ -71,6 +71,8 @@ export class AutoSpawn {
         //     }
         // }
 
+        var constructionSites = spawn.room.find(FIND_MY_CONSTRUCTION_SITES);
+
         //console.log(`${spawn.name} number of sources:`,RoomSources.length);
         if (harvesters.length < 1) {
             name = 'Harvester' + Game.time;
@@ -91,7 +93,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
 
-        } else if(builders.length < (EconomiesUtils.Builder * RoomSources.length)) {
+        } else if(constructionSites.length && builders.length < (EconomiesUtils.Builder * RoomSources.length)) {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,0)
             options = {memory: {role: 'builder'}}

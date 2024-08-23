@@ -97,7 +97,7 @@ export class Carrier {
 
 
         if(!creep.memory.carrying) {
-            const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10, {
+            const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 30, {
                 filter:  (source) => {
                     return (
                         source.amount > 10 && source.room?.controller?.my
@@ -156,12 +156,8 @@ export class Carrier {
                     creep.say('🚚 E');
                     creep.moveTo(spawnAndExtension);
                 }
-                return;
 
-            }
-
-
-            if(creep.memory.carryIndex == 2) {
+            } else if(creep.memory.carryIndex == 2) {
                 if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
@@ -172,11 +168,8 @@ export class Carrier {
                     creep.say('🚚 E');
                     creep.moveTo(spawnAndExtension);
                 }
-                return;
 
-            }
-
-            if(creep.memory.carryIndex == 0) {
+            }else if(creep.memory.carryIndex == 0) {
                 if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
                     creep.moveTo(spawnAndExtension);
@@ -187,12 +180,12 @@ export class Carrier {
                     creep.say('🚚 S');
                     creep.moveTo(storage);
                 }
-                return;
-            }
-
-            if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 S');
                 creep.moveTo(storage);
+            } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 E');
+                creep.moveTo(spawnAndExtension);
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             } else {
