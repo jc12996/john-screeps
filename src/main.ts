@@ -14,6 +14,8 @@ import { Dismantler } from "roles/dismantler";
 import { MeatGrinder } from "roles/meatGrinder";
 import { Carrier } from "roles/carrier";
 import { handleRamparts } from "ramparts";
+import { EconomiesUtils, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
+import { SpawnUtils } from "utils/SpawnUtils";
 
 declare global {
   /*
@@ -28,6 +30,7 @@ declare global {
   interface Memory {
     uuid: number;
     log: any;
+    economyType?: string;
   }
 
   interface CreepMemory {
@@ -42,6 +45,7 @@ declare global {
     carrying?: boolean;
     carryIndex?: number;
     friendRampartEntered?: boolean;
+    isArmySquad?: boolean;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
@@ -85,6 +89,35 @@ export const loop = ErrorMapper.wrapLoop(() => {
     // if(!creep.room.controller?.my) {
     //   creep.suicide();
     // }
+
+    if(creep.memory?.isArmySquad && Memory?.economyType && Game.flags.rallyFlag?.pos &&  creep?.pos &&  Game.flags.stagingFlag &&  !creep.pos.inRangeTo(Game.flags.stagingFlag.pos.x,Game.flags.stagingFlag.pos.y,6)) {
+      const totalArmySize =  _.filter(Game.creeps, (creep) => creep.memory.isArmySquad )?.length ?? 0;
+
+      let economyArmySize = 0;
+      if(Memory.economyType == 'peace') {
+        economyArmySize = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE + PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE + PeaceTimeEconomy.TOTAL_HEALER_SIZE + PeaceTimeEconomy.TOTAL_MEAT_GRINDERS;
+      }
+      if(Memory.economyType == 'war') {
+        economyArmySize = WarTimeEconomy.TOTAL_ATTACKER_SIZE + WarTimeEconomy.TOTAL_DISMANTLER_SIZE + WarTimeEconomy.TOTAL_HEALER_SIZE + WarTimeEconomy.TOTAL_MEAT_GRINDERS;
+      }
+      if(Memory.economyType == 'seige') {
+        economyArmySize = SeigeEconomy.TOTAL_ATTACKER_SIZE + SeigeEconomy.TOTAL_DISMANTLER_SIZE + SeigeEconomy.TOTAL_HEALER_SIZE + SeigeEconomy.TOTAL_MEAT_GRINDERS;
+      }
+      //console.log(totalArmySize,economyArmySize,Memory.economyType)
+      if(totalArmySize < economyArmySize) {
+        var hostileCreepsL = creep.room.find(FIND_HOSTILE_CREEPS, {
+          filter:  (creep) => {
+              return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+          }
+        });
+        if(Game.flags.stagingFlag && !hostileCreepsL.length) {
+          //console.log(Memory.economyType + 'time!')
+          creep.moveTo(Game.flags.stagingFlag);
+          return;
+        }
+
+      }
+    }
 
     if(creep.memory.role == 'harvester') {
       Harvester.run(creep);

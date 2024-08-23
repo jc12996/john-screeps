@@ -1,5 +1,5 @@
 import { SpawnUtils } from "utils/SpawnUtils";
-import { EconomiesUtils } from "utils/EconomiesUtils";
+import { EconomiesUtils, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { RoomUtils } from "utils/RoomUtils";
 
 
@@ -60,18 +60,48 @@ export class AutoSpawn {
             }
         }
 
-        //if(harvesters.length > (EconomiesUtils.Harvester * RoomSources.length)) {
-        //     for(const harvester of harvesters) {
-        //         if(harvesters.length > (EconomiesUtils.Harvester * RoomSources.length)) {
-        //             harvester.suicide()
-        //             harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
-        //         }
-
-
-        //     }
-        // }
-
         var constructionSites = spawn.room.find(FIND_CONSTRUCTION_SITES);
+
+
+        let TOTAL_ATTACKER_SIZE = 0;
+        let TOTAL_HEALER_SIZE = 0;
+        let TOTAL_DISMANTLER_SIZE = 0;
+        let TOTAL_MEAT_GRINDERS = 0;
+
+        if(Game?.flags?.rallyFlag?.room) {
+            const rallyLocationHasHostiles = Game.flags.rallyFlag.room.find(FIND_HOSTILE_CREEPS, {
+                filter:  (ccc) => {
+                    return ccc.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(ccc.owner)
+                }
+            })
+            const rallyLocationHasHostileStructs = Game.flags.rallyFlag.room.find(FIND_HOSTILE_STRUCTURES, {
+                filter:  (ccc) => {
+                    return ccc.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(ccc.owner) && ccc.structureType !== STRUCTURE_CONTROLLER
+                }
+            })
+
+            if(rallyLocationHasHostiles?.length || rallyLocationHasHostileStructs?.length){
+                TOTAL_ATTACKER_SIZE = WarTimeEconomy.TOTAL_ATTACKER_SIZE;
+                TOTAL_HEALER_SIZE = WarTimeEconomy.TOTAL_HEALER_SIZE;
+                TOTAL_DISMANTLER_SIZE = WarTimeEconomy.TOTAL_DISMANTLER_SIZE;
+                TOTAL_MEAT_GRINDERS = WarTimeEconomy.TOTAL_MEAT_GRINDERS;
+                Memory.economyType = 'war';
+            } else if(Game.flags.seigeFlag) {
+                TOTAL_ATTACKER_SIZE = SeigeEconomy.TOTAL_ATTACKER_SIZE;
+                TOTAL_HEALER_SIZE = SeigeEconomy.TOTAL_HEALER_SIZE;
+                TOTAL_DISMANTLER_SIZE = SeigeEconomy.TOTAL_DISMANTLER_SIZE;
+                TOTAL_MEAT_GRINDERS = SeigeEconomy.TOTAL_MEAT_GRINDERS;
+                Memory.economyType = 'seige';
+            } else {
+                TOTAL_ATTACKER_SIZE = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE;
+                TOTAL_HEALER_SIZE = PeaceTimeEconomy.TOTAL_HEALER_SIZE;
+                TOTAL_DISMANTLER_SIZE = PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE;
+                TOTAL_MEAT_GRINDERS = PeaceTimeEconomy.TOTAL_MEAT_GRINDERS;
+                Memory.economyType = 'peace';
+            }
+
+        }
+
 
         //console.log(`${spawn.name} number of sources:`,RoomSources.length);
         if (harvesters.length < 1) {
@@ -133,24 +163,24 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
         }
-        else if(Game.flags.rallyFlag && attackers.length < EconomiesUtils.TOTAL_ATTACKER_SIZE)  {
+        else if(Game.flags.rallyFlag && attackers.length < TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
-            options = {memory: {role: 'attacker'}};
+            options = {memory: {role: 'attacker', isArmySquad:true}};
         }
-        else if(Game.flags.rallyFlag && healers.length < EconomiesUtils.TOTAL_HEALER_SIZE)  {
+        else if(Game.flags.rallyFlag && healers.length < TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel, 0);
-            options = {memory: {role: 'healer'}};
+            options = {memory: {role: 'healer', isArmySquad:true}};
         }
-        else if(Game.flags.rallyFlag && dismantlers.length < EconomiesUtils.TOTAL_DISMANTLER_SIZE)  {
+        else if(Game.flags.rallyFlag && dismantlers.length < TOTAL_DISMANTLER_SIZE)  {
             name = 'Dismantler' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
-            options = {memory: {role: 'dismantler'}};
-        } else if (Game.flags.rallyFlag && meatGrinders.length < EconomiesUtils.TOTAL_MEAT_GRINDERS) {
+            options = {memory: {role: 'dismantler', isArmySquad:true}};
+        } else if (Game.flags.rallyFlag && meatGrinders.length < TOTAL_MEAT_GRINDERS) {
             name = 'MeatGrinder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
-            options = {memory: {role: 'meatGrinder'}};
+            options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
 
 

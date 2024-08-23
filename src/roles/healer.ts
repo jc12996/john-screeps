@@ -75,18 +75,19 @@ export class Healer {
             if(friendlyCreeps && hostileCreeps) {
                 creep.moveTo(friendlyCreeps)
             }
-            else if(Game.flags?.healFlag) {
+            else if(Game.flags?.healFlag && !friendlyCreeps) {
                 MovementUtils.defaultArmyMovement(creep,Game.flags?.healFlag);
-            } else if(friendlyCreeps) {
+            }
+            else if(friendlyCreeps) {
                 creep.moveTo(friendlyCreeps)
             }
-            // else if(Game.flags?.attackFlag) {
-            //     MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
-            // } else if(Game.flags?.rallyFlag) {
-            //     MovementUtils.defaultArmyMovement(creep,Game.flags?.rallyFlag);
-            // }  else {
-            //     MovementUtils.defaultArmyMovement(creep,undefined);
-            // }
+            else if(Game.flags?.attackFlag) {
+                MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
+            } else if(Game.flags?.rallyFlag) {
+                MovementUtils.defaultArmyMovement(creep,Game.flags?.rallyFlag);
+            }  else {
+                MovementUtils.defaultArmyMovement(creep,undefined);
+            }
 
         }
     }
