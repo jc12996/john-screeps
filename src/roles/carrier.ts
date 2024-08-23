@@ -180,13 +180,13 @@ export class Carrier {
                     creep.say('🚚 S');
                     creep.moveTo(storage);
                 }
-            }else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.say('🚚 S');
-                creep.moveTo(storage);
             } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 E');
                 creep.moveTo(spawnAndExtension);
-            } else if(roomRallyPointFlag.length) {
+            } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 S');
+                creep.moveTo(storage);
+            }  else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             } else {
                 Upgrader.run(creep)
