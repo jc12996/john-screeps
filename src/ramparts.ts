@@ -5,7 +5,7 @@ export function handleRamparts({ room }: { room: Room}) {
         filter: (structure) => structure.structureType === STRUCTURE_RAMPART
     })
     for (const rampart of ramparts) {
-        const teammates = rampart.pos.findInRange(FIND_HOSTILE_CREEPS,10, {
+        const teammates = rampart.pos.findInRange(FIND_HOSTILE_CREEPS,3, {
             filter: (creep) => SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
         });
         const enemies = rampart.pos.findInRange(FIND_HOSTILE_CREEPS,100, {

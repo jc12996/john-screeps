@@ -32,14 +32,6 @@ export class Harvester {
             creep.say('🔄');
         }
 
-        if(creep.memory.delivering && creep.store[RESOURCE_ENERGY] == 0) {
-            creep.memory.delivering = false;
-            creep.say('🔄 harvest');
-        }
-        if(!creep.memory.delivering && creep.store.getFreeCapacity() == 0) {
-            creep.memory.delivering = true;
-            creep.say('⚡ deliver');
-        }
 
         var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -51,13 +43,13 @@ export class Harvester {
             }
         });
 
-        let sources = creep.room.find(FIND_SOURCES_ACTIVE, {
+        let sources = creep.room.find(FIND_SOURCES, {
             filter: (source) => {
                 return source.room.controller?.my
             }
         });
 
-        let finalSource:Source = sources[0];
+        let finalSource:Source | null = Harvester.findTargetSource(creep);
 
 
 
@@ -70,15 +62,22 @@ export class Harvester {
                 filter:  (source) => {
                    return source.id == creep.memory.targetSource && source.room.controller?.my
                 }
-            }) ?? sources[0];
+            });
 
-        }else {
-            finalSource = Harvester.findTargetSource(creep) ?? sources[0];
+        }
+
+        if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos?.inRangeTo(finalSource.pos?.x, finalSource.pos?.y,1)) {
+            creep.memory.targetSource = finalSource.id;
+        }
+
+        if((!creep.memory?.targetSource || (finalSource?.id === creep.memory?.targetSource)) && finalSource?.pos && creep.pos && !creep.pos?.inRangeTo(finalSource.pos?.x, finalSource.pos?.y,1)) {
+            creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            return;
         }
 
 
         if(finalSource?.pos && creep.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,1) && creep.memory.targetSource) {
-            let sources = creep.room.find(FIND_SOURCES, {
+            let sources = creep.room.find(FIND_SOURCES_ACTIVE, {
                 filter: (source) => {
                     return source.id === creep.memory.targetSource
                 }
@@ -87,91 +86,27 @@ export class Harvester {
                 return;
             }
 
-        }else if(finalSource?.pos && creep.pos && !creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,1) && creep.memory.targetSource) {
-            creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-            return;
         }
 
-        if(!creep.memory.delivering) {
+        finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
 
-
-
-            if(creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(creep.pos && container?.pos && creep?.pos.inRangeTo(container.pos.x,container.pos.y, 1)) {
-                if(creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            } else if(creep.memory.targetSource && creep.memory.role !== 'settler' && creep.memory.targetSource && finalSource && creep.harvest(finalSource) === OK) {
-                creep.drop(RESOURCE_ENERGY,creep.store.energy);
-            } else {
-                creep.memory.delivering = true;
-            }
-
-            // if(!creep.memory.targetSource && creep.room.name === 'W5N4') {
-            //     console.log(finalSource.pos.x,finalSource.pos.y,finalSource.id,creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,2))
-            // }
-
-            if(creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos && creep.pos?.inRangeTo(finalSource.pos?.x, finalSource.pos?.y,1)) {
+        if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
+            //creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+        } else if(creep.pos && container?.pos && creep?.pos.inRangeTo(container.pos.x,container.pos.y, 1)) {
+            if(creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                //creep.moveTo(container, {visualizePathStyle: {stroke: '#ffffff'}});
+            }else if(finalSource && creep.transfer(container, RESOURCE_ENERGY) == OK) {
                 creep.memory.targetSource = finalSource.id;
-            } else if (finalSource?.pos && creep.pos && !creep.pos?.inRangeTo(finalSource.pos?.x, finalSource.pos?.y,1)) {
-                creep.memory.targetSource = undefined;
             }
-
-
-            if(creep.memory.role === 'settler') {
-                return;
-            }
+        } else if(finalSource && creep.harvest(finalSource) === OK) {
+            creep.memory.targetSource = finalSource.id;
+            creep.drop(RESOURCE_ENERGY,creep.store.energy);
+        } else {
+            creep.memory.delivering = true;
         }
-        else {
-
-
-            var extensions = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter:  (structure) => {
-                    return (
-                        structure.structureType == STRUCTURE_EXTENSION
-
-
-                    ) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                }
-            });
-
-            var spawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter:  (structure) => {
-                    return (
-                        structure.structureType == STRUCTURE_SPAWN
-
-
-                    ) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                }
-            });
 
 
 
-            let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
-
-
-
-            if(spawn && (!container || !carriers.length)) {
-                if(extensions && creep.transfer(extensions, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(extensions, {visualizePathStyle: {stroke: '#ffffff'}});
-                } else if(creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
-            else if(container) {
-                if(creep.transfer(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
-            else if (!container && extensions && creep.transfer(extensions, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(extensions, {visualizePathStyle: {stroke: '#ffffff'}});
-            } else if(!container && spawn && creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
-            }
-        }
     }
 
     private static findTargetSource(creep:Creep): Source | null {
@@ -191,10 +126,6 @@ export class Harvester {
                            return source && ssss.id == source.id && creep.room.controller?.my
                         }
                     }) ?? source;
-
-                    if(finalSource && creep.memory.role !== 'settler' && !creep.memory.targetSource && finalSource?.pos && creep.pos) {
-                        creep.memory.targetSource = finalSource.id;
-                    }
 
                     return finalSource;
 

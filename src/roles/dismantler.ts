@@ -30,6 +30,12 @@ export class Dismantler {
             }
         });
 
+        const targetWallOrRampart = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (struc) => {
+                return Game.flags.dismantleFlag && Game.flags.dismantleFlag.pos == struc.pos && (struc.structureType === STRUCTURE_RAMPART || struc.structureType === STRUCTURE_WALL)
+            }
+        });
+
 
         const findTowers = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
@@ -57,7 +63,11 @@ export class Dismantler {
 
 
         if(hostileStructures.length > 0) {
-            if(findRamparts) {
+
+            if(targetWallOrRampart && Game.flags.dismantleFlag) {
+                creep.say('🧱 T');
+                Dismantler.dismantleTarget(creep,targetWallOrRampart);
+            }else if(findRamparts && Game.flags.dismantleFlag) {
                 creep.say('🧱 r');
                 Dismantler.dismantleTarget(creep,findRamparts);
             }
@@ -69,7 +79,7 @@ export class Dismantler {
                 creep.say('🧱 o');
                 Dismantler.dismantleTarget(creep,findOther)
             }
-            else if(findWalls) {
+            else if(findWalls && Game.flags.dismantleFlag) {
                 creep.say('🧱 w');
                 Dismantler.dismantleTarget(creep,findWalls);
             }

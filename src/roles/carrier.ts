@@ -108,10 +108,10 @@ export class Carrier {
 
 
         if(!creep.memory.carrying) {
-            const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 30, {
+            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
                 filter:  (source) => {
                     return (
-                        source.amount > 10 && source.room?.controller?.my
+                        source.amount >= 200 && source.room?.controller?.my
 
 
                     )
@@ -124,10 +124,10 @@ export class Carrier {
                 }
             });
 
-            if(containers && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if(!hostileCreeps && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources);
+            } else if(containers && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(containers);
-            } else if(!hostileCreeps && droppedSources.length && creep.pickup(droppedSources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources[0]);
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
@@ -138,17 +138,13 @@ export class Carrier {
 
             if(towers && carriers[2] && creep.id === carriers[2].id ) {
                 creep.memory.carryIndex = 2
-            } else if((
-                (carriers[0] && creep.id === carriers[0].id) ||
-                (carriers[1] && creep.id === carriers[1].id) ||
-                (carriers[6] && creep.id === carriers[6].id)
+            } else if(nearestStorage && (
+                (carriers[3] && creep.id === carriers[3].id) ||
+                (carriers[4] && creep.id === carriers[4].id) ||
+                (carriers[5] && creep.id === carriers[5].id)
             )) {
-                creep.memory.carryIndex = 0
-            } else if(
-                nearestStorage
-            ) {
                 creep.memory.carryIndex = 1
-            } else {
+            }  else {
                 creep.memory.carryIndex = 0
             }
 

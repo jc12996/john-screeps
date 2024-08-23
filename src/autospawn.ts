@@ -44,7 +44,7 @@ export class AutoSpawn {
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
-        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn) * 0.75;
+        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn);
 
         //console.log(spawn.name, numberOfNeededHarvesters)
         for (let i = 0; i < 10; i++) {
@@ -133,27 +133,27 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
         }
-
-        else if (Game.flags.rallyFlag && meatGrinders.length < EconomiesUtils.TOTAL_MEAT_GRINDERS) {
-            name = 'MeatGrinder' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
-            options = {memory: {role: 'meatGrinder'}};
-        }
-        else if(dismantlers.length < EconomiesUtils.TOTAL_DISMANTLER_SIZE && Game.flags.rallyFlag)  {
-            name = 'Dismantler' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
-            options = {memory: {role: 'dismantler'}};
-        }
-        else if(attackers.length < EconomiesUtils.TOTAL_ATTACKER_SIZE && Game.flags.rallyFlag)  {
+        else if(Game.flags.rallyFlag && attackers.length < EconomiesUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
             options = {memory: {role: 'attacker'}};
         }
-        else if(healers.length < EconomiesUtils.TOTAL_HEALER_SIZE && Game.flags.rallyFlag)  {
+        else if(Game.flags.rallyFlag && healers.length < EconomiesUtils.TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel, 0);
             options = {memory: {role: 'healer'}};
         }
+        else if(Game.flags.rallyFlag && dismantlers.length < EconomiesUtils.TOTAL_DISMANTLER_SIZE)  {
+            name = 'Dismantler' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
+            options = {memory: {role: 'dismantler'}};
+        } else if (Game.flags.rallyFlag && meatGrinders.length < EconomiesUtils.TOTAL_MEAT_GRINDERS) {
+            name = 'MeatGrinder' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
+            options = {memory: {role: 'meatGrinder'}};
+        }
+
+
 
 
 

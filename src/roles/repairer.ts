@@ -40,18 +40,12 @@ export class Repairer {
             }
             if(energyAvailable > 2000) {
                 maxWallStrength = 2000000;
-                maxContainerStrength = 10000;
-                maxRoadStrength = 100;
             }
             if(energyAvailable > 3000) {
                 maxWallStrength = 3000000;
-                maxContainerStrength = 20000;
-                maxRoadStrength = 150;
             }
             if(energyAvailable > 4000) {
                 maxWallStrength = 40000000;
-                maxContainerStrength = 25000;
-                maxRoadStrength = 200;
             }
             const maxRampartStrength = maxWallStrength / 1.5
 

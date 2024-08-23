@@ -11,15 +11,33 @@ export class MeatGrinder {
                 creep.say('🍖');
             }
 
-            if(Game.flags?.attackFlag && Game.flags?.attackFlag.room !== creep.room) {
-
-                MovementUtils.goToAttackFlag(creep)
-                return;
-            } else if(Game.flags?.rallyFlag && Game.flags?.rallyFlag.room !== creep.room) {
-
-                MovementUtils.goToRally(creep)
+            if(Game.flags?.preMeatFlag){
+                MovementUtils.goToFlag(creep,Game.flags?.preMeatFlag);
                 return;
             }
+
+            if(creep.hits < creep.hitsMax && Game.flags?.healFlag){
+                MovementUtils.goToFlag(creep,Game.flags?.healFlag);
+                return;
+            }
+
+            if(Game.flags?.meatFlag && !Game.flags?.attackFlag) {
+                MovementUtils.goToFlag(creep,Game.flags?.meatFlag)
+                return;
+            }
+            // if(Game.flags?.attackFlag && Game.flags?.attackFlag.room !== creep.room) {
+
+            //     MovementUtils.goToAttackFlag(creep)
+            //     return;
+            // } else if(Game.flags?.meatFlag && !Game.flags?.attackFlag) {
+
+            //     MovementUtils.goToFlag(creep,Game.flags?.meatFlag)
+            //     return;
+            // } else if(Game.flags?.rallyFlag && Game.flags?.rallyFlag.room !== creep.room) {
+
+            //     MovementUtils.goToRally(creep)
+            //     return;
+            // }
 
 
             var hostileActiveTowers = creep.room.find(FIND_HOSTILE_STRUCTURES, {

@@ -66,7 +66,7 @@ export class Attacker {
             filter: { owner: { username: 'Invader' } }
         });
 
-        const hostilesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS,3, {
+        const hostilesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS,5, {
             filter: (creep) => creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
         });
 
@@ -90,18 +90,25 @@ export class Attacker {
 
 
 
-        if (hostileCreeps && hostilesInRange.length > 0) {
+        if (hostileCreepsL[0] && hostilesInRange.length > 0) {
             creep.say('⚔ ⚔');
+
+            Attacker.attackTarget(creep,hostileCreepsL[0])
+        }
+        else if (hostileCreeps) {
+            creep.say('⚔ ⚔');
+
             Attacker.attackTarget(creep,hostileCreeps)
         }
         else if(structures.length > 0 && badStructures) {
             creep.say('⚔ 🚧');
             Attacker.attackTarget(creep,badStructures)
         }
-        else if (hostileSites.length > 0) {
-            creep.say('⚔ 🚧');
-            Attacker.attackTarget(creep,hostileSites[0])
-        } else if(invaderCore){
+        // else if (hostileSites.length > 0) {
+        //     creep.say('⚔ 🚧');
+        //     Attacker.attackTarget(creep,hostileSites[0])
+        // }
+        else if(invaderCore){
             creep.say('⚔ I');
             Attacker.attackTarget(creep,invaderCore)
         } else if(Game.flags?.attackFlag) {
