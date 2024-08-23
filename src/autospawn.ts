@@ -44,7 +44,7 @@ export class AutoSpawn {
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
-        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn);
+        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn) * 0.75;
 
         //console.log(spawn.name, numberOfNeededHarvesters)
         for (let i = 0; i < 10; i++) {
