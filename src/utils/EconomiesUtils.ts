@@ -1,7 +1,7 @@
 export enum EconomiesUtils {
     Harvester = 2.5,// Per Source
     Carrier = 2,// Per Source
-    Upgrader = 1,// Per Source
+    Upgrader = 1.5,// Per Source
     Builder = .5,// Per Source
     Repairer = .5,// Per Source
     Defender = 0,// Per Source
