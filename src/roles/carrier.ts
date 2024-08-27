@@ -179,7 +179,7 @@ export class Carrier {
         } else if(creep.memory.carrying) {
 
 
-            if(carriers[0] && creep.id === carriers[0].id) {
+            if(carriers[0]) {
                 creep.memory.extensionFarm1 = true;
             } else {
                 creep.memory.extensionFarm1 = false;

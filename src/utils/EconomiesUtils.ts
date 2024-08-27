@@ -3,7 +3,7 @@ export enum EconomiesUtils {
     Carriers  = 1,// Per Source Slot
     Builder = 1,// Per Source Slot
     Repairer = 1,// Per Source Slot
-    Upgrader = 1,// Per Source Slot
+    Upgrader = 2,// Per Source Slot
     Defender =.5,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
