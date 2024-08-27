@@ -189,13 +189,13 @@ export class Carrier {
             if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 T');
                 creep.moveTo(towers);
-            }else if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else if(extension && !towers && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 E');
                 creep.moveTo(extension);
-            }else  if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else  if(spawns && !extension && !towers && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 ES');
                 creep.moveTo(spawns);
-            }else  if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else  if(storage && !spawns && !towers  && !extension && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 S');
                 creep.moveTo(storage);
             }

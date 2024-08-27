@@ -62,25 +62,14 @@ export class MovementUtils {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
 
+        let totalSpawnStore = 100;
+        if(creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 5) {
+            totalSpawnStore = 301;
+        }
         const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
-                structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] >= 100); }
+                structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] >= totalSpawnStore); }
         });
-
-        const generalSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => { return (
-                structure.structureType == STRUCTURE_SPAWN
-
-            );
-        }
-        });
-
-        // const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == generalSpawn?.room.name);
-        // const carrier = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == generalSpawn?.room.name);
-
-        // if(!harvesters.length || !carrier.length) {
-        //     return;
-        // }
 
         const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
@@ -107,12 +96,6 @@ export class MovementUtils {
                 return (flag.color == COLOR_BLUE) && flag.room?.controller?.my
             }
            })
-
-        // if(spawn?.room.name == 'W1N1') {
-        //     console.log(target_storage,'here', creep.name)
-
-        // }
-
 
         if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});

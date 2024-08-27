@@ -212,19 +212,6 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                if(energyAvailable >= ((PartCosts.MOVE * 1) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 7))) {
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(CARRY);
-                    }
-
-                    for (let i = 0; i < 7; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    break;
-                }
                 else if(energyAvailable >= 650) {
                     partsPattern = [MOVE,MOVE,CARRY,WORK,WORK,WORK,WORK,WORK];
                     break;
@@ -240,7 +227,7 @@ export class SpawnUtils {
                 else if(energyAvailable >= 350){
                     partsPattern = [MOVE,MOVE,CARRY,WORK,WORK];
                     break;
-                } else if(energyAvailable >= 250){
+                } else if(commandLevel < 5 && energyAvailable >= 250){
                     partsPattern = [MOVE,MOVE,CARRY,WORK];
                     break;
                 } else {

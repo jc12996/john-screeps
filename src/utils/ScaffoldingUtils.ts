@@ -145,11 +145,9 @@ export class ScaffoldingUtils {
 
             let startingLefttSideY = -2;
             for(let i = 0; i < 11; i++) {
-                if(i == 1) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_RAMPART);
-                } else {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_WALL);
-                }
+
+                creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_WALL);
+
 
 
                 startingLefttSideY++;

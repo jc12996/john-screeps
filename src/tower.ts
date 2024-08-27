@@ -41,9 +41,9 @@ export class Tower {
             }
         });
 
-        towers.forEach(tower => {
-            tower.room?.createConstructionSite(tower.pos.x,tower.pos.y,STRUCTURE_RAMPART);
-        });
+        // towers.forEach(tower => {
+        //     tower.room?.createConstructionSite(tower.pos.x,tower.pos.y,STRUCTURE_RAMPART);
+        // });
 
 
         if(hostiles.length > 0) {
