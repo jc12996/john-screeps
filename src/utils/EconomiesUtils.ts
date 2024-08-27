@@ -1,12 +1,12 @@
 export enum EconomiesUtils {
-    Harvester = 2,// Per Source
-    Carrier = 2.5,// Per Source
+    Harvesters = 2.5,
+    Carriers  = 2.5,// Per Source Slot
+    Builder = 2,// Per Source Slot
+    Repairer = 1,// Per Source Slot
     Upgrader = 1,// Per Source
-    Builder = 1,// Per Source
-    Repairer = 1,// Per Source
     Defender = 0,// Per Source
-    Claimers = 0,
-    Settlers = 0
+    Claimers = 1,
+    Settlers = 8
 }
 
 export enum SeigeEconomy {
@@ -20,8 +20,8 @@ export enum SeigeEconomy {
 
 export enum WarTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 9,
-    TOTAL_HEALER_SIZE = 6,
+    TOTAL_ATTACKER_SIZE = 0,
+    TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 
@@ -29,8 +29,8 @@ export enum WarTimeEconomy {
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 4,
-    TOTAL_HEALER_SIZE = 3,
+    TOTAL_ATTACKER_SIZE = 0,
+    TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 

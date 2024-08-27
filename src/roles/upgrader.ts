@@ -27,6 +27,7 @@ export class Upgrader {
 
 
 
+
         if(creep.memory.upgrading) {
             if(creep.room.controller && creep.room.controller.my &&
                 creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
@@ -35,51 +36,9 @@ export class Upgrader {
                 creep.moveTo(roomRallyPointFlag[0])
             }
         }
-        else {
+        else  {
+            MovementUtils.generalGatherMovement(creep);
 
-
-
-
-            const target_storage = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => { return (
-                    structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
-
-                //     ||
-                //     (spawn &&  ((structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 200) || structure.structureType == STRUCTURE_CONTAINER))  ||
-                // (!extensions && spawn &&
-                //     structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0;
-            )}
-            });
-
-
-            const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10, {
-                filter:  (source) => {
-                    return (
-                        source.amount > 10 && source.room?.controller?.my
-
-
-                    )
-                }
-            });
-
-            const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
-            });
-
-            if(target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target_storage[target_storage.length -1]);
-            } else if(!target_storage && containers && creep.withdraw(containers,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(containers);
-            }
-            else if(!target_storage && droppedSources && creep.pickup(droppedSources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources[0]);
-            }
-            else if(roomRallyPointFlag.length) {
-                creep.moveTo(roomRallyPointFlag[0])
-            }
-            else {
-                creep.move(MovementUtils.randomDirectionSelector())
-            }
-        }
+         }
     }
 }

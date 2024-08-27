@@ -46,6 +46,9 @@ declare global {
     carryIndex?: number;
     friendRampartEntered?: boolean;
     isArmySquad?: boolean;
+    hitWaypointFlag?: boolean;
+    hitWaypointFlag2?: boolean;
+    extensionFarm1?: boolean;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")

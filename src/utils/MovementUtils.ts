@@ -23,19 +23,16 @@ export class MovementUtils {
 
     public static goToFlag(creep: Creep, flag:Flag | Creep): void {
 
-
-            var friendlyRamparts = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {
+            var friendlyRamparts = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_RAMPART && !site.isPublic && site.owner && SpawnUtils.FRIENDLY_OWNERS_FILTER(site.owner))
                 }
             });
 
-            if(friendlyRamparts) {
+            if(creep.moveTo(flag) === ERR_NO_PATH && friendlyRamparts) {
 
                 creep.moveTo(friendlyRamparts);
 
-            } else {
-                creep.moveTo(flag);
             }
 
 
@@ -60,4 +57,76 @@ export class MovementUtils {
         }
     }
 
+    public static generalGatherMovement(creep: Creep) {
+        const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
+        });
+
+        const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => { return (
+                structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] >= 100); }
+        });
+
+        const generalSpawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => { return (
+                structure.structureType == STRUCTURE_SPAWN
+
+            );
+        }
+        });
+
+        // const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == generalSpawn?.room.name);
+        // const carrier = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == generalSpawn?.room.name);
+
+        // if(!harvesters.length || !carrier.length) {
+        //     return;
+        // }
+
+        const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => { return (
+                structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
+        });
+
+        const hasStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => { return (
+                structure.structureType == STRUCTURE_STORAGE); }
+        });
+
+        let ruinsSource = creep.pos.findClosestByPath(FIND_RUINS, {
+            filter:  (source) => {
+                return (
+                    source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0
+
+
+                )
+            }
+        });
+
+        const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
+            filter: (flag) => {
+                return (flag.color == COLOR_BLUE) && flag.room?.controller?.my
+            }
+           })
+
+        // if(spawn?.room.name == 'W1N1') {
+        //     console.log(target_storage,'here', creep.name)
+
+        // }
+
+
+        if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+        } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
+        } else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
+        } else if(roomRallyPointFlag[0]) {
+            creep.moveTo(roomRallyPointFlag[0]);
+        } else {
+            creep.move(MovementUtils.randomDirectionSelector())
+        }
+
+    }
 }

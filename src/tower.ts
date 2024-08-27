@@ -31,7 +31,7 @@ export class Tower {
 
         const roads = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_ROAD && structure.hits < 100
+                return structure.structureType === STRUCTURE_ROAD && structure.hits < 1000
             }
         });
 
@@ -40,6 +40,11 @@ export class Tower {
                 return structure.structureType === STRUCTURE_CONTAINER && structure.hits < 1000
             }
         });
+
+        towers.forEach(tower => {
+            tower.room?.createConstructionSite(tower.pos.x,tower.pos.y,STRUCTURE_RAMPART);
+        });
+
 
         if(hostiles.length > 0) {
             var username = hostiles[0].owner.username;

@@ -1,5 +1,6 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Upgrader } from "./upgrader";
+import { MovementUtils } from "utils/MovementUtils";
 export class Repairer {
     public static run(creep: Creep) {
 
@@ -27,27 +28,29 @@ export class Repairer {
             }
         });
 
-        let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
-
 
         if(creep.memory.repairing) {
             const energyAvailable = creep.room.energyAvailable;
-            let maxWallStrength = 100000;
+            let maxWallStrength = 1000;
             let maxContainerStrength = 50000;
             let maxRoadStrength = 50;
+            let maxRampartStrength = 1000;
             if(energyAvailable > 1000) {
-                maxWallStrength = 1000000;
+                maxWallStrength = 5000;
+                maxRampartStrength = maxWallStrength / 1.5
             }
             if(energyAvailable > 2000) {
-                maxWallStrength = 2000000;
+                maxWallStrength = 10000;
+                maxRampartStrength = maxWallStrength / 1.5
             }
             if(energyAvailable > 3000) {
-                maxWallStrength = 3000000;
+                maxWallStrength = 1000000;
+                maxRampartStrength = maxWallStrength / 1.5
             }
             if(energyAvailable > 4000) {
-                maxWallStrength = 40000000;
+                maxWallStrength = 3000000;
+                maxRampartStrength = maxWallStrength / 1.5
             }
-            const maxRampartStrength = maxWallStrength / 1.5
 
 
 
@@ -87,35 +90,14 @@ export class Repairer {
             else if(creep.repair(walls[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
             }
-
-            else if(extensions && creep.transfer(extensions, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(extensions, {visualizePathStyle: {stroke: '#ffffff'}});
-            }
             else {
                 Upgrader.run(creep);
             }
-        }
-        else {
-            var extensions = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: (structure) => { return (structure.structureType == STRUCTURE_EXTENSION) && structure.store[RESOURCE_ENERGY] > 0 && creep.room.controller?.my; }
-            });
-            let hasStorage = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => { return structure.structureType === STRUCTURE_STORAGE && creep.room.controller?.my }
-            });
-            const target_storage = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => { return (
-                    (structure.structureType == STRUCTURE_STORAGE && creep.room.controller?.my) ||
-                    (spawn && creep.room.controller?.my &&  ((structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] > 200) || structure.structureType == STRUCTURE_CONTAINER))  ||
-                (!extensions && spawn &&
-                    structure.structureType == STRUCTURE_SPAWN)) && structure.store[RESOURCE_ENERGY] > 0 && creep.room.controller?.my; }
-            });
 
-            if (target_storage && creep.withdraw(target_storage[target_storage.length -1], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                     creep.moveTo(target_storage[target_storage.length -1], {visualizePathStyle: {stroke: "#ffffff"}});
-            }
-            else {
-                Upgrader.run(creep);
-            }
         }
+        else  {
+            MovementUtils.generalGatherMovement(creep);
+
+         }
     }
 }

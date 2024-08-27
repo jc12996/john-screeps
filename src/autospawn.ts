@@ -40,6 +40,11 @@ export class AutoSpawn {
         let healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
         let dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
         let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
+        const repairableStuff = spawn.room.find(FIND_STRUCTURES, {
+            filter: (site: { structureType: string; store: { [x: string]: number; }; }) => { return (
+                site.structureType == STRUCTURE_CONTAINER || site.structureType === STRUCTURE_RAMPART || site.structureType === STRUCTURE_ROAD); }
+        });
+
         const RoomSources = spawn.room.find(FIND_SOURCES);
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
@@ -60,7 +65,12 @@ export class AutoSpawn {
             }
         }
 
+        //console.log('Next claim flag ',this.nextClaimFlag.name)
+
         var constructionSites = spawn.room.find(FIND_CONSTRUCTION_SITES);
+        const extensions  = spawn.room.find(FIND_MY_STRUCTURES, {
+            filter: { structureType: STRUCTURE_EXTENSION }
+        });
 
 
         let TOTAL_ATTACKER_SIZE = 0;
@@ -103,6 +113,18 @@ export class AutoSpawn {
         }
 
 
+
+        const numberOfNeededHarvestersMax = EconomiesUtils.Harvesters * ActiveRoomSources.length;
+        const numberOfNeededCarriers = EconomiesUtils.Carriers * ActiveRoomSources.length;
+        const numberOfNeededBuilders = EconomiesUtils.Builder * ActiveRoomSources.length;
+        const numberOfNeededRepairers = EconomiesUtils.Repairer * ActiveRoomSources.length;
+        const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
+        const totalNumberOfLinks = spawn.room.find(FIND_STRUCTURES,{
+            filter: (struc: { structureType: string; }) => {
+                return struc.structureType === STRUCTURE_LINK
+            }
+        });
+
         //console.log(`${spawn.name} number of sources:`,RoomSources.length);
         if (harvesters.length < 1) {
             name = 'Harvester' + Game.time;
@@ -112,41 +134,46 @@ export class AutoSpawn {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
-        } else if (harvesters.length < (EconomiesUtils.Harvester * RoomSources.length) && !spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0) {
+        } else if (!spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0 && harvesters.length < numberOfNeededHarvestersMax) {
             name = 'Harvester' + Game.time;
             console.log(spawn.name,"needed harvesters",numberOfNeededHarvesters);
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
-
-        } else if (carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) {
+        } else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0 && totalNumberOfLinks.length < 2) {
             name = 'Carrier' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
             options = {memory: {role: 'carrier'}}
 
-        } else if(constructionSites.length && builders.length < (EconomiesUtils.Builder * RoomSources.length)) {
+        } else if (spawn.room.controller.level >= 2 && constructionSites.length && !spawn.spawning && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && ActiveRoomSources.length > 0) {
             name = 'Builder' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,0)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
-
         }
-        else if(upgraders.length < (EconomiesUtils.Upgrader * RoomSources.length)) {
+        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && upgraders.length < (EconomiesUtils.Upgrader * RoomSources.length)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,0)
             options = {memory: {role: 'upgrader'}                }
         }
-        else if(repairers.length < (EconomiesUtils.Repairer * RoomSources.length)) {
+        else if(repairableStuff.length && !spawn.spawning && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
             name = 'Repairer' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,0)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
             options = {memory: {role: 'repairer'}            }
         }
         else if(claimers.length < EconomiesUtils.Claimers
             && this.nextClaimFlag
+            && totalNumberOfControlledRooms < Game.gcl.level
             && !this.nextClaimFlag.room?.controller?.my
+            && !this.nextClaimFlag.room?.controller?.owner
         )  {
             name = 'Claimer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
             options = {memory: {role: 'claimer'}};
 
+        }
+        else if (defenders.length < (EconomiesUtils.Defender * RoomSources.length)) {
+            name = 'Defender' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
+            options = {memory: {role: 'defender'}};
         }
         else if(settlers.length < EconomiesUtils.Settlers
             && ((
@@ -158,11 +185,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('settler',spawn, commandLevel, 0);
             options = {memory: {role: 'settler'}};
         }
-        else if (defenders.length < (EconomiesUtils.Defender * RoomSources.length)) {
-            name = 'Defender' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
-            options = {memory: {role: 'defender'}};
-        }
+
         else if(Game.flags.rallyFlag && attackers.length < TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);

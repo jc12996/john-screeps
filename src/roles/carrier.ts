@@ -1,5 +1,7 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Upgrader } from "./upgrader";
+import { AutoSpawn } from "autospawn";
+import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 
 export class Carrier {
 
@@ -7,14 +9,20 @@ export class Carrier {
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say("🚚");
         }
+
+
+        ScaffoldingUtils.createRoadX(creep);
+        ScaffoldingUtils.createExtensions(creep);
+        ScaffoldingUtils.createBaseWallsAndRamparts(creep);
+
         const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100) && structure.room?.controller?.my; }
+            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
 
-        var spawnAndExtension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                    (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
+                    (structure.structureType == STRUCTURE_EXTENSION) && structure.room?.controller?.my
 
 
                 ) &&
@@ -65,16 +73,6 @@ export class Carrier {
             }
         });
 
-        var smallStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_STORAGE
-
-
-                ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 10000 && structure.room?.controller?.my;
-            }
-        });
 
         var spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -111,24 +109,65 @@ export class Carrier {
             const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
                 filter:  (source) => {
                     return (
-                        source.amount >= 200 && source.room?.controller?.my
+                        source.amount >= 50 && source.room?.controller?.my
 
 
                     )
                 }
             });
 
-            var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-                filter:  (creep) => {
-                    return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+
+            const links = creep.room.find(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                        structure.structureType === STRUCTURE_LINK
+
+
+                    )
                 }
             });
 
-            if(!hostileCreeps && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources);
+            const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
+                filter: (link) => {
+                    return link.name == creep.room.name+'ExtensionLink'
+                }
+            });
+
+            const extensionLink = creep.pos.findClosestByPath(FIND_STRUCTURES,{
+                filter: (struc) => {
+                    return struc.structureType === STRUCTURE_LINK && struc.pos.x == extensionLinkFlag[0].pos.x && struc.pos.y == extensionLinkFlag[0].pos.y && struc.store[RESOURCE_ENERGY] > 0
+                }
+            });
+            if(creep.memory.role === 'carrier' && spawn && spawn && spawn.pos &&  creep.memory.extensionFarm1  && creep.room?.controller  && creep.room?.controller.my && creep.room?.controller?.level >= 5) {
+                creep.moveTo(spawn.pos.x - 3, spawn.pos.y + 3)
+
+                if(links.length >= 2 && extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(extensionLink, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    return;
+                }
+
+                return;
+            }
+
+
+            let ruinsSource = creep.pos.findClosestByPath(FIND_RUINS, {
+                filter:  (source) => {
+                    return (
+                        source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0
+
+
+                    )
+                }
+            });
+
+
+             if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if(containers && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(containers);
-            } else if(roomRallyPointFlag.length) {
+            } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(droppedSources);
+            }  else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
 
@@ -136,85 +175,52 @@ export class Carrier {
         } else if(creep.memory.carrying) {
 
 
-            if(towers && carriers[2] && creep.id === carriers[2].id ) {
-                creep.memory.carryIndex = 2
-            } else if(nearestStorage && (
-                (carriers[3] && creep.id === carriers[3].id) ||
-                (carriers[4] && creep.id === carriers[4].id) ||
-                (carriers[5] && creep.id === carriers[5].id)
-            )) {
-                creep.memory.carryIndex = 1
-            }  else {
-                creep.memory.carryIndex = 0
+            if(carriers[0] && creep.id === carriers[0].id) {
+                creep.memory.extensionFarm1 = true;
+            } else {
+                creep.memory.extensionFarm1 = false;
             }
 
-
-
-
-
-            if(creep.memory.carryIndex == 1) {
-                if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('🚚 S');
-                    creep.moveTo(storage);
-                } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if( creep.memory.extensionFarm1) {
+                if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
+                } if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 E');
+                    creep.moveTo(extension);
                 } else if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 ES');
                     creep.moveTo(spawns);
-                } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('🚚 E');
-                    creep.moveTo(spawnAndExtension);
+                } else  if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 S');
+                    creep.moveTo(storage);
                 }
                 return;
-
-            }
-
-
-            if(creep.memory.carryIndex == 2) {
+            } else {
                 if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 T');
                     creep.moveTo(towers);
                 } else if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 ES');
                     creep.moveTo(spawns);
-                } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('🚚 E');
-                    creep.moveTo(spawnAndExtension);
                 } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(storage);
-                }
-                return;
-
-            }
-
-            if(creep.memory.carryIndex == 0) {
-                if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('🚚 ES');
-                    creep.moveTo(spawns);
-                } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                } else if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 E');
-                    creep.moveTo(spawnAndExtension);
-                } else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('🚚 T');
-                    creep.moveTo(towers);
-                } else if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('🚚 S');
-                    creep.moveTo(storage);
+                    creep.moveTo(extension);
                 }
-                return;
+
             }
 
-            if(storage && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.say('🚚 S');
-                creep.moveTo(storage);
+
+
+            if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 E');
+                creep.moveTo(extension);
             } else if(spawns && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 ES');
                 creep.moveTo(spawns);
-            } else if(spawnAndExtension && creep.transfer(spawnAndExtension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.say('🚚 E');
-                creep.moveTo(spawnAndExtension);
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             } else {

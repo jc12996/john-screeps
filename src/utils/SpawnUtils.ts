@@ -15,7 +15,7 @@ export enum PartCosts {
 }
 
 
-const myFriends = ['kailin-limble','DonkeyKong', 'Xarroc', 'Sonny'];
+const myFriends = ['kailin-limble','DonkeyKong', 'Xarroc'];
 
 export class SpawnUtils {
     static SHOW_VISUAL_CREEP_ICONS: boolean = true;
@@ -32,7 +32,7 @@ export class SpawnUtils {
     * TODO: Use factory pattern or something to get rid of the switch statements. For example, each role can be required to describe it's parts pattern.
     */
 
-    public static getBodyPartsForArchetype(archetype: string, spawn: any, commandLevel: number = 1, numberOfNeededHarvesters:number): Array<BodyPartConstant> | null {
+    public static getBodyPartsForArchetype(archetype: string, spawn: any, commandLevel: number = 1, numberOfNeededTypes:number): Array<BodyPartConstant> | null {
         let partsPattern = new Array<BodyPartConstant>();
         let bodyParts = new Array<BodyPartConstant>();
         let defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && spawn.room.name == creep.room.name);
@@ -114,76 +114,84 @@ export class SpawnUtils {
                 }
             case 'carrier':
                  //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-                 if((commandLevel < 9 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 45) + (PartCosts.CARRY * 5)) {
-                    for (let i = 0; i < 45; i++) {
+                //  if((commandLevel < 9 || carriers.length < numberOfNeededTypes) && energyAvailable >= (PartCosts.MOVE * 45) + (PartCosts.CARRY * 5)) {
+                //     for (let i = 0; i < 45; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 5; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if((commandLevel == 7 || carriers.length < numberOfNeededTypes) && energyAvailable >= (PartCosts.MOVE * 35) + (PartCosts.CARRY * 5)) {
+                //     for (let i = 0; i < 35; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 5; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if((commandLevel >= 6 || carriers.length < numberOfNeededTypes) &&energyAvailable >= (PartCosts.MOVE * 31) + (PartCosts.CARRY * 5)) {
+                //     for (let i = 0; i < 31; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 5; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // }
+                if((commandLevel >= 5 || carriers.length < numberOfNeededTypes) && energyAvailable >= (PartCosts.MOVE * 8) + (PartCosts.CARRY * 8)) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 5; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
-                } else if((commandLevel == 7 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 35) + (PartCosts.CARRY * 5)) {
-                    for (let i = 0; i < 35; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if((commandLevel >= 6 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) &&energyAvailable >= (PartCosts.MOVE * 31) + (PartCosts.CARRY * 5)) {
-                    for (let i = 0; i < 31; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
-                        partsPattern.push(CARRY);
-                    }
+                } else
+                if(energyAvailable >= 450) {
+                    partsPattern = [MOVE,MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY];
                     break;
                 }
-                else if((commandLevel >= 5 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 21) + (PartCosts.CARRY * 5)) {
-                    for (let i = 0; i < 21; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
-                        partsPattern.push(CARRY);
-                    }
+                else if(energyAvailable >= 350){
+                    partsPattern = [MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,CARRY];
                     break;
-                }
-                else if((commandLevel >= 4 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= (PartCosts.MOVE * 11) + (PartCosts.CARRY * 5)) {
-                    for (let i = 0; i < 11; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if((commandLevel >= 3 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable >= 450) {
-                    partsPattern = [MOVE,MOVE,MOVE,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY];
-                    break;
-                } else if((commandLevel < 3 || carriers.length < (EconomiesUtils.Carrier * RoomSources.length)) && energyAvailable > 200){
-                    partsPattern = [MOVE,CARRY,CARRY,CARRY];
+                } else if(energyAvailable >= 250){
+                    partsPattern = [MOVE,MOVE,MOVE,CARRY,CARRY];
                     break;
                 } else {
                     return null;
                 }
             case 'harvester':
-                //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-
-                if((commandLevel >= 3 || harvesters.length < numberOfNeededHarvesters) && energyAvailable >= ((PartCosts.MOVE * 2) + (PartCosts.CARRY * 2) + (PartCosts.WORK * 6))) {
-                    for (let i = 0; i < 2; i++) {
+                if(energyAvailable >= ((PartCosts.MOVE * 1) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 7))) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 2; i++) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(CARRY);
                     }
-                    for (let i = 0; i < 6; i++) {
+
+                    for (let i = 0; i < 7; i++) {
                         partsPattern.push(WORK);
                     }
                     break;
-                } else if((commandLevel < 3 || harvesters.length < numberOfNeededHarvesters) && energyAvailable >= 450) {
-                    partsPattern = [MOVE,CARRY,CARRY,WORK,WORK,WORK];
+                }
+                else if(energyAvailable >= 650) {
+                    partsPattern = [MOVE,MOVE,CARRY,WORK,WORK,WORK,WORK,WORK];
                     break;
-                } else if((commandLevel < 3 || harvesters.length < numberOfNeededHarvesters) && energyAvailable > 200){
-                    partsPattern = [MOVE,WORK,CARRY];
+                }
+                else if(energyAvailable >= 550) {
+                    partsPattern = [MOVE,MOVE,CARRY,WORK,WORK,WORK,WORK];
+                    break;
+                }
+                else if(energyAvailable >= 450) {
+                    partsPattern = [MOVE,MOVE,CARRY,WORK,WORK,WORK];
+                    break;
+                }
+                else if(energyAvailable >= 350){
+                    partsPattern = [MOVE,MOVE,CARRY,WORK,WORK];
+                    break;
+                } else if(energyAvailable >= 250){
+                    partsPattern = [MOVE,MOVE,CARRY,WORK];
                     break;
                 } else {
                     return null;
@@ -250,11 +258,14 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                } else if(energyAvailable >= 450) {
-                    partsPattern = [MOVE,MOVE,MOVE,WORK,WORK,CARRY,CARRY];
+                }  else if(energyAvailable >= 400) {
+                    partsPattern = [MOVE,CARRY,WORK,WORK,WORK];
                     break;
-                } else if(energyAvailable > 200){
-                    partsPattern = [MOVE,WORK,CARRY];
+                } else if(energyAvailable >= 300){
+                    partsPattern = [MOVE,CARRY,WORK,WORK];
+                    break;
+                } else if(energyAvailable >= 200){
+                    partsPattern = [MOVE,CARRY,WORK];
                     break;
                 } else {
                     return null;
@@ -298,7 +309,7 @@ export class SpawnUtils {
                     break;
                 }
                 else if(commandLevel < 5 && energyAvailable >= 450) {
-                     partsPattern = [MOVE, TOUGH, TOUGH, RANGED_ATTACK, RANGED_ATTACK, ATTACK ];
+                     partsPattern = [MOVE, TOUGH, TOUGH, ATTACK, ATTACK, ATTACK, ATTACK ];
                      break;
                 }
                 else {
