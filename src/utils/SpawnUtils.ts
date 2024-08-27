@@ -162,6 +162,56 @@ export class SpawnUtils {
                     return null;
                 }
             case 'harvester':
+                 //  if((commandLevel < 9 || carriers.length < numberOfNeededTypes) && energyAvailable >= (PartCosts.MOVE * 45) + (PartCosts.CARRY * 5)) {
+                //     for (let i = 0; i < 45; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 5; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if((commandLevel == 7 || carriers.length < numberOfNeededTypes) && energyAvailable >= (PartCosts.MOVE * 35) + (PartCosts.CARRY * 5)) {
+                //     for (let i = 0; i < 35; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 5; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if((commandLevel >= 6 || carriers.length < numberOfNeededTypes) &&energyAvailable >= (PartCosts.MOVE * 31) + (PartCosts.CARRY * 5)) {
+                //     for (let i = 0; i < 31; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 5; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // }
+                if((commandLevel >= 6 || carriers.length < numberOfNeededTypes) && energyAvailable >= (PartCosts.MOVE * 1) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 12)) {
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    for (let i = 0; i < 12; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    break;
+                }
+                else if(energyAvailable >= ((PartCosts.MOVE * 1) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 7))) {
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CARRY);
+                    }
+
+                    for (let i = 0; i < 7; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    break;
+                }
                 if(energyAvailable >= ((PartCosts.MOVE * 1) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 7))) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
@@ -201,41 +251,42 @@ export class SpawnUtils {
             case 'upgrader':
 
                 //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-                if(energyAvailable >= 3500) {
-                    for (let i = 0; i < 26; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if(energyAvailable >= 2000) {
-                    for (let i = 0; i < 16; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if(energyAvailable >= 1800) {
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 12; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 1300) {
+                // if(energyAvailable >= 3500) {
+                //     for (let i = 0; i < 26; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 20; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if(energyAvailable >= 2000) {
+                //     for (let i = 0; i < 16; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 10; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if(energyAvailable >= 1800) {
+                //     for (let i = 0; i < 8; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 12; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // }
+                // else
+                if(energyAvailable >= 1300) {
                     for (let i = 0; i < 6; i++) {
                         partsPattern.push(MOVE);
                     }

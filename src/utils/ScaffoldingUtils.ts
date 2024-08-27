@@ -1,8 +1,8 @@
-import { AutoSpawn } from "autospawn";
+
 
 export class ScaffoldingUtils {
 
-    public static createSpawn(creep: Creep): void {
+    public static createSpawn(creep: Creep | StructureSpawn,nextClaimFlag:Flag,totalSpawns:number): void {
         var spawnConstructionSites = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (rampart) => {
                 return (rampart.structureType == STRUCTURE_SPAWN)
@@ -10,13 +10,13 @@ export class ScaffoldingUtils {
         });
 
 
-        if(spawnConstructionSites.length == 0 && creep.room?.controller?.my && !!AutoSpawn.nextClaimFlag?.name) {
-            creep.room?.createConstructionSite(AutoSpawn.nextClaimFlag.pos.x,AutoSpawn.nextClaimFlag.pos.y,STRUCTURE_SPAWN, 'Spawn'+(AutoSpawn.totalSpawns + 1));
-            console.log('Creating '+ 'Spawn'+(AutoSpawn.totalSpawns + 1))
+        if(spawnConstructionSites.length == 0 && creep.room?.controller?.my && !!nextClaimFlag?.name) {
+            creep.room?.createConstructionSite(nextClaimFlag.pos.x,nextClaimFlag.pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
+            console.log('Creating '+ 'Spawn'+(totalSpawns + 1))
         }
     }
 
-    public static createRoadX(creep: Creep): void {
+    public static createRoadX(creep: Creep | StructureSpawn): void {
         var spawnsAmount = creep.room.find(FIND_MY_SPAWNS);
 
         if(creep.room.controller && creep.room.controller.my && spawnsAmount.length === 1) {
@@ -40,7 +40,7 @@ export class ScaffoldingUtils {
         }
     }
 
-    public static createExtensions(creep: Creep): void {
+    public static createExtensions(creep: Creep | StructureSpawn): void {
         var spawnsAmount = creep.room.find(FIND_MY_SPAWNS);
 
         if(creep.room.controller && creep.room.controller.my && spawnsAmount.length === 1) {
@@ -99,28 +99,31 @@ export class ScaffoldingUtils {
         }
     }
 
-    public static createContainers(creep: Creep): void {
+    public static createContainers(creep: Creep | StructureSpawn): void {
         creep.room.createConstructionSite(creep.pos.x, creep.pos.y,STRUCTURE_CONTAINER);
     }
 
-    public static createBaseWallsAndRamparts(creep: Creep): void {
+    public static createBaseWallsAndRamparts(creep: Creep | StructureSpawn): void {
         var spawnsAmount = creep.room.find(FIND_MY_SPAWNS);
         if(spawnsAmount.length) {
 
             let startingRightSideY = -2;
             for(let i = 0; i < 11; i++) {
-                if(i % 3) {
+
+
+                if(i == 1) {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY,STRUCTURE_RAMPART);
-                } else {
+                }else {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY,STRUCTURE_WALL);
                 }
+
                 startingRightSideY++;
 
             }
 
             let startingTopSideX = 3;
             for(let i = 0; i < 11; i++) {
-                if(i % 3) {
+                if(i == 2 || i == 11) {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingTopSideX,spawnsAmount[0].pos.y-2,STRUCTURE_RAMPART);
                 } else {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingTopSideX,spawnsAmount[0].pos.y-2,STRUCTURE_WALL);
@@ -131,7 +134,7 @@ export class ScaffoldingUtils {
 
             let startingBottomSideX = 3;
             for(let i = 0; i < 12; i++) {
-                if(i % 3) {
+                if( i == 2 || i == 10) {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingBottomSideX,spawnsAmount[0].pos.y+9,STRUCTURE_RAMPART);
                 } else {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingBottomSideX,spawnsAmount[0].pos.y+9,STRUCTURE_WALL);
@@ -142,11 +145,13 @@ export class ScaffoldingUtils {
 
             let startingLefttSideY = -2;
             for(let i = 0; i < 11; i++) {
-                if(i % 3) {
+                if(i == 1) {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_RAMPART);
                 } else {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_WALL);
                 }
+
+
                 startingLefttSideY++;
 
             }

@@ -48,14 +48,14 @@ export class Builder {
                 }
             });
 
-            const extensions = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
+            const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_EXTENSION)
                 }
             });
 
 
-            const targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
+            const targets = creep.room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType !== STRUCTURE_ROAD && site.structureType !== STRUCTURE_RAMPART && site.structureType !== STRUCTURE_WALL)
                 }
@@ -95,9 +95,9 @@ export class Builder {
                     creep.moveTo(storageSite, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(extensions){
-                if(creep.build(extensions) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(extensions, {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(extensions.length){
+                if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
             else if(container.length){
@@ -119,9 +119,9 @@ export class Builder {
                     creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(targets) {
-                if(creep.build(targets) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(targets.length) {
+                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             } else if(roomRallyPointFlag[0]) {
                 creep.moveTo(roomRallyPointFlag[0]);

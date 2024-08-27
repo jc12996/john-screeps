@@ -1,6 +1,7 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 import { EconomiesUtils, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { RoomUtils } from "utils/RoomUtils";
+import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 
 
 export class AutoSpawn {
@@ -113,11 +114,13 @@ export class AutoSpawn {
         }
 
 
-
-        const numberOfNeededHarvestersMax = EconomiesUtils.Harvesters * ActiveRoomSources.length;
-        const numberOfNeededCarriers = EconomiesUtils.Carriers * ActiveRoomSources.length;
-        const numberOfNeededBuilders = EconomiesUtils.Builder * ActiveRoomSources.length;
-        const numberOfNeededRepairers = EconomiesUtils.Repairer * ActiveRoomSources.length;
+        const activeharvesters = harvesters.filter((hhh) => hhh.memory?.targetSource );
+        const numberOfNeededHarvestersMax = EconomiesUtils.Harvesters * RoomSources.length;
+        const numberOfNeededCarriers = EconomiesUtils.Carriers * activeharvesters.length;
+        const numberOfNeededBuilders = EconomiesUtils.Builder * activeharvesters.length;
+        const numberOfNeededRepairers = EconomiesUtils.Repairer * activeharvesters.length;
+        const numberOfNeededUpgraders = EconomiesUtils.Upgrader * activeharvesters.length;
+        const numberOfNeededDefenders = (EconomiesUtils.Defender * activeharvesters.length)
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
         const totalNumberOfLinks = spawn.room.find(FIND_STRUCTURES,{
             filter: (struc: { structureType: string; }) => {
@@ -149,7 +152,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
         }
-        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && upgraders.length < (EconomiesUtils.Upgrader * RoomSources.length)) {
+        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && upgraders.length < numberOfNeededUpgraders) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,0)
             options = {memory: {role: 'upgrader'}                }
@@ -170,7 +173,7 @@ export class AutoSpawn {
             options = {memory: {role: 'claimer'}};
 
         }
-        else if (defenders.length < (EconomiesUtils.Defender * RoomSources.length)) {
+        else if (defenders.length < numberOfNeededDefenders) {
             name = 'Defender' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
@@ -222,6 +225,12 @@ export class AutoSpawn {
                 spawn.pos.x + 1,
                 spawn.pos.y,
                 {align: 'left', opacity: 0.8});
+
+
+            ScaffoldingUtils.createRoadX(spawn);
+            ScaffoldingUtils.createExtensions(spawn);
+            ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
+
 
 
         } else if (bodyParts != null && name != null) {
