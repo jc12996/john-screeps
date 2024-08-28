@@ -16,7 +16,14 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
         }
     });
 
-    if (creep?.room?.controller?.level && creep?.room?.controller?.level == 5 && !sourceLink1Flag[0]) {
+    const totalNumberOfLinkSites = creep.room.find(FIND_CONSTRUCTION_SITES,{
+        filter: (struc: { structureType: string; }) => {
+            return struc.structureType === STRUCTURE_LINK
+        }
+    });
+
+
+    if (creep?.room?.controller?.level && creep?.room?.controller?.level == 5 && !sourceLink1Flag[0] && totalNumberOfLinkSites.length == 1) {
         if(creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_LINK) == OK){
             creep.room.createFlag(creep.pos.x -1,creep.pos.y,creep.room.name+'SourceLink1');
             creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_RAMPART)
@@ -33,11 +40,27 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
     }
 
-    const activeSources = creep.room.find(FIND_SOURCES_ACTIVE)
+    const activeSources = creep.room.find(FIND_SOURCES_ACTIVE);
+
+    const xCreepCapacityCreeps = creep.room.find(FIND_MY_CREEPS, {
+        filter: (creep) => creep.memory.extensionFarm1
+    })
+
+    let xCapacity = 800;
+
+    if(xCreepCapacityCreeps.length) {
+        const xCreepCapacity = xCreepCapacityCreeps[0].store.getCapacity();
+        if(xCreepCapacity > 0) {
+            xCapacity = xCreepCapacity
+        }
+    }
+    if(xCapacity > 800) {
+        xCapacity = 800;
+    }
 
     const filledSourceLink1 = creep.pos.findClosestByPath(FIND_STRUCTURES,{
         filter: (struc) => {
-            return struc.structureType === STRUCTURE_LINK && (struc.store[RESOURCE_ENERGY] >= 800 || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
+            return struc.structureType === STRUCTURE_LINK && (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
         }
     })
 

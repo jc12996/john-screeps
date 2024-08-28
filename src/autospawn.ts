@@ -143,7 +143,7 @@ export class AutoSpawn {
             console.log(spawn.name,"needed harvesters",numberOfNeededHarvesters);
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
-        } else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0 && totalNumberOfLinks.length < 2) {
+        } else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
             options = {memory: {role: 'carrier'}}

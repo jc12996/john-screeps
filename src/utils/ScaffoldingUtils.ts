@@ -80,7 +80,14 @@ export class ScaffoldingUtils {
                 }
 
                 if (creep.room.controller.level >= 5 ) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -2,spawnsAmount[0].pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
+
+                    const totalNumberOfLinkSites = creep.room.find(FIND_CONSTRUCTION_SITES,{
+                        filter: (struc: { structureType: string; }) => {
+                            return struc.structureType === STRUCTURE_LINK
+                        }
+                    });
+
+
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x-1,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x-6,spawnsAmount[0].pos.y+4,STRUCTURE_EXTENSION);
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x-4,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
@@ -93,7 +100,11 @@ export class ScaffoldingUtils {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x-7,spawnsAmount[0].pos.y,STRUCTURE_EXTENSION);
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+1,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
 
-                    creep.room.createFlag(spawnsAmount[0].pos.x -2,spawnsAmount[0].pos.y+3,creep.room.name+'ExtensionLink');
+                    if(totalNumberOfLinkSites.length == 0) {
+                        creep.room.createFlag(spawnsAmount[0].pos.x -2,spawnsAmount[0].pos.y+3,creep.room.name+'ExtensionLink');
+                        creep.room?.createConstructionSite(spawnsAmount[0].pos.x -2,spawnsAmount[0].pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
+                    }
+
                 }
             }
         }
@@ -111,8 +122,9 @@ export class ScaffoldingUtils {
             for(let i = 0; i < 11; i++) {
 
 
-                if(i == 1) {
+                if(i == 1 || i == 2) {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY,STRUCTURE_RAMPART);
+
                 }else {
                     creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY,STRUCTURE_WALL);
                 }
@@ -147,7 +159,12 @@ export class ScaffoldingUtils {
             for(let i = 0; i < 11; i++) {
 
                 creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_WALL);
-
+                // const existingObjects = creep.room?.lookAt(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY);
+                // if(existingObjects.length) {
+                //     existingObjects.forEach(object => {
+                //         console.log(object.type);
+                //     })
+                // }
 
 
                 startingLefttSideY++;

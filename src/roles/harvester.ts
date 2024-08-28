@@ -80,7 +80,7 @@ export class Harvester {
 
 
         if(finalSource?.pos && creep.pos && creep.pos.inRangeTo(finalSource.pos.x, finalSource.pos.y,1) && creep.memory.targetSource) {
-            let sources = creep.room.find(FIND_SOURCES_ACTIVE, {
+            let sources = creep.room.find(FIND_SOURCES, {
                 filter: (source) => {
                     return source.id === creep.memory.targetSource
                 }

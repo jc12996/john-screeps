@@ -42,6 +42,13 @@ export class Builder {
                 }
             });
 
+            const links = creep.room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (site) => {
+                    return (site.structureType == STRUCTURE_LINK)
+                }
+            });
+
+
             const container = creep.room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_CONTAINER)
@@ -90,6 +97,20 @@ export class Builder {
                     creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
+            else if(links.length) {
+                if(creep.build(links[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(links[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }
+            else if(ramparts.length) {
+                if(creep.build(ramparts[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(ramparts[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }  else if(walls.length) {
+                if(creep.build(walls[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }
             else if(storageSite){
                 if(creep.build(storageSite) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(storageSite, {visualizePathStyle: {stroke: '#ffffff'}});
@@ -108,15 +129,6 @@ export class Builder {
             else if(roads.length) {
                 if(creep.build(roads[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(roads[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
-            else if(ramparts.length) {
-                if(creep.build(ramparts[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(ramparts[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }  else if(walls.length) {
-                if(creep.build(walls[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
             else if(targets.length) {
