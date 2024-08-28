@@ -159,14 +159,6 @@ export class ScaffoldingUtils {
             for(let i = 0; i < 11; i++) {
 
                 creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_WALL);
-                // const existingObjects = creep.room?.lookAt(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY);
-                // if(existingObjects.length) {
-                //     existingObjects.forEach(object => {
-                //         console.log(object.type);
-                //     })
-                // }
-
-
                 startingLefttSideY++;
 
             }

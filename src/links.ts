@@ -26,16 +26,12 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
     if (creep?.room?.controller?.level && creep?.room?.controller?.level == 5 && !sourceLink1Flag[0] && totalNumberOfLinkSites.length == 1) {
         if(creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_LINK) == OK){
             creep.room.createFlag(creep.pos.x -1,creep.pos.y,creep.room.name+'SourceLink1');
-            creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_RAMPART)
         } else if(creep.room?.createConstructionSite(creep.pos.x +1,creep.pos.y,STRUCTURE_LINK) == OK){
             creep.room.createFlag(creep.pos.x +1,creep.pos.y,creep.room.name+'SourceLink1');
-            creep.room?.createConstructionSite(creep.pos.x +1,creep.pos.y,STRUCTURE_RAMPART)
         } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y +1,STRUCTURE_LINK) == OK){
             creep.room.createFlag(creep.pos.x,creep.pos.y +1,creep.room.name+'SourceLink1');
-            creep.room?.createConstructionSite(creep.pos.x,creep.pos.y+1,STRUCTURE_RAMPART)
         } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y -1,STRUCTURE_LINK) == OK){
             creep.room.createFlag(creep.pos.x,creep.pos.y -1,creep.room.name+'SourceLink1');
-            creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_RAMPART)
         }
 
     }
@@ -65,6 +61,10 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
     })
 
     if(filledSourceLink1) {
+
+
+
+
         const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
             filter: (link) => {
                 return link.name == creep.room.name+'ExtensionLink'
@@ -78,6 +78,7 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
                 }
             });
             if(extensionLink && extensionLink.structureType === STRUCTURE_LINK && filledSourceLink1.structureType === STRUCTURE_LINK) {
+                creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
                 filledSourceLink1.transferEnergy(extensionLink,filledSourceLink1.store[RESOURCE_ENERGY]);
             }
         }
