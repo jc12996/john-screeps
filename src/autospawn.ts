@@ -166,7 +166,7 @@ export class AutoSpawn {
 
 
         //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-        //console.log(`${spawn.name} number of sources:`,RoomSources.length);
+        //console.log(`${spawn.name} has rally flag:`,!!Game.flags.rallyFlag);
         if(claimers.length < numberOfNeededSettlers
             && !!this.nextClaimFlag
             && totalNumberOfControlledRooms < Game.gcl.level
@@ -208,7 +208,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
         }
-        else if(repairableStuff.length && !spawn.spawning && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
+        else if((!storage || storage.store[RESOURCE_ENERGY] <= 500000) && repairableStuff.length && !spawn.spawning && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
             name = 'Repairer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
             options = {memory: {role: 'repairer'}            }
@@ -218,21 +218,21 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
         }
-        else if(Game.flags.rallyFlag && attackers.length < TOTAL_ATTACKER_SIZE)  {
+        else if(!!Game.flags.rallyFlag && attackers.length < TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
             options = {memory: {role: 'attacker', isArmySquad:true}};
         }
-        else if(Game.flags.rallyFlag && healers.length < TOTAL_HEALER_SIZE)  {
+        else if(!!Game.flags.rallyFlag && healers.length < TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel, 0);
             options = {memory: {role: 'healer', isArmySquad:true}};
         }
-        else if(Game.flags.rallyFlag && dismantlers.length < TOTAL_DISMANTLER_SIZE)  {
+        else if(!!Game.flags.rallyFlag && dismantlers.length < TOTAL_DISMANTLER_SIZE)  {
             name = 'Dismantler' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
             options = {memory: {role: 'dismantler', isArmySquad:true}};
-        } else if (Game.flags.rallyFlag && meatGrinders.length < TOTAL_MEAT_GRINDERS) {
+        } else if (!!Game.flags.rallyFlag && meatGrinders.length < TOTAL_MEAT_GRINDERS) {
             name = 'MeatGrinder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};

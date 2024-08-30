@@ -1,6 +1,7 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Upgrader } from "./upgrader";
 import { MovementUtils } from "utils/MovementUtils";
+import { RepairUtils } from "utils/RepairUtils";
 export class Repairer {
     public static run(creep: Creep) {
 
@@ -30,41 +31,28 @@ export class Repairer {
 
 
         if(creep.memory.repairing) {
-            let maxWallStrength = 10000;
-            let maxContainerStrength = 50000;
-            let maxRoadStrength = 50;
 
-            if(creep.room.controller && creep.room.controller.my && creep.room.controller.level > 0) {
-                switch(creep.room.controller.level) {
-                    case 5:
-                        maxWallStrength = 100000;
-                        break;
-                    case 6:
-                        maxWallStrength = 200000;
-                        break;
-                    case 7:
-                    case 8:
-                    maxWallStrength = 1000000;
-                    break;
+
+            const walls = creep.room.find(FIND_STRUCTURES, {
+                filter: object => object.hits < object.hitsMax && object.hits <= RepairUtils.buildingRatios(object).maxWallStrength && creep.room.controller?.my && object.structureType == STRUCTURE_WALL
+            });
+
+            const roads = creep.room.find(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return structure.structureType === STRUCTURE_ROAD && structure.hits < RepairUtils.buildingRatios(structure).maxRoadStrength
                 }
-
-            }
-
-            const maxRampartStrength = maxWallStrength * 0.90;
-
-
+            });
 
             const containers = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxContainerStrength && creep.room.controller?.my && object.structureType == STRUCTURE_CONTAINER && creep.memory.role !== 'builder'
+                filter:  (structure) => {
+                    return structure.structureType === STRUCTURE_CONTAINER && structure.hits < RepairUtils.buildingRatios(structure).maxContainerStrength
+                }
             });
+
             const ramparts = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxRampartStrength && creep.room.controller?.my && object.structureType == STRUCTURE_RAMPART
-            });
-            const walls = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxWallStrength && creep.room.controller?.my && object.structureType == STRUCTURE_WALL
-            });
-            const roads = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= maxRoadStrength && creep.room.controller?.my && object.structureType == STRUCTURE_ROAD  && creep.memory.role !== 'builder'
+                filter:  (structure) => {
+                    return structure.structureType === STRUCTURE_RAMPART && structure.hits < RepairUtils.buildingRatios(structure).maxRampartStrength
+                }
             });
 
             var extensions = creep.pos.findClosestByRange(FIND_STRUCTURES, {

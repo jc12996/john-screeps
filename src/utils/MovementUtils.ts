@@ -154,10 +154,10 @@ export class MovementUtils {
         if(creep.memory.extensionFarm1) {
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
 
-            if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
-            } else if(storage && (!extensionLink || (extensionLink && extensionLink.store[RESOURCE_ENERGY] == 0)) && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            } else if(storage && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
                 return;
             }

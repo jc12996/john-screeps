@@ -1,3 +1,4 @@
+import { RepairUtils } from "utils/RepairUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 
 export class Tower {
@@ -12,7 +13,7 @@ export class Tower {
             {
                 filter: hostileCreep => {
                     return hostileCreep.owner &&
-                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)
+                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && hostileCreep.getActiveBodyparts(ATTACK) > 0
                   }
             }
         );
@@ -31,13 +32,19 @@ export class Tower {
 
         const roads = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_ROAD && structure.hits < 1000
+                return structure.structureType === STRUCTURE_ROAD && structure.hits < RepairUtils.buildingRatios(structure).maxRoadStrength
             }
         });
 
         const containers = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < 1000
+                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < RepairUtils.buildingRatios(structure).maxContainerStrength
+            }
+        });
+
+        const ramparts = rooms.find(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return structure.structureType === STRUCTURE_RAMPART && structure.hits < RepairUtils.buildingRatios(structure).maxRampartStrength
             }
         });
 
@@ -56,6 +63,8 @@ export class Tower {
             console.log("Tower is healing Creeps.");
         } else if(containers.length > 0 ) {
             towers.forEach(tower => tower.repair(containers[0]));
+        } else if(ramparts.length > 0) {
+            towers.forEach(tower => tower.repair(ramparts[0]));
         } else if(roads.length > 0 ) {
             towers.forEach(tower => tower.repair(roads[0]));
         }
