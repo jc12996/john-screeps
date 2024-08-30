@@ -1,3 +1,4 @@
+import { spawn } from "child_process";
 
 
 export class ScaffoldingUtils {
@@ -16,93 +17,109 @@ export class ScaffoldingUtils {
         }
     }
 
-    public static createRoadX(creep: Creep | StructureSpawn): void {
-        var spawnsAmount = creep.room.find(FIND_MY_SPAWNS);
+    public static createRoadX(creepOrSpawn: Creep | StructureSpawn, flag: Flag | undefined = undefined): void {
+        var spawnsAmount = creepOrSpawn.room.find(FIND_MY_SPAWNS);
 
-        if(creep.room.controller && creep.room.controller.my && spawnsAmount.length === 1) {
 
-            //Draw an X of roads
-            if(spawnsAmount && creep.room?.controller?.my && spawnsAmount[0].pos) {
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 1,spawnsAmount[0].pos.y+1,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 2,spawnsAmount[0].pos.y+2,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 3,spawnsAmount[0].pos.y+3,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 4,spawnsAmount[0].pos.y+4,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 5,spawnsAmount[0].pos.y+5,STRUCTURE_ROAD);
 
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 5,spawnsAmount[0].pos.y+1,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 4,spawnsAmount[0].pos.y+2,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 2,spawnsAmount[0].pos.y+4,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 1,spawnsAmount[0].pos.y+5,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x,spawnsAmount[0].pos.y+6,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 6,spawnsAmount[0].pos.y,STRUCTURE_ROAD);
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 6,spawnsAmount[0].pos.y + 6,STRUCTURE_ROAD);
-            }
+        let pos = spawnsAmount[0].pos;
+        if(flag) {
+            pos = flag.pos;
         }
+        if(!pos || !creepOrSpawn.room?.controller?.my) {
+            return;
+        }
+        creepOrSpawn.room?.createConstructionSite(pos.x - 1,pos.y+1,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 2,pos.y+2,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y+3,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y+4,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 5,pos.y+5,STRUCTURE_ROAD);
+
+        creepOrSpawn.room?.createConstructionSite(pos.x - 5,pos.y+1,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y+2,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 2,pos.y+4,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 1,pos.y+5,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x,    pos.y+6,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 6,pos.y,STRUCTURE_ROAD);
+        creepOrSpawn.room?.createConstructionSite(pos.x - 6,pos.y + 6,STRUCTURE_ROAD);
+
     }
 
-    public static createExtensions(creep: Creep | StructureSpawn): void {
-        var spawnsAmount = creep.room.find(FIND_MY_SPAWNS);
+    public static createExtensions(creepOrSpawn: Creep | StructureSpawn, flag: Flag | undefined = undefined): void {
+        var spawnsAmount = creepOrSpawn.room.find(FIND_MY_SPAWNS);
 
-        if(creep.room.controller && creep.room.controller.my && spawnsAmount.length === 1) {
+        if(!spawnsAmount[0]) {
+            return;
+        }
 
-            if(creep.room?.controller?.my && creep.room.controller?.level) {
-                if (creep.room.controller.level >= 2) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 3,spawnsAmount[0].pos.y +2,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 3,spawnsAmount[0].pos.y +4,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 4,spawnsAmount[0].pos.y +1,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x - 4,spawnsAmount[0].pos.y +3,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x  -2,spawnsAmount[0].pos.y +1,STRUCTURE_EXTENSION);
+        let pos = spawnsAmount[0].pos;
+        if(flag) {
+            pos = flag.pos;
+        }
+
+        if(creepOrSpawn.room.controller && creepOrSpawn.room.controller.my && spawnsAmount.length === 1) {
+
+            if(creepOrSpawn.room?.controller?.my && creepOrSpawn.room.controller?.level) {
+                if (creepOrSpawn.room.controller.level >= 2) {
+                    creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y +2,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y +4,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y +1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y +3,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x  -2,pos.y +1,STRUCTURE_EXTENSION);
                 }
 
-                if (creep.room.controller.level >= 3 ) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -4,spawnsAmount[0].pos.y+5,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -2,spawnsAmount[0].pos.y+5,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -1,spawnsAmount[0].pos.y+4,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -1,spawnsAmount[0].pos.y+2,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -3,spawnsAmount[0].pos.y+5,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -1,spawnsAmount[0].pos.y+3,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -3,spawnsAmount[0].pos.y+1,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -5,spawnsAmount[0].pos.y+3,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -5,spawnsAmount[0].pos.y+4,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -5,spawnsAmount[0].pos.y+2,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-7,spawnsAmount[0].pos.y-1,STRUCTURE_TOWER);
+                if (creepOrSpawn.room.controller.level >= 3 ) {
+                    creepOrSpawn.room?.createConstructionSite(pos.x -4,pos.y+5,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+5,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -1,pos.y+4,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -1,pos.y+2,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -3,pos.y+5,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -1,pos.y+3,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -3,pos.y+1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+3,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+4,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+2,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y-1,STRUCTURE_TOWER);
                 }
 
-                if (creep.room.controller.level >= 4 ) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -6,spawnsAmount[0].pos.y+1,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -5,spawnsAmount[0].pos.y,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -6,spawnsAmount[0].pos.y+5,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -5,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x,spawnsAmount[0].pos.y+5,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-4,spawnsAmount[0].pos.y,STRUCTURE_TOWER);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x -1,spawnsAmount[0].pos.y,STRUCTURE_STORAGE);//Storage
+                if (creepOrSpawn.room.controller.level >= 4 ) {
+                    creepOrSpawn.room?.createConstructionSite(pos.x -6,pos.y+1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -6,pos.y+5,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+5,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_TOWER);
+                    creepOrSpawn.room?.createConstructionSite(pos.x -1,pos.y,STRUCTURE_STORAGE);//Storage
 
                 }
 
-                if (creep.room.controller.level >= 5 ) {
+                if (creepOrSpawn.room.controller.level >= 5 ) {
 
-                    const totalNumberOfLinkSites = creep.room.find(FIND_CONSTRUCTION_SITES,{
+                    const totalNumberOfLinkSites = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES,{
                         filter: (struc: { structureType: string; }) => {
                             return struc.structureType === STRUCTURE_LINK
                         }
                     });
 
 
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-1,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-6,spawnsAmount[0].pos.y+4,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-4,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-2,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x,spawnsAmount[0].pos.y+4,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-6,spawnsAmount[0].pos.y+2,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-1,spawnsAmount[0].pos.y,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x,spawnsAmount[0].pos.y+1,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-7,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-7,spawnsAmount[0].pos.y,STRUCTURE_EXTENSION);
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+1,spawnsAmount[0].pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+4,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+2,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+6,STRUCTURE_EXTENSION);
 
-                    if(totalNumberOfLinkSites.length == 0) {
-                        creep.room.createFlag(spawnsAmount[0].pos.x -2,spawnsAmount[0].pos.y+3,creep.room.name+'ExtensionLink');
-                        creep.room?.createConstructionSite(spawnsAmount[0].pos.x -2,spawnsAmount[0].pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
+                    if(totalNumberOfLinkSites.length == 0 && creepOrSpawn.room.controller.level <= 5) {
+                        creepOrSpawn.room.createFlag(pos.x -2,pos.y+3,creepOrSpawn.room.name+'ExtensionLink');
+                        creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
+                    } else if(totalNumberOfLinkSites.length == 0 && creepOrSpawn.room.controller.level >= 6) {
+                        creepOrSpawn.room.createFlag(pos.x -2,pos.y+3,creepOrSpawn.room.name+'ExtensionLink2');
+                        creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
                     }
 
                 }

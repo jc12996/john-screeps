@@ -116,7 +116,7 @@ export class Builder {
                     creep.moveTo(storageSite, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(extensions.length){
+            else if(extensions[0]){
                 if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }

@@ -50,6 +50,7 @@ declare global {
     hitWaypointFlag2?: boolean;
     extensionFarm1?: boolean;
     roomLevel?: number;
+    extensionFarm2?: boolean;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")

@@ -58,7 +58,7 @@ export class MovementUtils {
     }
 
     public static generalGatherMovement(creep: Creep) {
-        const container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
 
@@ -66,22 +66,22 @@ export class MovementUtils {
         if(creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 5) {
             totalSpawnStore = 301;
         }
-        const spawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] >= totalSpawnStore) && creep.memory.role !== 'settler'; }
         });
 
-        const target_storage = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
         });
 
-        const hasStorage = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        const hasStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_STORAGE); }
         });
 
-        let ruinsSource = creep.pos.findClosestByRange(FIND_RUINS, {
+        const ruinsSource = creep.room.find(FIND_RUINS, {
             filter:  (source) => {
                 return (
                     source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0
@@ -97,8 +97,8 @@ export class MovementUtils {
             }
            })
 
-        if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-            creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+        if(ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -140,11 +140,36 @@ export class MovementUtils {
             return true;
         }
 
-        if(AutoSpawn.nextClaimFlag.room !== creep.room) {
+        if(!!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room && AutoSpawn.nextClaimFlag.room.controller.my) {
             MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag)
             return false;
         }
 
         return true;
+    }
+
+    public static xHarvesterMovementSequence(creep:Creep,xTarget:any,nearestAvailableWorkingRoleCreep:any,tombstones: any,extensionLink: any,storage: any) {
+
+
+        if(creep.memory.extensionFarm1) {
+            creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+
+            if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(extensionLink);
+                return;
+            } else if(storage && (!extensionLink || (extensionLink && extensionLink.store[RESOURCE_ENERGY] == 0)) && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(storage);
+                return;
+            }
+            return;
+        }else if(creep.memory.extensionFarm2) {
+            creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+            if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(extensionLink);
+                return;
+            }
+            return;
+        }
+
     }
 }

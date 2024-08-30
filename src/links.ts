@@ -1,3 +1,5 @@
+import { exec } from "child_process";
+
 export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
     var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -42,6 +44,7 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
         }
     })
 
+
     const activeSources = creep.room.find(FIND_SOURCES_ACTIVE);
 
     const xCreepCapacityCreeps = creep.room.find(FIND_MY_CREEPS, {
@@ -60,7 +63,7 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
         xCapacity = 800;
     }
 
-    const filledSourceLink1 = creep.pos.findClosestByPath(FIND_STRUCTURES,{
+    const filledSourceLink1: AnyStructure | null = creep.room.find(FIND_STRUCTURES,{
         filter: (struc) => {
             return (
                 sourceLink1Flag[0] &&
@@ -70,32 +73,25 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
                 struc.structureType === STRUCTURE_LINK &&
                 (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
 
-    )}
-    })
+        )}
+    })[0] ?? null
 
     if(filledSourceLink1) {
 
+        const extensionLink = getExtensionLink(creep);
 
+        if(extensionLink && filledSourceLink1.structureType === STRUCTURE_LINK) {
+            const extensionLink2 = getExtensionLink(creep,'2');
 
+            creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
 
-        const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
-            filter: (link) => {
-                return link.name == creep.room.name+'ExtensionLink'
+            const transfer1 = filledSourceLink1.transferEnergy(extensionLink,filledSourceLink1.store[RESOURCE_ENERGY]);
+
+            if(transfer1 === ERR_FULL) {
+                filledSourceLink1.transferEnergy(extensionLink2,filledSourceLink1.store[RESOURCE_ENERGY]);
             }
-        });
 
-        if(extensionLinkFlag[0]) {
-            const extensionLink = creep.pos.findClosestByPath(FIND_STRUCTURES,{
-                filter: (struc) => {
-                    return struc.structureType === STRUCTURE_LINK && struc.pos.x == extensionLinkFlag[0].pos.x && struc.pos.y == extensionLinkFlag[0].pos.y
-                }
-            });
-            if(extensionLink && extensionLink.structureType === STRUCTURE_LINK && filledSourceLink1.structureType === STRUCTURE_LINK) {
-                creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
-                filledSourceLink1.transferEnergy(extensionLink,filledSourceLink1.store[RESOURCE_ENERGY]);
-            }
         }
-
 
     }
 
@@ -112,5 +108,26 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
         creep.transfer(container, RESOURCE_ENERGY);
     }
 
+
+}
+
+export function getExtensionLink(creep: Creep, extensionLinkNumber: string = ''): StructureLink {
+
+
+
+    const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
+        filter: (link) => {
+            return link.name == creep.room.name+'ExtensionLink'+extensionLinkNumber
+        }
+    })[0] ?? null;
+
+
+    const extensionLinks: Array<StructureLink> = creep.room.find(FIND_MY_STRUCTURES,{
+        filter: (struc) => {
+
+            return extensionLinkFlag && struc && struc.structureType === STRUCTURE_LINK && struc.pos.x == extensionLinkFlag.pos.x && struc.pos.y == extensionLinkFlag.pos.y
+        }
+    });
+    return extensionLinks[0];
 
 }

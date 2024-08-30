@@ -127,6 +127,10 @@ export class AutoSpawn {
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * activeharvesters.length;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
 
+        if(commandLevel >= 6 && numberOfNeededCarriers < 2) {
+            numberOfNeededCarriers = 2;
+        }
+
         if(storage){
             if(storage.store[RESOURCE_ENERGY] > 500000) {
                 numberOfNeededCarriers = MediumUpkeep.Carriers * activeharvesters.length;
@@ -260,12 +264,25 @@ export class AutoSpawn {
                 {align: 'left', opacity: 0.8});
 
 
+                if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
 
-                ScaffoldingUtils.createRoadX(spawn);
-                ScaffoldingUtils.createExtensions(spawn);
-                if(!Game.flags[spawn.room.name+'NoWalls']) {
-                    ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
+                    if(spawn.room.controller.level <= 5 ) {
+                        ScaffoldingUtils.createRoadX(spawn);
+                        ScaffoldingUtils.createExtensions(spawn);
+                        if(!Game.flags[spawn.room.name+'NoWalls']) {
+                            ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
+                        }
+                    }
+
+                    const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
+                    if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
+
+                        ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
+                        ScaffoldingUtils.createExtensions(spawn,extensionFarm2Flag);
+                    }
                 }
+
+
 
 
 

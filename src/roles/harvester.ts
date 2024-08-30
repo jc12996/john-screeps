@@ -96,7 +96,7 @@ export class Harvester {
 
         if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE && finalSource?.pos) {
             creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-        } else if(creep.pos && container?.pos && (creep?.pos.inRangeTo(container.pos.x,container.pos.y, 1) || sourceLink1Flag[0])) {
+        } else if(creep.pos && container?.pos && (creep?.pos.inRangeTo(container.pos.x,container.pos.y, 1) || sourceLink1Flag.length > 0)) {
 
             harvesterContainerSourceAndExtensionLinks(creep);
 
