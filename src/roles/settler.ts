@@ -19,29 +19,8 @@ export class Settler {
             creep.say("🌎");
         }
 
-        if(!creep.memory.hitWaypointFlag && creep.pos.inRangeTo(Game.flags.wayPointFlag.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-            creep.memory.hitWaypointFlag = true;
-        }else if(!creep.memory.hitWaypointFlag && Game.flags.wayPointFlag.pos !== creep.pos) {
-
-            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag);
-
-            return;
-        }
-
-
-        if(!creep.memory.hitWaypointFlag2 && creep.pos.inRangeTo(Game.flags.wayPointFlag2.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-            creep.memory.hitWaypointFlag2 = true;
-        }else if(!creep.memory.hitWaypointFlag2 && Game.flags.wayPointFlag2.pos !== creep.pos) {
-
-            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag2);
-
-            return;
-        }
-
-
-
-        if(AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room) {
-            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag)
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        if(!canProceed){
             return;
         }
 
@@ -66,6 +45,27 @@ export class Settler {
 
         var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         var spawns = creep.room.find(FIND_MY_SPAWNS);
+
+        if(spawns.length) {
+            let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawns[0].room.name);
+
+            const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (site) => {
+                    return (site.structureType == STRUCTURE_EXTENSION)
+                }
+            });
+
+
+            if(extensions.length > 0) {
+                Builder.run(creep);
+            } else if(harvesters.length > 0) {
+                Carrier.run(creep);
+            } else {
+                Upgrader.run(creep);
+            }
+
+            return;
+        }
 
         ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
 

@@ -103,6 +103,8 @@ export class Carrier {
 
 
 
+
+
         let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
 
         if(carriers[0] &&  creep.name === carriers[0].name) {
@@ -149,15 +151,25 @@ export class Carrier {
                     return struc.structureType === STRUCTURE_LINK && struc.pos.x == extensionLinkFlag[0].pos.x && struc.pos.y == extensionLinkFlag[0].pos.y  && struc.store[RESOURCE_ENERGY] > 0
                 }
             });
+            const tombstones   = creep.pos.findInRange(FIND_TOMBSTONES, 9,{
+                filter: (struc) => {
+                    return struc.store[RESOURCE_ENERGY] > 0
+                }
+            });
             if(creep.memory.role === 'carrier' && (storage || links.length >= 2) && spawn && spawn && spawn.pos &&  creep.memory.extensionFarm1  && creep.room?.controller  && creep.room?.controller.my && creep.room?.controller?.level >= 5) {
                 creep.moveTo(spawn.pos.x - 3, spawn.pos.y + 3)
                    creep.say("🚚 X");
 
 
-                if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+
+
+                if(tombstones[0] && creep.memory.extensionFarm1 && !extensionLink && creep.withdraw(tombstones[0] , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(tombstones[0]);
+                    return;
+                } else if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                     creep.moveTo(extensionLink, {visualizePathStyle: {stroke: '#ffaa00'}});
                     return;
-                } else if((creep.room.energyCapacityAvailable  == 0 || creep.room.energyAvailable < creep.room.energyCapacityAvailable)  && storage && creep.memory.extensionFarm1 && !extensionLink && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                } else if(storage && storage.room.energyAvailable  != storage.room.energyCapacityAvailable && creep.memory.extensionFarm1 && !extensionLink && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(storage);
                     return;
                 }
@@ -181,6 +193,8 @@ export class Carrier {
                 creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(droppedSources);
+            } else if(tombstones[0] && creep.withdraw(tombstones[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombstones[0]);
             } else if(containers && creep.withdraw(containers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(containers);
             }  else if(extensionLinkFlag.length && creep.memory.extensionFarm1){
@@ -193,6 +207,13 @@ export class Carrier {
 
 
         } else if(creep.memory.carrying) {
+            const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+                filter:  (creep) => {
+                    return (
+                       (creep.memory.role === 'builder' || creep.memory.role === 'repairer' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
+                }
+            });
+
 
             if(!creep.memory?.extensionFarm1 && nearestStorage && links.length >= 2) {
                 if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -238,6 +259,13 @@ export class Carrier {
                     creep.say('🚚 S');
                 }
                 creep.moveTo(storage);
+            } else if(nearestAvailableWorkingRoleCreep && !storage && !spawns && !towers  && !extension && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if(creep.memory?.extensionFarm1) {
+                    creep.say("🚚 XC");
+                } else {
+                    creep.say('🚚 C');
+                }
+                creep.moveTo(nearestAvailableWorkingRoleCreep);
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }

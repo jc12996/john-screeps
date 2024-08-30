@@ -14,7 +14,7 @@ import { Dismantler } from "roles/dismantler";
 import { MeatGrinder } from "roles/meatGrinder";
 import { Carrier } from "roles/carrier";
 import { handleRamparts } from "ramparts";
-import { EconomiesUtils, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
+import { PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 
 declare global {

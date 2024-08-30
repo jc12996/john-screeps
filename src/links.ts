@@ -1,11 +1,5 @@
 export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
-    const sourceLink1Flag = creep.room.find(FIND_FLAGS, {
-        filter: (site) => {
-            return site.name == creep.room.name+'SourceLink1Flag'
-        }
-    })
-
     var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter:  (structure) => {
             return (
@@ -22,8 +16,14 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
         }
     });
 
+    const sourceLink1FlagTemp = creep.room.find(FIND_FLAGS, {
+        filter: (site) => {
+            return site.name == creep.room.name+'SourceLink1'
+        }
+    })
 
-    if (creep?.room?.controller?.level && creep?.room?.controller?.level == 5 && !sourceLink1Flag[0] && totalNumberOfLinkSites.length == 1) {
+
+    if (creep?.room?.controller?.level && creep?.room?.controller?.level == 5  && totalNumberOfLinkSites.length == 1 && !sourceLink1FlagTemp[0]) {
         if(creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_LINK) == OK){
             creep.room.createFlag(creep.pos.x -1,creep.pos.y,creep.room.name+'SourceLink1');
         } else if(creep.room?.createConstructionSite(creep.pos.x +1,creep.pos.y,STRUCTURE_LINK) == OK){
@@ -35,6 +35,12 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
         }
 
     }
+
+    const sourceLink1Flag = creep.room.find(FIND_FLAGS, {
+        filter: (site) => {
+            return site.name == creep.room.name+'SourceLink1'
+        }
+    })
 
     const activeSources = creep.room.find(FIND_SOURCES_ACTIVE);
 
@@ -56,8 +62,15 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
     const filledSourceLink1 = creep.pos.findClosestByPath(FIND_STRUCTURES,{
         filter: (struc) => {
-            return struc.structureType === STRUCTURE_LINK && (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
-        }
+            return (
+                sourceLink1Flag[0] &&
+                sourceLink1Flag[0].pos &&
+                struc.pos.x == sourceLink1Flag[0].pos.x &&
+                struc.pos.y == sourceLink1Flag[0].pos.y &&
+                struc.structureType === STRUCTURE_LINK &&
+                (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
+
+    )}
     })
 
     if(filledSourceLink1) {

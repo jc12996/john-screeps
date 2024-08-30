@@ -15,28 +15,8 @@ export class Claimer {
             creep.say('🚩');
         }
 
-        if(!creep.memory.hitWaypointFlag && creep.pos.inRangeTo(Game.flags.wayPointFlag.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-            creep.memory.hitWaypointFlag = true;
-        }else if(!creep.memory.hitWaypointFlag && Game.flags.wayPointFlag.pos !== creep.pos) {
-
-            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag);
-
-            return;
-        }
-
-        creep.memory.hitWaypointFlag2 = undefined;
-        if(!creep.memory.hitWaypointFlag2 && creep.pos.inRangeTo(Game.flags.wayPointFlag2.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-            creep.memory.hitWaypointFlag2 = true;
-        }else if(!creep.memory.hitWaypointFlag2 && Game.flags.wayPointFlag2.pos !== creep.pos) {
-
-            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag2);
-
-            return;
-        }
-
-        console.log(AutoSpawn.nextClaimFlag.name);
-        if(AutoSpawn.nextClaimFlag.room !== creep.room) {
-            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag)
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        if(!canProceed){
             return;
         }
         //const room = new RoomPosition(AttackSequence.NEXT_BASE_TO_CLAIM.coord.x, AttackSequence.NEXT_BASE_TO_CLAIM.coord.y, AttackSequence.NEXT_BASE_TO_CLAIM.pos);

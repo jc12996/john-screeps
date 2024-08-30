@@ -1,10 +1,5 @@
 import { SpawnUtils } from "utils/SpawnUtils";
-import { Builder } from "./builder";
-import { Upgrader } from "./upgrader";
-import { Position } from "source-map";
-import { EconomiesUtils } from "utils/EconomiesUtils";
 import { RoomUtils } from "utils/RoomUtils";
-import { Carrier } from "./carrier";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { harvesterContainerSourceAndExtensionLinks } from "links";
 
@@ -95,7 +90,7 @@ export class Harvester {
 
         const sourceLink1Flag = creep.room.find(FIND_FLAGS, {
             filter: (site) => {
-                return site.name == creep.room.name+'SourceLink1Flag'
+                return site.name == creep.room.name+'SourceLink1'
             }
         })
 

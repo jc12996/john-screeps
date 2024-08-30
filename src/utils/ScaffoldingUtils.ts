@@ -121,12 +121,13 @@ export class ScaffoldingUtils {
             let startingRightSideY = -2;
             for(let i = 0; i < 11; i++) {
 
+                const sideYCoord = spawnsAmount[0].pos.y+startingRightSideY;
 
-                if(i == 1 || i == 2) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY,STRUCTURE_RAMPART);
+                if(i == 1 || i == 2 || i == 9 || i == 10) {
+                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,sideYCoord,STRUCTURE_RAMPART);
 
                 }else {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,spawnsAmount[0].pos.y+startingRightSideY,STRUCTURE_WALL);
+                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+3,sideYCoord,STRUCTURE_WALL);
                 }
 
                 startingRightSideY++;
@@ -135,10 +136,16 @@ export class ScaffoldingUtils {
 
             let startingTopSideX = 3;
             for(let i = 0; i < 11; i++) {
-                if(i == 2 || i == 11) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingTopSideX,spawnsAmount[0].pos.y-2,STRUCTURE_RAMPART);
+                const topXCoord = spawnsAmount[0].pos.x+startingTopSideX;
+                // const sideTerrain = creep.room.lookAtArea(spawnsAmount[0].pos.y-2-1,topXCoord+1,spawnsAmount[0].pos.y-2-1,topXCoord-1,true);
+                // if(sideTerrain.length && sideTerrain.every((t) => t.terrain == 'wall')){
+                //     startingTopSideX--
+                //     continue;
+                // }
+                if(i == 1 || i == 2 || i == 9 || i == 10) {
+                    creep.room?.createConstructionSite(topXCoord,spawnsAmount[0].pos.y-2,STRUCTURE_RAMPART);
                 } else {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingTopSideX,spawnsAmount[0].pos.y-2,STRUCTURE_WALL);
+                    creep.room?.createConstructionSite(topXCoord,spawnsAmount[0].pos.y-2,STRUCTURE_WALL);
                 }
                 startingTopSideX--;
 
@@ -146,10 +153,17 @@ export class ScaffoldingUtils {
 
             let startingBottomSideX = 3;
             for(let i = 0; i < 12; i++) {
-                if( i == 2 || i == 10) {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingBottomSideX,spawnsAmount[0].pos.y+9,STRUCTURE_RAMPART);
+
+                const bottomXCoord = spawnsAmount[0].pos.x+startingBottomSideX;
+                // const sideTerrain = creep.room.lookAtArea(spawnsAmount[0].pos.y-2+1,bottomXCoord+1,spawnsAmount[0].pos.y-2-1,bottomXCoord+1,true);
+                // if(sideTerrain.length && sideTerrain.every((t) => t.terrain == 'wall')){
+                //     startingBottomSideX--;
+                //     continue;
+                // }
+                if( i == 1 || i == 2 || i == 9 || i == 10) {
+                    creep.room?.createConstructionSite(bottomXCoord,spawnsAmount[0].pos.y+9,STRUCTURE_RAMPART);
                 } else {
-                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x+startingBottomSideX,spawnsAmount[0].pos.y+9,STRUCTURE_WALL);
+                    creep.room?.createConstructionSite(bottomXCoord,spawnsAmount[0].pos.y+9,STRUCTURE_WALL);
                 }
                 startingBottomSideX--;
 
@@ -158,7 +172,11 @@ export class ScaffoldingUtils {
             let startingLefttSideY = -2;
             for(let i = 0; i < 11; i++) {
 
-                creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_WALL);
+                if( i == 1 || i == 2 || i == 9 || i == 10) {
+                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_RAMPART);
+                }else {
+                    creep.room?.createConstructionSite(spawnsAmount[0].pos.x-8,spawnsAmount[0].pos.y+startingLefttSideY,STRUCTURE_WALL);
+                }
                 startingLefttSideY++;
 
             }

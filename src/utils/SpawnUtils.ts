@@ -1,4 +1,3 @@
-import { EconomiesUtils } from "./EconomiesUtils";
 import { RoomUtils } from "./RoomUtils";
 
 export enum PartCosts {
@@ -83,7 +82,19 @@ export class SpawnUtils {
                     return null;
                 }
             case 'settler':
-                if(energyAvailable >= 850) {
+
+                if(energyAvailable >= 1800) {
+                    for (let i = 0; i < 16; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                break;
+                }else if(energyAvailable >= 850) {
 
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
@@ -209,11 +220,68 @@ export class SpawnUtils {
                 } else {
                     return null;
                 }
+            case 'upgrader':
+                if(energyAvailable >= 2100) {
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 13; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                } else if(energyAvailable >= 1800) {
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 11; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(energyAvailable >= 1300) {
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(energyAvailable >= 800) {
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }  else if(energyAvailable >= 400) {
+                    partsPattern = [MOVE,CARRY,WORK,WORK,WORK];
+                    break;
+                } else if(energyAvailable >= 300){
+                    partsPattern = [MOVE,CARRY,WORK,WORK];
+                    break;
+                } else if(energyAvailable >= 200){
+                    partsPattern = [MOVE,CARRY,WORK];
+                    break;
+                } else {
+                    return null;
+                }
             case 'builder':
             case 'repairer':
-            case 'upgrader':
 
-                //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
                 if(energyAvailable >= 3500) {
                     for (let i = 0; i < 26; i++) {
                         partsPattern.push(MOVE);

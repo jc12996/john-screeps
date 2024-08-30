@@ -58,7 +58,7 @@ export class MovementUtils {
     }
 
     public static generalGatherMovement(creep: Creep) {
-        const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
 
@@ -66,22 +66,22 @@ export class MovementUtils {
         if(creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 5) {
             totalSpawnStore = 301;
         }
-        const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const spawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => { return (
-                structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] >= totalSpawnStore); }
+                structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] >= totalSpawnStore) && creep.memory.role !== 'settler'; }
         });
 
-        const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const target_storage = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
         });
 
-        const hasStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const hasStorage = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_STORAGE); }
         });
 
-        let ruinsSource = creep.pos.findClosestByPath(FIND_RUINS, {
+        let ruinsSource = creep.pos.findClosestByRange(FIND_RUINS, {
             filter:  (source) => {
                 return (
                     source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0
@@ -111,5 +111,40 @@ export class MovementUtils {
             creep.move(MovementUtils.randomDirectionSelector())
         }
 
+    }
+
+    public static claimerSettlerMovementSequence(creep:Creep):boolean {
+
+
+
+        if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
+            creep.memory.hitWaypointFlag = true;
+        }else if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && Game.flags.wayPointFlag.pos !== creep.pos) {
+
+            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag);
+
+            return false;
+        }
+
+        creep.memory.hitWaypointFlag2 = undefined;
+        if(!!creep.memory.hitWaypointFlag2 && !!!creep.memory.hitWaypointFlag2 && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag2.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
+            creep.memory.hitWaypointFlag2 = true;
+        }else if(!!Game.flags.wayPointFlag2 && !!!creep.memory.hitWaypointFlag2 && Game.flags.wayPointFlag2.pos !== creep.pos) {
+
+            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag2);
+
+            return false;
+        }
+
+        if(!!!AutoSpawn.nextClaimFlag) {
+            return true;
+        }
+
+        if(AutoSpawn.nextClaimFlag.room !== creep.room) {
+            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag)
+            return false;
+        }
+
+        return true;
     }
 }

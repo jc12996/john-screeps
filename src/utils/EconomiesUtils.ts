@@ -1,10 +1,32 @@
-export enum EconomiesUtils {
+export enum LowUpkeep {
     Harvesters = 3,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
     Builder = 1,// Per Source Slot
     Repairer = 1,// Per Source Slot
-    Upgrader = 2,// Per Source Slot
-    Defender = .5,// Per Source Slot
+    Upgrader = 1,// Per Source Slot
+    Defender = 0,// Per Source Slot
+    Claimers = 1,// Worldwide Count
+    Settlers = 8// Worldwide Count
+}
+
+export enum MediumUpkeep {
+    Harvesters = 3,// Max Harvester Per Slot
+    Carriers  = 1,// Per Source Slot
+    Builder = 2,// Per Source Slot
+    Repairer = 1,// Per Source Slot
+    Upgrader = 3,// Per Source Slot
+    Defender = 0,// Per Source Slot
+    Claimers = 1,// Worldwide Count
+    Settlers = 8// Worldwide Count
+}
+
+export enum HighUpkeep {
+    Harvesters = 3,// Max Harvester Per Slot
+    Carriers  = 1,// Per Source Slot
+    Builder = 2,// Per Source Slot
+    Repairer = 1,// Per Source Slot
+    Upgrader = 4,// Per Source Slot
+    Defender = 0,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }

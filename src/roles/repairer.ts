@@ -50,7 +50,7 @@ export class Repairer {
 
             }
 
-            const maxRampartStrength = maxWallStrength * 0.75;
+            const maxRampartStrength = maxWallStrength * 0.90;
 
 
 
