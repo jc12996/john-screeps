@@ -61,6 +61,8 @@ declare global {
   }
 }
 
+
+
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
@@ -84,6 +86,45 @@ export const loop = ErrorMapper.wrapLoop(() => {
       handleRamparts({ room: room });
       Tower.defendMyRoom(room_it)
   }
+
+
+
+
+  if(Game?.flags?.rallyFlag?.room) {
+      const rallyLocationHasHostiles = Game.flags.rallyFlag.room.find(FIND_HOSTILE_CREEPS, {
+          filter:  (ccc) => {
+              return ccc.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(ccc.owner)
+          }
+      })
+      const rallyLocationHasHostileStructs = Game.flags.rallyFlag.room.find(FIND_HOSTILE_STRUCTURES, {
+          filter:  (ccc) => {
+              return ccc.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(ccc.owner) && ccc.structureType !== STRUCTURE_CONTROLLER
+          }
+      })
+
+      if(rallyLocationHasHostiles?.length || rallyLocationHasHostileStructs?.length){
+          SpawnUtils.TOTAL_ATTACKER_SIZE = WarTimeEconomy.TOTAL_ATTACKER_SIZE;
+          SpawnUtils.TOTAL_HEALER_SIZE = WarTimeEconomy.TOTAL_HEALER_SIZE;
+          SpawnUtils.TOTAL_DISMANTLER_SIZE = WarTimeEconomy.TOTAL_DISMANTLER_SIZE;
+          SpawnUtils.TOTAL_MEAT_GRINDERS = WarTimeEconomy.TOTAL_MEAT_GRINDERS;
+          Memory.economyType = 'war';
+      } else if(Game.flags.seigeFlag) {
+          SpawnUtils.TOTAL_ATTACKER_SIZE = SeigeEconomy.TOTAL_ATTACKER_SIZE;
+          SpawnUtils.TOTAL_HEALER_SIZE = SeigeEconomy.TOTAL_HEALER_SIZE;
+          SpawnUtils.TOTAL_DISMANTLER_SIZE = SeigeEconomy.TOTAL_DISMANTLER_SIZE;
+          SpawnUtils.TOTAL_MEAT_GRINDERS = SeigeEconomy.TOTAL_MEAT_GRINDERS;
+          Memory.economyType = 'seige';
+      } else {
+          SpawnUtils.TOTAL_ATTACKER_SIZE = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE;
+          SpawnUtils.TOTAL_HEALER_SIZE = PeaceTimeEconomy.TOTAL_HEALER_SIZE;
+          SpawnUtils.TOTAL_DISMANTLER_SIZE = PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE;
+          SpawnUtils.TOTAL_MEAT_GRINDERS = PeaceTimeEconomy.TOTAL_MEAT_GRINDERS;
+          Memory.economyType = 'peace';
+      }
+
+  }
+
+
 
 
   // Creep behavior loop.

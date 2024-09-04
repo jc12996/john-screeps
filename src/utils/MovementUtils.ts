@@ -46,6 +46,11 @@ export class MovementUtils {
 
     public static defaultArmyMovement(creep: Creep, flag: Flag | Creep | undefined):void {
 
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        if(!canProceed){
+            return;
+        }
+
         if(flag) {
             MovementUtils.goToFlag(creep,flag)
         }else if(Game?.flags?.attackFlag) {
@@ -99,11 +104,11 @@ export class MovementUtils {
 
         if(ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-        } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
-        } else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        }  else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if(roomRallyPointFlag[0]) {
             creep.moveTo(roomRallyPointFlag[0]);
@@ -136,12 +141,17 @@ export class MovementUtils {
             return false;
         }
 
+        if(creep.memory.role !== 'settler' && creep.memory.role !== 'claimer') {
+            return true;
+        }
+
         if(!!!AutoSpawn.nextClaimFlag) {
             return true;
         }
 
-        if(!!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room && AutoSpawn.nextClaimFlag.room.controller.my) {
-            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag)
+        if(!!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room){
+            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
+
             return false;
         }
 
@@ -157,6 +167,9 @@ export class MovementUtils {
             if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
+            } else if(tombstones.length  && creep.withdraw(tombstones[0] , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombstones[0]);
+                return;
             } else if(storage && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
                 return;
@@ -166,6 +179,9 @@ export class MovementUtils {
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
             if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
+                return;
+            } else if(tombstones.length  && creep.withdraw(tombstones[0] , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombstones[0]);
                 return;
             }
             return;

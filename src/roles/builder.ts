@@ -111,14 +111,14 @@ export class Builder {
                     creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(storageSite){
-                if(creep.build(storageSite) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(storageSite, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
             else if(extensions[0]){
                 if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }
+            else if(storageSite){
+                if(creep.build(storageSite) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(storageSite, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
             else if(container.length){

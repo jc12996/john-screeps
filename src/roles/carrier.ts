@@ -17,12 +17,29 @@ export class Carrier {
             }
         });
 
+        const extensionLinkFlag2= creep.room.find(FIND_FLAGS, {
+            filter: (link) => {
+                return link.name == creep.room.name+'ExtensionLink2'
+            }
+        });
+
+
+        const links = creep.room.find(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    structure.structureType === STRUCTURE_LINK
+
+
+                )
+            }
+        });
+
         let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
 
         if(carriers.length > 0 && carriers[0] &&  creep.name === carriers[0].name) {
             creep.memory.extensionFarm1 = true;
             creep.memory.extensionFarm2 = false;
-        } else if(carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
+        } else if(extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
             creep.memory.extensionFarm1 = false;
             creep.memory.extensionFarm2 = true;
         } else {
@@ -41,15 +58,6 @@ export class Carrier {
         }
 
 
-        const links = creep.room.find(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                    structure.structureType === STRUCTURE_LINK
-
-
-                )
-            }
-        });
 
 
         const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -116,11 +124,7 @@ export class Carrier {
             }
         });
 
-        const extensionLinkFlag2= creep.room.find(FIND_FLAGS, {
-            filter: (link) => {
-                return link.name == creep.room.name+'ExtensionLink2'
-            }
-        });
+
 
         const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
             filter:  (creep) => {

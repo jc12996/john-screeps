@@ -1,3 +1,4 @@
+import { PeaceTimeEconomy } from "./EconomiesUtils";
 import { RoomUtils } from "./RoomUtils";
 
 export enum PartCosts {
@@ -18,6 +19,10 @@ const myFriends = ['kailin-limble','DonkeyKong', 'Xarroc'];
 
 export class SpawnUtils {
     static SHOW_VISUAL_CREEP_ICONS: boolean = true;
+    public static TOTAL_ATTACKER_SIZE = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * 1;
+    public static TOTAL_HEALER_SIZE = PeaceTimeEconomy.TOTAL_HEALER_SIZE * 1;
+    public static TOTAL_DISMANTLER_SIZE = PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE *1;
+    public static  TOTAL_MEAT_GRINDERS = PeaceTimeEconomy.TOTAL_MEAT_GRINDERS * 1;
     public static FRIENDLY_OWNERS_FILTER(owner: Owner | undefined): boolean {
         if(!owner) {
             return false;
@@ -125,8 +130,8 @@ export class SpawnUtils {
                 }
             case 'carrier':
                  //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-                 if(energyAvailable >= (PartCosts.MOVE * 40) + (PartCosts.CARRY * 12)) {
-                    for (let i = 0; i < 40; i++) {
+                 if(energyAvailable >= (PartCosts.MOVE * 36) + (PartCosts.CARRY * 14)) {
+                    for (let i = 0; i < 36; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 14; i++) {
@@ -436,39 +441,39 @@ export class SpawnUtils {
                     return null;
                 }
             case 'attacker':
-                if(energyAvailable >= 3080) {
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 30; i++) {
+                if(energyAvailable >= 3040) {
+
+                    for (let i = 0; i < 23; i++) {
                         partsPattern.push(ATTACK);
                     }
-                    for (let i = 0; i < 12; i++) {
+                    for (let i = 0; i < 24; i++) {
                         partsPattern.push(MOVE);
                     }
                     break;
                 }
                 else if(energyAvailable >= 2060) {
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
-                    }
+
                     for (let i = 0; i < 17; i++) {
                         partsPattern.push(ATTACK);
                     }
-                    for (let i = 0; i < 12; i++) {
+                    for (let i = 0; i < 3; i++) {
+                        partsPattern.push(TOUGH);
+                    }
+                    for (let i = 0; i < 15; i++) {
                         partsPattern.push(MOVE);
                     }
                     break;
                 }
                 else if(energyAvailable >= 1320) {
 
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 8; i++) {
+
+                    for (let i = 0; i < 7; i++) {
                         partsPattern.push(ATTACK);
                     }
-                    for (let i = 0; i < 12; i++) {
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(TOUGH);
+                    }
+                    for (let i = 0; i < 15; i++) {
                         partsPattern.push(MOVE);
                     }
                     break;

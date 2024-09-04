@@ -19,6 +19,11 @@ export class Dismantler {
             creep.say('🧱');
         }
 
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        if(!canProceed){
+            return;
+        }
+
         const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_CONTROLLER

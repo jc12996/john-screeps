@@ -11,6 +11,11 @@ export class MeatGrinder {
                 creep.say('🍖');
             }
 
+            const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+            if(!canProceed){
+                return;
+            }
+
             if(Game.flags?.preMeatFlag){
                 MovementUtils.goToFlag(creep,Game.flags?.preMeatFlag);
                 return;

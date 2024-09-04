@@ -46,6 +46,11 @@ export class Attacker {
             return;
         }
 
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        if(!canProceed){
+            return;
+        }
+
         var structures = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_ROAD && structure.structureType != STRUCTURE_CONTROLLER);

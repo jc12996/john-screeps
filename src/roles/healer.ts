@@ -21,6 +21,11 @@ export class Healer {
             creep.say('🏥',false);
         }
 
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        if(!canProceed){
+            return;
+        }
+
 
         var friendlyHurtCreeps = creep.room.find(FIND_MY_CREEPS, {
             filter: function(object) {

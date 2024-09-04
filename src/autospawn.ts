@@ -3,6 +3,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { RoomUtils } from "utils/RoomUtils";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { HighUpkeep, LowUpkeep, MediumUpkeep, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
+import { loadavg } from "os";
 
 
 export class AutoSpawn {
@@ -78,45 +79,6 @@ export class AutoSpawn {
         });
 
 
-        let TOTAL_ATTACKER_SIZE = 0;
-        let TOTAL_HEALER_SIZE = 0;
-        let TOTAL_DISMANTLER_SIZE = 0;
-        let TOTAL_MEAT_GRINDERS = 0;
-
-        if(Game?.flags?.rallyFlag?.room) {
-            const rallyLocationHasHostiles = Game.flags.rallyFlag.room.find(FIND_HOSTILE_CREEPS, {
-                filter:  (ccc) => {
-                    return ccc.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(ccc.owner)
-                }
-            })
-            const rallyLocationHasHostileStructs = Game.flags.rallyFlag.room.find(FIND_HOSTILE_STRUCTURES, {
-                filter:  (ccc) => {
-                    return ccc.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(ccc.owner) && ccc.structureType !== STRUCTURE_CONTROLLER
-                }
-            })
-
-            if(rallyLocationHasHostiles?.length || rallyLocationHasHostileStructs?.length){
-                TOTAL_ATTACKER_SIZE = WarTimeEconomy.TOTAL_ATTACKER_SIZE;
-                TOTAL_HEALER_SIZE = WarTimeEconomy.TOTAL_HEALER_SIZE;
-                TOTAL_DISMANTLER_SIZE = WarTimeEconomy.TOTAL_DISMANTLER_SIZE;
-                TOTAL_MEAT_GRINDERS = WarTimeEconomy.TOTAL_MEAT_GRINDERS;
-                Memory.economyType = 'war';
-            } else if(Game.flags.seigeFlag) {
-                TOTAL_ATTACKER_SIZE = SeigeEconomy.TOTAL_ATTACKER_SIZE;
-                TOTAL_HEALER_SIZE = SeigeEconomy.TOTAL_HEALER_SIZE;
-                TOTAL_DISMANTLER_SIZE = SeigeEconomy.TOTAL_DISMANTLER_SIZE;
-                TOTAL_MEAT_GRINDERS = SeigeEconomy.TOTAL_MEAT_GRINDERS;
-                Memory.economyType = 'seige';
-            } else {
-                TOTAL_ATTACKER_SIZE = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE;
-                TOTAL_HEALER_SIZE = PeaceTimeEconomy.TOTAL_HEALER_SIZE;
-                TOTAL_DISMANTLER_SIZE = PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE;
-                TOTAL_MEAT_GRINDERS = PeaceTimeEconomy.TOTAL_MEAT_GRINDERS;
-                Memory.economyType = 'peace';
-            }
-
-        }
-
 
         const activeharvesters = harvesters.filter((hhh) => hhh.memory?.targetSource );
         const nonactiveharvesters = harvesters.filter((hhh) => !hhh.memory?.targetSource );
@@ -167,7 +129,7 @@ export class AutoSpawn {
 
         //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
         //console.log(`${spawn.name} has rally flag:`,!!Game.flags.rallyFlag);
-        if(claimers.length < numberOfNeededSettlers
+        if(claimers.length < LowUpkeep.Claimers
             && !!this.nextClaimFlag
             && totalNumberOfControlledRooms < Game.gcl.level
             && !this.nextClaimFlag.room?.controller?.my
@@ -203,12 +165,16 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
             options = {memory: {role: 'carrier'}}
 
+        } else if((spawn.room.controller.level < 2 || extensions.length >= 4) && upgraders.length < numberOfNeededUpgraders) {
+            name = 'Upgrader' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
+            options = {memory: {role: 'upgrader'}                }
         } else if (spawn.room.controller.level >= 2 && constructionSites.length && !spawn.spawning && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && ActiveRoomSources.length > 0) {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
         }
-        else if((!storage || storage.store[RESOURCE_ENERGY] <= 500000) && repairableStuff.length && !spawn.spawning && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
+        else if(repairableStuff.length && !spawn.spawning && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
             name = 'Repairer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
             options = {memory: {role: 'repairer'}            }
@@ -218,39 +184,53 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
         }
-        else if(!!Game.flags.rallyFlag && attackers.length < TOTAL_ATTACKER_SIZE)  {
+        else if(Game.flags.rallyFlag && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
             options = {memory: {role: 'attacker', isArmySquad:true}};
         }
-        else if(!!Game.flags.rallyFlag && healers.length < TOTAL_HEALER_SIZE)  {
+        else if(Game.flags.rallyFlag && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel, 0);
             options = {memory: {role: 'healer', isArmySquad:true}};
         }
-        else if(!!Game.flags.rallyFlag && dismantlers.length < TOTAL_DISMANTLER_SIZE)  {
+        else if(Game.flags.rallyFlag && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
             name = 'Dismantler' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
             options = {memory: {role: 'dismantler', isArmySquad:true}};
-        } else if (!!Game.flags.rallyFlag && meatGrinders.length < TOTAL_MEAT_GRINDERS) {
+        } else if (Game.flags.rallyFlag && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS) {
             name = 'MeatGrinder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
-        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && upgraders.length < numberOfNeededUpgraders) {
-            name = 'Upgrader' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
-            options = {memory: {role: 'upgrader'}                }
+
+
+
+
+
+
+
+
+
+        if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
+
+            ScaffoldingUtils.createRoadX(spawn);
+
+            if(spawn.room.controller.level <= 5 ) {
+
+                ScaffoldingUtils.createExtensions(spawn);
+                if(!Game.flags[spawn.room.name+'NoWalls']) {
+                    ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
+                }
+            }
+
+            const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
+            if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
+
+                ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
+                ScaffoldingUtils.createExtensions(spawn,extensionFarm2Flag);
+            }
         }
-
-
-
-
-
-
-
-
-
 
 
         if(spawn && spawn.spawning) {
@@ -262,33 +242,6 @@ export class AutoSpawn {
                 spawn.pos.x + 1,
                 spawn.pos.y,
                 {align: 'left', opacity: 0.8});
-
-
-                if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
-
-                    if(spawn.room.controller.level <= 5 ) {
-                        ScaffoldingUtils.createRoadX(spawn);
-                        ScaffoldingUtils.createExtensions(spawn);
-                        if(!Game.flags[spawn.room.name+'NoWalls']) {
-                            ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
-                        }
-                    }
-
-                    const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
-                    if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
-
-                        ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
-                        ScaffoldingUtils.createExtensions(spawn,extensionFarm2Flag);
-                    }
-                }
-
-
-
-
-
-
-
-
         } else if (bodyParts != null && name != null) {
             let spawnResult = spawn.spawnCreep(bodyParts,name, options);
             if(spawnResult !== 0) {

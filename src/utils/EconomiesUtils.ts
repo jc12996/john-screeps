@@ -15,7 +15,7 @@ export enum MediumUpkeep {
     Builder = 2,// Per Source Slot
     Repairer = 1,// Per Source Slot
     Upgrader = 1,// Per Source Slot
-    Defender = 0,// Per Source Slot
+    Defender = 1,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }
@@ -26,7 +26,7 @@ export enum HighUpkeep {
     Builder = 2,// Per Source Slot
     Repairer = 1,// Per Source Slot
     Upgrader = 1,// Per Source Slot
-    Defender = 0,// Per Source Slot
+    Defender = 1,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }
@@ -43,7 +43,7 @@ export enum SeigeEconomy {
 export enum WarTimeEconomy {
     //ARMY Economy
     TOTAL_ATTACKER_SIZE = 12,
-    TOTAL_HEALER_SIZE = 12,
+    TOTAL_HEALER_SIZE = 6,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 
@@ -51,9 +51,11 @@ export enum WarTimeEconomy {
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 6,
-    TOTAL_HEALER_SIZE = 12,
+    TOTAL_ATTACKER_SIZE = 3,
+    TOTAL_HEALER_SIZE = 6,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 
 }
+
+
