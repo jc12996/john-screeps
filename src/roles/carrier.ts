@@ -97,7 +97,7 @@ export class Carrier {
             }
         });
 
-        const towers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const towers = creep.pos.findInRange(FIND_STRUCTURES, 10, {
             filter:  (structure) => {
                 return (
                    structure.structureType == STRUCTURE_TOWER && structure.room?.controller?.my
@@ -246,7 +246,7 @@ export class Carrier {
                     creep.say('🚚 E');
                 }
                 creep.moveTo(extension);
-            }else if(towers && creep.transfer(towers, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else if(towers.length && creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 if(creep.memory?.extensionFarm1) {
                     creep.say("🚚 XT");
                 } else if( creep.memory?.extensionFarm2){
@@ -254,8 +254,8 @@ export class Carrier {
                 } else {
                     creep.say('🚚 T');
                 }
-                creep.moveTo(towers);
-            }else if(extension && !towers && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(towers[0]);
+            }else if(extension && !towers.length && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 if(creep.memory?.extensionFarm1) {
                     creep.say("🚚 XE");
                 } else if( creep.memory?.extensionFarm2){
