@@ -16,22 +16,23 @@ export class AutoSpawn {
 
         const roomsWithSpawns = _.filter(Game.rooms, (room) => { return room.find(FIND_MY_SPAWNS)?.length > 0 });
 
+        this.totalSpawns = 0;
         roomsWithSpawns.forEach(roomWithSpawn => {
-            this.totalSpawns += roomWithSpawn.find(FIND_MY_SPAWNS).length
-        })
+            const spawnsInRoom = roomWithSpawn.find(FIND_MY_SPAWNS);
+            if(spawnsInRoom.length > 0) {
 
-        for(var room_it in Game.rooms) {
-            var room = Game.rooms[room_it]
-            var spawn = room.find(FIND_MY_SPAWNS)[0];
-            if(!spawn) {
-                continue;
+                for(const spawn of spawnsInRoom) {
+                    this.totalSpawns++;
+                    this.spawnSequence(spawn);
+                }
             }
-            this.spawnSequence(spawn);
-        }
+
+        })
     }
 
     private static spawnSequence(spawn: any): void {
 
+        //console.log("totalSpawns",this.totalSpawns);
         let bodyParts = null;
         let name = null;
         let options = undefined;
