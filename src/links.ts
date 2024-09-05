@@ -1,5 +1,3 @@
-import { exec } from "child_process";
-
 export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
     var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {

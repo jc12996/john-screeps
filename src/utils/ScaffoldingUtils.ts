@@ -50,9 +50,11 @@ export class ScaffoldingUtils {
     public static createExtensions(creepOrSpawn: Creep | StructureSpawn, totalSpawns:number, flag: Flag | undefined = undefined): void {
         var spawnsAmount = creepOrSpawn.room.find(FIND_MY_SPAWNS);
 
-        if(!spawnsAmount[0]) {
+        if(!spawnsAmount.length) {
             return;
         }
+
+
 
         let pos = spawnsAmount[0].pos;
         if(flag) {
@@ -61,7 +63,7 @@ export class ScaffoldingUtils {
 
 
 
-        if(creepOrSpawn.room.controller && creepOrSpawn.room.controller.my && spawnsAmount.length === 1) {
+        if(creepOrSpawn.room.controller && creepOrSpawn.room.controller.my && spawnsAmount.length >= 1) {
 
             if(creepOrSpawn.room?.controller?.my && creepOrSpawn.room.controller?.level) {
 
@@ -131,7 +133,7 @@ export class ScaffoldingUtils {
                         creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
                     }
                 }
-
+                //console.log(creepOrSpawn.room.name,'createExtensions',creepOrSpawn.room.controller.level)
                 if (creepOrSpawn.room.controller.level >= 7 ) {
 
                     const spawnConstructionSites = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
@@ -143,7 +145,7 @@ export class ScaffoldingUtils {
 
                     if(spawnConstructionSites.length == 0 && creepOrSpawn.room?.controller?.my && !!flag?.name) {
                         creepOrSpawn.room?.createConstructionSite(flag.pos.x,flag.pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
-                        console.log('Creating '+ 'Spawn'+(totalSpawns + 1))
+                        //console.log('Creating '+ 'Spawn'+(totalSpawns + 1))
                     }
 
                     const terminalConstructionSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
@@ -155,10 +157,11 @@ export class ScaffoldingUtils {
 
                     if(terminalConstructionSite.length == 0 && creepOrSpawn.room?.controller?.my) {
                         creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y,STRUCTURE_TERMINAL);
-                        console.log('Creating Terminal',creepOrSpawn.room.name)
+                        //console.log('Creating Terminal',creepOrSpawn.room.name)
                     }
 
 
+                    //console.log('Creating Controller Link',creepOrSpawn.room.name)
                     if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
                         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
                     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
