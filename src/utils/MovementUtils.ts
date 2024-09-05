@@ -183,4 +183,12 @@ export class MovementUtils {
         }
 
     }
+
+    public static strongUpgraderSequence(creep:Creep,controllerLink:any) {
+        creep.moveTo(controllerLink.pos.x, controllerLink.pos.y);
+        if(controllerLink && controllerLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(controllerLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            creep.moveTo(controllerLink);
+            return;
+        }
+    }
 }

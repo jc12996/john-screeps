@@ -38,13 +38,13 @@ export class Tower {
 
         const containers = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength * .1)
+                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength * .5)
             }
         });
 
         const ramparts = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength * .1)
+                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength * .5)
             }
         });
 

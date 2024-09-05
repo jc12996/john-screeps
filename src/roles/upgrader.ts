@@ -1,3 +1,4 @@
+import { getLinkByTag } from "links";
 import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 
@@ -13,7 +14,7 @@ export class Upgrader {
             creep.memory.upgrading = false;
             creep.say('🔄 harvest');
         }
-        if(!creep.memory.upgrading && creep.store.getFreeCapacity() == 0) {
+        if(!creep.memory.upgrading && (creep.store.getFreeCapacity() == 0 || (creep.memory.mainUpgrader && creep.store[RESOURCE_ENERGY] > 0) || creep.store[RESOURCE_ENERGY] > 200)) {
             creep.memory.upgrading = true;
             creep.say('⚡ upgrade');
         }
@@ -24,7 +25,34 @@ export class Upgrader {
             }
            })
 
+        const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    structure.structureType == STRUCTURE_SPAWN && structure.room?.controller?.my
 
+
+                )
+            }
+        });
+
+        const highVolumeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store[RESOURCE_ENERGY] > 800;
+            }
+        });
+
+        let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn?.room.name);
+
+        if(upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level == 7 && highVolumeStorage) {
+            creep.memory.mainUpgrader = true;
+        }  else {
+            creep.memory.mainUpgrader = false;
+        }
 
 
 
@@ -37,6 +65,18 @@ export class Upgrader {
             }
         }
         else  {
+
+            if(creep.memory.mainUpgrader &&  creep.room?.controller  && creep.room?.controller.my) {
+                const controllerLinkFlag = Game.flags[creep.room.name+'ControllerLink1'];
+                const controllerLink = getLinkByTag(creep,'ControllerLink1');
+                if(creep.memory.role === 'upgrader' && creep.room?.controller?.level >= 6 && controllerLinkFlag) {
+                    creep.say("⚡💪");
+                    MovementUtils.strongUpgraderSequence(creep,controllerLink);
+                    return;
+                }
+
+            }
+
             MovementUtils.generalGatherMovement(creep);
 
          }

@@ -77,17 +77,29 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
     if(filledSourceLink1) {
 
         const extensionLink = getLinkByTag(creep, 'ExtensionLink');
+        const controllerLink = getLinkByTag(creep,'ControllerLink1');
 
-        if(extensionLink && filledSourceLink1.structureType === STRUCTURE_LINK) {
+
+        if((controllerLink || extensionLink) && filledSourceLink1.structureType === STRUCTURE_LINK) {
             const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
 
             creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
 
-            const transfer1 = filledSourceLink1.transferEnergy(extensionLink,filledSourceLink1.store[RESOURCE_ENERGY]);
-
-            if(transfer1 === ERR_FULL) {
-                filledSourceLink1.transferEnergy(extensionLink2,filledSourceLink1.store[RESOURCE_ENERGY]);
+            if(controllerLink) {
+                creep.room?.createConstructionSite(controllerLink.pos.x,controllerLink.pos.y,STRUCTURE_RAMPART);
             }
+
+            const transfer1 = filledSourceLink1.transferEnergy(controllerLink,filledSourceLink1.store[RESOURCE_ENERGY]);
+
+            if(!controllerLink || transfer1 !== OK) {
+                const transfer2 = filledSourceLink1.transferEnergy(extensionLink,filledSourceLink1.store[RESOURCE_ENERGY]);
+
+                if(transfer2 === ERR_FULL) {
+                    filledSourceLink1.transferEnergy(extensionLink2,filledSourceLink1.store[RESOURCE_ENERGY]);
+                }
+            }
+
+
 
         }
 
