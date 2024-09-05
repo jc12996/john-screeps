@@ -76,10 +76,10 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
     if(filledSourceLink1) {
 
-        const extensionLink = getExtensionLink(creep);
+        const extensionLink = getLinkByTag(creep, 'ExtensionLink');
 
         if(extensionLink && filledSourceLink1.structureType === STRUCTURE_LINK) {
-            const extensionLink2 = getExtensionLink(creep,'2');
+            const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
 
             creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
 
@@ -109,23 +109,20 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
 }
 
-export function getExtensionLink(creep: Creep, extensionLinkNumber: string = ''): StructureLink {
-
-
-
-    const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
+export function getLinkByTag(creep: Creep, linkTag: string): StructureLink {
+    const linkFlag= creep.room.find(FIND_FLAGS, {
         filter: (link) => {
-            return link.name == creep.room.name+'ExtensionLink'+extensionLinkNumber
+            return link.name == creep.room.name+linkTag
         }
     })[0] ?? null;
 
 
-    const extensionLinks: Array<StructureLink> = creep.room.find(FIND_MY_STRUCTURES,{
+    const links: Array<StructureLink> = creep.room.find(FIND_MY_STRUCTURES,{
         filter: (struc) => {
 
-            return extensionLinkFlag && struc && struc.structureType === STRUCTURE_LINK && struc.pos.x == extensionLinkFlag.pos.x && struc.pos.y == extensionLinkFlag.pos.y
+            return linkFlag && struc && struc.structureType === STRUCTURE_LINK && struc.pos.x == linkFlag.pos.x && struc.pos.y == linkFlag.pos.y
         }
     });
-    return extensionLinks[0];
+    return links[0];
 
 }

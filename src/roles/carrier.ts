@@ -1,6 +1,5 @@
 import { SpawnUtils } from "utils/SpawnUtils";
-import { Upgrader } from "./upgrader";
-import { getExtensionLink } from "links";
+import { getLinkByTag } from "links";
 import { MovementUtils } from "utils/MovementUtils";
 
 export class Carrier {
@@ -179,7 +178,7 @@ export class Carrier {
 
                 if(creep.memory.extensionFarm2) {
                     const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
-                    const extensionLink = getExtensionLink(creep,'2');
+                    const extensionLink = getLinkByTag(creep,'ExtensionLink2');
                     if(creep.memory.role === 'carrier' && (nearestStorage || links.length >= 3) && creep.room?.controller?.level >= 6 && extensionFarm2Flag) {
                         creep.say("🚚 X2");
                         MovementUtils.xHarvesterMovementSequence(creep,extensionFarm2Flag,extensionLink,nearestStorage,spawns,towers,extension);
@@ -188,7 +187,7 @@ export class Carrier {
                     return;
                 }
 
-                const extensionLink1 = getExtensionLink(creep);
+                const extensionLink1 = getLinkByTag(creep, 'ExtensionLink');
                 if(creep.memory.role === 'carrier' && extensionLink1 && (nearestStorage || links.length >= 2) && creep.room?.controller?.level >= 5) {
                     creep.say("🚚 X");
                     MovementUtils.xHarvesterMovementSequence(creep,spawn,extensionLink1,nearestStorage,spawns,towers,extension);
