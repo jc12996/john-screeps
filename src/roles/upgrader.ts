@@ -36,8 +36,24 @@ export class Upgrader {
         });
 
         let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn?.room.name);
+        var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+            }
+        });
 
-        if(upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level == 7) {
+        const highVolumeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store[RESOURCE_ENERGY] > 800;
+            }
+        });
+
+        if(upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level == 7 && !hostileCreeps && highVolumeStorage) {
             creep.memory.mainUpgrader = true;
         }  else {
             creep.memory.mainUpgrader = false;

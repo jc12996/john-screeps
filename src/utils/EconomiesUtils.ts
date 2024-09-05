@@ -3,8 +3,8 @@ export enum LowUpkeep {
     Carriers  = 1.5,// Per Source Slot
     Builder = 1,// Per Source
     Repairer = 1,// Per Source
-    Upgrader = 2,// Per Source
-    Defender = .5,// Per Source Slot
+    Upgrader = 1,// Per Source
+    Defender = 0,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }
@@ -14,7 +14,7 @@ export enum MediumUpkeep {
     Carriers  = 1.5,// Per Source Slot
     Builder = 2,// Per Source
     Repairer = 1,// Per Source
-    Upgrader = 2,// Per Source
+    Upgrader = 1,// Per Source
     Defender = 1,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
@@ -25,7 +25,7 @@ export enum HighUpkeep {
     Carriers  = 1.5,// Per Source Slot
     Builder = 2,// Per Source
     Repairer = 1,// Per Source
-    Upgrader = 3,// Per Source
+    Upgrader = 1,// Per Source
     Defender = 1,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
@@ -51,7 +51,7 @@ export enum WarTimeEconomy {
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 3,
+    TOTAL_ATTACKER_SIZE = 0,
     TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0

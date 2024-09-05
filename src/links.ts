@@ -1,3 +1,5 @@
+import { SpawnUtils } from "utils/SpawnUtils";
+
 export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
     var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -78,6 +80,21 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
 
         const extensionLink = getLinkByTag(creep, 'ExtensionLink');
         const controllerLink = getLinkByTag(creep,'ControllerLink1');
+        const hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+            }
+        });
+        const highVolumeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store[RESOURCE_ENERGY] > 800;
+            }
+        });
 
 
         if((controllerLink || extensionLink) && filledSourceLink1.structureType === STRUCTURE_LINK) {
@@ -89,9 +106,13 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
                 creep.room?.createConstructionSite(controllerLink.pos.x,controllerLink.pos.y,STRUCTURE_RAMPART);
             }
 
-            const transfer1 = filledSourceLink1.transferEnergy(controllerLink,filledSourceLink1.store[RESOURCE_ENERGY]);
+            let transfer1 = null;
+            if(!hostileCreeps && controllerLink && highVolumeStorage) {
+                transfer1 = filledSourceLink1.transferEnergy(controllerLink,filledSourceLink1.store[RESOURCE_ENERGY]);
+            }
 
-            if(!controllerLink || transfer1 !== OK) {
+
+            if(transfer1 !== OK) {
                 const transfer2 = filledSourceLink1.transferEnergy(extensionLink,filledSourceLink1.store[RESOURCE_ENERGY]);
 
                 if(transfer2 === ERR_FULL) {
