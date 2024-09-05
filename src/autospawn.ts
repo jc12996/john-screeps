@@ -89,9 +89,9 @@ export class AutoSpawn {
         const nonactiveharvesters = harvesters.filter((hhh) => !hhh.memory?.targetSource );
         const numberOfNeededHarvestersMax = LowUpkeep.Harvesters * RoomSources.length;
         let numberOfNeededCarriers = LowUpkeep.Carriers * harvesters.length;
-        let numberOfNeededBuilders = LowUpkeep.Builder * harvesters.length;
-        let numberOfNeededRepairers = LowUpkeep.Repairer * harvesters.length;
-        let numberOfNeededUpgraders = LowUpkeep.Upgrader * harvesters.length;
+        let numberOfNeededBuilders = LowUpkeep.Builder * RoomSources.length;
+        let numberOfNeededRepairers = LowUpkeep.Repairer * RoomSources.length;
+        let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
 
         if(commandLevel >= 6 && numberOfNeededCarriers < 2) {
@@ -101,16 +101,16 @@ export class AutoSpawn {
         if(storage){
             if(storage.store[RESOURCE_ENERGY] > 500000) {
                 numberOfNeededCarriers = MediumUpkeep.Carriers * harvesters.length;
-                numberOfNeededUpgraders = MediumUpkeep.Upgrader * harvesters.length
-                numberOfNeededBuilders = MediumUpkeep.Builder * harvesters.length
-                numberOfNeededRepairers = MediumUpkeep.Repairer * harvesters.length
+                numberOfNeededUpgraders = MediumUpkeep.Upgrader * RoomSources.length
+                numberOfNeededBuilders = MediumUpkeep.Builder * RoomSources.length
+                numberOfNeededRepairers = MediumUpkeep.Repairer * RoomSources.length
                 numberOfNeededSettlers = MediumUpkeep.Settlers;
                 //console.log(`Medium Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             } else if(storage.store[RESOURCE_ENERGY] > 800000) {
                 numberOfNeededCarriers = HighUpkeep.Carriers * harvesters.length;
-                numberOfNeededUpgraders = HighUpkeep.Upgrader * harvesters.length
-                numberOfNeededBuilders = HighUpkeep.Builder * harvesters.length
-                numberOfNeededRepairers = HighUpkeep.Repairer * harvesters.length
+                numberOfNeededUpgraders = HighUpkeep.Upgrader * RoomSources.length
+                numberOfNeededBuilders = HighUpkeep.Builder * RoomSources.length
+                numberOfNeededRepairers = HighUpkeep.Repairer *RoomSources.length
                 numberOfNeededSettlers = HighUpkeep.Settlers;
                 //console.log(`High Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             }
@@ -216,25 +216,7 @@ export class AutoSpawn {
 
 
 
-        if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
 
-            ScaffoldingUtils.createRoadX(spawn);
-
-            if(spawn.room.controller.level <= 5 ) {
-
-                ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns);
-                if(!Game.flags[spawn.room.name+'NoWalls']) {
-                    ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
-                }
-            }
-
-            const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
-            if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
-
-                ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
-                ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
-            }
-        }
 
 
         if(spawn && spawn.spawning) {
@@ -246,6 +228,26 @@ export class AutoSpawn {
                 spawn.pos.x + 1,
                 spawn.pos.y,
                 {align: 'left', opacity: 0.8});
+
+            if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
+
+                ScaffoldingUtils.createRoadX(spawn);
+
+                if(spawn.room.controller.level <= 5 ) {
+
+                    ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns);
+                    if(!Game.flags[spawn.room.name+'NoWalls']) {
+                        ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
+                    }
+                }
+
+                const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
+                if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
+
+                    ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
+                    ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
+                }
+            }
         } else if (bodyParts != null && name != null) {
             let spawnResult = spawn.spawnCreep(bodyParts,name, options);
             if(spawnResult !== 0) {
