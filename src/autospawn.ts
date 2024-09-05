@@ -4,6 +4,7 @@ import { RoomUtils } from "utils/RoomUtils";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { HighUpkeep, LowUpkeep, MediumUpkeep, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { loadavg } from "os";
+import { manageLinks } from "links";
 
 
 export class AutoSpawn {
@@ -75,6 +76,8 @@ export class AutoSpawn {
                 break;
             }
         }
+
+        manageLinks(spawn);
 
         //console.log('Next claim flag ',this.nextClaimFlag.name)
 

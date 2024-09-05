@@ -20,9 +20,11 @@ export class RepairUtils {
                     maxWallStrength = 200000;
                     break;
                 case 7:
+                    maxWallStrength = 300000;
+                    break;
                 case 8:
-                maxWallStrength = 1000000;
-                break;
+                    maxWallStrength = 1000000;
+                    break;
             }
 
         }

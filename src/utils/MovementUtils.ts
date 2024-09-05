@@ -163,10 +163,21 @@ export class MovementUtils {
 
         if(creep.memory.extensionFarm1) {
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
-            if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+
+            const largeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                       structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
+
+                    ) &&
+                        structure.store[RESOURCE_ENERGY] > 200000;
+                }
+            });
+            if(extensionLink && !largeStorage && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
-            } else if(storage && (spawns?.length || towers?.length || extension?.length) && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            } else if(storage && (spawns?.length || towers?.length || extension?.length || largeStorage) && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
                 return;
             }

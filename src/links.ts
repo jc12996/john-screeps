@@ -1,6 +1,6 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 
-export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
+export function manageLinks(creep: Creep | StructureSpawn) {
 
     var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter:  (structure) => {
@@ -76,16 +76,17 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
         )}
     })[0] ?? null
 
-    if(filledSourceLink1) {
+
 
         const extensionLink = getLinkByTag(creep, 'ExtensionLink');
+        const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
         const controllerLink = getLinkByTag(creep,'ControllerLink1');
         const hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
             }
         });
-        const highVolumeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const minimumStorageThreshold = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
                    structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
@@ -96,59 +97,73 @@ export function harvesterContainerSourceAndExtensionLinks(creep: Creep) {
             }
         });
 
+        const largeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
 
-        if((controllerLink || extensionLink) && filledSourceLink1.structureType === STRUCTURE_LINK) {
-            const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
 
-            creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
-
-            if(controllerLink) {
-                creep.room?.createConstructionSite(controllerLink.pos.x,controllerLink.pos.y,STRUCTURE_RAMPART);
+                ) &&
+                    structure.store[RESOURCE_ENERGY] > 200000;
             }
-
-            let transfer1 = null;
-            if(!hostileCreeps && controllerLink && highVolumeStorage) {
-                transfer1 = filledSourceLink1.transferEnergy(controllerLink,filledSourceLink1.store[RESOURCE_ENERGY]);
-            }
+        });
 
 
-            if(transfer1 !== OK) {
-                const transfer2 = filledSourceLink1.transferEnergy(extensionLink,filledSourceLink1.store[RESOURCE_ENERGY]);
 
-                if(transfer2 === ERR_FULL) {
-                    filledSourceLink1.transferEnergy(extensionLink2,filledSourceLink1.store[RESOURCE_ENERGY]);
+            if(filledSourceLink1 && filledSourceLink1.structureType === STRUCTURE_LINK) {
+                creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
+
+                if(controllerLink) {
+                    creep.room?.createConstructionSite(controllerLink.pos.x,controllerLink.pos.y,STRUCTURE_RAMPART);
                 }
             }
 
 
+            if(largeStorage) {
 
-        }
+                // SOURCE -> EXTENSION 1 -> [EXTENSION 2, CONTROLLER]
+                if(extensionLink2 && filledSourceLink1 &&  filledSourceLink1.structureType === STRUCTURE_LINK) {
+                    filledSourceLink1.transferEnergy(extensionLink2);
+                }
 
-    }
-
-    const sourceLink1 = creep.pos.findClosestByPath(FIND_STRUCTURES,{
-        filter: (struc) => {
-            return struc.structureType === STRUCTURE_LINK
-        }
-    })
+                if(controllerLink) {
+                    extensionLink.transferEnergy(controllerLink);
+                }
 
 
-    if(sourceLink1 && creep?.pos.inRangeTo(sourceLink1.pos.x,sourceLink1.pos.y, 1 )) {
-        creep.transfer(sourceLink1, RESOURCE_ENERGY)
-    }else if(container) {
-        creep.transfer(container, RESOURCE_ENERGY);
-    }
+                return;
+            }
+
+
+            if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
+                return;
+            }
+
+            // SOURCE -> CONTROLLER (IF Storage is above 800) -> EXTENSION 1 -> EXTENSION 2
+            let transfer1 = null;
+            if(!hostileCreeps && controllerLink && minimumStorageThreshold) {
+                transfer1 = filledSourceLink1.transferEnergy(controllerLink);
+            }
+
+
+            if(transfer1 !== OK) {
+                const transfer2 = filledSourceLink1.transferEnergy(extensionLink);
+
+                if(transfer2 === ERR_FULL) {
+                    filledSourceLink1.transferEnergy(extensionLink2);
+                }
+            }
 
 
 }
 
-export function getLinkByTag(creep: Creep, linkTag: string): StructureLink {
+export function getLinkByTag(creep: Creep | StructureSpawn, linkTag: string): StructureLink {
     const linkFlag= creep.room.find(FIND_FLAGS, {
         filter: (link) => {
+
             return link.name == creep.room.name+linkTag
         }
     })[0] ?? null;
-
 
     const links: Array<StructureLink> = creep.room.find(FIND_MY_STRUCTURES,{
         filter: (struc) => {
