@@ -141,7 +141,7 @@ export function manageLinks(creep: Creep | StructureSpawn) {
 
             // SOURCE -> CONTROLLER (IF Storage is above 800) -> EXTENSION 1 -> EXTENSION 2
             let transfer1 = null;
-            if(!hostileCreeps && controllerLink && minimumStorageThreshold) {
+            if(!hostileCreeps && controllerLink && minimumStorageThreshold  && creep.room.controller && creep.room.controller?.level <= 7) {
                 transfer1 = filledSourceLink1.transferEnergy(controllerLink);
             }
 

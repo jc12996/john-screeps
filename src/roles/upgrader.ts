@@ -1,6 +1,7 @@
 import { getLinkByTag } from "links";
 import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
+import { Carrier } from "./carrier";
 
 export class Upgrader {
     public static run(creep: Creep): void {
@@ -36,6 +37,10 @@ export class Upgrader {
         });
 
         let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn?.room.name);
+        if(upgraders[0]  !== creep && creep.room.controller?.level == 8) {
+            Carrier.run(creep);
+            return;
+        }
         var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
@@ -53,7 +58,8 @@ export class Upgrader {
             }
         });
 
-        if(upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level >= 7 && !hostileCreeps && highVolumeStorage) {
+        const controllerLink = getLinkByTag(creep,'ControllerLink1');
+        if(controllerLink && upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level >= 7 && !hostileCreeps && highVolumeStorage) {
             creep.memory.mainUpgrader = true;
         }  else {
             creep.memory.mainUpgrader = false;
