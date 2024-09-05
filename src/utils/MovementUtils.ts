@@ -158,7 +158,7 @@ export class MovementUtils {
         return true;
     }
 
-    public static xHarvesterMovementSequence(creep:Creep,xTarget:any,extensionLink: any,storage: any) {
+    public static xHarvesterMovementSequence(creep:Creep,xTarget:any,extensionLink: any,storage: any,spawns: any,towers: any,extension: any) {
 
 
         if(creep.memory.extensionFarm1) {
@@ -166,7 +166,7 @@ export class MovementUtils {
             if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
-            } else if(storage && !extensionLink && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            } else if(storage && (spawns?.length || towers?.length || extension?.length) && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
                 return;
             }

@@ -182,7 +182,7 @@ export class Carrier {
                     const extensionLink = getExtensionLink(creep,'2');
                     if(creep.memory.role === 'carrier' && (nearestStorage || links.length >= 3) && creep.room?.controller?.level >= 6 && extensionFarm2Flag) {
                         creep.say("🚚 X2");
-                        MovementUtils.xHarvesterMovementSequence(creep,extensionFarm2Flag,extensionLink,nearestStorage);
+                        MovementUtils.xHarvesterMovementSequence(creep,extensionFarm2Flag,extensionLink,nearestStorage,spawns,towers,extension);
 
                     }
                     return;
@@ -191,7 +191,7 @@ export class Carrier {
                 const extensionLink1 = getExtensionLink(creep);
                 if(creep.memory.role === 'carrier' && extensionLink1 && (nearestStorage || links.length >= 2) && creep.room?.controller?.level >= 5) {
                     creep.say("🚚 X");
-                    MovementUtils.xHarvesterMovementSequence(creep,spawn,extensionLink1,nearestStorage);
+                    MovementUtils.xHarvesterMovementSequence(creep,spawn,extensionLink1,nearestStorage,spawns,towers,extension);
                     return;
                 }
             }
