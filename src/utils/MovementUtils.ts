@@ -104,10 +104,10 @@ export class MovementUtils {
 
         if(ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-        } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        }  else if(creep.memory.role === 'carrier' && container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
         }  else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if(roomRallyPointFlag[0]) {
@@ -158,30 +158,25 @@ export class MovementUtils {
         return true;
     }
 
-    public static xHarvesterMovementSequence(creep:Creep,xTarget:any,nearestAvailableWorkingRoleCreep:any,tombstones: any,extensionLink: any,storage: any) {
+    public static xHarvesterMovementSequence(creep:Creep,xTarget:any,extensionLink: any,storage: any) {
 
 
         if(creep.memory.extensionFarm1) {
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
-
             if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
-            } else if(tombstones.length  && creep.withdraw(tombstones[0] , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(tombstones[0]);
-                return;
-            } else if(storage && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            } else if(storage && !extensionLink && creep.withdraw(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
                 return;
             }
             return;
-        }else if(creep.memory.extensionFarm2) {
+        }
+
+        if(creep.memory.extensionFarm2) {
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
             if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
-                return;
-            } else if(tombstones.length  && creep.withdraw(tombstones[0] , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(tombstones[0]);
                 return;
             }
             return;

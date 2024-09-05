@@ -32,19 +32,19 @@ export class Tower {
 
         const roads = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_ROAD && structure.hits < RepairUtils.buildingRatios(structure).maxRoadStrength
+                return structure.structureType === STRUCTURE_ROAD && structure.hits < 500
             }
         });
 
         const containers = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < RepairUtils.buildingRatios(structure).maxContainerStrength
+                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength * .1)
             }
         });
 
         const ramparts = rooms.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_RAMPART && structure.hits < RepairUtils.buildingRatios(structure).maxRampartStrength
+                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength * .1)
             }
         });
 
@@ -58,6 +58,7 @@ export class Tower {
             Game.notify(`User ${username} spotted in room ${myRoomName}`);
             towers.forEach(tower => tower.attack(hostiles[0]));
             console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ");
+            return;
         }else if(friendlies.length > 0) {
             towers.forEach(tower => tower.heal(friendlies[0]));
             console.log("Tower is healing Creeps.");

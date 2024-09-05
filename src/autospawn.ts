@@ -14,7 +14,11 @@ export class AutoSpawn {
 
     public static run(): void {
 
-        this.totalSpawns = _.filter(Game.rooms, (room) => { return room.find(FIND_MY_SPAWNS)?.length > 0 })?.length;
+        const roomsWithSpawns = _.filter(Game.rooms, (room) => { return room.find(FIND_MY_SPAWNS)?.length > 0 });
+
+        roomsWithSpawns.forEach(roomWithSpawn => {
+            this.totalSpawns += roomWithSpawn.find(FIND_MY_SPAWNS).length
+        })
 
         for(var room_it in Game.rooms) {
             var room = Game.rooms[room_it]
@@ -31,18 +35,18 @@ export class AutoSpawn {
         let bodyParts = null;
         let name = null;
         let options = undefined;
-        let defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && (Game.flags.draftFlag || (creep.room.name == spawn.room.name)));
-        let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
-        let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn.room.name);
-        let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == spawn.room.name);
-        let repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.room.name == spawn.room.name);
-        let attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
-        let meatGrinders = _.filter(Game.creeps, (creep) => creep.memory.role == 'meatGrinder');
-        let settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
-        let claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
-        let healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
-        let dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
-        let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
+        const defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && (Game.flags.draftFlag || (creep.room.name == spawn.room.name)));
+        const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
+        const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn.room.name);
+        const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == spawn.room.name);
+        const repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.room.name == spawn.room.name);
+        const attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
+        const meatGrinders = _.filter(Game.creeps, (creep) => creep.memory.role == 'meatGrinder');
+        const settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
+        const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
+        const healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
+        const dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
+        const carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
         const repairableStuff = spawn.room.find(FIND_STRUCTURES, {
             filter: (site: { structureType: string; store: { [x: string]: number; }; }) => { return (
                 site.structureType == STRUCTURE_CONTAINER || site.structureType === STRUCTURE_RAMPART || site.structureType === STRUCTURE_ROAD); }
@@ -83,10 +87,10 @@ export class AutoSpawn {
         const activeharvesters = harvesters.filter((hhh) => hhh.memory?.targetSource );
         const nonactiveharvesters = harvesters.filter((hhh) => !hhh.memory?.targetSource );
         const numberOfNeededHarvestersMax = LowUpkeep.Harvesters * RoomSources.length;
-        let numberOfNeededCarriers = LowUpkeep.Carriers * activeharvesters.length;
-        let numberOfNeededBuilders = LowUpkeep.Builder * activeharvesters.length;
-        let numberOfNeededRepairers = LowUpkeep.Repairer * activeharvesters.length;
-        let numberOfNeededUpgraders = LowUpkeep.Upgrader * activeharvesters.length;
+        let numberOfNeededCarriers = LowUpkeep.Carriers * harvesters.length;
+        let numberOfNeededBuilders = LowUpkeep.Builder * harvesters.length;
+        let numberOfNeededRepairers = LowUpkeep.Repairer * harvesters.length;
+        let numberOfNeededUpgraders = LowUpkeep.Upgrader * harvesters.length;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
 
         if(commandLevel >= 6 && numberOfNeededCarriers < 2) {
@@ -95,17 +99,17 @@ export class AutoSpawn {
 
         if(storage){
             if(storage.store[RESOURCE_ENERGY] > 500000) {
-                numberOfNeededCarriers = MediumUpkeep.Carriers * activeharvesters.length;
-                numberOfNeededUpgraders = MediumUpkeep.Upgrader * activeharvesters.length
-                numberOfNeededBuilders = MediumUpkeep.Builder * activeharvesters.length
-                numberOfNeededRepairers = MediumUpkeep.Repairer * activeharvesters.length
+                numberOfNeededCarriers = MediumUpkeep.Carriers * harvesters.length;
+                numberOfNeededUpgraders = MediumUpkeep.Upgrader * harvesters.length
+                numberOfNeededBuilders = MediumUpkeep.Builder * harvesters.length
+                numberOfNeededRepairers = MediumUpkeep.Repairer * harvesters.length
                 numberOfNeededSettlers = MediumUpkeep.Settlers;
                 //console.log(`Medium Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             } else if(storage.store[RESOURCE_ENERGY] > 800000) {
-                numberOfNeededCarriers = HighUpkeep.Carriers * activeharvesters.length;
-                numberOfNeededUpgraders = HighUpkeep.Upgrader * activeharvesters.length
-                numberOfNeededBuilders = HighUpkeep.Builder * activeharvesters.length
-                numberOfNeededRepairers = HighUpkeep.Repairer * activeharvesters.length
+                numberOfNeededCarriers = HighUpkeep.Carriers * harvesters.length;
+                numberOfNeededUpgraders = HighUpkeep.Upgrader * harvesters.length
+                numberOfNeededBuilders = HighUpkeep.Builder * harvesters.length
+                numberOfNeededRepairers = HighUpkeep.Repairer * harvesters.length
                 numberOfNeededSettlers = HighUpkeep.Settlers;
                 //console.log(`High Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             }
@@ -165,19 +169,18 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
             options = {memory: {role: 'carrier'}}
 
+        } else if (spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && ActiveRoomSources.length > 0) {
+            name = 'Builder' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
+            options = {memory: {role: 'builder'}}
+        } else if(repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
+            name = 'Repairer' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
+            options = {memory: {role: 'repairer'}            }
         } else if((spawn.room.controller.level < 2 || extensions.length >= 4) && upgraders.length < numberOfNeededUpgraders) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
-        } else if (spawn.room.controller.level >= 2 && constructionSites.length && !spawn.spawning && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && ActiveRoomSources.length > 0) {
-            name = 'Builder' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
-            options = {memory: {role: 'builder'}}
-        }
-        else if(repairableStuff.length && !spawn.spawning && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
-            name = 'Repairer' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
-            options = {memory: {role: 'repairer'}            }
         }
         else if (defenders.length < numberOfNeededDefenders) {
             name = 'Defender' + Game.time;
@@ -218,7 +221,7 @@ export class AutoSpawn {
 
             if(spawn.room.controller.level <= 5 ) {
 
-                ScaffoldingUtils.createExtensions(spawn);
+                ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns);
                 if(!Game.flags[spawn.room.name+'NoWalls']) {
                     ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
                 }
@@ -228,7 +231,7 @@ export class AutoSpawn {
             if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
 
                 ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
-                ScaffoldingUtils.createExtensions(spawn,extensionFarm2Flag);
+                ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
             }
         }
 

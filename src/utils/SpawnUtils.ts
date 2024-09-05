@@ -15,7 +15,13 @@ export enum PartCosts {
 }
 
 
-const myFriends = ['kailin-limble','DonkeyKong', 'Xarroc'];
+const myFriends = [
+    //'kailin-limble',
+    //'DonkeyKong',
+    'Xarroc',
+    //'Invader',
+    'Power Bank'
+];
 
 export class SpawnUtils {
     static SHOW_VISUAL_CREEP_ICONS: boolean = true;

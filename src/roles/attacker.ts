@@ -71,8 +71,8 @@ export class Attacker {
             filter: { owner: { username: 'Invader' } }
         });
 
-        const hostilesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS,5, {
-            filter: (creep) => creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+        const hostilesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS,20, {
+            filter: (creep) => creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) //&& (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(HEAL) > 0)
         });
 
         var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
@@ -94,18 +94,19 @@ export class Attacker {
         });
 
 
+        const isSafeRoom = creep.room.controller?.safeMode ?? false;
 
-        if (hostileCreepsL[0] && hostilesInRange.length > 0) {
+        if (!isSafeRoom && hostileCreepsL[0] && hostilesInRange.length > 0) {
             creep.say('⚔ ⚔');
 
-            Attacker.attackTarget(creep,hostileCreepsL[0])
+            Attacker.attackTarget(creep,hostilesInRange[0])
         }
-        else if (hostileCreeps) {
+        else if (!isSafeRoom && hostileCreeps) {
             creep.say('⚔ ⚔');
 
             Attacker.attackTarget(creep,hostileCreeps)
         }
-        else if(structures.length > 0 && badStructures) {
+        else if(!isSafeRoom && structures.length > 0 && badStructures) {
             creep.say('⚔ 🚧');
             Attacker.attackTarget(creep,badStructures)
         }
@@ -113,10 +114,10 @@ export class Attacker {
         //     creep.say('⚔ 🚧');
         //     Attacker.attackTarget(creep,hostileSites[0])
         // }
-        else if(invaderCore){
+        else if(!isSafeRoom && invaderCore){
             creep.say('⚔ I');
             Attacker.attackTarget(creep,invaderCore)
-        } else if(Game.flags?.attackFlag) {
+        } else if(!isSafeRoom && Game.flags?.attackFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
         } else if(Game.flags?.rallyFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.rallyFlag);

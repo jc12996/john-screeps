@@ -1,3 +1,4 @@
+import { AutoSpawn } from "autospawn";
 import { spawn } from "child_process";
 
 
@@ -30,15 +31,6 @@ export class ScaffoldingUtils {
             return;
         }
 
-        const roadsMade = creepOrSpawn.room.find(FIND_STRUCTURES, {
-            filter: (structure) => structure.structureType === STRUCTURE_ROAD && structure.pos.x == pos.x -1 && structure.pos.y == pos.y+1
-        });
-        const roadsMadeSites = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (structure) => structure.structureType === STRUCTURE_ROAD && structure.pos.x == pos.x -1 && structure.pos.y == pos.y+1
-        })
-        if(roadsMade.length > 0 || roadsMadeSites.length > 0) {
-            return;
-        }
         creepOrSpawn.room?.createConstructionSite(pos.x - 1,pos.y+1,STRUCTURE_ROAD);
         creepOrSpawn.room?.createConstructionSite(pos.x - 2,pos.y+2,STRUCTURE_ROAD);
         creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y+3,STRUCTURE_ROAD);
@@ -55,7 +47,7 @@ export class ScaffoldingUtils {
 
     }
 
-    public static createExtensions(creepOrSpawn: Creep | StructureSpawn, flag: Flag | undefined = undefined): void {
+    public static createExtensions(creepOrSpawn: Creep | StructureSpawn, totalSpawns:number, flag: Flag | undefined = undefined): void {
         var spawnsAmount = creepOrSpawn.room.find(FIND_MY_SPAWNS);
 
         if(!spawnsAmount[0]) {
@@ -134,18 +126,24 @@ export class ScaffoldingUtils {
                 }
 
                 if (creepOrSpawn.room.controller.level >= 6 ) {
-                    const link = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                        filter: (structure) => structure.structureType === STRUCTURE_LINK && structure.pos.x == pos.x -2 && structure.pos.y == pos.y+3
-                    });
-                    const linkSites = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                        filter: (structure) => structure.structureType === STRUCTURE_LINK && structure.pos.x == pos.x -2 && structure.pos.y == pos.y+3
-                    })
-                    if(link.length > 0 || linkSites.length > 0) {
-                        return;
-                    }
                     if(totalNumberOfLinkSites.length == 0) {
                         creepOrSpawn.room.createFlag(pos.x -2,pos.y+3,creepOrSpawn.room.name+'ExtensionLink2');
                         creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
+                    }
+                }
+
+                if (creepOrSpawn.room.controller.level >= 7 ) {
+
+                    const spawnConstructionSites = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                        filter: (rampart) => {
+                            return (rampart.structureType == STRUCTURE_SPAWN)
+                        }
+                    });
+
+
+                    if(spawnConstructionSites.length == 0 && creepOrSpawn.room?.controller?.my && !!flag?.name) {
+                        creepOrSpawn.room?.createConstructionSite(flag.pos.x,flag.pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
+                        console.log('Creating '+ 'Spawn'+(totalSpawns + 1))
                     }
                 }
             }
