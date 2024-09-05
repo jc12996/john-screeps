@@ -71,9 +71,6 @@ export class Attacker {
             filter: { owner: { username: 'Invader' } }
         });
 
-        const hostilesInRange = creep.pos.findInRange(FIND_HOSTILE_CREEPS,20, {
-            filter: (creep) => creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) //&& (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(HEAL) > 0)
-        });
 
         var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
             filter:  (creep) => {
@@ -81,11 +78,6 @@ export class Attacker {
             }
         });
 
-        var hostileCreepsL = creep.room.find(FIND_HOSTILE_CREEPS, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
-            }
-        });
 
         const hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
             filter:  (creep) => {
@@ -93,15 +85,17 @@ export class Attacker {
             }
         });
 
+        const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_CONTROLLER
+            }
+        });
+
 
         const isSafeRoom = creep.room.controller?.safeMode ?? false;
 
-        if (!isSafeRoom && hostileCreepsL[0] && hostilesInRange.length > 0) {
-            creep.say('⚔ ⚔');
 
-            Attacker.attackTarget(creep,hostilesInRange[0])
-        }
-        else if (!isSafeRoom && hostileCreeps) {
+        if (!isSafeRoom && hostileCreeps) {
             creep.say('⚔ ⚔');
 
             Attacker.attackTarget(creep,hostileCreeps)
@@ -110,10 +104,14 @@ export class Attacker {
             creep.say('⚔ 🚧');
             Attacker.attackTarget(creep,badStructures)
         }
-        // else if (hostileSites.length > 0) {
-        //     creep.say('⚔ 🚧');
-        //     Attacker.attackTarget(creep,hostileSites[0])
-        // }
+        else if (!isSafeRoom && hostileStructures.length > 0) {
+            creep.say('⚔ 🚧');
+            Attacker.attackTarget(creep,hostileStructures[0])
+        }
+        else if (!isSafeRoom && hostileSites.length > 0) {
+            creep.say('⚔ 🚧');
+            Attacker.attackTarget(creep,hostileSites[0])
+        }
         else if(!isSafeRoom && invaderCore){
             creep.say('⚔ I');
             Attacker.attackTarget(creep,invaderCore)

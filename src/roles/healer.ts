@@ -67,7 +67,7 @@ export class Healer {
 
             const friendlyCreeps = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
                 filter: function(object) {
-                    return ((object.memory.role === 'dismantler' || object.memory.role === 'attacker' || object.memory.role === 'healer') && object.hits < object.hitsMax);
+                    return ((object.memory.role === 'dismantler' || object.memory.role === 'attacker'));
                 }
             });
 
