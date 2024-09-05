@@ -145,6 +145,32 @@ export class ScaffoldingUtils {
                         creepOrSpawn.room?.createConstructionSite(flag.pos.x,flag.pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
                         console.log('Creating '+ 'Spawn'+(totalSpawns + 1))
                     }
+
+                    const terminalConstructionSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                        filter: (rampart) => {
+                            return (rampart.structureType == STRUCTURE_TERMINAL)
+                        }
+                    });
+
+
+                    if(terminalConstructionSite.length == 0 && creepOrSpawn.room?.controller?.my) {
+                        creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y,STRUCTURE_TERMINAL);
+                        console.log('Creating Terminal',creepOrSpawn.room.name)
+                    }
+
+
+                    if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
+                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
+                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
+                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
+                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y +1,STRUCTURE_LINK) == OK){
+                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y +1,creepOrSpawn.room.name+'ControllerLink1');
+                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y -1,STRUCTURE_LINK) == OK){
+                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y -1,creepOrSpawn.room.name+'ControllerLink1');
+                    }
+
+
+
                 }
             }
         }
