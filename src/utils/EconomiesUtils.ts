@@ -1,6 +1,6 @@
 export enum LowUpkeep {
-    Harvesters = 3,// Max Harvester Per Slot
-    Carriers  = 2,// Per Source Slot
+    Harvesters = 2,// Max Harvester Per Slot
+    Carriers  = 1.5,// Per Source Slot
     Builder = 1,// Per Source
     Repairer = 1,// Per Source
     Upgrader = 1,// Per Source
@@ -10,8 +10,8 @@ export enum LowUpkeep {
 }
 
 export enum MediumUpkeep {
-    Harvesters = 3,// Max Harvester Per Slot
-    Carriers  = 2,// Per Source Slot
+    Harvesters = 2,// Max Harvester Per Slot
+    Carriers  = 1.5,// Per Source Slot
     Builder = 2,// Per Source
     Repairer = 1,// Per Source
     Upgrader = 2,// Per Source
@@ -21,8 +21,8 @@ export enum MediumUpkeep {
 }
 
 export enum HighUpkeep {
-    Harvesters = 3,// Max Harvester Per Slot
-    Carriers  = 2,// Per Source Slot
+    Harvesters = 2,// Max Harvester Per Slot
+    Carriers  = 1.5,// Per Source Slot
     Builder = 2,// Per Source
     Repairer = 1,// Per Source
     Upgrader = 3,// Per Source
@@ -52,7 +52,7 @@ export enum WarTimeEconomy {
 export enum PeaceTimeEconomy {
     //ARMY Economy
     TOTAL_ATTACKER_SIZE = 3,
-    TOTAL_HEALER_SIZE = 3,
+    TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 
