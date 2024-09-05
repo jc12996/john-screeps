@@ -53,7 +53,7 @@ export class Upgrader {
             }
         });
 
-        if(upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level == 7 && !hostileCreeps && highVolumeStorage) {
+        if(upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level >= 7 && !hostileCreeps && highVolumeStorage) {
             creep.memory.mainUpgrader = true;
         }  else {
             creep.memory.mainUpgrader = false;
