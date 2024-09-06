@@ -1,16 +1,6 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 
-export function manageLinks(creep: Creep | StructureSpawn) {
-
-    var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter:  (structure) => {
-            return (
-                structure.structureType == STRUCTURE_CONTAINER
-
-            ) &&
-                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-        }
-    });
+export function placeSourceLinks(creep: Creep) {
 
     const totalNumberOfLinkSites = creep.room.find(FIND_CONSTRUCTION_SITES,{
         filter: (struc: { structureType: string; }) => {
@@ -37,6 +27,60 @@ export function manageLinks(creep: Creep | StructureSpawn) {
         }
 
     }
+
+    if(creep?.room?.controller?.level && creep?.room?.controller?.level == 8) {
+        const sourceLink2FlagTemp = creep.room.find(FIND_FLAGS, {
+            filter: (site) => {
+                return site.name == creep.room.name+'SourceLink2'
+            }
+        })
+        if (!sourceLink2FlagTemp.length) {
+            if(creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x -1,creep.pos.y,creep.room.name+'SourceLink2');
+            } else if(creep.room?.createConstructionSite(creep.pos.x +1,creep.pos.y,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x +1,creep.pos.y,creep.room.name+'SourceLink2');
+            } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y +1,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x,creep.pos.y +1,creep.room.name+'SourceLink2');
+            } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y -1,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x,creep.pos.y -1,creep.room.name+'SourceLink2');
+            }
+
+        }
+    }
+
+    if(creep?.room?.controller?.level && creep?.room?.controller?.level == 8) {
+        const sourceLink3FlagTemp = creep.room.find(FIND_FLAGS, {
+            filter: (site) => {
+                return site.name == creep.room.name+'SourceLink3'
+            }
+        })
+        if (!sourceLink3FlagTemp.length) {
+
+            if(creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x -1,creep.pos.y,creep.room.name+'SourceLink3');
+            } else if(creep.room?.createConstructionSite(creep.pos.x +1,creep.pos.y,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x +1,creep.pos.y,creep.room.name+'SourceLink3');
+            } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y +1,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x,creep.pos.y +1,creep.room.name+'SourceLink3');
+            } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y -1,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x,creep.pos.y -1,creep.room.name+'SourceLink3');
+            }
+
+        }
+    }
+}
+
+export function manageLinks(creep: Creep | StructureSpawn) {
+
+    var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter:  (structure) => {
+            return (
+                structure.structureType == STRUCTURE_CONTAINER
+
+            ) &&
+                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+        }
+    });
 
     const sourceLink1Flag = creep.room.find(FIND_FLAGS, {
         filter: (site) => {

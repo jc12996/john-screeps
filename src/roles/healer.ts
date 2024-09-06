@@ -77,7 +77,9 @@ export class Healer {
                 }
             });
 
-            if(friendlyCreeps && hostileCreeps) {
+            if(Game.flags?.healMeatFlag) {
+                MovementUtils.defaultArmyMovement(creep,Game.flags?.healMeatFlag);
+            }else if(friendlyCreeps && hostileCreeps) {
                 creep.moveTo(friendlyCreeps)
             }
             else if(Game.flags?.healFlag && !friendlyCreeps) {

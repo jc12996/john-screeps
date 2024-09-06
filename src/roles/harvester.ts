@@ -1,6 +1,7 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 import { RoomUtils } from "utils/RoomUtils";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
+import { placeSourceLinks } from "links";
 
 export class Harvester {
 
@@ -79,6 +80,8 @@ export class Harvester {
                     return source.id === creep.memory.targetSource
                 }
             });
+
+
             if(!sources.length) {
                 return;
             }
@@ -96,6 +99,9 @@ export class Harvester {
         if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE && finalSource?.pos) {
             creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(creep.pos && container?.pos && (creep?.pos.inRangeTo(container.pos.x,container.pos.y, 1) || sourceLink1Flag.length > 0)) {
+
+            placeSourceLinks(creep);
+
             const sourceLink1 = creep.pos.findClosestByPath(FIND_STRUCTURES,{
                 filter: (struc) => {
                     return struc.structureType === STRUCTURE_LINK
@@ -108,6 +114,7 @@ export class Harvester {
             }else if(container) {
                 creep.transfer(container, RESOURCE_ENERGY);
             }
+
 
             if(finalSource) {
                 creep.memory.targetSource = finalSource.id;
