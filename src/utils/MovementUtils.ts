@@ -102,8 +102,20 @@ export class MovementUtils {
             }
            })
 
+           const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            filter:  (source) => {
+                return (
+                    source.amount >= 50 && source.room?.controller?.my
+
+
+                )
+            }
+        });
+
         if(ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+        } else if(creep.memory.role === 'upgrader' && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

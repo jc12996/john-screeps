@@ -85,7 +85,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
           continue;
       }
       handleRamparts({ room: room });
-      Tower.defendMyRoom(room_it)
+      Tower.defendMyRoom(room)
   }
 
 

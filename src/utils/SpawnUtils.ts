@@ -16,11 +16,8 @@ export enum PartCosts {
 
 
 const myFriends = [
-    //'kailin-limble',
-    //'DonkeyKong',
-    'Xarroc',
-    //'Invader',
-    'Power Bank'
+    'gnat',
+    'Xarroc'
 ];
 
 export class SpawnUtils {

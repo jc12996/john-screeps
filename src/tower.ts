@@ -3,48 +3,49 @@ import { SpawnUtils } from "utils/SpawnUtils";
 
 export class Tower {
 
-    public static defendMyRoom(myRoomName:string) {
+    public static defendMyRoom(room:Room) {
 
-        const rooms = Game.rooms[myRoomName];
-        if(!rooms) {
-            return;
-        }
-        var hostiles = rooms.find(FIND_HOSTILE_CREEPS,
+
+        var hostiles = room.find(FIND_HOSTILE_CREEPS,
             {
                 filter: hostileCreep => {
-                    return hostileCreep.owner &&
-                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && hostileCreep.getActiveBodyparts(ATTACK) > 0
+                    return ((hostileCreep.owner &&
+                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && hostileCreep.getActiveBodyparts(ATTACK) > 0) || hostileCreep?.owner?.username === 'Invader')
                   }
             }
         );
 
-        let structureTowers = _.filter(Game.structures, (structure) => structure.structureType == STRUCTURE_TOWER);
-        let towers:Array<StructureTower> = [];
-        structureTowers.forEach((tower) => {
-            const myTower: StructureTower = tower as StructureTower;
-            towers.push(myTower);
+        const towers: Array<StructureTower> = room.find(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType === STRUCTURE_TOWER
         })
-        var friendlies = rooms.find(FIND_MY_CREEPS, {
+
+        var friendlies = room.find(FIND_MY_CREEPS, {
             filter:  (creep) => {
                 return creep.hits !== creep.hitsMax
             }
         });
 
-        const roads = rooms.find(FIND_STRUCTURES, {
+        const roads = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_ROAD && structure.hits < 500
+                return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrength * .5)
             }
         });
 
-        const containers = rooms.find(FIND_STRUCTURES, {
+        const containers = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength * .5)
             }
         });
 
-        const ramparts = rooms.find(FIND_STRUCTURES, {
+        const ramparts = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength * .5)
+            }
+        });
+
+        const walls = room.find(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength * .1)
             }
         });
 
@@ -55,8 +56,12 @@ export class Tower {
 
         if(hostiles.length > 0) {
             var username = hostiles[0].owner.username;
-            Game.notify(`User ${username} spotted in room ${myRoomName}`);
-            towers.forEach(tower => tower.attack(hostiles[0]));
+            console.log(hostiles[0].name)
+            Game.notify(`User ${username} spotted in room ${room.name}`);
+            towers.forEach(tower => {
+                const towerCode = tower.attack(hostiles[0]);
+                console.log('tower attack code: ',towerCode)
+            });
             console.log("ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ALERT!!!! WE ARE UNDER ATTACK!!!!! ");
             return;
         }else if(friendlies.length > 0) {
@@ -68,6 +73,8 @@ export class Tower {
             towers.forEach(tower => tower.repair(ramparts[0]));
         } else if(roads.length > 0 ) {
             towers.forEach(tower => tower.repair(roads[0]));
+        } else if(walls.length > 0 ) {
+            towers.forEach(tower => tower.repair(walls[0]));
         }
     }
 }

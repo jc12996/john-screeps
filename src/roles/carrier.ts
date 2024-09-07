@@ -261,7 +261,7 @@ export class Carrier {
                 }
             });
             const prioritySpawn = (creep.room.controller && spawns && creep.room.controller?.level <= 4) ? spawns : nearestSpawn[0];
-            if(!creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 2) {
+            if(!creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 4) {
                 if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(nearestStorage );
@@ -347,11 +347,32 @@ export class Carrier {
                 } else {
                     creep.moveTo(extensionLinkFlag2[0].pos.x - 1, extensionLinkFlag2[0].pos.y);
                 }
+            }  else  if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if(creep.memory?.extensionFarm1) {
+                    creep.say("🚚 XC");
+                } else if( creep.memory?.extensionFarm2){
+                    creep.say("🚚 X2C");
+                } else {
+                    creep.say('🚚 C');
+                }
+                creep.moveTo(nearestAvailableWorkingRoleCreep);
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
 
-        } else if(roomRallyPointFlag.length) {
+        } else if(creep.room.controller && creep.room.controller.my &&
+            creep.upgradeController(creep.room.controller) == ERR_NO_BODYPART) {
+            if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if(creep.memory?.extensionFarm1) {
+                    creep.say("🚚 XC");
+                } else if( creep.memory?.extensionFarm2){
+                    creep.say("🚚 X2C");
+                } else {
+                    creep.say('🚚 C');
+                }
+                creep.moveTo(nearestAvailableWorkingRoleCreep);
+            }
+        }else if(roomRallyPointFlag.length) {
             creep.moveTo(roomRallyPointFlag[0])
         }
     }
