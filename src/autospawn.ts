@@ -96,6 +96,11 @@ export class AutoSpawn {
         let numberOfNeededRepairers = LowUpkeep.Repairer * RoomSources.length;
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
+        let numberOfNeededDefenders = !!Game.flags.draftFlag ? (LowUpkeep.DraftedDefenderTotal * activeharvesters.length) : (LowUpkeep.Defender * activeharvesters.length);
+
+
+
+
 
         if(commandLevel >= 6 && numberOfNeededCarriers < 2) {
             numberOfNeededCarriers = 2;
@@ -107,6 +112,7 @@ export class AutoSpawn {
                 numberOfNeededUpgraders = MediumUpkeep.Upgrader * RoomSources.length
                 numberOfNeededBuilders = MediumUpkeep.Builder * RoomSources.length
                 numberOfNeededRepairers = MediumUpkeep.Repairer * RoomSources.length
+                numberOfNeededDefenders = numberOfNeededDefenders + MediumUpkeep.AdditionalDraftedDefenders;
                 numberOfNeededSettlers = MediumUpkeep.Settlers;
                 //console.log(`Medium Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             } else if(storage.store[RESOURCE_ENERGY] > 800000) {
@@ -115,6 +121,7 @@ export class AutoSpawn {
                 numberOfNeededBuilders = HighUpkeep.Builder * RoomSources.length
                 numberOfNeededRepairers = HighUpkeep.Repairer *RoomSources.length
                 numberOfNeededSettlers = HighUpkeep.Settlers;
+                numberOfNeededDefenders = numberOfNeededDefenders + HighUpkeep.AdditionalDraftedDefenders;
                 //console.log(`High Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             }
         }
@@ -125,11 +132,11 @@ export class AutoSpawn {
         // }
 
 
-        const numberOfNeededDefenders = (LowUpkeep.Defender * activeharvesters.length)
+
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
-        const totalNumberOfLinks = spawn.room.find(FIND_STRUCTURES,{
+        const totalNumberOfTowers = spawn.room.find(FIND_STRUCTURES,{
             filter: (struc: { structureType: string; }) => {
-                return struc.structureType === STRUCTURE_LINK
+                return struc.structureType === STRUCTURE_TOWER
             }
         });
 
@@ -177,7 +184,7 @@ export class AutoSpawn {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
-        } else if(repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
+        } else if(totalNumberOfTowers.length == 0 && repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
             name = 'Repairer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
             options = {memory: {role: 'repairer'}            }

@@ -5,6 +5,7 @@ export enum LowUpkeep {
     Repairer = 1,// Per Source
     Upgrader = 2,// Per Source
     Defender = .5,// Per Source Slot
+    DraftedDefenderTotal = 8,
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }
@@ -15,7 +16,8 @@ export enum MediumUpkeep {
     Builder = 2,// Per Source
     Repairer = .5,// Per Source
     Upgrader = 2,// Per Source
-    Defender = .5,// Per Source Slot
+    Defender = .5,// Per Source Slot,
+    AdditionalDraftedDefenders = 2,
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }
@@ -26,7 +28,8 @@ export enum HighUpkeep {
     Builder = 2,// Per Source
     Repairer = .5,// Per Source
     Upgrader = 1,// Per Source
-    Defender = 1,// Per Source Slot
+    Defender = 1,// Per Source Slot,
+    AdditionalDraftedDefenders = 4,
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }
