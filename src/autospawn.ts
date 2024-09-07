@@ -37,6 +37,7 @@ export class AutoSpawn {
         let bodyParts = null;
         let name = null;
         let options = undefined;
+
         const defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && (Game.flags.draftFlag || (creep.room.name == spawn.room.name)));
         const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawn.room.name);
         const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn.room.name);
@@ -47,7 +48,27 @@ export class AutoSpawn {
         const settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
         const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
         const healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
-        const miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
+        const miners = _.filter(Game.creeps, (creep) => {
+
+
+            const mineFlag = Game.flags[spawn.room.name+'MineFlag']
+
+            if(!!!mineFlag) {
+                return false;
+            }
+
+            const mineFlagRoom = mineFlag.room;
+
+            return creep.memory.role == 'miner' &&
+            (
+                creep.room.name == spawn.room.name ||
+                (
+                    mineFlagRoom &&
+                    creep.room.name == mineFlagRoom.name
+                )
+            )
+
+        });
         const dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
         const carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
         const repairableStuff = spawn.room.find(FIND_STRUCTURES, {

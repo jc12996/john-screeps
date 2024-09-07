@@ -1,5 +1,6 @@
 import { MovementUtils } from "utils/MovementUtils";
 import { Carrier } from "./carrier";
+import { SpawnUtils } from "utils/SpawnUtils";
 
 export class Miner {
 
@@ -7,6 +8,10 @@ export class Miner {
 
     public static run(creep: Creep): void {
 
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("⛏");
+        }
 
         if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0)) {
             creep.memory.carrying = true;
@@ -36,7 +41,7 @@ export class Miner {
                 return;
             }
 
-            creep.say("⛏");
+
 
             let targetSource = mineFlag.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
@@ -44,7 +49,9 @@ export class Miner {
                 creep.moveTo(targetSource);
             }
         }else {
-            creep.say("🚚");
+            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+                creep.say("🚚");
+            }
             const firstRoom = Game.rooms[creep.memory.firstSpawnCoords]
             const roomStructures = firstRoom.find(FIND_MY_SPAWNS)
 
