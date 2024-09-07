@@ -102,7 +102,7 @@ export class Builder {
                     creep.moveTo(links[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(extensions[0] && creep.room.controller && creep.room.controller.level < 4){
+            else if(extensions[0] && creep.room.controller && creep.room.controller.level < 3){
                 if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
