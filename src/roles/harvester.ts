@@ -5,24 +5,6 @@ import { placeSourceLinks } from "links";
 
 export class Harvester {
 
-    private static sourcePriority(source: any) {
-        let priority;
-        if (!source?.ticksToRegeneration) {
-            priority = 10;
-        } else if (source.energy == 0) {
-            priority = 0;
-        } else {
-            priority = source.energy / source.ticksToRegeneration;
-        }
-        if (source?.ticksToRegeneration && priority > 0 && source?.ticksToRegeneration < 150) {
-            priority = priority * (1 + (150 - source.ticksToRegeneration)/250);
-            if (source.ticksToRegeneration < 70) {
-                priority = priority + (70 - source.ticksToRegeneration)/10;
-            }
-        }
-        return priority;
-    };
-
     public static run(creep: Creep): void {
 
 

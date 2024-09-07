@@ -7,7 +7,8 @@ export enum LowUpkeep {
     Defender = .5,// Per Source Slot
     DraftedDefenderTotal = 8,
     Claimers = 1,// Worldwide Count
-    Settlers = 8// Worldwide Count
+    Settlers = 8,// Worldwide Count,
+    Miners = 8
 }
 
 export enum MediumUpkeep {
@@ -19,7 +20,8 @@ export enum MediumUpkeep {
     Defender = .5,// Per Source Slot,
     AdditionalDraftedDefenders = 2,
     Claimers = 1,// Worldwide Count
-    Settlers = 8// Worldwide Count
+    Settlers = 8,// Worldwide Count
+    Miners = 6
 }
 
 export enum HighUpkeep {
@@ -31,7 +33,8 @@ export enum HighUpkeep {
     Defender = 1,// Per Source Slot,
     AdditionalDraftedDefenders = 4,
     Claimers = 1,// Worldwide Count
-    Settlers = 8// Worldwide Count
+    Settlers = 8,// Worldwide Count
+    Miners = 4
 }
 
 export enum SeigeEconomy {

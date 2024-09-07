@@ -47,6 +47,7 @@ export class AutoSpawn {
         const settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
         const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
         const healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
+        const miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
         const dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
         const carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
         const repairableStuff = spawn.room.find(FIND_STRUCTURES, {
@@ -95,6 +96,7 @@ export class AutoSpawn {
         let numberOfNeededBuilders = LowUpkeep.Builder * RoomSources.length;
         let numberOfNeededRepairers = LowUpkeep.Repairer * RoomSources.length;
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
+        let numberOfNeededMiners = LowUpkeep.Miners * 1;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
         let numberOfNeededDefenders = !!Game.flags.draftFlag ? (LowUpkeep.DraftedDefenderTotal * activeharvesters.length) : (LowUpkeep.Defender * activeharvesters.length);
 
@@ -114,6 +116,7 @@ export class AutoSpawn {
                 numberOfNeededRepairers = MediumUpkeep.Repairer * RoomSources.length
                 numberOfNeededDefenders = numberOfNeededDefenders + MediumUpkeep.AdditionalDraftedDefenders;
                 numberOfNeededSettlers = MediumUpkeep.Settlers;
+                numberOfNeededMiners = MediumUpkeep.Miners;
                 //console.log(`Medium Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             } else if(storage.store[RESOURCE_ENERGY] > 800000) {
                 numberOfNeededCarriers = HighUpkeep.Carriers * harvesters.length;
@@ -121,6 +124,7 @@ export class AutoSpawn {
                 numberOfNeededBuilders = HighUpkeep.Builder * RoomSources.length
                 numberOfNeededRepairers = HighUpkeep.Repairer *RoomSources.length
                 numberOfNeededSettlers = HighUpkeep.Settlers;
+                numberOfNeededMiners = HighUpkeep.Miners;
                 numberOfNeededDefenders = numberOfNeededDefenders + HighUpkeep.AdditionalDraftedDefenders;
                 //console.log(`High Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             }
@@ -167,6 +171,10 @@ export class AutoSpawn {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,2)
             options = {memory: {role: 'harvester'}}
+        } else if (!!Game.flags[spawn.room.name+'MineFlag']  && miners.length < numberOfNeededMiners) {
+            name = 'Miner' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
+            options = {memory: {role: 'miner'}};
         } else if (carriers.length == 0 || (carriers.length == 1 && carriers[0].ticksToLive && carriers[0].ticksToLive <= 100)) {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)

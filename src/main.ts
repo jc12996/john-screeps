@@ -16,6 +16,7 @@ import { Carrier } from "roles/carrier";
 import { handleRamparts } from "ramparts";
 import { PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
+import { Miner } from "roles/miner";
 
 declare global {
   /*
@@ -52,6 +53,7 @@ declare global {
     roomLevel?: number;
     extensionFarm2?: boolean;
     mainUpgrader?: boolean;
+    firstSpawnCoords?: string;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
@@ -166,6 +168,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
     }
 
+    if(!creep.memory.firstSpawnCoords) {
+        creep.memory.firstSpawnCoords = creep.room.name
+    }
+
     if(creep.memory.role == 'harvester') {
       Harvester.run(creep);
     }
@@ -201,6 +207,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
     if(creep.memory.role == 'meatGrinder') {
       MeatGrinder.run(creep);
+    }
+    if(creep.memory.role == 'miner') {
+      Miner.run(creep);
     }
 }
 });

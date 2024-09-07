@@ -82,13 +82,6 @@ export class SpawnUtils {
                 }
 
             case 'miner':
-                //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-                if(energyAvailable >= 550) {
-                    partsPattern = [MOVE,WORK,WORK,WORK,WORK,WORK];
-                    break;
-                } else {
-                    return null;
-                }
             case 'settler':
 
                 if(energyAvailable >= 1800) {
