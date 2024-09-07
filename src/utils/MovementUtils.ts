@@ -67,7 +67,7 @@ export class MovementUtils {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
 
-        let totalSpawnStore = 100;
+        let totalSpawnStore = 200;
         if(creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 5) {
             totalSpawnStore = 301;
         }

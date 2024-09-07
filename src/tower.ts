@@ -6,6 +6,8 @@ export class Tower {
     public static defendMyRoom(room:Room) {
 
 
+        const extensionFillThresholdPercentage =  (room.energyAvailable > 800 || (room.controller?.my && room.controller.level < 3)) ? 1 : .1;
+
         var hostiles = room.find(FIND_HOSTILE_CREEPS,
             {
                 filter: hostileCreep => {
@@ -27,25 +29,25 @@ export class Tower {
 
         const roads = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrength * .5)
+                return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrength * extensionFillThresholdPercentage)
             }
         });
 
         const containers = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength * .5)
+                return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength * extensionFillThresholdPercentage)
             }
         });
 
         const ramparts = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength * .5)
+                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength * extensionFillThresholdPercentage)
             }
         });
 
         const walls = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength * .1)
+                return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength * extensionFillThresholdPercentage)
             }
         });
 

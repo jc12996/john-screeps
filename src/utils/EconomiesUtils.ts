@@ -4,7 +4,7 @@ export enum LowUpkeep {
     Builder = 1,// Per Source
     Repairer = 1,// Per Source
     Upgrader = 2,// Per Source
-    Defender = .25,// Per Source Slot
+    Defender = .5,// Per Source Slot
     Claimers = 1,// Worldwide Count
     Settlers = 8// Worldwide Count
 }
@@ -51,9 +51,9 @@ export enum WarTimeEconomy {
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 3,
+    TOTAL_ATTACKER_SIZE = 5,
     TOTAL_HEALER_SIZE = 6,
-    TOTAL_DISMANTLER_SIZE = 2,
+    TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 
 }
