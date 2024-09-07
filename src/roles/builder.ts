@@ -102,11 +102,17 @@ export class Builder {
                     creep.moveTo(links[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
+            else if(extensions[0] && creep.room.controller && creep.room.controller.level < 4){
+                if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }
             else if(ramparts.length) {
                 if(creep.build(ramparts[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(ramparts[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
-            }  else if(walls.length) {
+            }
+            else if(walls.length) {
                 if(creep.build(walls[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
