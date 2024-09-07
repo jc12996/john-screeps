@@ -150,7 +150,7 @@ export class Carrier {
         const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
             filter:  (creep) => {
                 return (
-                   (creep.memory.role === 'upgrader' || creep.memory.role === 'builder' || creep.memory.role === 'repairer') && creep.store.getFreeCapacity() > 0)
+                   (creep.memory.role === 'builder' || creep.memory.role === 'upgrader' || creep.memory.role === 'repairer') && creep.store.getFreeCapacity() > 0)
             }
         });
 
@@ -164,7 +164,8 @@ export class Carrier {
            })
 
 
-        if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0 || (creep.store[RESOURCE_ENERGY] > 100))) {
+        const capacitySpawnLimit = (creep.room.controller && creep.room.controller?.level > 4) ? 100 : 50;
+        if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0 || (creep.store[RESOURCE_ENERGY] > capacitySpawnLimit))) {
             creep.memory.carrying = true;
 
         }
