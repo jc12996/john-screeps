@@ -21,7 +21,7 @@ const myFriends = [
 ];
 
 export class SpawnUtils {
-    static SHOW_VISUAL_CREEP_ICONS: boolean = false;
+    static SHOW_VISUAL_CREEP_ICONS: boolean = true;
     public static TOTAL_ATTACKER_SIZE = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * 1;
     public static TOTAL_HEALER_SIZE = PeaceTimeEconomy.TOTAL_HEALER_SIZE * 1;
     public static TOTAL_DISMANTLER_SIZE = PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE *1;
@@ -42,12 +42,8 @@ export class SpawnUtils {
     public static getBodyPartsForArchetype(archetype: string, spawn: any, commandLevel: number = 1, numberOfNeededTypes:number): Array<BodyPartConstant> | null {
         let partsPattern = new Array<BodyPartConstant>();
         let bodyParts = new Array<BodyPartConstant>();
-        let defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender' && spawn.room.name == creep.room.name);
-        let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && spawn.room.name == creep.room.name);
-        let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && spawn.room.name == creep.room.name);
         let patternCost = 0;
         const energyAvailable = spawn.room.energyAvailable;
-        const RoomSources = spawn.room.find(FIND_SOURCES);
 
         switch(archetype) {
             case 'claimer':
@@ -226,43 +222,42 @@ export class SpawnUtils {
                     return null;
                 }
             case 'upgrader':
-                // if(energyAvailable >= 2100) {
-                //     for (let i = 0; i < 6; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 13; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // } else if(energyAvailable >= 1800) {
-                //     for (let i = 0; i < 6; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 11; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // }
-                // if(energyAvailable >= 1300) {
-                //     for (let i = 0; i < 6; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // }
-                // else
-                if(energyAvailable >= 800) {
+                if(energyAvailable >= 2100) {
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 13; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                } else if(energyAvailable >= 1800) {
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 11; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                if(energyAvailable >= 1300) {
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(energyAvailable >= 800) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
