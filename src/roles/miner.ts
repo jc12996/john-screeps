@@ -64,6 +64,10 @@ export class Miner {
                 Carrier.run(creep,true);
                 return;
             }
+            // else if (firstRoom.energyAvailable==firstRoom.energyCapacityAvailable){
+            //     Upgrader.run(creep);
+            //     return;
+            // }
 
             Carrier.run(creep);
 

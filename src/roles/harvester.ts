@@ -36,7 +36,7 @@ export class Harvester {
         if(creep.memory.targetSource) {
 
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-                creep.say("⛏");
+                creep.say("🔄");
             }
             finalSource = creep.pos.findClosestByPath(FIND_SOURCES, {
                 filter:  (source) => {

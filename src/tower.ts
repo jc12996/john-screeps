@@ -6,7 +6,14 @@ export class Tower {
     public static defendMyRoom(room:Room) {
 
 
-        const extensionFillThresholdPercentage =  (room.energyAvailable > 800 || (room.controller?.my && room.controller.level < 3)) ? 1 : .1;
+        let capacityAvailableThreshold = 800;
+        const level = (room.controller?.my && room.controller.level) ? room.controller.level : 1;
+
+        if(level >= 6) {
+            capacityAvailableThreshold = 1200;
+        }
+
+        const extensionFillThresholdPercentage =  (room.energyAvailable >= capacityAvailableThreshold || (level < 3)) ? 1 : .1;
 
         var hostiles = room.find(FIND_HOSTILE_CREEPS,
             {

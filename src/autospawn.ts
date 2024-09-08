@@ -80,7 +80,7 @@ export class AutoSpawn {
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
-        let numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn);
+        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn);
         const storage  = spawn.room.find(FIND_STRUCTURES, {
             filter: { structureType: STRUCTURE_STORAGE }
         })[0] ?? undefined;
@@ -119,8 +119,15 @@ export class AutoSpawn {
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
         let numberOfNeededMiners = LowUpkeep.Miners * 1;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
-        let numberOfNeededDefenders = !!Game.flags.draftFlag ? (LowUpkeep.DraftedDefenderTotal * activeharvesters.length) : (LowUpkeep.Defender * activeharvesters.length);
+        let numberOfNeededDefenders = !!Game.flags.draftFlag ? (LowUpkeep.DraftedDefenderTotal * 1) : (LowUpkeep.Defender * 1);
 
+
+
+
+
+        if(commandLevel >= 6 && numberOfNeededCarriers < 2) {
+            numberOfNeededCarriers = 2;
+        }
 
         if(storage){
             if(storage.store[RESOURCE_ENERGY] > 50000) {
@@ -144,21 +151,18 @@ export class AutoSpawn {
             }
         }
 
-        if(commandLevel >= 5 && numberOfNeededCarriers > 6) {
-            numberOfNeededCarriers = 6;
-        }
-
-        if(commandLevel >= 5 && numberOfNeededHarvesters > 8) {
-            numberOfNeededHarvesters = 8;
-        }
-
-
         //console.log(numberOfNeededSettlers);
         // if(!!Game.flags.settlerFlag && settlers.length >= numberOfNeededSettlers) {
         //     Game.flags.settlerFlag.remove();
         // }
 
+        if(commandLevel >= 6 && numberOfNeededCarriers >= 6) {
+            numberOfNeededCarriers = 6;
+        }
 
+        if(commandLevel >= 6 && numberOfNeededUpgraders >= 6) {
+            numberOfNeededUpgraders = 6;
+        }
 
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
         const totalNumberOfTowers = spawn.room.find(FIND_STRUCTURES,{
