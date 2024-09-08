@@ -61,13 +61,13 @@ export class Miner {
                 return;
             }
             else if (creep.room.controller && creep.room.controller.level >= 5) {
+                Carrier.run(creep);
+                return;
+            }
+            else if (firstRoom.energyAvailable==firstRoom.energyCapacityAvailable){
                 Carrier.run(creep,true);
                 return;
             }
-            // else if (firstRoom.energyAvailable==firstRoom.energyCapacityAvailable){
-            //     Upgrader.run(creep);
-            //     return;
-            // }
 
             Carrier.run(creep);
 
