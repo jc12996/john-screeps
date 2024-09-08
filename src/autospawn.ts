@@ -156,9 +156,9 @@ export class AutoSpawn {
         //     Game.flags.settlerFlag.remove();
         // }
 
-        // if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
-        //     numberOfNeededCarriers = 8;
-        // }
+        if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
+            numberOfNeededCarriers = 8;
+        }
 
         if(commandLevel >= 6 && numberOfNeededUpgraders >= 8) {
             numberOfNeededUpgraders = 8;
@@ -269,7 +269,9 @@ export class AutoSpawn {
         if(spawn && spawn.spawning) {
 
             var spawningCreep = Game.creeps[spawn.spawning.name];
-            console.log(spawn.name + ' spawning new creep: ' + spawningCreep.name);
+            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+                console.log(spawn.name + ' spawning new creep: ' + spawningCreep.name);
+            }
             spawn.room.visual.text(
                 '🛠️' + spawningCreep.memory.role,
                 spawn.pos.x + 1,

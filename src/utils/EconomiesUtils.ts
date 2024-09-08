@@ -8,7 +8,7 @@ export enum LowUpkeep {
     DraftedDefenderTotal = 1,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count,
-    Miners = 6
+    Miners = 5
 }
 
 export enum MediumUpkeep {

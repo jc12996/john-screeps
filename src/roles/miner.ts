@@ -46,13 +46,16 @@ export class Miner {
 
             let targetSource = mineFlag.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
-            if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targetSource);
+            if(targetSource) {
+                const mineResult = creep.harvest(targetSource);
+                if(mineResult == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targetSource);
+                }
             }
+
+
+
         }else {
-            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-                creep.say("🚚");
-            }
             const firstRoom = Game.rooms[creep.memory.firstSpawnCoords]
             const roomStructures = firstRoom.find(FIND_MY_SPAWNS)
 
@@ -60,16 +63,24 @@ export class Miner {
                 creep.moveTo(roomStructures[0]);
                 return;
             }
-            else if (creep.room.controller && creep.room.controller.level >= 5) {
-                Carrier.run(creep);
-                return;
-            }
-            else if (firstRoom.energyAvailable==firstRoom.energyCapacityAvailable){
-                Carrier.run(creep,true);
-                return;
-            }
+
+            const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+                filter:  (creep) => {
+                    return (
+                       ( creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
+                }
+            });
+
+            // if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+
+            //     creep.say('⛏ C');
+
+            //     creep.moveTo(nearestAvailableWorkingRoleCreep);
+            //     return;
+            // }
 
             Carrier.run(creep);
+
 
 
         }

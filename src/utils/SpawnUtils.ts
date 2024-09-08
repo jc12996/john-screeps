@@ -21,7 +21,7 @@ const myFriends = [
 ];
 
 export class SpawnUtils {
-    static SHOW_VISUAL_CREEP_ICONS: boolean = true;
+    static SHOW_VISUAL_CREEP_ICONS: boolean = false;
     public static TOTAL_ATTACKER_SIZE = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * 1;
     public static TOTAL_HEALER_SIZE = PeaceTimeEconomy.TOTAL_HEALER_SIZE * 1;
     public static TOTAL_DISMANTLER_SIZE = PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE *1;
@@ -249,19 +249,20 @@ export class SpawnUtils {
                 //     }
                 //     break;
                 // }
-                if(energyAvailable >= 1300) {
-                    for (let i = 0; i < 6; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 800) {
+                // if(energyAvailable >= 1300) {
+                //     for (let i = 0; i < 6; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 8; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // }
+                // else
+                if(energyAvailable >= 800) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -322,19 +323,20 @@ export class SpawnUtils {
                 //     break;
                 // }
                 // else
-                if(energyAvailable >= 1300) {
-                    for (let i = 0; i < 6; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 800) {
+                // if(energyAvailable >= 1300) {
+                //     for (let i = 0; i < 6; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 8; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // }
+                // else
+                if(energyAvailable >= 800) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
