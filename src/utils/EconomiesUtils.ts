@@ -3,9 +3,9 @@ export enum LowUpkeep {
     Carriers  = 1,// Per Source Slot
     Builder = 1,// Per Source
     Repairer = 1,// Per Source
-    Upgrader = 2,// Per Source
+    Upgrader = 3,// Per Source
     Defender = .5,// Per Source Slot
-    DraftedDefenderTotal = 8,
+    DraftedDefenderTotal = 3,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count,
     Miners = 8
@@ -14,27 +14,27 @@ export enum LowUpkeep {
 export enum MediumUpkeep {
     Harvesters = 3,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
-    Builder = 2,// Per Source
+    Builder = 1,// Per Source
     Repairer = .5,// Per Source
     Upgrader = 2,// Per Source
     Defender = .5,// Per Source Slot,
     AdditionalDraftedDefenders = 2,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count
-    Miners = 6
+    Miners = 4
 }
 
 export enum HighUpkeep {
     Harvesters = 3,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
-    Builder = 2,// Per Source
+    Builder = 1,// Per Source
     Repairer = .5,// Per Source
-    Upgrader = 1,// Per Source
+    Upgrader = 2,// Per Source
     Defender = 1,// Per Source Slot,
     AdditionalDraftedDefenders = 4,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count
-    Miners = 4
+    Miners = 2
 }
 
 export enum SeigeEconomy {

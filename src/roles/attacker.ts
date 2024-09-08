@@ -72,11 +72,16 @@ export class Attacker {
         });
 
 
-        var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+
+        var hostileCreeps = creep.room.find(FIND_HOSTILE_CREEPS,
+            {
+                filter: hostileCreep => {
+                    return ((hostileCreep.owner &&
+                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
+                  }
             }
-        });
+        );
+
 
 
         const hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {

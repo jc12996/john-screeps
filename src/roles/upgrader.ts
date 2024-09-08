@@ -15,7 +15,7 @@ export class Upgrader {
             creep.memory.upgrading = false;
             creep.say('🔄 harvest');
         }
-        if(!creep.memory.upgrading && (creep.store.getFreeCapacity() == 0 || (creep.memory.mainUpgrader && creep.store[RESOURCE_ENERGY] > 0) || creep.store[RESOURCE_ENERGY] > 200)) {
+        if(!creep.memory.upgrading && (creep.store.getFreeCapacity() == 0 || (creep.memory.mainUpgrader && creep.store[RESOURCE_ENERGY] > 0) || creep.store[RESOURCE_ENERGY] > 50)) {
             creep.memory.upgrading = true;
             creep.say('⚡ upgrade');
         }

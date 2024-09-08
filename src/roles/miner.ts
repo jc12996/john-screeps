@@ -1,6 +1,7 @@
 import { MovementUtils } from "utils/MovementUtils";
 import { Carrier } from "./carrier";
 import { SpawnUtils } from "utils/SpawnUtils";
+import { Upgrader } from "./upgrader";
 
 export class Miner {
 
@@ -57,6 +58,10 @@ export class Miner {
 
             if(creep.room !== firstRoom) {
                 creep.moveTo(roomStructures[0]);
+                return;
+            }
+            else if (creep.room.controller && creep.room.controller.level >= 5) {
+                Carrier.run(creep,true);
                 return;
             }
 

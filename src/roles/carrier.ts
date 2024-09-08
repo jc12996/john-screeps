@@ -4,7 +4,7 @@ import { MovementUtils } from "utils/MovementUtils";
 
 export class Carrier {
 
-    public static run(creep: Creep): void {
+    public static run(creep: Creep, upgradeOnly:boolean = false): void {
 
         const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -150,7 +150,7 @@ export class Carrier {
         const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
             filter:  (creep) => {
                 return (
-                   (creep.memory.role === 'builder' || creep.memory.role === 'upgrader' || creep.memory.role === 'repairer') && creep.store.getFreeCapacity() > 0)
+                   (creep.memory.role === 'builder' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
             }
         });
 
@@ -262,6 +262,19 @@ export class Carrier {
                 }
             });
             const prioritySpawn = (creep.room.controller && spawns && creep.room.controller?.level <= 4) ? spawns : nearestSpawn[0];
+
+            if(upgradeOnly && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if(creep.memory?.extensionFarm1) {
+                    creep.say("🚚 XC");
+                } else if( creep.memory?.extensionFarm2){
+                    creep.say("🚚 X2C");
+                } else {
+                    creep.say('🚚 C');
+                }
+                creep.moveTo(nearestAvailableWorkingRoleCreep);
+                return;
+            }
+
             if(!creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 4) {
                 if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
