@@ -191,10 +191,8 @@ export function manageLinks(creep: Creep | StructureSpawn) {
 
 
             if(transfer1 !== OK) {
-                let transfer2  = null;
-                if(largeStorage) {
-                    transfer2 = filledSourceLink1.transferEnergy(extensionLink2);
-                }
+                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink2);
+
 
                 if(transfer2 !== OK) {
                     filledSourceLink1.transferEnergy(extensionLink);

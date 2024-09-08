@@ -114,7 +114,7 @@ export class AutoSpawn {
         const nonactiveharvesters = harvesters.filter((hhh) => !hhh.memory?.targetSource );
         const numberOfNeededHarvestersMax = LowUpkeep.Harvesters * RoomSources.length;
         let numberOfNeededCarriers = LowUpkeep.Carriers * harvesters.length;
-        let numberOfNeededBuilders = LowUpkeep.Builder * RoomSources.length;
+        let numberOfNeededBuilders = LowUpkeep.Builder * 1;
         let numberOfNeededRepairers = LowUpkeep.Repairer * RoomSources.length;
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
         let numberOfNeededMiners = LowUpkeep.Miners * 1;
@@ -133,7 +133,7 @@ export class AutoSpawn {
             if(storage.store[RESOURCE_ENERGY] > 50000) {
                 numberOfNeededCarriers = MediumUpkeep.Carriers * harvesters.length;
                 numberOfNeededUpgraders = MediumUpkeep.Upgrader * RoomSources.length
-                numberOfNeededBuilders = MediumUpkeep.Builder * RoomSources.length
+                numberOfNeededBuilders = MediumUpkeep.Builder * 1
                 numberOfNeededRepairers = MediumUpkeep.Repairer * RoomSources.length
                 numberOfNeededDefenders = numberOfNeededDefenders + MediumUpkeep.AdditionalDraftedDefenders;
                 numberOfNeededSettlers = MediumUpkeep.Settlers;
@@ -142,7 +142,7 @@ export class AutoSpawn {
             } else if(storage.store[RESOURCE_ENERGY] > 400000) {
                 numberOfNeededCarriers = HighUpkeep.Carriers * harvesters.length;
                 numberOfNeededUpgraders = HighUpkeep.Upgrader * RoomSources.length
-                numberOfNeededBuilders = HighUpkeep.Builder * RoomSources.length
+                numberOfNeededBuilders = HighUpkeep.Builder * 1
                 numberOfNeededRepairers = HighUpkeep.Repairer *RoomSources.length
                 numberOfNeededSettlers = HighUpkeep.Settlers;
                 numberOfNeededMiners = HighUpkeep.Miners;
@@ -156,12 +156,12 @@ export class AutoSpawn {
         //     Game.flags.settlerFlag.remove();
         // }
 
-        if(commandLevel >= 6 && numberOfNeededCarriers >= 6) {
-            numberOfNeededCarriers = 6;
-        }
+        // if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
+        //     numberOfNeededCarriers = 8;
+        // }
 
-        if(commandLevel >= 6 && numberOfNeededUpgraders >= 6) {
-            numberOfNeededUpgraders = 6;
+        if(commandLevel >= 6 && numberOfNeededUpgraders >= 8) {
+            numberOfNeededUpgraders = 8;
         }
 
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;

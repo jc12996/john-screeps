@@ -34,8 +34,12 @@ export class Carrier {
         });
 
         let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
+        const commandLevel =  creep.room?.controller?.level ?? 1;
 
         if(carriers.length > 0 && carriers[0] &&  creep.name === carriers[0].name) {
+            creep.memory.extensionFarm1 = true;
+            creep.memory.extensionFarm2 = false;
+        } else if(carriers.length > 0 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
             creep.memory.extensionFarm1 = true;
             creep.memory.extensionFarm2 = false;
         } else if(extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
@@ -271,7 +275,7 @@ export class Carrier {
                 return;
             }
 
-            if(!creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 4) {
+            if(!creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 3) {
                 if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(nearestStorage );

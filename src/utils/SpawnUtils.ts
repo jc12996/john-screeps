@@ -249,20 +249,19 @@ export class SpawnUtils {
                 //     }
                 //     break;
                 // }
-                // else if(energyAvailable >= 1300) {
-                //     for (let i = 0; i < 6; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // }
-                // else
-                if(energyAvailable >= 800) {
+                if(energyAvailable >= 1300) {
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(energyAvailable >= 800) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -288,41 +287,42 @@ export class SpawnUtils {
             case 'builder':
             case 'repairer':
 
-                if(energyAvailable >= 3500) {
-                    for (let i = 0; i < 26; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if(energyAvailable >= 2100) {
-                    for (let i = 0; i < 14; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 12; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if(energyAvailable >= 1800) {
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 12; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 1300) {
+                // if(energyAvailable >= 3500) {
+                //     for (let i = 0; i < 26; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 20; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if(energyAvailable >= 2100) {
+                //     for (let i = 0; i < 14; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 12; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // } else if(energyAvailable >= 1800) {
+                //     for (let i = 0; i < 8; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 12; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     for (let i = 0; i < 4; i++) {
+                //         partsPattern.push(CARRY);
+                //     }
+                //     break;
+                // }
+                // else
+                if(energyAvailable >= 1300) {
                     for (let i = 0; i < 6; i++) {
                         partsPattern.push(MOVE);
                     }
