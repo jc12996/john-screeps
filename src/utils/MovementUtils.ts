@@ -111,11 +111,19 @@ export class MovementUtils {
                 )
             }
         });
+        const commandLevel =  creep.room?.controller?.level ?? 1;
 
-        if(ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+        if(creep.memory.role === 'upgrader') {
+            if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
+            }  else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+            return;
+        }
+
+        if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-        } else if(creep.memory.role === 'upgrader' && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -161,7 +169,7 @@ export class MovementUtils {
             return true;
         }
 
-        if(!!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room){
+        if((creep.memory.role == 'claimer' || creep.memory.role == 'settler') && !!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room){
             MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
 
             return false;

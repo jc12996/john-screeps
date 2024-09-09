@@ -10,9 +10,6 @@ export class Miner {
     public static run(creep: Creep): void {
 
 
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("⛏");
-        }
 
         if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0)) {
             creep.memory.carrying = true;
@@ -27,10 +24,18 @@ export class Miner {
             return;
         }
 
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("⛏");
+        }
+
         if(!creep.memory.carrying) {
 
 
 
+            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+                creep.say("⛏ 🔄");
+            }
 
             const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
             if(!!!mineFlag) {
@@ -64,22 +69,32 @@ export class Miner {
                 return;
             }
 
-            const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+            const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
                 filter:  (creep) => {
                     return (
                        ( creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
                 }
             });
 
-            // if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            const largeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                       structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
 
-            //     creep.say('⛏ C');
 
-            //     creep.moveTo(nearestAvailableWorkingRoleCreep);
-            //     return;
-            // }
+                    ) &&
+                        structure.store[RESOURCE_ENERGY] > 10000;
+                }
+            });
+            if(largeStorage) {
 
-            Carrier.run(creep);
+                Carrier.run(creep,true);
+
+            } else {
+                Carrier.run(creep);
+            }
+
+
 
 
 

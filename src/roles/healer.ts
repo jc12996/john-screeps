@@ -85,7 +85,7 @@ export class Healer {
             else if(Game.flags?.healFlag && !friendlyCreeps) {
                 MovementUtils.defaultArmyMovement(creep,Game.flags?.healFlag);
             }
-            else if(friendlyCreeps) {
+            else if(friendlyCreeps && !!Game.flags?.attackFlag) {
                 creep.moveTo(friendlyCreeps)
             }
             else if(Game.flags?.attackFlag) {

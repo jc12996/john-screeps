@@ -80,7 +80,7 @@ export class Attacker {
                      !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
                   }
             }
-        );
+        )[0] ?? null;
 
 
 
