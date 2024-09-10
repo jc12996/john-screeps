@@ -43,7 +43,6 @@ export class ScaffoldingUtils {
         creepOrSpawn.room?.createConstructionSite(pos.x - 1,pos.y+5,STRUCTURE_ROAD);
         creepOrSpawn.room?.createConstructionSite(pos.x,    pos.y+6,STRUCTURE_ROAD);
         creepOrSpawn.room?.createConstructionSite(pos.x - 6,pos.y,STRUCTURE_ROAD);
-        creepOrSpawn.room?.createConstructionSite(pos.x - 6,pos.y + 6,STRUCTURE_ROAD);
 
     }
 

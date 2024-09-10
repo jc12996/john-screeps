@@ -36,61 +36,33 @@ export class Defender {
         const nearestExit = creep.pos.findClosestByPath(FIND_EXIT);
 
         const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
-        filter: (flag) => {
-            return (flag.color == COLOR_BLUE)
-        }
+            filter: (flag) => {
+                return (flag.color == COLOR_BLUE)
+            }
         })
+
+        const mineFlag = Game.flags[creep.memory.firstSpawnCoords+'MineFlag'];
+        let firstRoom = null;
+        if(creep.memory.firstSpawnCoords) {
+            firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
+        }
 
 
         if(!Game.flags.attackFlag && hostileActiveTowers.length > 0 && nearestExit) {
             creep.moveTo(nearestExit);
-        } else if (hostileCreeps.length > 0) {
-            // creep.say('🛡 defend!!');
-            // let attackResult = null;
-            // if(creep.getActiveBodyparts(RANGED_ATTACK) > 0) {
-            //     attackResult = creep.rangedAttack(badSpawns[0])
-            // } else {
-            //     attackResult = creep.attack(badSpawns[0])
-            // }
-            // if(attackResult == ERR_NOT_IN_RANGE) {
-            //         creep.moveTo(hostileCreeps[0], {visualizePathStyle: {stroke: '#ff0000'}});
-            // }
+        } else if (hostileCreeps.length > 0 || hostileStructures.length > 0 || (badSpawns.length > 0 && hostileStructures.length < 3)) {
             Attacker.run(creep);
-        } else if (badSpawns.length > 0 && hostileStructures.length < 3) {
-            creep.say('🛡 SPAWN!!');
-            let attackResult = null;
-            if(creep.getActiveBodyparts(RANGED_ATTACK) > 0) {
-                attackResult = creep.rangedAttack(badSpawns[0])
-            } else {
-                attackResult = creep.attack(badSpawns[0])
-            }
-            if(attackResult == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(badSpawns[0], {visualizePathStyle: {stroke: '#ff0000'}});
-            }
-        }  else if (hostileStructures.length > 0) {
-            creep.say('🛡 BUILDING!!');
-            let attackResult = null;
-            if(creep.getActiveBodyparts(RANGED_ATTACK) > 0) {
-                attackResult = creep.rangedAttack(badSpawns[0])
-            } else {
-                attackResult = creep.attack(badSpawns[0])
-            }
-            if(attackResult == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(hostileStructures[0], {visualizePathStyle: {stroke: '#ff0000'}});
-            }
-        }   else
-            if(Game.flags?.draftFlag) {
+        } else if(Game.flags?.draftFlag) {
+            MovementUtils.goToFlag(creep,Game.flags?.draftFlag)
+        } else if(mineFlag && mineFlag.room?.find(FIND_HOSTILE_CREEPS) && mineFlag.room.find(FIND_HOSTILE_STRUCTURES) && firstRoom && creep.room !== firstRoom) {
+            MovementUtils.goToFlag(creep,mineFlag);
+        } else if(roomRallyPointFlag.length) {
+            MovementUtils.goToFlag(creep,roomRallyPointFlag[0])
+        } else if(Game.flags?.rallyFlag && !creep.room.find(FIND_FLAGS)) {
+            MovementUtils.goToFlag(creep,Game.flags?.rallyFlag)
+        } else {
 
-                MovementUtils.goToFlag(creep,Game.flags?.draftFlag)
-            } else if(roomRallyPointFlag.length) {
-
-                MovementUtils.goToFlag(creep,roomRallyPointFlag[0])
-            } else if(Game.flags?.rallyFlag && !creep.room.find(FIND_FLAGS)) {
-
-                MovementUtils.goToFlag(creep,Game.flags?.rallyFlag)
-            } else {
-
-                creep.move(MovementUtils.randomDirectionSelector());
-            }
+            creep.move(MovementUtils.randomDirectionSelector());
         }
     }
+}

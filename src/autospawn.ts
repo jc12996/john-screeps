@@ -178,11 +178,14 @@ export class AutoSpawn {
 
         //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
         //console.log(`${spawn.name} has rally flag:`,!!Game.flags.rallyFlag);
-        if(claimers.length < LowUpkeep.Claimers
+        if((claimers.length < LowUpkeep.Claimers
             && !!this.nextClaimFlag
             && totalNumberOfControlledRooms < Game.gcl.level
             && !this.nextClaimFlag.room?.controller?.my
-            && !this.nextClaimFlag.room?.controller?.owner
+            && !this.nextClaimFlag.room?.controller?.owner) ||
+            (mineFlag && mineFlag.room && mineFlag.room.name == (spawn.room.name+'MineFlag') && mineFlag.room.find(FIND_HOSTILE_STRUCTURES, {
+                filter: (struc) => struc.owner?.username === 'Invader'
+            }))
         )  {
             name = 'Claimer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
