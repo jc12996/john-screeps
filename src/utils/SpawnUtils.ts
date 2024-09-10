@@ -79,20 +79,6 @@ export class SpawnUtils {
 
             case 'miner':
             case 'settler':
-
-                // if(energyAvailable >= 1800) {
-                //     for (let i = 0; i < 16; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                // break;
-                // }else
-
                 if(energyAvailable >= 850) {
 
                     for (let i = 0; i < 8; i++) {
@@ -123,32 +109,6 @@ export class SpawnUtils {
                     return null;
                 }
             case 'carrier':
-                 //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-                //  if(energyAvailable >= (PartCosts.MOVE * 36) + (PartCosts.CARRY * 14)) {
-                //     for (let i = 0; i < 36; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 14; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // } else if(energyAvailable >= (PartCosts.MOVE * 30) + (PartCosts.CARRY * 12)) {
-                //     for (let i = 0; i < 3.; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 12; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // } else if(energyAvailable >= (PartCosts.MOVE * 26) + (PartCosts.CARRY * 10)) {
-                //     for (let i = 0; i < 26; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 10; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // } else
                 if( energyAvailable >= (PartCosts.MOVE * 8) + (PartCosts.CARRY * 8)) {
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
@@ -174,19 +134,6 @@ export class SpawnUtils {
                     return null;
                 }
             case 'harvester':
-                //   if(energyAvailable >= (PartCosts.MOVE * 4) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 12)) {
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 1; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     for (let i = 0; i < 12; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     break;
-                // }
-                // else
                 if(energyAvailable >= ((PartCosts.MOVE * 2) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 6))) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
@@ -222,34 +169,12 @@ export class SpawnUtils {
                     return null;
                 }
             case 'upgrader':
-                if(energyAvailable >= 2100) {
-                    for (let i = 0; i < 6; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 13; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if(energyAvailable >= 1800) {
-                    for (let i = 0; i < 6; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 11; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
+
                 if(energyAvailable >= 1300) {
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 9; i++) {
                         partsPattern.push(WORK);
                     }
                     for (let i = 0; i < 4; i++) {
@@ -282,55 +207,6 @@ export class SpawnUtils {
                 }
             case 'builder':
             case 'repairer':
-
-                // if(energyAvailable >= 3500) {
-                //     for (let i = 0; i < 26; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 20; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // } else if(energyAvailable >= 2100) {
-                //     for (let i = 0; i < 14; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 12; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // } else if(energyAvailable >= 1800) {
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 12; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // }
-                // else
-                // if(energyAvailable >= 1300) {
-                //     for (let i = 0; i < 6; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     for (let i = 0; i < 4; i++) {
-                //         partsPattern.push(CARRY);
-                //     }
-                //     break;
-                // }
-                // else
                 if(energyAvailable >= 800) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
