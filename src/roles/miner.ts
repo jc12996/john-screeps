@@ -2,6 +2,7 @@ import { MovementUtils } from "utils/MovementUtils";
 import { Carrier } from "./carrier";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Upgrader } from "./upgrader";
+import { Harvester } from "./harvester";
 
 export class Miner {
 
@@ -46,8 +47,11 @@ export class Miner {
                 return;
             }
 
-            if(mineFlag.room?.controller?.reservation) {
+            const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS).length;
+
+            if(mineFlag.room?.controller?.reservation || mineHostiles) {
                 if(creep.room != firstRoom) {
+                    creep.say("😨",true)
                     creep.moveTo(firstRoom.find(FIND_CREEPS)[0])
                 } else{
                     Carrier.run(creep);
@@ -63,14 +67,23 @@ export class Miner {
 
 
 
-            let targetSource = mineFlag.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            let targetSource = Harvester.findTargetSource(creep);
 
             if(targetSource) {
-                const mineResult = creep.harvest(targetSource);
-                if(mineResult == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targetSource);
-                }
+                creep.moveTo(targetSource);
             }
+
+            const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            if(finalSource) {
+                const mineResult = creep.harvest(finalSource);
+                if(mineResult == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(finalSource);
+                }
+            } else {
+                creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+            }
+
+
 
 
 

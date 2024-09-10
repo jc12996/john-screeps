@@ -5,6 +5,7 @@ import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { HighUpkeep, LowUpkeep, MediumUpkeep, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { loadavg } from "os";
 import { manageLinks } from "links";
+import { Harvester } from "roles/harvester";
 
 
 export class AutoSpawn {
@@ -48,17 +49,14 @@ export class AutoSpawn {
         const settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
         const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
         const healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
+
+        const mineFlag = Game.flags[spawn.room.name+'MineFlag'];
+        const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS).length;
         const miners = _.filter(Game.creeps, (creep) => {
-
-
-            const mineFlag = Game.flags[spawn.room.name+'MineFlag']
-
             if(!!!mineFlag) {
                 return false;
             }
-
             const mineFlagRoom = mineFlag.room;
-
             return creep.memory.role == 'miner' &&
             (
                 creep.room.name == spawn.room.name ||
@@ -67,8 +65,11 @@ export class AutoSpawn {
                     creep.room.name == mineFlagRoom.name
                 )
             )
-
         });
+
+
+
+
         const dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
         const carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
         const repairableStuff = spawn.room.find(FIND_STRUCTURES, {
@@ -151,10 +152,14 @@ export class AutoSpawn {
             }
         }
 
-        //console.log(numberOfNeededSettlers);
-        // if(!!Game.flags.settlerFlag && settlers.length >= numberOfNeededSettlers) {
-        //     Game.flags.settlerFlag.remove();
-        // }
+        if(!!mineFlag) {
+            const mineSources = mineFlag.room?.find(FIND_SOURCES);
+            if(mineSources) {
+                for(const source of mineSources) {
+                    numberOfNeededMiners += RoomUtils.getCreepProspectingSlots(source).length;
+                }
+            }
+        }
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
             numberOfNeededCarriers = 8;
@@ -170,8 +175,6 @@ export class AutoSpawn {
                 return struc.structureType === STRUCTURE_TOWER
             }
         });
-
-
 
         //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
         //console.log(`${spawn.name} has rally flag:`,!!Game.flags.rallyFlag);
@@ -257,7 +260,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
         }
-        else if (!!Game.flags[spawn.room.name+'MineFlag']  && !Game.flags[spawn.room.name+'MineFlag']?.room?.controller?.owner  && miners.length < numberOfNeededMiners) {
+        else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
             name = 'Miner' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
             options = {memory: {role: 'miner'}};

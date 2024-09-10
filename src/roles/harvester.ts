@@ -112,7 +112,7 @@ export class Harvester {
 
     }
 
-    private static findTargetSource(creep:Creep): Source | null {
+    public static findTargetSource(creep:Creep): Source | null {
 
         let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
