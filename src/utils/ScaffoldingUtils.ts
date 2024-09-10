@@ -67,7 +67,7 @@ export class ScaffoldingUtils {
             if(creepOrSpawn.room?.controller?.my && creepOrSpawn.room.controller?.level) {
 
 
-                if (creepOrSpawn.room.controller.level >= 2) {
+                if (creepOrSpawn.room.controller.level == 2) {
                     creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y +2,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y +4,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y +1,STRUCTURE_EXTENSION);
@@ -75,7 +75,7 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x  -2,pos.y +1,STRUCTURE_EXTENSION);
                 }
 
-                if (creepOrSpawn.room.controller.level >= 3 ) {
+                if (creepOrSpawn.room.controller.level == 3 ) {
                     creepOrSpawn.room?.createConstructionSite(pos.x -4,pos.y+5,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+5,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x -1,pos.y+4,STRUCTURE_EXTENSION);
@@ -89,7 +89,7 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y-1,STRUCTURE_TOWER);
                 }
 
-                if (creepOrSpawn.room.controller.level >= 4 ) {
+                if (creepOrSpawn.room.controller.level == 4 ) {
                     creepOrSpawn.room?.createConstructionSite(pos.x -6,pos.y+1,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x -6,pos.y+5,STRUCTURE_EXTENSION);
@@ -106,7 +106,7 @@ export class ScaffoldingUtils {
                     }
                 });
 
-                if (creepOrSpawn.room.controller.level >= 5 ) {
+                if (creepOrSpawn.room.controller.level == 5 ) {
                     creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+4,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y+6,STRUCTURE_EXTENSION);
