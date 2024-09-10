@@ -20,12 +20,14 @@ export class Claimer {
         if(!!mineFlag && mineFlag.room !== creep.room) {
             MovementUtils.goToFlag(creep,mineFlag);
             return;
-        }
-
-        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        } else {
+            const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
         if(!canProceed){
             return;
         }
+
+        }
+
         //const room = new RoomPosition(AttackSequence.NEXT_BASE_TO_CLAIM.coord.x, AttackSequence.NEXT_BASE_TO_CLAIM.coord.y, AttackSequence.NEXT_BASE_TO_CLAIM.pos);
 
         if(creep.room.controller && !creep.room.controller.my) {
