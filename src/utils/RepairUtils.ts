@@ -22,12 +22,12 @@ export class RepairUtils {
                     maxRoadStrength = 1000;
                     break;
                 case 7:
-                    maxWallStrength = 300000;
-                    maxRoadStrength = 4000;
+                    maxWallStrength = 250000;
+                    maxRoadStrength = 1000;
                     break;
                 case 8:
-                    maxWallStrength = 1000000;
-                    maxRoadStrength = 4000;
+                    maxWallStrength = 500000;
+                    maxRoadStrength = 1000;
                     break;
             }
 

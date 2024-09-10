@@ -54,9 +54,11 @@ export class Defender {
             Attacker.run(creep);
         } else if(Game.flags?.draftFlag) {
             MovementUtils.goToFlag(creep,Game.flags?.draftFlag)
-        } else if(mineFlag && (mineFlag.room?.find(FIND_HOSTILE_CREEPS) || mineFlag.room?.find(FIND_HOSTILE_STRUCTURES)) && firstRoom && creep.room !== mineFlag.room) {
-            MovementUtils.goToFlag(creep,mineFlag);
-        } else if(roomRallyPointFlag.length) {
+        }
+        //else if(mineFlag && (mineFlag.room?.find(FIND_HOSTILE_CREEPS) || mineFlag.room?.find(FIND_HOSTILE_STRUCTURES)) && firstRoom && creep.room !== mineFlag.room) {
+           // MovementUtils.goToFlag(creep,mineFlag);
+        //}
+        else if(roomRallyPointFlag.length) {
             MovementUtils.goToFlag(creep,roomRallyPointFlag[0])
         } else if(Game.flags?.rallyFlag && !creep.room.find(FIND_FLAGS)) {
             MovementUtils.goToFlag(creep,Game.flags?.rallyFlag)

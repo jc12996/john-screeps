@@ -146,7 +146,7 @@ export class Carrier {
         const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
             filter: (link) => {
                 return link.name == creep.room.name+'ExtensionLink'
-
+            }
         });
 
 
@@ -211,14 +211,14 @@ export class Carrier {
                         MovementUtils.xHarvesterMovementSequence(creep,extensionFarm2Flag,extensionLink,nearestStorage,nearestSpawn[0],towers,extension);
 
                     }
-                    //return;
+                    return;
                 }
 
                 const extensionLink1 = getLinkByTag(creep, 'ExtensionLink');
                 if(creep.memory.role === 'carrier' && extensionLink1 && (nearestStorage || links.length >= 2) && creep.room?.controller?.level >= 5) {
                     creep.say("🚚 X");
                     MovementUtils.xHarvesterMovementSequence(creep,spawn,extensionLink1,nearestStorage,nearestSpawn[0],towers,extension);
-                    //return;
+                    return;
                 }
             }
 

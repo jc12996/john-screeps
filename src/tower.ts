@@ -13,6 +13,10 @@ export class Tower {
             capacityAvailableThreshold = 1200;
         }
 
+        if(level >= 7) {
+            capacityAvailableThreshold = room.energyCapacityAvailable;
+        }
+
         const extensionFillThresholdPercentage =  (room.energyAvailable >= capacityAvailableThreshold || (level < 3)) ? 1 : .1;
 
         var hostiles = room.find(FIND_HOSTILE_CREEPS,
