@@ -67,7 +67,7 @@ export class Carrier {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
 
-        const extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        let extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
                     (structure.structureType == STRUCTURE_EXTENSION) && structure.room?.controller?.my
@@ -77,6 +77,19 @@ export class Carrier {
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
         });
+
+        if((creep.memory.extensionFarm1 || creep.memory.extensionFarm2) && commandLevel >= 7) {
+            extension = creep.pos.findInRange(FIND_STRUCTURES,11, {
+                filter:  (structure) => {
+                    return (
+                        (structure.structureType == STRUCTURE_EXTENSION) && structure.room?.controller?.my
+
+
+                    ) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            })[0] ?? null;
+        }
 
         var spawns = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
