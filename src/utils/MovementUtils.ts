@@ -113,7 +113,7 @@ export class MovementUtils {
         });
         const commandLevel =  creep.room?.controller?.level ?? 1;
 
-        if(creep.memory.role === 'upgrader') {
+        if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
             if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
             }  else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
@@ -142,24 +142,24 @@ export class MovementUtils {
 
 
 
-        if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-            creep.memory.hitWaypointFlag = true;
-        }else if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && Game.flags.wayPointFlag.pos !== creep.pos) {
+        // if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
+        //     creep.memory.hitWaypointFlag = true;
+        // }else if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && Game.flags.wayPointFlag.pos !== creep.pos) {
 
-            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag);
+        //     MovementUtils.goToFlag(creep,Game.flags.wayPointFlag);
 
-            return false;
-        }
+        //     return false;
+        // }
 
-        creep.memory.hitWaypointFlag2 = undefined;
-        if(!!creep.memory.hitWaypointFlag2 && !!!creep.memory.hitWaypointFlag2 && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag2.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-            creep.memory.hitWaypointFlag2 = true;
-        }else if(!!Game.flags.wayPointFlag2 && !!!creep.memory.hitWaypointFlag2 && Game.flags.wayPointFlag2.pos !== creep.pos) {
+        // creep.memory.hitWaypointFlag2 = undefined;
+        // if(!!creep.memory.hitWaypointFlag2 && !!!creep.memory.hitWaypointFlag2 && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag2.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
+        //     creep.memory.hitWaypointFlag2 = true;
+        // }else if(!!Game.flags.wayPointFlag2 && !!!creep.memory.hitWaypointFlag2 && Game.flags.wayPointFlag2.pos !== creep.pos) {
 
-            MovementUtils.goToFlag(creep,Game.flags.wayPointFlag2);
+        //     MovementUtils.goToFlag(creep,Game.flags.wayPointFlag2);
 
-            return false;
-        }
+        //     return false;
+        // }
 
         if(creep.memory.role !== 'settler' && creep.memory.role !== 'claimer') {
             return true;
@@ -169,9 +169,12 @@ export class MovementUtils {
             return true;
         }
 
-        if((creep.memory.role == 'claimer' || creep.memory.role == 'settler') && !!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room){
-            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
-
+        if(AutoSpawn.nextClaimFlag.room == creep.room) {
+            return true;
+        }
+        console.log(AutoSpawn.nextClaimFlag.room)
+        MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
+        if(!!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room){
             return false;
         }
 

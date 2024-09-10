@@ -203,7 +203,14 @@ export class AutoSpawn {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
-        } else if (((activeharvesters.length > 0 || harvesters.length == 0) && !spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0 && harvesters.length < numberOfNeededHarvestersMax)  && nonactiveharvesters.length == 0) {
+        }
+        else if((upgraders.length < 3)) {
+            name = 'Upgrader' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
+            options = {memory: {role: 'upgrader'}                }
+        }
+
+        else if (((activeharvesters.length > 0 || harvesters.length == 0) && !spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0 && harvesters.length < numberOfNeededHarvestersMax)  && nonactiveharvesters.length == 0) {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
@@ -244,12 +251,13 @@ export class AutoSpawn {
             name = 'Defender' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
-        } else if((spawn.room.controller.level < 2 || extensions.length >= 4) && upgraders.length < numberOfNeededUpgraders) {
+        }
+        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
         }
-        else if (!!Game.flags[spawn.room.name+'MineFlag']  && miners.length < numberOfNeededMiners) {
+        else if (!!Game.flags[spawn.room.name+'MineFlag']  && !Game.flags[spawn.room.name+'MineFlag']?.room?.controller?.owner  && miners.length < numberOfNeededMiners) {
             name = 'Miner' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
             options = {memory: {role: 'miner'}};

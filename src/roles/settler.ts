@@ -25,24 +25,6 @@ export class Settler {
         }
 
 
-        if(AutoSpawn.nextClaimFlag  && AutoSpawn.nextClaimFlag?.room !== creep.room) {
-            var friendlyRamparts = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                filter: (site) => {
-                    return (site.structureType == STRUCTURE_RAMPART && site.owner && SpawnUtils.FRIENDLY_OWNERS_FILTER(site.owner))
-                }
-            });
-
-            if(creep.moveTo(AutoSpawn.nextClaimFlag) === ERR_NO_PATH && friendlyRamparts && friendlyRamparts.pos !== creep.pos && !creep.memory?.friendRampartEntered) {
-                creep.memory.friendRampartEntered = true
-                creep.moveTo(friendlyRamparts);
-                return;
-            }
-            return;
-        }
-
-
-
-
         var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         var spawns = creep.room.find(FIND_MY_SPAWNS);
 
