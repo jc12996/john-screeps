@@ -135,17 +135,16 @@ export class ScaffoldingUtils {
                 //console.log(creepOrSpawn.room.name,'createExtensions',creepOrSpawn.room.controller.level)
                 if (creepOrSpawn.room.controller.level == 7 ) {
 
-                    const spawnConstructionSites = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                        filter: (rampart) => {
-                            return (rampart.structureType == STRUCTURE_SPAWN)
-                        }
-                    });
 
 
-                    if(spawnConstructionSites.length == 0 && creepOrSpawn.room?.controller?.my && !!flag?.name) {
-                        creepOrSpawn.room?.createConstructionSite(flag.pos.x,flag.pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
-                        //console.log('Creating '+ 'Spawn'+(totalSpawns + 1))
-                    }
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
+                    creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y,STRUCTURE_LAB);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y,STRUCTURE_LAB);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_LAB);
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_LAB);
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_LAB);
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_LAB);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_FACTORY);
 
                     const terminalConstructionSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
                         filter: (rampart) => {
@@ -156,7 +155,6 @@ export class ScaffoldingUtils {
 
                     if(terminalConstructionSite.length == 0 && creepOrSpawn.room?.controller?.my) {
                         creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y,STRUCTURE_TERMINAL);
-                        //console.log('Creating Terminal',creepOrSpawn.room.name)
                     }
 
 
