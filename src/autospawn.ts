@@ -31,8 +31,6 @@ export class AutoSpawn {
     }
 
     private static spawnSequence(spawn: any): void {
-
-        //console.log("totalSpawns",this.totalSpawns);
         let bodyParts = null;
         let name = null;
         let options = undefined;
@@ -64,17 +62,12 @@ export class AutoSpawn {
                 )
             )
         });
-
-
-
-
         const dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
         const carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
         const repairableStuff = spawn.room.find(FIND_STRUCTURES, {
             filter: (site: { structureType: string; store: { [x: string]: number; }; }) => { return (
                 site.structureType == STRUCTURE_CONTAINER || site.structureType === STRUCTURE_RAMPART || site.structureType === STRUCTURE_ROAD); }
         });
-
         const RoomSources = spawn.room.find(FIND_SOURCES);
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
@@ -83,27 +76,16 @@ export class AutoSpawn {
         const storage  = spawn.room.find(FIND_STRUCTURES, {
             filter: { structureType: STRUCTURE_STORAGE }
         })[0] ?? undefined;
-
         const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
-
-        //console.log(spawn.name, numberOfNeededHarvesters)
-
-
-        this.nextClaimFlag = getNextClaimFlag(spawn.room,extensionFarm2Flag);
-        operateLinks(spawn);
-
-        //console.log('Next claim flag ',this.nextClaimFlag.name)
-
         var constructionSites = spawn.room.find(FIND_CONSTRUCTION_SITES);
         const extensions  = spawn.room.find(FIND_MY_STRUCTURES, {
             filter: { structureType: STRUCTURE_EXTENSION }
         });
-
-
-
         const activeharvesters = harvesters.filter((hhh) => hhh.memory?.targetSource );
         const nonactiveharvesters = harvesters.filter((hhh) => !hhh.memory?.targetSource );
         const numberOfNeededHarvestersMax = LowUpkeep.Harvesters * RoomSources.length;
+
+
         let numberOfNeededCarriers = LowUpkeep.Carriers * harvesters.length;
         let numberOfNeededBuilders = LowUpkeep.Builder * 1;
         let numberOfNeededRepairers = LowUpkeep.Repairer * RoomSources.length;
@@ -112,13 +94,13 @@ export class AutoSpawn {
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
         let numberOfNeededDefenders = !!Game.flags.draftFlag ? (LowUpkeep.DraftedDefenderTotal * 1) : (LowUpkeep.Defender * 1);
 
-
-
-
+        this.nextClaimFlag = getNextClaimFlag(spawn.room,extensionFarm2Flag);
+        operateLinks(spawn);
 
         if(commandLevel >= 6 && numberOfNeededCarriers < 2) {
             numberOfNeededCarriers = 2;
         }
+
 
         if(storage){
             if(storage.store[RESOURCE_ENERGY] > 50000) {

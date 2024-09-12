@@ -1,6 +1,7 @@
 import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Attacker } from "./attacker";
+import { filter } from "lodash";
 
 export class Defender {
     public static run(creep: Creep): void {
@@ -8,6 +9,12 @@ export class Defender {
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say('🛡');
         }
+
+        const defenders = creep.room.find(FIND_MY_CREEPS, {
+            filter:  (creep) => {
+                return creep.memory.role == 'defender' && creep.memory.firstSpawnCoords === creep.room.name
+            }
+        });
 
         var hostileCreeps = creep.room.find(FIND_HOSTILE_CREEPS, {
             filter:  (creep) => {
@@ -47,7 +54,6 @@ export class Defender {
             firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
         }
 
-
         if(!Game.flags.attackFlag && hostileActiveTowers.length > 0 && nearestExit) {
             creep.moveTo(nearestExit);
         } else if (hostileCreeps.length > 0 || hostileStructures.length > 0 || (badSpawns.length > 0 && hostileStructures.length < 3)) {
@@ -55,9 +61,9 @@ export class Defender {
         } else if(Game.flags?.draftFlag) {
             MovementUtils.goToFlag(creep,Game.flags?.draftFlag)
         }
-        //else if(mineFlag && (mineFlag.room?.find(FIND_HOSTILE_CREEPS) || mineFlag.room?.find(FIND_HOSTILE_STRUCTURES)) && firstRoom && creep.room !== mineFlag.room) {
-           // MovementUtils.goToFlag(creep,mineFlag);
-        //}
+        else if(defenders.length > 0 && defenders[0] === creep && mineFlag && (mineFlag.room?.find(FIND_HOSTILE_CREEPS).length || mineFlag.room?.find(FIND_HOSTILE_STRUCTURES).length) && firstRoom && creep.room !== mineFlag.room) {
+           MovementUtils.goToFlag(creep,mineFlag);
+        }
         else if(roomRallyPointFlag.length) {
             MovementUtils.goToFlag(creep,roomRallyPointFlag[0])
         } else if(Game.flags?.rallyFlag && !creep.room.find(FIND_FLAGS)) {

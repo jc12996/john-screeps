@@ -78,6 +78,19 @@ export class Carrier {
             }
         });
 
+                const playerHostiles = creep.room.find(FIND_HOSTILE_CREEPS,
+            {
+                filter: (hostileCreep) => {
+                    return ((hostileCreep.owner &&
+                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && hostileCreep.getActiveBodyparts(ATTACK) > 0) && hostileCreep?.owner?.username !== 'Invader')
+                  }
+            }
+        );
+        if(commandLevel <= 5 && playerHostiles.length > 0 && creep.room.controller?.my) {
+            creep.room.controller.activateSafeMode();
+        }
+
+
         if((creep.memory.extensionFarm2) && commandLevel >= 7) {
             extension = creep.pos.findInRange(FIND_STRUCTURES,11, {
                 filter:  (structure) => {
@@ -349,16 +362,7 @@ export class Carrier {
                     creep.say('🚚 S');
                 }
                 creep.moveTo(storage);
-            } else if(nearestAvailableWorkingRoleCreep && !storage && !spawn && !towers.length  && !extension && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                if(creep.memory?.extensionFarm1) {
-                    creep.say("🚚 XC");
-                } else if( creep.memory?.extensionFarm2){
-                    creep.say("🚚 X2C");
-                } else {
-                    creep.say('🚚 C');
-                }
-                creep.moveTo(nearestAvailableWorkingRoleCreep);
-            } else if(extensionLinkFlag[0] && creep.memory.extensionFarm1) {
+            } else if(extensionLinkFlag[0] && !spawns && !towers.length  && !extension  && creep.memory.extensionFarm1) {
                 const extensionLink = getLinkByTag(creep, 'ExtensionLink');
                 if(largeStorage && extensionLink && creep.transfer(extensionLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(extensionLink);
@@ -367,6 +371,15 @@ export class Carrier {
                     creep.moveTo(extensionLinkFlag[0].pos.x - 1, extensionLinkFlag[0].pos.y);
                 }
 
+            }  else if(nearestAvailableWorkingRoleCreep && !storage && !spawn && !towers.length  && !extension && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if(creep.memory?.extensionFarm1) {
+                    creep.say("🚚 XC");
+                } else if( creep.memory?.extensionFarm2){
+                    creep.say("🚚 X2C");
+                } else {
+                    creep.say('🚚 C');
+                }
+                creep.moveTo(nearestAvailableWorkingRoleCreep);
             } else if(extensionLinkFlag2[0]  && creep.memory.extensionFarm2) {
                 if(terminal && !nearestSpawn.length && !towers.length  && !extension && creep.transfer(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say("🚚 X2TR");
