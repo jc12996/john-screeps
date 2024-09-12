@@ -40,6 +40,8 @@ export class Miner {
                 creep.say("⛏ 🔄");
             }
 
+           // if(creep.room.controller?.my && creep.room.find(FIND))
+
             const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
 
 

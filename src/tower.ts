@@ -14,7 +14,8 @@ export class Tower {
         }
 
         if(level >= 7) {
-            capacityAvailableThreshold = room.energyCapacityAvailable;
+            capacityAvailableThreshold = 3500;
+            console.log(capacityAvailableThreshold,room.energyAvailable)
         }
 
         const extensionFillThresholdPercentage =  (room.energyAvailable >= capacityAvailableThreshold || (level < 3)) ? 1 : .1;

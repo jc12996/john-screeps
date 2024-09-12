@@ -60,8 +60,6 @@ export class ScaffoldingUtils {
             pos = flag.pos;
         }
 
-
-
         if(creepOrSpawn.room.controller && creepOrSpawn.room.controller.my && spawnsAmount.length >= 1) {
 
             if(creepOrSpawn.room?.controller?.my && creepOrSpawn.room.controller?.level) {

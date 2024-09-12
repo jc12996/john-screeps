@@ -78,7 +78,7 @@ export class Carrier {
             }
         });
 
-        if((creep.memory.extensionFarm1 || creep.memory.extensionFarm2) && commandLevel >= 7) {
+        if((creep.memory.extensionFarm2) && commandLevel >= 7) {
             extension = creep.pos.findInRange(FIND_STRUCTURES,11, {
                 filter:  (structure) => {
                     return (

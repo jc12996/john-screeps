@@ -86,11 +86,29 @@ export class AutoSpawn {
             filter: { structureType: STRUCTURE_STORAGE }
         })[0] ?? undefined;
 
+        const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
+
         //console.log(spawn.name, numberOfNeededHarvesters)
         for (let i = 0; i < 10; i++) {
             const claimFlag = Game.flags['claimFlag'+i];
             if (claimFlag){
                 const claimRoom = claimFlag.room;
+
+                if(spawn.room === claimRoom && claimRoom?.name){
+                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x,claimFlag.pos.y,claimFlag.pos.x-6,claimFlag.pos.y);
+                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x-6,claimFlag.pos.y,claimFlag.pos.x-6,claimFlag.pos.y+6);
+                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x,claimFlag.pos.y,claimFlag.pos.x,claimFlag.pos.y+6);
+                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x,claimFlag.pos.y+6,claimFlag.pos.x-6,claimFlag.pos.y+6);
+                    if(extensionFarm2Flag && spawn.room === extensionFarm2Flag.room){
+                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y,extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y);
+                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y,extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y+6);
+                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y,extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y+6);
+                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y+6,extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y+6);
+                    }
+
+
+                }
+
                 const roomSpawn = claimRoom?.find(FIND_MY_SPAWNS);
                 if(roomSpawn?.length) {
                     continue;
@@ -307,7 +325,6 @@ export class AutoSpawn {
                     }
                 }
 
-                const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
                 if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
 
                     ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
