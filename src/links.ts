@@ -92,7 +92,7 @@ export function operateLinks(creep: Creep | StructureSpawn) {
     const activeSources = creep.room.find(FIND_SOURCES_ACTIVE);
 
     const xCreepCapacityCreeps = creep.room.find(FIND_MY_CREEPS, {
-        filter: (creep) => creep.memory.extensionFarm1
+        filter: (creep) => (creep.memory.extensionFarm1 || creep.memory.extensionFarm2 || creep.memory.mainUpgrader)
     })
 
     let xCapacity = 800;
