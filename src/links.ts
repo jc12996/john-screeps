@@ -70,7 +70,7 @@ export function placeSourceLinks(creep: Creep) {
     }
 }
 
-export function manageLinks(creep: Creep | StructureSpawn) {
+export function operateLinks(creep: Creep | StructureSpawn) {
 
     var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter:  (structure) => {

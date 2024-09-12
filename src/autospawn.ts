@@ -1,11 +1,9 @@
 import { SpawnUtils } from "utils/SpawnUtils";
-
 import { RoomUtils } from "utils/RoomUtils";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { HighUpkeep, LowUpkeep, MediumUpkeep, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
-import { loadavg } from "os";
-import { manageLinks } from "links";
-import { Harvester } from "roles/harvester";
+import { operateLinks } from "links";
+import { getNextClaimFlag } from "claims";
 
 
 export class AutoSpawn {
@@ -89,36 +87,10 @@ export class AutoSpawn {
         const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
 
         //console.log(spawn.name, numberOfNeededHarvesters)
-        for (let i = 0; i < 10; i++) {
-            const claimFlag = Game.flags['claimFlag'+i];
-            if (claimFlag){
-                const claimRoom = claimFlag.room;
-
-                if(spawn.room === claimRoom && claimRoom?.name){
-                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x,claimFlag.pos.y,claimFlag.pos.x-6,claimFlag.pos.y);
-                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x-6,claimFlag.pos.y,claimFlag.pos.x-6,claimFlag.pos.y+6);
-                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x,claimFlag.pos.y,claimFlag.pos.x,claimFlag.pos.y+6);
-                    new RoomVisual(claimRoom.name).line(claimFlag.pos.x,claimFlag.pos.y+6,claimFlag.pos.x-6,claimFlag.pos.y+6);
-                    if(extensionFarm2Flag && spawn.room === extensionFarm2Flag.room){
-                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y,extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y);
-                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y,extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y+6);
-                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y,extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y+6);
-                        new RoomVisual(claimRoom.name).line(extensionFarm2Flag.pos.x,extensionFarm2Flag.pos.y+6,extensionFarm2Flag.pos.x-6,extensionFarm2Flag.pos.y+6);
-                    }
 
 
-                }
-
-                const roomSpawn = claimRoom?.find(FIND_MY_SPAWNS);
-                if(roomSpawn?.length) {
-                    continue;
-                }
-                this.nextClaimFlag = claimFlag;
-                break;
-            }
-        }
-
-        manageLinks(spawn);
+        this.nextClaimFlag = getNextClaimFlag(spawn.room,extensionFarm2Flag);
+        operateLinks(spawn);
 
         //console.log('Next claim flag ',this.nextClaimFlag.name)
 
