@@ -39,28 +39,28 @@ export enum HighUpkeep {
 
 export enum SeigeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 3,
-    TOTAL_HEALER_SIZE = 9,
-    TOTAL_DISMANTLER_SIZE = 6,
-    TOTAL_MEAT_GRINDERS = 3
+    TOTAL_ATTACKER_SIZE = 0,
+    TOTAL_HEALER_SIZE = 4,
+    TOTAL_DISMANTLER_SIZE = 4,
+    TOTAL_MEAT_GRINDERS = 1
 
 }
 
 export enum WarTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 12,
-    TOTAL_HEALER_SIZE = 6,
-    TOTAL_DISMANTLER_SIZE = 2,
-    TOTAL_MEAT_GRINDERS = 0
+    TOTAL_ATTACKER_SIZE = 8,
+    TOTAL_HEALER_SIZE = 8,
+    TOTAL_DISMANTLER_SIZE = 0,
+    TOTAL_MEAT_GRINDERS = 2
 
 }
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 6,
-    TOTAL_HEALER_SIZE = 3,
-    TOTAL_DISMANTLER_SIZE = 1,
-    TOTAL_MEAT_GRINDERS = 0
+    TOTAL_ATTACKER_SIZE = 4,
+    TOTAL_HEALER_SIZE = 4,
+    TOTAL_DISMANTLER_SIZE = 0,
+    TOTAL_MEAT_GRINDERS = 1
 
 }
 
