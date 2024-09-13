@@ -1,5 +1,5 @@
 export enum LowUpkeep {
-    Harvesters = 3,// Max Harvester Per Slot
+    Harvesters = 4,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
     Builder = 3,// Total For Room
     Repairer = 1,// Per Source
@@ -51,16 +51,16 @@ export enum WarTimeEconomy {
     TOTAL_ATTACKER_SIZE = 8,
     TOTAL_HEALER_SIZE = 8,
     TOTAL_DISMANTLER_SIZE = 0,
-    TOTAL_MEAT_GRINDERS = 2
+    TOTAL_MEAT_GRINDERS = 0
 
 }
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 4,
-    TOTAL_HEALER_SIZE = 4,
+    TOTAL_ATTACKER_SIZE = 3,
+    TOTAL_HEALER_SIZE = 3,
     TOTAL_DISMANTLER_SIZE = 0,
-    TOTAL_MEAT_GRINDERS = 1
+    TOTAL_MEAT_GRINDERS = 0
 
 }
 

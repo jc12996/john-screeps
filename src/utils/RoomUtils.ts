@@ -20,7 +20,7 @@ export class RoomUtils {
         for(const area of squareAreas) {
             const areaPostion: Terrain[] = source.room.lookForAt(LOOK_TERRAIN,area.x,area.y);
             const hasCreep = source.room.lookForAt(LOOK_CREEPS,area.x,area.y);
-            if(areaPostion.includes('plain') && hasCreep.length == 0) {
+            if((areaPostion.includes('plain') || areaPostion.includes('swamp')) && hasCreep.length == 0) {
                 area.numberOfPlainSlots++;
             }
         }
