@@ -207,6 +207,11 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
             options = {memory: {role: 'repairer'}            }
         }
+        else if (Game.flags.rallyFlag && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS) {
+            name = 'MeatGrinder' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
+            options = {memory: {role: 'meatGrinder', isArmySquad:true}};
+        }
         else if(Game.flags.rallyFlag && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
@@ -221,10 +226,6 @@ export class AutoSpawn {
             name = 'Dismantler' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
             options = {memory: {role: 'dismantler', isArmySquad:true}};
-        } else if (Game.flags.rallyFlag && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS) {
-            name = 'MeatGrinder' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
-            options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
         else if (defenders.length < numberOfNeededDefenders) {
             name = 'Defender' + Game.time;

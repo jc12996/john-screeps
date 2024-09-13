@@ -51,6 +51,16 @@ export class MovementUtils {
             return;
         }
 
+        const centerCreep = _.filter(Game.creeps, (filterCreep) => filterCreep.memory.role == 'meatGrinder' && filterCreep.room === creep.room)[0] ?? undefined;
+
+
+        console.log(creep.name,centerCreep?.name, creep.room.name)
+
+        if(centerCreep && creep.memory.role !== 'meatGrinder'){
+            this.squadMovement(creep,centerCreep);
+            return;
+        }
+
         if(flag) {
             MovementUtils.goToFlag(creep,flag)
         }else if(Game?.flags?.attackFlag) {
@@ -209,6 +219,49 @@ export class MovementUtils {
                 return;
             }
             return;
+        }
+
+    }
+
+    public static squadMovement(creep:Creep,centerCreep:Creep) {
+
+
+        if(!centerCreep){
+            return;
+        }
+
+        if(!centerCreep.pos.isNearTo(creep)) {
+            switch(creep.memory.role) {
+                case 'attacker':
+                    this.attackerMovement(creep,centerCreep);
+                    break;
+                case 'healer':
+                    this.healerMovement(creep,centerCreep);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+
+    }
+
+    public static attackerMovement(creep:Creep,centerCreep:Creep) {
+        if(creep.pos.isEqualTo(centerCreep)) {
+            creep.moveTo(centerCreep.pos.x+1, centerCreep.pos.y+1)
+
+        } else {
+            creep.moveTo(centerCreep);
+        }
+
+    }
+
+    public static healerMovement(creep:Creep,centerCreep:Creep) {
+        if(creep.pos.isEqualTo(centerCreep)) {
+            creep.moveTo(centerCreep.pos.x+1, centerCreep.pos.y+1)
+
+        } else {
+            creep.moveTo(centerCreep);
         }
 
     }
