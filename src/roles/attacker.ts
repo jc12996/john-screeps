@@ -84,6 +84,7 @@ export class Attacker {
 
 
 
+
         const hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
@@ -96,6 +97,12 @@ export class Attacker {
             }
         });
 
+        const walls = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (creep) => {
+                return  creep.structureType == STRUCTURE_WALL
+            }
+        });
+
 
         const isSafeRoom = creep.room.controller?.safeMode ?? false;
 
@@ -103,7 +110,7 @@ export class Attacker {
         if (!isSafeRoom && hostileCreeps) {
             creep.say('⚔ ⚔');
 
-            Attacker.attackTarget(creep,hostileCreeps)
+            Attacker.attackTarget(creep,hostileCreeps);
         }
         else if(!isSafeRoom && structures.length > 0 && badStructures) {
             creep.say('⚔ 🚧');

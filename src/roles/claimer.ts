@@ -15,17 +15,9 @@ export class Claimer {
             creep.say('🚩');
         }
 
-        const mineFlag = Game.flags[creep.memory.firstSpawnCoords+'MineFlag'];
-
-        if(!!mineFlag && mineFlag.room !== creep.room) {
-            MovementUtils.goToFlag(creep,mineFlag);
-            return;
-        } else {
-            const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
         if(!canProceed){
             return;
-        }
-
         }
 
         //const room = new RoomPosition(AttackSequence.NEXT_BASE_TO_CLAIM.coord.x, AttackSequence.NEXT_BASE_TO_CLAIM.coord.y, AttackSequence.NEXT_BASE_TO_CLAIM.pos);
@@ -55,7 +47,7 @@ export class Claimer {
                 }
             });
 
-            if(claimTargetCreep && !!!mineFlag) {
+            if(claimTargetCreep) {
                 if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                     //creep.moveTo(creep.room.controller);
                 }

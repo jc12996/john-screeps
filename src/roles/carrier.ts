@@ -301,7 +301,7 @@ export class Carrier {
                 return;
             }
 
-            console.log(creep.room.name,creep.room.energyAvailable, creep.room.energyCapacityAvailable)
+            //console.log(creep.room.name,creep.room.energyAvailable, creep.room.energyCapacityAvailable)
 
             if(!creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 3) {
                 if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

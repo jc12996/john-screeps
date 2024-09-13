@@ -47,7 +47,7 @@ export class AutoSpawn {
         const healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
 
         const mineFlag = Game.flags[spawn.room.name+'MineFlag'];
-        const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS).length;
+        const mineHostiles = mineFlag?.room?.find(FIND_HOSTILE_CREEPS).length;
         const miners = _.filter(Game.creeps, (creep) => {
             if(!!!mineFlag) {
                 return false;
