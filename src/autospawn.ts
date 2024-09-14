@@ -199,16 +199,21 @@ export class AutoSpawn {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
-        }  else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
-            name = 'Miner' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
-            options = {memory: {role: 'miner'}};
-        } else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
+        }
+
+        else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
             options = {memory: {role: 'carrier'}}
 
-        } else if ((hostileCreeps.length == 0 || miners.length > 5) && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
+        }
+        else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
+            name = 'Miner' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
+            options = {memory: {role: 'miner'}};
+        }
+
+        else if ((hostileCreeps.length == 0 || miners.length > 5) && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
