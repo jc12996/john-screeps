@@ -114,7 +114,7 @@ export class Miner {
                         structure.store[RESOURCE_ENERGY] > 10000;
                 }
             });
-            if(largeStorage || creep.room.energyAvailable == creep.room.energyCapacityAvailable) {
+            if(largeStorage || (creep.room.energyAvailable > 0 && creep.room.energyAvailable == creep.room.energyCapacityAvailable)) {
 
                 Carrier.run(creep,true);
 
