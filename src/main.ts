@@ -212,7 +212,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
        // Find the flag and the squad
        const flag = Game.flags['SquadFlag'];
        if (!flag) {
-          console.log('No flag found for the squad.');
+          //console.log('No flag found for the squad.');
           if(creep.memory.role == 'healer') {
             Healer.run(creep);
           }
