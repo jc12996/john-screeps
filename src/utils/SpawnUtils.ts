@@ -315,40 +315,25 @@ export class SpawnUtils {
                     return null;
                 }
             case 'attacker':
-                if(energyAvailable >= 3040) {
+                // if(energyAvailable >= 2340) {
 
-                    for (let i = 0; i < 23; i++) {
-                        partsPattern.push(ATTACK);
-                    }
-                    for (let i = 0; i < 24; i++) {
+
+                //     for (let i = 0; i < 18; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 18; i++) {
+                //         partsPattern.push(ATTACK);
+                //     }
+                //     break;
+                // } else
+                if(energyAvailable >= 130) {
+
+
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 2060) {
-
-                    for (let i = 0; i < 17; i++) {
-                        partsPattern.push(ATTACK);
-                    }
-                    for (let i = 0; i < 3; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 15; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 1320) {
-
-
-                    for (let i = 0; i < 7; i++) {
-                        partsPattern.push(ATTACK);
                     }
                     for (let i = 0; i < 1; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 15; i++) {
-                        partsPattern.push(MOVE);
+                        partsPattern.push(ATTACK);
                     }
                     break;
                 }
@@ -356,41 +341,33 @@ export class SpawnUtils {
                    return null;
                 }
             case 'healer':
-                if(energyAvailable >= 6100) {
-                    for (let i = 0; i < 20; i++) {
+                // if(energyAvailable >= 4030) {
+                //     for (let i = 0; i < 3; i++) {
+                //         partsPattern.push(TOUGH);
+                //     }
+                //     for (let i = 0; i < 10; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 14; i++) {
+                //         partsPattern.push(HEAL);
+                //     }
+                //     break;
+                // } else if(energyAvailable >= 2250) {
+
+                //     for (let i = 0; i < 10; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 7; i++) {
+                //         partsPattern.push(HEAL);
+                //     }
+                //     break;
+                // } else
+                if(energyAvailable >= 300) {
+
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(HEAL);
-                    }
-                    break;
-                } else if(energyAvailable >= 3050) {
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(HEAL);
-                    }
-                    break;
-                } else if(energyAvailable >= 2450) {
-                    for (let i = 0; i < 9; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(HEAL);
-                    }
-                    break;
-                } else if(energyAvailable >= 1450) {
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(HEAL);
                     }
                     break;

@@ -73,14 +73,14 @@ export class Attacker {
 
 
 
-        var hostileCreeps = creep.room.find(FIND_HOSTILE_CREEPS,
+        var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
             {
                 filter: hostileCreep => {
                     return ((hostileCreep.owner &&
                      !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
                   }
             }
-        )[0] ?? null;
+        );
 
 
 

@@ -48,8 +48,8 @@ export enum SeigeEconomy {
 
 export enum WarTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 8,
-    TOTAL_HEALER_SIZE = 8,
+    TOTAL_ATTACKER_SIZE = 6,
+    TOTAL_HEALER_SIZE = 3,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 
@@ -57,7 +57,7 @@ export enum WarTimeEconomy {
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 3,
+    TOTAL_ATTACKER_SIZE = 6,
     TOTAL_HEALER_SIZE = 3,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
