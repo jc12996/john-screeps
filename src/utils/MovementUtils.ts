@@ -132,6 +132,8 @@ export class MovementUtils {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
+        } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(roomRallyPointFlag[0]) {
             creep.moveTo(roomRallyPointFlag[0]);
         } else {

@@ -150,6 +150,10 @@ export class AutoSpawn {
 
         var hostileCreeps = spawn.room.find(FIND_HOSTILE_CREEPS);
 
+        const towers: Array<StructureTower> = spawn.room.find(FIND_STRUCTURES, {
+            filter: (structure: StructureTower) => structure.structureType === STRUCTURE_TOWER
+        })
+
         //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
         //console.log(`${spawn.name} has rally flag:`,!!Game.flags.rallyFlag);
         if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
@@ -204,7 +208,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
             options = {memory: {role: 'carrier'}}
 
-        } else if (hostileCreeps.length == 0 && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
+        } else if ((hostileCreeps.length == 0 || miners.length > 5) && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
@@ -236,7 +240,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
-        else if (defenders.length < numberOfNeededDefenders) {
+        else if (towers.length == 0 && defenders.length < numberOfNeededDefenders) {
             name = 'Defender' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
