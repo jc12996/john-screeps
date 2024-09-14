@@ -218,12 +218,12 @@ export class AutoSpawn {
             options = {memory: {role: 'repairer'}            }
         }
 
-        else if(spawn.room == 'W3N9' && Game.flags.rallyFlag && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
+        else if(spawn.room.name == 'W3N9' && !!Game.flags.SquadFlag && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
             options = {memory: {role: 'attacker', isArmySquad:true}};
         }
-        else if(spawn.room == 'W3N9' && spawn.name === 'Spawn1' && Game.flags.rallyFlag && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
+        else if(spawn.room.name == 'W3N9' && !!Game.flags.SquadFlag && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
             if(healers.length == 0) {
                 name = 'LeadHealer';

@@ -98,7 +98,10 @@ export class SquadUtils {
         }
 
         const damagedSquadMembers = squad.filter(creep => creep.hits < creep.hitsMax);
-        const isBreachComplete = breachPosition && this.isWalkable(breachPosition);
+        let isBreachComplete = breachPosition && this.isWalkable(breachPosition);
+        if(leadHealer.room.controller && leadHealer.room.controller.my) {
+            isBreachComplete = true;
+        }
 
         for (let i = 0; i < squad.length; i++) {
             const creep = squad[i];
@@ -116,7 +119,7 @@ export class SquadUtils {
                 });
 
                 if (targetDefense) {
-                    if (creep.pos.inRangeTo(targetDefense, 1)) {
+                    if (creep.pos.inRangeTo(targetDefense, 1) && creep.room.controller && !creep.room.controller.my) {
                         creep.attack(targetDefense);
                     } else {
                         creep.moveTo(targetDefense, { visualizePathStyle: { stroke: '#ff0000' } });
@@ -127,8 +130,8 @@ export class SquadUtils {
                 const target = this.getPriorityTarget(creep);
 
                 if (creep.memory.role === 'attacker') {
-                    if (target) {
-                        if (creep.pos.inRangeTo(target, 1)) {
+                    if (target && creep.room.controller && !creep.room.controller.my) {
+                        if (creep.pos.inRangeTo(target, 1) ) {
                             creep.attack(target);
                         } else {
                             creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
