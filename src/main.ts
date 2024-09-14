@@ -212,7 +212,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
        // Find the flag and the squad
        const flag = Game.flags['SquadFlag'];
        if (!flag) {
-          //console.log('No flag found for the squad.');
+          console.log('No flag found for the squad.');
           if(creep.memory.role == 'healer') {
             Healer.run(creep);
           }
@@ -250,16 +250,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
       });
 
       // Assign the squad to combat, handle breaching or post-breach actions
-      const canGo = SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag, breachPosition?.pos ?? null);
-      if(!canGo) {
-          if(creep.memory.role == 'healer') {
-            Healer.run(creep);
-          }
+      SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag, breachPosition?.pos ?? null);
 
-          if(creep.memory.role == 'attacker') {
-            Attacker.run(creep);
-          }
-      }
 
 
 

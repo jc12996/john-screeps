@@ -85,11 +85,11 @@ export class SquadUtils {
     }
 
     // Function to assign creeps to formation and handle attacking/healing
-    public static assignSquadFormationAndCombat(squad: Creep[], leadHealer: Creep, flag: Flag, breachPosition: RoomPosition | null): boolean {
+    public static assignSquadFormationAndCombat(squad: Creep[], leadHealer: Creep, flag: Flag, breachPosition: RoomPosition | null): void {
         // Ensure the squad size is 9
         if (squad.length !== this.squadSize) {
             console.log('Squad does not have enough creeps!');
-            return false;
+            return;
         }
 
         // Move the lead healer toward the flag
@@ -148,7 +148,7 @@ export class SquadUtils {
                         const mostDamaged = creep.pos.findClosestByRange(damagedSquadMembers);
                         if(!mostDamaged) {
                             creep.moveTo(targetPosition);
-                            return false;
+                            return;
                         }
                         if (creep.pos.inRangeTo(mostDamaged, 1)) {
                             creep.heal(mostDamaged);
@@ -169,7 +169,7 @@ export class SquadUtils {
         if (damagedSquadMembers.length > 0) {
             const mostDamaged = leadHealer.pos.findClosestByRange(damagedSquadMembers);
             if(!mostDamaged) {
-                return false;
+                return;
             }
             if (leadHealer.pos.inRangeTo(mostDamaged, 1)) {
                 leadHealer.heal(mostDamaged);
@@ -177,7 +177,5 @@ export class SquadUtils {
                 leadHealer.rangedHeal(mostDamaged);
             }
         }
-
-        return true;
     }
 }

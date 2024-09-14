@@ -326,17 +326,17 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                // else if(energyAvailable >= 130) {
+                else if(energyAvailable >= 130) {
 
 
-                //     for (let i = 0; i < 1; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 1; i++) {
-                //         partsPattern.push(ATTACK);
-                //     }
-                //     break;
-                // }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(ATTACK);
+                    }
+                    break;
+                }
                 else {
                    return null;
                 }
@@ -362,16 +362,16 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                // else if(energyAvailable >= 300) {
+                else if(energyAvailable >= 300) {
 
-                //     for (let i = 0; i < 1; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 1; i++) {
-                //         partsPattern.push(HEAL);
-                //     }
-                //     break;
-                // }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(HEAL);
+                    }
+                    break;
+                }
                 else {
                     return null;
                 }
