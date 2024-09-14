@@ -173,7 +173,8 @@ export class AutoSpawn {
         } else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
             && ((
                 !!this.nextClaimFlag
-                && this.nextClaimFlag.room?.controller?.my
+                && this.nextClaimFlag.room?.controller?.my &&
+                 this.nextClaimFlag.room.find(FIND_HOSTILE_CREEPS).length == 0
             ) || Game.flags.settlerFlag)
         )  {
             name = 'Settler' + Game.time;
