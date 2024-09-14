@@ -148,9 +148,11 @@ export class AutoSpawn {
             }
         });
 
+        var hostileCreeps = spawn.room.find(FIND_HOSTILE_CREEPS);
+
         //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
         //console.log(`${spawn.name} has rally flag:`,!!Game.flags.rallyFlag);
-        if(claimers.length < LowUpkeep.Claimers
+        if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
             &&  !!this.nextClaimFlag
             && totalNumberOfControlledRooms < Game.gcl.level
             && !this.nextClaimFlag.room?.controller?.my
@@ -164,7 +166,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
             options = {memory: {role: 'claimer'}};
 
-        } else if(settlers.length < LowUpkeep.Settlers
+        } else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
             && ((
                 !!this.nextClaimFlag
                 && this.nextClaimFlag.room?.controller?.my
@@ -183,7 +185,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
         }
-        else if((upgraders.length < 3)) {
+        else if(hostileCreeps.length == 0 && (upgraders.length < 3)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
@@ -214,10 +216,13 @@ export class AutoSpawn {
         }
         else if(Game.flags.rallyFlag && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
+            if(healers.length == 0) {
+                name = 'LeadHealer';
+            }
             bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel, 0);
             options = {memory: {role: 'healer', isArmySquad:true}};
         }
-        else if(Game.flags.rallyFlag && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
+        else if(hostileCreeps.length == 0 && Game.flags.rallyFlag && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
             name = 'Dismantler' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
             options = {memory: {role: 'dismantler', isArmySquad:true}};
@@ -231,16 +236,17 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
         }
-        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
-            name = 'Upgrader' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
-            options = {memory: {role: 'upgrader'}                }
-        }
         else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
             name = 'Miner' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
             options = {memory: {role: 'miner'}};
         }
+        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
+            name = 'Upgrader' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
+            options = {memory: {role: 'upgrader'}                }
+        }
+
 
 
 
