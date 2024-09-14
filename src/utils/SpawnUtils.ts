@@ -315,63 +315,64 @@ export class SpawnUtils {
                     return null;
                 }
             case 'attacker':
-                // if(energyAvailable >= 2340) {
+                if(energyAvailable >= 2340) {
 
 
-                //     for (let i = 0; i < 18; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 18; i++) {
-                //         partsPattern.push(ATTACK);
-                //     }
-                //     break;
-                // } else
-                if(energyAvailable >= 130) {
-
-
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 18; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 18; i++) {
                         partsPattern.push(ATTACK);
                     }
                     break;
                 }
+                // else if(energyAvailable >= 130) {
+
+
+                //     for (let i = 0; i < 1; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 1; i++) {
+                //         partsPattern.push(ATTACK);
+                //     }
+                //     break;
+                // }
                 else {
                    return null;
                 }
             case 'healer':
-                // if(energyAvailable >= 4030) {
-                //     for (let i = 0; i < 3; i++) {
-                //         partsPattern.push(TOUGH);
-                //     }
-                //     for (let i = 0; i < 10; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 14; i++) {
-                //         partsPattern.push(HEAL);
-                //     }
-                //     break;
-                // } else if(energyAvailable >= 2250) {
-
-                //     for (let i = 0; i < 10; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 7; i++) {
-                //         partsPattern.push(HEAL);
-                //     }
-                //     break;
-                // } else
-                if(energyAvailable >= 300) {
-
-                    for (let i = 0; i < 1; i++) {
+                if(energyAvailable >= 4030) {
+                    for (let i = 0; i < 3; i++) {
+                        partsPattern.push(TOUGH);
+                    }
+                    for (let i = 0; i < 10; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 14; i++) {
                         partsPattern.push(HEAL);
                     }
                     break;
-                } else {
+                } else if(energyAvailable >= 2250) {
+
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 7; i++) {
+                        partsPattern.push(HEAL);
+                    }
+                    break;
+                }
+                // else if(energyAvailable >= 300) {
+
+                //     for (let i = 0; i < 1; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 1; i++) {
+                //         partsPattern.push(HEAL);
+                //     }
+                //     break;
+                // }
+                else {
                     return null;
                 }
 
