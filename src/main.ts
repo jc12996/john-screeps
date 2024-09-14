@@ -210,9 +210,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
 
        // Find the flag and the squad
-       const flag = Game.flags['rallyFlag'];
+       const flag = Game.flags['SquadFlag'];
        if (!flag) {
-           console.log('No flag found for the squad.');
+          console.log('No flag found for the squad.');
           if(creep.memory.role == 'healer') {
             Healer.run(creep);
           }
@@ -220,37 +220,38 @@ export const loop = ErrorMapper.wrapLoop(() => {
           if(creep.memory.role == 'attacker') {
             Attacker.run(creep);
           }
-          return;
+          continue;
        }
 
-       // Find the lead healer
-       const leadHealer = Game.creeps['LeadHealer'];
-       const squad: Creep[] = [];
 
-       // Get attackers and healers
-       for (let name in Game.creeps) {
-           const creep = Game.creeps[name];
-           if (creep.memory.role === 'attacker' || creep.memory.role === 'healer') {
-               squad.push(creep);
-           }
-       }
+      // Find the lead healer
+      const leadHealer = Game.creeps['LeadHealer'];
+      const squad: Creep[] = [];
 
-       // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
-       if (!leadHealer || squad.length !== SquadUtils.squadSize) {
-           console.log('Lead healer or squad not formed correctly.');
-           return;
-       }
+      // Get attackers and healers
+      for (let name in Game.creeps) {
+          const creep = Game.creeps[name];
+          if (creep.memory.role === 'attacker' || creep.memory.role === 'healer') {
+              squad.push(creep);
+          }
+      }
 
-       // Find the breached position (if a wall or rampart has been destroyed)
-       const breachPosition = leadHealer.pos.findClosestByRange(FIND_STRUCTURES, {
-           filter: structure =>
-               (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) &&
-               structure.hits === 0 // Checking for the breached (destroyed) structure
-       });
+      // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
+      if (!leadHealer || squad.length !== SquadUtils.squadSize) {
+          console.log('Lead healer or squad not formed correctly.');
+          continue;
+      }
 
-       // Assign the squad to combat, handle breaching or post-breach actions
-       const canGo = SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag, breachPosition?.pos ?? null);
-       if(!canGo) {
+      // Find the breached position (if a wall or rampart has been destroyed)
+      const breachPosition = leadHealer.pos.findClosestByRange(FIND_STRUCTURES, {
+          filter: structure =>
+              (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) &&
+              structure.hits === 0 // Checking for the breached (destroyed) structure
+      });
+
+      // Assign the squad to combat, handle breaching or post-breach actions
+      const canGo = SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag, breachPosition?.pos ?? null);
+      if(!canGo) {
           if(creep.memory.role == 'healer') {
             Healer.run(creep);
           }
@@ -258,7 +259,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
           if(creep.memory.role == 'attacker') {
             Attacker.run(creep);
           }
-       }
+      }
+
+
+
 
 
 
