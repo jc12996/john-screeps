@@ -195,12 +195,16 @@ export class AutoSpawn {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
+        }  else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
+            name = 'Miner' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
+            options = {memory: {role: 'miner'}};
         } else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
             options = {memory: {role: 'carrier'}}
 
-        } else if (spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
+        } else if (hostileCreeps.length == 0 && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
@@ -209,6 +213,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
             options = {memory: {role: 'repairer'}            }
         }
+
         else if(Game.flags.rallyFlag && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
@@ -236,12 +241,8 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
         }
-        else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
-            name = 'Miner' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
-            options = {memory: {role: 'miner'}};
-        }
-        else if((spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
+
+        else if((hostileCreeps.length == 0 || miners.length > 3) && (spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
