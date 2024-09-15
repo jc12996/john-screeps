@@ -1,7 +1,7 @@
 export enum LowUpkeep {
     Harvesters = 4,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
-    Builder = 3,// Total For Room
+    Builder = 0,// Total For Room
     Repairer = 1,// Per Source
     Upgrader = 2,// Per Source
     Defender = 1,// Total Per Room
@@ -14,7 +14,7 @@ export enum LowUpkeep {
 export enum MediumUpkeep {
     Harvesters = 2,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
-    Builder = 3,// Per Source
+    Builder = 1,// Per Source
     Repairer = 0,// Per Source
     Upgrader = 2,// Per Source
     Defender = 3,// Total Per Room

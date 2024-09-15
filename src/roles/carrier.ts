@@ -41,7 +41,7 @@ export class Carrier {
             filter: (stru) => stru.structureType === STRUCTURE_EXTENSION
         }).length
 
-        console.log(creep.room.name,creep.room.energyCapacityAvailable)
+        //console.log(creep.room.name,creep.room.energyCapacityAvailable)
         if(creep.room.energyCapacityAvailable > 2000 && carriers[0] &&  creep.name === carriers[0].name) {
             creep.memory.extensionFarm1 = true;
             creep.memory.extensionFarm2 = false;
