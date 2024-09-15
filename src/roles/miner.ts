@@ -49,7 +49,9 @@ export class Miner {
                 return;
             }
 
-            const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS).length;
+            const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS, {
+                filter: (creep) => creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0
+            }).length;
 
             if(mineFlag.room?.controller?.reservation || mineHostiles) {
                 if(creep.room != firstRoom) {

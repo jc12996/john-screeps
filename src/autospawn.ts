@@ -213,13 +213,11 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
         }
-        else if (towers.length == 0 && defenders.length < numberOfNeededDefenders) {
+        else if ((towers.length == 0 || (towers[0] && towers[0].store[RESOURCE_ENERGY] < 400)) && defenders.length < numberOfNeededDefenders) {
             name = 'Defender' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
         }
-
-
         else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
             name = 'Miner' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
