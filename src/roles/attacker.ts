@@ -103,6 +103,19 @@ export class Attacker {
             }
         });
 
+        var hostileInvaderStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
+            {
+                filter: hostileCreep => {
+                    return (hostileCreep.owner && hostileCreep?.owner?.username === 'Invader')
+                  }
+            }
+        );
+        let invaderCore = null;
+        if(creep.room.controller?.reservation && hostileInvaderStructures) {
+            invaderCore = hostileInvaderStructures;
+        }
+
+
 
         const isSafeRoom = creep.room.controller?.safeMode ?? false;
 
@@ -133,6 +146,12 @@ export class Attacker {
         if (!isSafeRoom && hostileSites.length > 0 && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
             Attacker.attackTarget(creep,hostileSites[0])
+            return;
+        }
+
+        if(invaderCore) {
+            creep.say('⚔ 🚧');
+            Attacker.attackTarget(creep,invaderCore)
             return;
         }
 

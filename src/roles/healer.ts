@@ -76,7 +76,7 @@ export class Healer {
 
         let friendlyHurtCreeps = creep.room.find(FIND_MY_CREEPS, {
             filter: function(object) {
-                return object.hits < object.hitsMax
+                return object.hits < object.hitsMax && object.name !== creep.name
             }
         });
 
@@ -107,22 +107,36 @@ export class Healer {
 
             if(Game.flags?.healMeatFlag) {
                 MovementUtils.defaultArmyMovement(creep,Game.flags?.healMeatFlag);
-            }else if(friendlyCreeps && hostileCreeps) {
-                creep.moveTo(friendlyCreeps)
+                return;
             }
-            else if(Game.flags?.healFlag && !friendlyCreeps) {
+
+            if(friendlyCreeps && hostileCreeps) {
+                creep.moveTo(friendlyCreeps);
+                return;
+            }
+            if(Game.flags?.healFlag && !friendlyCreeps) {
                 MovementUtils.defaultArmyMovement(creep,Game.flags?.healFlag);
+                return;
             }
-            else if(friendlyCreeps && !!Game.flags?.attackFlag) {
+
+
+            if(friendlyCreeps && !!Game.flags?.attackFlag) {
                 creep.moveTo(friendlyCreeps)
+                return;
             }
-            else if(Game.flags?.attackFlag) {
+
+            if(Game.flags?.attackFlag) {
                 MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
-            } else if(Game.flags?.rallyFlag) {
-                MovementUtils.defaultArmyMovement(creep,Game.flags?.rallyFlag);
-            }  else {
-                MovementUtils.defaultArmyMovement(creep,undefined);
+                return;
             }
+
+            if(!!Game.flags?.rallyFlag) {
+                MovementUtils.defaultArmyMovement(creep,Game.flags.rallyFlag);
+                return;
+            }
+
+            MovementUtils.defaultArmyMovement(creep,undefined);
+
 
         }
     }
