@@ -17,7 +17,7 @@ export enum MediumUpkeep {
     Builder = 3,// Per Source
     Repairer = 0,// Per Source
     Upgrader = 2,// Per Source
-    Defender = 2,// Total Per Room
+    Defender = 3,// Total Per Room
     AdditionalDraftedDefenders = 2,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count
@@ -48,8 +48,8 @@ export enum SeigeEconomy {
 
 export enum WarTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 4,
-    TOTAL_HEALER_SIZE = 5,
+    TOTAL_ATTACKER_SIZE = 10,
+    TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 
@@ -57,8 +57,8 @@ export enum WarTimeEconomy {
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 4,
-    TOTAL_HEALER_SIZE = 5,
+    TOTAL_ATTACKER_SIZE = 5,
+    TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
 

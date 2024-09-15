@@ -62,6 +62,10 @@ export class ScaffoldingUtils {
 
         if(creepOrSpawn.room.controller && creepOrSpawn.room.controller.my && spawnsAmount.length >= 1) {
 
+            if(!Game.flags[creepOrSpawn.room.name+'NoWalls']) {
+                ScaffoldingUtils.createBaseWallsAndRamparts(creepOrSpawn);
+            }
+
             if(creepOrSpawn.room?.controller?.my && creepOrSpawn.room.controller?.level) {
 
 
@@ -213,7 +217,7 @@ export class ScaffoldingUtils {
 
                 const sideYCoord = pos.y+startingRightSideY;
 
-                if(i == 1 || i == 2 || i == 9 || i == 10) {
+                if(i == 2 || i == 9) {
                     creepOrSpawn.room?.createConstructionSite(pos.x+3,sideYCoord,STRUCTURE_RAMPART);
 
                 }else {
@@ -232,7 +236,7 @@ export class ScaffoldingUtils {
                 //     startingTopSideX--
                 //     continue;
                 // }
-                if(i == 1 || i == 2 || i == 9 || i == 10) {
+                if(i == 2 || i == 9) {
                     creepOrSpawn.room?.createConstructionSite(topXCoord,pos.y-2,STRUCTURE_RAMPART);
                 } else {
                     creepOrSpawn.room?.createConstructionSite(topXCoord,pos.y-2,STRUCTURE_WALL);
@@ -250,7 +254,7 @@ export class ScaffoldingUtils {
                 //     startingBottomSideX--;
                 //     continue;
                 // }
-                if( i == 1 || i == 2 || i == 9 || i == 10) {
+                if( i == 2 || i == 9) {
                     creepOrSpawn.room?.createConstructionSite(bottomXCoord,pos.y+9,STRUCTURE_RAMPART);
                 } else {
                     creepOrSpawn.room?.createConstructionSite(bottomXCoord,pos.y+9,STRUCTURE_WALL);
@@ -262,7 +266,7 @@ export class ScaffoldingUtils {
             let startingLefttSideY = -2;
             for(let i = 0; i < 11; i++) {
 
-                if( i == 1 || i == 2 || i == 9 || i == 10) {
+                if(i == 2 || i == 9) {
                     creepOrSpawn.room?.createConstructionSite(pos.x-8,pos.y+startingLefttSideY,STRUCTURE_RAMPART);
                 }else {
                     creepOrSpawn.room?.createConstructionSite(pos.x-8,pos.y+startingLefttSideY,STRUCTURE_WALL);

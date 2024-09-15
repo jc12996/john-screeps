@@ -78,9 +78,7 @@ export class Repairer {
             else if(creep.repair(walls[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
             }
-            else {
-                Upgrader.run(creep);
-            }
+
 
         }
         else  {

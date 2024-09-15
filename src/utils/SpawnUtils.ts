@@ -317,39 +317,42 @@ export class SpawnUtils {
             case 'attacker':
                 if(energyAvailable >= 3040) {
 
-                    for (let i = 0; i < 23; i++) {
-                        partsPattern.push(ATTACK);
-                    }
                     for (let i = 0; i < 24; i++) {
                         partsPattern.push(MOVE);
                     }
+                    for (let i = 0; i < 23; i++) {
+                        partsPattern.push(ATTACK);
+                    }
+
                     break;
                 }
                 else if(energyAvailable >= 2060) {
 
-                    for (let i = 0; i < 17; i++) {
-                        partsPattern.push(ATTACK);
-                    }
                     for (let i = 0; i < 3; i++) {
                         partsPattern.push(TOUGH);
                     }
                     for (let i = 0; i < 15; i++) {
                         partsPattern.push(MOVE);
                     }
+                    for (let i = 0; i < 17; i++) {
+                        partsPattern.push(ATTACK);
+                    }
+
                     break;
                 }
                 else if(energyAvailable >= 1320) {
 
 
-                    for (let i = 0; i < 7; i++) {
-                        partsPattern.push(ATTACK);
-                    }
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(TOUGH);
                     }
                     for (let i = 0; i < 15; i++) {
                         partsPattern.push(MOVE);
                     }
+                    for (let i = 0; i < 7; i++) {
+                        partsPattern.push(ATTACK);
+                    }
+
                     break;
                 }
                 else {
@@ -378,7 +381,8 @@ export class SpawnUtils {
                         partsPattern.push(HEAL);
                     }
                     break;
-                } else if(energyAvailable >= 2450) {
+                }
+                else if(energyAvailable >= 2450) {
                     for (let i = 0; i < 9; i++) {
                         partsPattern.push(MOVE);
                     }

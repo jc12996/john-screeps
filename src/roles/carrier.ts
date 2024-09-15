@@ -41,7 +41,7 @@ export class Carrier {
             filter: (stru) => stru.structureType === STRUCTURE_EXTENSION
         }).length
 
-        if(carriers.length > 4 && carriers[0] &&  creep.name === carriers[0].name) {
+        if( carriers[0] &&  creep.name === carriers[0].name) {
             creep.memory.extensionFarm1 = true;
             creep.memory.extensionFarm2 = false;
         } else if(carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
@@ -159,7 +159,7 @@ export class Carrier {
 
 
                 ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 800 && creep.room.energyAvailable > 800;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 800 && carriers.length;
             }
         });
 
@@ -250,7 +250,7 @@ export class Carrier {
                 }
 
                 const extensionLink1 = getLinkByTag(creep, 'ExtensionLink');
-                if(creep.memory.role === 'carrier' && extensionLink1 && (nearestStorage || links.length >= 2) && creep.room?.controller?.level >= 5) {
+                if(creep.memory.role === 'carrier' && (nearestStorage || extensionLink1 || links.length >= 1) && creep.room?.controller?.level >= 5) {
                     creep.say("🚚 X");
                     MovementUtils.xHarvesterMovementSequence(creep,spawn,extensionLink1,nearestStorage,nearestSpawn[0],towers,extension,terminal);
                     return;
@@ -312,7 +312,7 @@ export class Carrier {
 
             //console.log(creep.room.name,creep.room.energyAvailable, creep.room.energyCapacityAvailable)
 
-            if(carriers.length > 4 && !creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 3) {
+            if(carriers.length > 2 && !creep.memory?.extensionFarm1 && !creep.memory.extensionFarm2 && nearestStorage && links.length >= 3) {
                 if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(nearestStorage );
@@ -330,7 +330,7 @@ export class Carrier {
                     creep.say('🚚 E');
                 }
                 creep.moveTo(extension);
-            }else if(carriers.length > 4 && (creep.memory.extensionFarm1 || creep.memory.extensionFarm2) && towers.length && creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else if(towers.length && creep.transfer(towers[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 if(creep.memory?.extensionFarm1) {
                     creep.say("🚚 XT");
                 } else if( creep.memory?.extensionFarm2){

@@ -190,7 +190,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
         }
-        else if(hostileCreeps.length == 0 && (upgraders.length < 3)) {
+        else if(hostileCreeps.length == 0 && carriers.length > 3 && (upgraders.length < 3)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
@@ -208,17 +208,26 @@ export class AutoSpawn {
             options = {memory: {role: 'carrier'}}
 
         }
+        else if ((hostileCreeps.length == 0) && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
+            name = 'Builder' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
+            options = {memory: {role: 'builder'}}
+        }
+        else if (towers.length == 0 && defenders.length < numberOfNeededDefenders) {
+            name = 'Defender' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
+            options = {memory: {role: 'defender'}};
+        }
+
+
         else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
             name = 'Miner' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
             options = {memory: {role: 'miner'}};
         }
 
-        else if ((hostileCreeps.length == 0 || miners.length > 5) && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
-            name = 'Builder' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
-            options = {memory: {role: 'builder'}}
-        } else if(totalNumberOfTowers.length == 0 && repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
+        else if(totalNumberOfTowers.length == 0 && repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
+
             name = 'Repairer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
             options = {memory: {role: 'repairer'}            }
@@ -246,13 +255,8 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
-        else if (towers.length == 0 && defenders.length < numberOfNeededDefenders) {
-            name = 'Defender' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
-            options = {memory: {role: 'defender'}};
-        }
 
-        else if((hostileCreeps.length == 0 || miners.length > 3) && (spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
+        else if((hostileCreeps.length == 0 && miners.length > 3) && (spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
@@ -288,12 +292,10 @@ export class AutoSpawn {
 
                 ScaffoldingUtils.createRoadX(spawn);
 
-                if(spawn.room.controller.level <= 5 ) {
+                if(spawn.room.controller.level <= 6 ) {
 
                     ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns);
-                    if(!Game.flags[spawn.room.name+'NoWalls']) {
-                        ScaffoldingUtils.createBaseWallsAndRamparts(spawn);
-                    }
+
                 }
 
                 if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {

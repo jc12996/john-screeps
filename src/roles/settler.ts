@@ -120,7 +120,7 @@ export class Settler {
                     Builder.run(creep);
                 }
             } else {
-                Upgrader.run(creep)
+                Builder.run(creep)
             }
 
         }

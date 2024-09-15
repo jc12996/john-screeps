@@ -2,6 +2,7 @@ import { getLinkByTag } from "links";
 import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Carrier } from "./carrier";
+import { Builder } from "./builder";
 
 export class Upgrader {
     public static run(creep: Creep): void {
@@ -58,6 +59,14 @@ export class Upgrader {
             }
         });
 
+        const sites = creep.room.find(FIND_CONSTRUCTION_SITES)
+
+
+        if(sites.length) {
+
+            Builder.run(creep)
+            return;
+        }
         const controllerLink = getLinkByTag(creep,'ControllerLink1');
         if(controllerLink && upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level >= 7 && !hostileCreeps && highVolumeStorage) {
             creep.say("⚡💪");

@@ -128,13 +128,17 @@ export class MovementUtils {
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
-        } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        }
+        else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+        }
+
+        else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
         } else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
-        } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-        } else if(roomRallyPointFlag[0]) {
+        }
+        else if(roomRallyPointFlag[0]) {
             creep.moveTo(roomRallyPointFlag[0]);
         } else {
             creep.move(MovementUtils.randomDirectionSelector())
