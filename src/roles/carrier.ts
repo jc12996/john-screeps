@@ -48,7 +48,7 @@ export class Carrier {
         } else if(creep.room.energyCapacityAvailable > 2000 && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
             creep.memory.extensionFarm1 = true;
             creep.memory.extensionFarm2 = false;
-        } else if(extensionCount >= 34 && extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
+        } else if(creep.room.energyCapacityAvailable > 2000 && extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
             creep.memory.extensionFarm1 = false;
             creep.memory.extensionFarm2 = true;
         } else {
