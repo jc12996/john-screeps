@@ -44,9 +44,7 @@ export class MovementUtils {
                     return;
                 }
 
-
-                console.log("isPatrolCreep",isPatrolCreep)
-                const creepIsNearFlag = (creep.pos.findInRange(FIND_FLAGS, 3, {
+                const creepIsNearFlag = (creep.pos.findInRange(FIND_FLAGS, 6, {
                     filter: (fff) => fff.name === 'rallyFlag'
                 }).length > 0);
 
@@ -66,7 +64,7 @@ export class MovementUtils {
                     return;
                 }
 
-                console.log("roomStatus",Game.flags.rallyFlag2?.room, Game.flags.rallyFlag?.room)
+                //console.log("roomStatus",Game.flags.rallyFlag2?.room, Game.flags.rallyFlag?.room)
                 if(Game.flags.rallyFlag2?.room && Game.flags.rallyFlag?.room) {
                     new RoomVisual(Game.flags.rallyFlag2.room.name).line(Game.flags.rallyFlag2.pos.x,Game.flags.rallyFlag2.pos.y,Game.flags.rallyFlag2.pos.x-3,Game.flags.rallyFlag2.pos.y,{ color: 'red' });
                     new RoomVisual(Game.flags.rallyFlag2.room.name).line(Game.flags.rallyFlag2.pos.x-3,Game.flags.rallyFlag2.pos.y,Game.flags.rallyFlag2.pos.x-2,Game.flags.rallyFlag2.pos.y+1,{ color: 'red' });
@@ -94,9 +92,9 @@ export class MovementUtils {
 
                 if(flag.name === 'rallyFlag' && creepIsNearFlag && isPatrolCreep) {
 
-                    const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,3,{
+                    const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,6,{
                         filter: (myCreep) => myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0
-                    }).length >= PeaceTimeEconomy.TOTAL_ATTACKER_SIZE;
+                    }).length >= (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .5);
                     if(creepIsInSquad) {
                         const tempRallyFlag  = flag;
                         Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);
