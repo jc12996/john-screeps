@@ -1,14 +1,14 @@
 export enum LowUpkeep {
     Harvesters = 4,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
-    Builder = 3,// Total For Room
+    Builder = 1,// Total For Room
     Repairer = 1,// Per Source
-    Upgrader = 2,// Per Source
+    Upgrader = 1,// Per Source
     Defender = 1,// Total Per Room
     DraftedDefenderTotal = 1,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count,
-    Miners = 3
+    Miners = 3.25
 }
 
 export enum MediumUpkeep {
