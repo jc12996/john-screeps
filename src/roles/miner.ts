@@ -50,7 +50,7 @@ export class Miner {
             }
 
             const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS, {
-                filter: (creep) => creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0
+                filter: (creep) => creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 || creep.owner.username === 'Invader'
             }).length;
 
             if(mineFlag.room?.controller?.reservation || mineHostiles) {

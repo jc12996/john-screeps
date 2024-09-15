@@ -59,12 +59,35 @@ export class Upgrader {
             }
         });
 
-        const sites = creep.room.find(FIND_CONSTRUCTION_SITES)
+
+        const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (site) => {
+                return (site.structureType == STRUCTURE_EXTENSION)
+            }
+        });
+
+        const constructSpawn = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
+            filter: (site) => {
+                return (site.structureType == STRUCTURE_SPAWN || site.structureType == STRUCTURE_TOWER)
+            }
+        });
 
 
-        if(sites.length) {
 
-            Builder.run(creep)
+        if(extensions.length > 0 || constructSpawn) {
+
+
+
+            if(constructSpawn) {
+                if(creep.build(constructSpawn) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }
+            else if(extensions[0] && creep.room.controller && creep.room.controller.level >= 3){
+                if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }
             return;
         }
         const controllerLink = getLinkByTag(creep,'ControllerLink1');

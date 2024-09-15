@@ -287,19 +287,9 @@ export class AutoSpawn {
                 {align: 'left', opacity: 0.8});
 
             if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
-
-                ScaffoldingUtils.createRoadX(spawn);
-
-                if(spawn.room.controller.level <= 6 ) {
-
-                    ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns);
-
-                }
-
-                if(spawn.room.controller.level >= 6 && !!extensionFarm2Flag) {
-
-                    ScaffoldingUtils.createRoadX(spawn,extensionFarm2Flag);
-                    ScaffoldingUtils.createExtensions(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
+                ScaffoldingUtils.createExtensionFarm1(spawn);
+                if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
+                    ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
                 }
             }
         } else if (bodyParts != null && name != null) {
