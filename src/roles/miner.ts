@@ -57,7 +57,7 @@ export class Miner {
                 if(creep.room != firstRoom) {
                     creep.say("😨",true)
                     creep.moveTo(firstRoom.find(FIND_CREEPS)[0])
-                } else{
+                } else if(mineHostiles){
                     Carrier.run(creep);
                 }
                 return;
