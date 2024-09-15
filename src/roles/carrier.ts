@@ -41,10 +41,11 @@ export class Carrier {
             filter: (stru) => stru.structureType === STRUCTURE_EXTENSION
         }).length
 
-        if( carriers[0] &&  creep.name === carriers[0].name) {
+        console.log(creep.room.name,creep.room.energyCapacityAvailable)
+        if(creep.room.energyCapacityAvailable > 2000 && carriers[0] &&  creep.name === carriers[0].name) {
             creep.memory.extensionFarm1 = true;
             creep.memory.extensionFarm2 = false;
-        } else if(carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
+        } else if(creep.room.energyCapacityAvailable > 2000 && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
             creep.memory.extensionFarm1 = true;
             creep.memory.extensionFarm2 = false;
         } else if(extensionCount >= 34 && extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {

@@ -70,8 +70,8 @@ export class ScaffoldingUtils {
 
 
                 if (creepOrSpawn.room.controller.level >= 2) {
-                    creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y +2,STRUCTURE_EXTENSION);
-                    creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y +4,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x - 7,pos.y +1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y +1,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y +3,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x  -2,pos.y +1,STRUCTURE_EXTENSION);
@@ -88,7 +88,7 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+3,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+4,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+2,STRUCTURE_EXTENSION);
-                    creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y-1,STRUCTURE_TOWER);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y-2,STRUCTURE_TOWER);
                 }
 
                 if (creepOrSpawn.room.controller.level >= 4 ) {
@@ -97,7 +97,7 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x -6,pos.y+5,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+6,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+5,STRUCTURE_EXTENSION);
-                    creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_TOWER);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y+4,STRUCTURE_TOWER);
                     creepOrSpawn.room?.createConstructionSite(pos.x -1,pos.y,STRUCTURE_STORAGE);//Storage
 
                 }
@@ -133,9 +133,9 @@ export class ScaffoldingUtils {
                         creepOrSpawn.room.createFlag(pos.x -2,pos.y+3,creepOrSpawn.room.name+'ExtensionLink2');
                         creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
                     }
-                    creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y,STRUCTURE_LAB);
-                    creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y,STRUCTURE_LAB);
-                    creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_LAB);
+                    // creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y,STRUCTURE_LAB);
+                    // creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y,STRUCTURE_LAB);
+                    // creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_LAB);
 
                     const terminalConstructionSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
                         filter: (rampart) => {
@@ -153,10 +153,10 @@ export class ScaffoldingUtils {
 
 
                     creepOrSpawn.room?.createConstructionSite(pos.x,pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_LAB);
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_LAB);
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_LAB);
-                    creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_FACTORY);
+                    // creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_LAB);
+                    // creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_LAB);
+                    // creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_LAB);
+                    // creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_FACTORY);
 
 
 
