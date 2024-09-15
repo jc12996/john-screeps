@@ -36,22 +36,16 @@ declare global {
 
   interface CreepMemory {
     role: string;
-    room?: string;
-    working?: boolean;
     upgrading?: boolean;
     building?: boolean;
     repairing?: boolean;
     targetSource?: Id<Source>;
     delivering?: boolean;
     carrying?: boolean;
-    carryIndex?: number;
-    friendRampartEntered?: boolean;
     isArmySquad?: boolean;
-    hitWaypointFlag?: boolean;
-    hitWaypointFlag2?: boolean;
-    extensionFarm1?: boolean;
-    roomLevel?: number;
-    extensionFarm2?: boolean;
+    // hitWaypointFlag?: boolean;
+    // hitWaypointFlag2?: boolean;
+    extensionFarm?: number;
     mainUpgrader?: boolean;
     firstSpawnCoords?: string;
     hasJoinedPatrol?: boolean;
@@ -190,7 +184,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     if(creep.memory.role == 'attacker') {
       Attacker.run(creep);
     }
-    if(creep.memory.role == 'settler' || creep.memory.role == 'settlerUpgrader') {
+    if(creep.memory.role == 'settler') {
       Settler.run(creep);
     }
     if(creep.memory.role == 'claimer') {
