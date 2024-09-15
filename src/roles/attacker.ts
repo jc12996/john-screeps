@@ -7,18 +7,44 @@ export class Attacker {
 
     private static attackTarget(creep: Creep,target: any) {
 
+        const nearestExit = creep.room.find(FIND_EXIT_TOP)
+
+
+
         if(target) {
 
-            if(creep.getActiveBodyparts(RANGED_ATTACK) > 0 && creep.rangedAttack(target) !== ERR_NOT_IN_RANGE) {
+            let isNearExt = false;
+            nearestExit.forEach(exit => {
+                if(exit == target.pos) {
+                    isNearExt = true;
+                }
+            });
+
+            if(!isNearExt) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
-            } else if(creep.getActiveBodyparts(ATTACK) > 0 && creep.rangedAttack(target) !== ERR_NOT_IN_RANGE) {
+            }
+
+            const attackResult = creep.attack(target)
+
+            if(attackResult === OK) {
+                return;
+            }
+
+            if(attackResult !== ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
+            }else {
+                console.log('Attack Error',attackResult,creep.name,target)
             }
         }
     }
 
     public static run(creep: Creep): void {
-        creep.say('⚔');
+
+        if(creep.memory.role === 'meatGrinder') {
+            creep.say('🍖');
+        }else {
+            creep.say('⚔');
+        }
 
         if(!Game.flags?.rallyFlag && !Game.flags?.attackFlag && creep.memory.role !== 'defender') {
             //Defender.run(creep);
@@ -65,6 +91,12 @@ export class Attacker {
             }
         });
 
+        const nearestHostileTower = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType == STRUCTURE_TOWER
+            }
+        });
+
         const walls = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (creep) => {
                 return  creep.structureType == STRUCTURE_WALL
@@ -74,6 +106,11 @@ export class Attacker {
 
         const isSafeRoom = creep.room.controller?.safeMode ?? false;
 
+        if(nearestHostileTower) {
+            creep.say('⚔ T');
+            Attacker.attackTarget(creep,nearestHostileTower);
+            return;
+        }
 
         if (!isSafeRoom && hostileCreeps) {
             creep.say('⚔ ⚔');
@@ -100,6 +137,10 @@ export class Attacker {
         }
 
         if(!isSafeRoom && Game.flags?.attackFlag) {
+
+            if(creep.room === Game.flags.attackFlag.room && hostileStructures.length === 0) {
+                Game.flags.attackFlag.remove();
+            }
             MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
             return;
         }

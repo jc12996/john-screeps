@@ -303,11 +303,11 @@ export class SpawnUtils {
                     return null;
                 }
             case 'meatGrinder':
-                if(energyAvailable >= 1500) {
-                    for (let i = 0; i < 25; i++) {
+                if(energyAvailable >= 780) {
+                    for (let i = 0; i < 3; i++) {
                         partsPattern.push(TOUGH);
                     }
-                    for (let i = 0; i < 25; i++) {
+                    for (let i = 0; i < 15; i++) {
                         partsPattern.push(MOVE);
                     }
                     break;

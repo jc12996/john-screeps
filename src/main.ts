@@ -54,6 +54,7 @@ declare global {
     extensionFarm2?: boolean;
     mainUpgrader?: boolean;
     firstSpawnCoords?: string;
+    hasJoinedPatrol?: boolean;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
@@ -134,10 +135,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
   for(var name in Game.creeps) {
     var creep = Game.creeps[name];
 
-
-    // if(!creep.room.controller?.my) {
-    //   creep.suicide();
-    // }
 
     if(creep.memory?.isArmySquad && Memory?.economyType && Game.flags.rallyFlag?.pos &&  creep?.pos &&  Game.flags.stagingFlag &&  !creep.pos.inRangeTo(Game.flags.stagingFlag.pos.x,Game.flags.stagingFlag.pos.y,6)) {
       const totalArmySize =  _.filter(Game.creeps, (creep) => creep.memory.isArmySquad )?.length ?? 0;

@@ -102,6 +102,8 @@ export class Tower {
                         // If no healers, attack the closest attacker
                         const closestAttacker = attackers[0];
                         tower.attack(closestAttacker);
+                    } else {
+                        tower.attack(attackers[0])
                     }
                 }
             });

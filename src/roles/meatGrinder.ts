@@ -16,7 +16,7 @@ export class MeatGrinder {
                 return;
             }
 
-            if(Game.flags?.preMeatFlag){
+            if(Game.flags?.preMeatFlag && !Game.flags?.meatFlag){
                 MovementUtils.goToFlag(creep,Game.flags?.preMeatFlag);
                 return;
             }
@@ -26,7 +26,7 @@ export class MeatGrinder {
                 return;
             }
 
-            if(Game.flags?.meatFlag && !Game.flags?.attackFlag) {
+            if(Game.flags?.meatFlag && (!Game.flags?.attackFlag || Game.flags?.attackFlag.room !== creep.room)) {
                 MovementUtils.goToFlag(creep,Game.flags?.meatFlag)
                 return;
             }
