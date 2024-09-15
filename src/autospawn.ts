@@ -190,7 +190,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
         }
-        else if(hostileCreeps.length == 0 && carriers.length > 3 && (upgraders.length < 3)) {
+        else if(spawn.room.energyCapacityAvailable > 400 && hostileCreeps.length == 0 && carriers.length > 3 && (upgraders.length < 3)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
@@ -256,7 +256,7 @@ export class AutoSpawn {
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
 
-        else if((hostileCreeps.length == 0 && miners.length > 3) && (spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
+        else if(spawn.room.energyAvailable > 400  && (hostileCreeps.length == 0 && miners.length > 3) && (spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }

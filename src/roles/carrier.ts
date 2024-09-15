@@ -160,7 +160,7 @@ export class Carrier {
 
 
                 ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 800 && carriers.length;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 800 && carriers.length && creep.room.energyAvailable > 350;
             }
         });
 

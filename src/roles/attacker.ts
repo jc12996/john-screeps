@@ -7,33 +7,12 @@ export class Attacker {
 
     private static attackTarget(creep: Creep,target: any) {
 
-        const nearestExit = creep.room.find(FIND_EXIT_TOP)
-
-
-
         if(target) {
 
-            let isNearExt = false;
-            nearestExit.forEach(exit => {
-                if(exit == target.pos) {
-                    isNearExt = true;
-                }
-            });
-
-            if(!isNearExt) {
+            if(creep.getActiveBodyparts(RANGED_ATTACK) > 0 && creep.rangedAttack(target) !== ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
-            }
-
-            const attackResult = creep.attack(target)
-
-            if(attackResult === OK) {
-                return;
-            }
-
-            if(attackResult !== ERR_NOT_IN_RANGE) {
+            } else if(creep.getActiveBodyparts(ATTACK) > 0 && creep.rangedAttack(target) !== ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
-            }else {
-                console.log('Attack Error',attackResult,creep.name,target)
             }
         }
     }
@@ -61,17 +40,6 @@ export class Attacker {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType != STRUCTURE_CONTROLLER
             }
         });
-        var findWalls = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: { structureType: STRUCTURE_WALL}
-        });
-
-
-
-        const invaderCore = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-            filter: { owner: { username: 'Invader' } }
-        });
-
-
 
         var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
             {
@@ -109,28 +77,36 @@ export class Attacker {
 
         if (!isSafeRoom && hostileCreeps) {
             creep.say('⚔ ⚔');
-
             Attacker.attackTarget(creep,hostileCreeps);
+            return;
         }
-        else if(!isSafeRoom && structures.length > 0 && badStructures) {
+
+        if(!isSafeRoom && structures.length > 0 && badStructures && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
-            Attacker.attackTarget(creep,badStructures)
+            Attacker.attackTarget(creep,badStructures);
+            return;
         }
-        else if (!isSafeRoom && hostileStructures.length > 0) {
+
+        if (!isSafeRoom && hostileStructures.length > 0 && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
             Attacker.attackTarget(creep,hostileStructures[0])
+            return;
         }
-        else if (!isSafeRoom && hostileSites.length > 0) {
+
+        if (!isSafeRoom && hostileSites.length > 0 && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
             Attacker.attackTarget(creep,hostileSites[0])
+            return;
         }
-        else if(!isSafeRoom && invaderCore){
-            creep.say('⚔ I');
-            Attacker.attackTarget(creep,invaderCore)
-        } else if(!isSafeRoom && Game.flags?.attackFlag) {
+
+        if(!isSafeRoom && Game.flags?.attackFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
-        } else if(Game.flags?.rallyFlag) {
-            MovementUtils.defaultArmyMovement(creep,Game.flags?.rallyFlag);
+            return;
+        }
+
+        if(!!Game.flags?.rallyFlag) {
+            MovementUtils.defaultArmyMovement(creep,Game.flags.rallyFlag);
+            return;
         }
 
 
