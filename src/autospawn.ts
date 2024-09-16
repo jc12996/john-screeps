@@ -73,10 +73,16 @@ export class AutoSpawn {
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
 
-        if(spawn.room.memory?.numberOfNeededHarvestorSlots === undefined) {
+        // if(spawn.room.name == 'W3N8') {
+        //     spawn.room.memory.numberOfNeededHarvestorSlots = 5
+        // }
+        if(spawn.room.memory?.numberOfNeededHarvestorSlots === undefined || spawn.room.memory.numberOfNeededHarvestorSlots == 0) {
             spawn.room.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawn);
+            console.log(spawn.room.name,'numberOfNeededHarvesters to memory ',spawn.room.memory.numberOfNeededHarvestorSlots)
         }
+
         const numberOfNeededHarvesters = spawn.room.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
+
         const storage  = spawn.room.find(FIND_STRUCTURES, {
             filter: { structureType: STRUCTURE_STORAGE }
         })[0] ?? undefined;
@@ -131,7 +137,7 @@ export class AutoSpawn {
         if(!!mineFlag) {
             const mineSources = mineFlag.room?.find(FIND_SOURCES);
 
-            if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined) {
+            if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined || mineFlag.memory.numberOfNeededHarvestorSlots === 0) {
                 mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
             }
             if(mineSources) {
@@ -203,7 +209,8 @@ export class AutoSpawn {
             options = {memory: {role: 'upgrader'}                }
         }
 
-        else if (((activeharvesters.length > 0 || harvesters.length == 0) && !spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0 && harvesters.length < numberOfNeededHarvestersMax)  && nonactiveharvesters.length == 0) {
+        //else if (((activeharvesters.length > 0 || harvesters.length == 0) && !spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0 && harvesters.length < numberOfNeededHarvestersMax)  && nonactiveharvesters.length == 0) {
+        else if(numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters) && ActiveRoomSources.length > 0) {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
