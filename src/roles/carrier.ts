@@ -41,12 +41,36 @@ export class Carrier {
             filter: (stru) => stru.structureType === STRUCTURE_EXTENSION
         }).length
 
+        const storage:StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        });
+
+        const terminal: StructureTerminal | null =  creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                   structure.structureType == STRUCTURE_TERMINAL && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        }) ?? null;
+
+
+
         //console.log(creep.room.name,creep.room.energyCapacityAvailable)
-        if(creep.room.energyCapacityAvailable > 2000 && carriers[0] &&  creep.name === carriers[0].name) {
+        if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 2000) && carriers[0] &&  creep.name === carriers[0].name) {
             creep.memory.extensionFarm = 1;
-        } else if(creep.room.energyCapacityAvailable > 2000 && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
+        } else if(((storage && storage.store[RESOURCE_ENERGY] > 4000) || creep.room.energyCapacityAvailable > 2000) && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
             creep.memory.extensionFarm = 1;
-        } else if(creep.room.energyCapacityAvailable > 2000 && extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
+        } else if(((terminal && terminal.store[RESOURCE_ENERGY] > 6000) || creep.room.energyCapacityAvailable > 2000) && extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
             creep.memory.extensionFarm = 2;
         } else {
             creep.memory.extensionFarm = undefined;
@@ -127,27 +151,7 @@ export class Carrier {
             }
         });
 
-        const storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
 
-
-                ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-            }
-        });
-
-        const terminal: StructureTerminal | null =  creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_TERMINAL && structure.room?.controller?.my
-
-
-                ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-            }
-        }) ?? null;
 
         const towers = creep.pos.findInRange(FIND_STRUCTURES, 10, {
             filter:  (structure) => {
