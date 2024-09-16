@@ -49,6 +49,11 @@ declare global {
     mainUpgrader?: boolean;
     firstSpawnCoords?: string;
     hasJoinedPatrol?: boolean;
+    numberOfNeededHarvestorSlots?: number;
+  }
+
+  interface FlagMemory {
+    numberOfNeededHarvestorSlots?: number;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")

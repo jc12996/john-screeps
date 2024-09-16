@@ -28,13 +28,15 @@ export class RoomUtils {
         return squareAreas.filter((area) => area.numberOfPlainSlots > 0);
     }
 
-    public static getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn: StructureSpawn): number {
+    public static getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(target: StructureSpawn | Flag): number {
 
-        if(!spawn) {
+        if(!target || target === undefined || !target.room || target?.room === undefined) {
             return 0;
         }
 
-        const sources = spawn.room.find(FIND_SOURCES);
+        let room = target.room;
+
+        const sources = room.find(FIND_SOURCES);
 
 
         let total = 0;

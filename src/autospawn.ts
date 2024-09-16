@@ -72,7 +72,11 @@ export class AutoSpawn {
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
-        const numberOfNeededHarvesters = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawn);
+
+        if(spawn.room.memory?.numberOfNeededHarvestorSlots === undefined) {
+            spawn.room.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawn);
+        }
+        const numberOfNeededHarvesters = spawn.room.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
         const storage  = spawn.room.find(FIND_STRUCTURES, {
             filter: { structureType: STRUCTURE_STORAGE }
         })[0] ?? undefined;
@@ -126,11 +130,14 @@ export class AutoSpawn {
 
         if(!!mineFlag) {
             const mineSources = mineFlag.room?.find(FIND_SOURCES);
-            if(mineSources) {
-                for(const source of mineSources) {
-                    numberOfNeededMiners += RoomUtils.getCreepProspectingSlots(source).length;
-                }
+
+            if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined) {
+                mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
             }
+            if(mineSources) {
+                numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
+            }
+            numberOfNeededMiners = mineSources?.length ?? 0;
         }
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {

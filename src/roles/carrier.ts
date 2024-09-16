@@ -187,7 +187,7 @@ export class Carrier {
 
         let sources = 4;
         if(spawns) {
-            sources = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawn(spawns as StructureSpawn);
+            sources = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawns as StructureSpawn);
         }
 
 
