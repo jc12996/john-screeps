@@ -73,8 +73,8 @@ export class AutoSpawn {
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
 
-        // if(spawn.room.name == 'W3N9') {
-        //     spawn.room.memory.numberOfNeededHarvestorSlots = 11
+        //if(spawn.room.name == 'W3N9') {
+         //    spawn.room.memory.numberOfNeededHarvestorSlots = 12
         // }
         if(spawn.room.memory?.numberOfNeededHarvestorSlots === undefined || spawn.room.memory.numberOfNeededHarvestorSlots == 0) {
             spawn.room.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawn);
