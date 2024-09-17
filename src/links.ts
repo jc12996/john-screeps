@@ -328,21 +328,37 @@ export function operateLinks(creep: Creep | StructureSpawn) {
 
             // SOURCE -> CONTROLLER (IF Storage is above 800) -> EXTENSION 1 -> EXTENSION 2
             let transfer1 = null;
-            if((largeTerminalStorage && controllerLink)) {
-                transfer1 = filledSourceLink1.transferEnergy(controllerLink);
-            }else  if((largeStorage) && !hostileCreeps && controllerLink && (minimumStorageThreshold)  && creep.room.controller && creep.room.controller?.level == 7 && (creep.room.energyAvailable == creep.room.energyCapacityAvailable) && creep.room.energyAvailable > 0) {
-                transfer1 = filledSourceLink1.transferEnergy(controllerLink);
+
+            if(creep.room.controller && creep.room.controller?.level <= 7) {
+                if((largeTerminalStorage && controllerLink)) {
+                    transfer1 = filledSourceLink1.transferEnergy(controllerLink);
+                }else  if((largeStorage) && !hostileCreeps && controllerLink && (minimumStorageThreshold)  && creep.room.controller && creep.room.controller?.level == 7 && (creep.room.energyAvailable == creep.room.energyCapacityAvailable) && creep.room.energyAvailable > 0) {
+                    transfer1 = filledSourceLink1.transferEnergy(controllerLink);
+                }
+
+                if(transfer1 !== OK) {
+                    let transfer2  =  filledSourceLink1.transferEnergy(extensionLink);
+
+
+                    if(transfer2 !== OK) {
+                        filledSourceLink1.transferEnergy(extensionLink2);
+                    }
+                }
             }
 
+            //level 8 final
 
             if(transfer1 !== OK) {
-                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink);
+                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink2);
 
 
                 if(transfer2 !== OK) {
-                    filledSourceLink1.transferEnergy(extensionLink2);
+                    filledSourceLink1.transferEnergy(extensionLink);
                 }
             }
+
+
+
 
 
 }
