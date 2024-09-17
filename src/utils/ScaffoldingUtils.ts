@@ -67,7 +67,7 @@ export class ScaffoldingUtils {
 
 
                 if (creepOrSpawn.room.controller.level == 2) {
-                    creepOrSpawn.room?.createConstructionSite(pos.x - 7,pos.y +1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x - 6,pos.y +1,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y +1,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y +3,STRUCTURE_EXTENSION);

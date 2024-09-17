@@ -199,6 +199,7 @@ export class MovementUtils {
         });
         const commandLevel =  creep.room?.controller?.level ?? 1;
 
+        /**
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
             if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controllerLink, {visualizePathStyle: {stroke: "#ffffff"}});
@@ -207,8 +208,12 @@ export class MovementUtils {
             }  else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
+            else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+
             return;
-        }
+        }*/
 
         if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -221,7 +226,8 @@ export class MovementUtils {
 
         else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
-        } else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        }
+        else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
         }
         else if(roomRallyPointFlag[0]) {

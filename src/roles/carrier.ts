@@ -66,11 +66,11 @@ export class Carrier {
 
 
         //console.log(creep.room.name,creep.room.energyCapacityAvailable)
-        if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 2000) && carriers[0] &&  creep.name === carriers[0].name) {
+        if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name) {
             creep.memory.extensionFarm = 1;
-        } else if(((storage && storage.store[RESOURCE_ENERGY] > 4000) || creep.room.energyCapacityAvailable > 2000) && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
+        } else if(((storage && storage.store[RESOURCE_ENERGY] > 4000) || creep.room.energyCapacityAvailable > 1000) && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
             creep.memory.extensionFarm = 1;
-        } else if(((terminal && terminal.store[RESOURCE_ENERGY] > 6000) || creep.room.energyCapacityAvailable > 2000) && extensionLinkFlag2 && links.length >= 3  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
+        } else if(((terminal && terminal.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && extensionLinkFlag2 && links.length >= 2  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
             creep.memory.extensionFarm = 2;
         } else {
             creep.memory.extensionFarm = undefined;
@@ -349,7 +349,7 @@ export class Carrier {
                     creep.say('🚚 E');
                 }
                 creep.moveTo(extension);
-            }else if(!creep.memory.extensionFarm === undefined && spawns && !extension && (!towers.length || carriers.length <= 2 ) && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else if(creep.memory.extensionFarm === undefined && spawns && !extension && (!towers.length || carriers.length <= 2 ) && creep.transfer(spawns, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 if(creep.memory?.extensionFarm === 1) {
                     creep.say("🚚 XW");
                 } else if( creep.memory?.extensionFarm === 2){

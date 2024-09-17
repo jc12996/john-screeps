@@ -74,22 +74,6 @@ export class Upgrader {
 
 
 
-        if(extensions.length > 0 || constructSpawn) {
-
-
-
-            if(constructSpawn) {
-                if(creep.build(constructSpawn) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
-            else if(extensions[0] && creep.room.controller && creep.room.controller.level >= 3){
-                if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
-            return;
-        }
         const controllerLink = getLinkByTag(creep,'ControllerLink1');
         if(controllerLink && upgraders.length > 0 && upgraders[0] &&  creep.name === upgraders[0].name && creep.room.controller && creep.room.controller.my && creep.room.controller.level >= 7 && !hostileCreeps && highVolumeStorage) {
             creep.say("⚡💪");
@@ -101,7 +85,24 @@ export class Upgrader {
 
 
         if(creep.memory.upgrading) {
-            if(creep.room.controller && creep.room.controller.my &&
+
+            if((extensions.length > 0 || constructSpawn)  && creep.room.energyCapacityAvailable < 1000) {
+
+                creep.say('⚡ build');
+
+
+                if(constructSpawn) {
+                    if(creep.build(constructSpawn) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
+                    }
+                }
+                else if(extensions[0] && creep.room.controller && creep.room.controller.level >= 2){
+                    if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                    }
+                }
+
+            } else if(creep.room.controller && creep.room.controller.my &&
                 creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
             }
@@ -111,7 +112,7 @@ export class Upgrader {
             if(creep.memory.mainUpgrader &&  creep.room?.controller  && creep.room?.controller.my) {
                 const controllerLinkFlag = Game.flags[creep.room.name+'ControllerLink1'];
 
-                if(creep.memory.role === 'upgrader' && creep.room?.controller?.level >= 6 && controllerLinkFlag) {
+                if(creep.memory.role === 'upgrader' &&  controllerLink.store[RESOURCE_ENERGY] > 0 && creep.room?.controller?.level >= 6 && controllerLinkFlag) {
                     creep.say("⚡💪");
                     MovementUtils.strongUpgraderSequence(creep,controllerLink);
                     return;

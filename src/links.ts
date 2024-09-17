@@ -107,7 +107,7 @@ export function operateLinks(creep: Creep | StructureSpawn) {
         xCapacity = 800;
     }
 
-    const filledSourceLink1: AnyStructure | null = creep.room.find(FIND_STRUCTURES,{
+    const filledSourceLink1: StructureLink | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
         filter: (struc) => {
             return (
                 sourceLink1Flag[0] &&
@@ -118,7 +118,7 @@ export function operateLinks(creep: Creep | StructureSpawn) {
                 (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
 
         )}
-    })[0] ?? null
+    })
 
 
 
@@ -176,13 +176,11 @@ export function operateLinks(creep: Creep | StructureSpawn) {
             if(largeStorage && creep.room.controller && creep.room.controller.my && creep.room.controller.level == 7 ) {
 
                 // SOURCE -> EXTENSION 1 -> [EXTENSION 2, CONTROLLER]
-                if(controllerLink && largeTerminalStorage) {
-                    extensionLink.transferEnergy(controllerLink);
-                }else if(extensionLink2 && filledSourceLink1 &&  filledSourceLink1.structureType === STRUCTURE_LINK) {
+                if(filledSourceLink1 && largeTerminalStorage) {
+                    filledSourceLink1.transferEnergy(extensionLink);
+                }else if(extensionLink2 && !largeTerminalStorage && filledSourceLink1 &&  filledSourceLink1.structureType === STRUCTURE_LINK) {
                     filledSourceLink1.transferEnergy(extensionLink2);
-                }
-
-                if(controllerLink) {
+                } else if(controllerLink) {
                     extensionLink.transferEnergy(controllerLink);
                 }
 

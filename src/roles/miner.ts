@@ -50,7 +50,7 @@ export class Miner {
             }
 
             const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS, {
-                filter: (creep) => creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 || creep.owner.username === 'Invader'
+                filter: (creep) => (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 ) && creep.owner.username === 'Invader'
             }).length;
 
             if(mineFlag.room?.controller?.reservation || mineHostiles) {
@@ -113,10 +113,10 @@ export class Miner {
 
 
                     ) &&
-                        structure.store[RESOURCE_ENERGY] > 10000;
+                        structure.store[RESOURCE_ENERGY] > 500000;
                 }
             });
-            if(largeStorage || (creep.room.energyAvailable > 0 && creep.room.energyAvailable == creep.room.energyCapacityAvailable)) {
+            if(largeStorage || creep.room.controller?.level == 7 || (creep.room.energyAvailable > 0 && creep.room.energyAvailable == creep.room.energyCapacityAvailable)) {
 
                 Carrier.run(creep,true);
 
