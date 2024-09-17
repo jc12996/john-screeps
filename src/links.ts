@@ -1,4 +1,5 @@
 import { SpawnUtils } from "utils/SpawnUtils";
+import { getHeapSpaceStatistics } from "v8";
 
 export function placeSourceLinks(creep: Creep) {
 
@@ -70,6 +71,96 @@ export function placeSourceLinks(creep: Creep) {
     }
 }
 
+
+export function transferEnergyToSpawn1Room() {
+    // Find the room that has the spawn named 'Spawn1' and ensure you own it
+    const spawn1 = Game.spawns['Spawn1'];
+    if (!spawn1 || !spawn1.room.controller || !spawn1.room.controller.my) {
+        //console.log('Spawn1 not found or you do not control the room');
+        return;
+    }
+
+    const targetRoom = spawn1.room;
+    const targetTerminal = targetRoom.terminal;
+
+    if (!targetTerminal) {
+        //console.log('Target room does not have a terminal');
+        return;
+    }
+
+    // Iterate through all rooms that you control and that have a terminal
+    for (const roomName in Game.rooms) {
+        const room = Game.rooms[roomName];
+        const terminal = room.terminal;
+
+        // Skip if the room does not have a terminal or if you do not control the room
+        if (!terminal || !room.controller || !room.controller.my) {
+            continue;
+        }
+
+        // Skip if this is the room with Spawn1's terminal
+        if (room.name === targetRoom.name) {
+            continue;
+        }
+
+        // Check if the terminal has more than 100,000 energy
+        if (terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 100000) {
+            // Calculate the amount of energy to transfer (optional, transfer everything above 10k)
+            const transferAmount = terminal.store.getUsedCapacity(RESOURCE_ENERGY) - 10000;
+
+            // Transfer energy to Spawn1's terminal
+            const result = terminal.send(RESOURCE_ENERGY, transferAmount, targetRoom.name);
+
+            if (result === OK) {
+                console.log(`Transferred ${transferAmount} energy from ${roomName} to ${targetRoom.name}`);
+            } else {
+                console.log(`Failed to transfer energy from ${roomName} to ${targetRoom.name}: ${result}`);
+            }
+        }
+    }
+}
+
+export function sendEnergyFromSpawn1() {
+    // Find the room with Spawn1
+    const spawn1Room = Game.spawns['Spawn1'].room;
+    const terminal = spawn1Room.terminal;
+
+    // Check if terminal in the spawn1 room has more than 100K energy
+    if (!terminal || terminal.store[RESOURCE_ENERGY] < 100000) {
+        //console.log('Not enough energy in Spawn1 terminal.');
+        return;
+    }
+
+    // Loop through all rooms to find terminals in rooms with RCL 7 or above
+    for (const roomName in Game.rooms) {
+        const room = Game.rooms[roomName];
+        const controller = room.controller;
+        const targetTerminal = room.terminal;
+
+        // Only consider rooms with RCL >= 7 and an active terminal
+        if (controller && controller.level >= 7 && targetTerminal) {
+            // Check if the terminal has no energy
+            if (targetTerminal.store[RESOURCE_ENERGY] === 0) {
+                const amountToSend = 10000;
+
+                // Make sure Spawn1 has enough energy left to send 10K
+                if (terminal.store[RESOURCE_ENERGY] >= amountToSend) {
+                    const result = terminal.send(RESOURCE_ENERGY, amountToSend, roomName);
+
+                    if (result === OK) {
+                        console.log(`Sent ${amountToSend} energy from Spawn1 to ${roomName}`);
+                    } else {
+                        console.log(`Failed to send energy to ${roomName}: ${result}`);
+                    }
+                } else {
+                    //console.log('Not enough energy left in Spawn1 terminal to send 10K.');
+                    break;
+                }
+            }
+        }
+    }
+}
+
 export function operateLinks(creep: Creep | StructureSpawn) {
 
     var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -87,6 +178,20 @@ export function operateLinks(creep: Creep | StructureSpawn) {
             return site.name == creep.room.name+'SourceLink1'
         }
     })
+
+    const sourceLink2Flag = creep.room.find(FIND_FLAGS, {
+        filter: (site) => {
+            return site.name == creep.room.name+'SourceLink2'
+        }
+    })
+
+
+    const sourceLink3Flag = creep.room.find(FIND_FLAGS, {
+        filter: (site) => {
+            return site.name == creep.room.name+'SourceLink3'
+        }
+    })
+
 
 
     const activeSources = creep.room.find(FIND_SOURCES_ACTIVE);
@@ -110,16 +215,44 @@ export function operateLinks(creep: Creep | StructureSpawn) {
     const filledSourceLink1: StructureLink | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
         filter: (struc) => {
             return (
-                sourceLink1Flag[0] &&
+                ((sourceLink1Flag[0] &&
                 sourceLink1Flag[0].pos &&
                 struc.pos.x == sourceLink1Flag[0].pos.x &&
-                struc.pos.y == sourceLink1Flag[0].pos.y &&
+                struc.pos.y == sourceLink1Flag[0].pos.y )
+                ||
+                (sourceLink2Flag[0] &&
+                    sourceLink2Flag[0].pos &&
+                    struc.pos.x == sourceLink2Flag[0].pos.x &&
+                    struc.pos.y == sourceLink2Flag[0].pos.y )
+
+                    ||
+                    (sourceLink3Flag[0] &&
+                        sourceLink3Flag[0].pos &&
+                        struc.pos.x == sourceLink3Flag[0].pos.x &&
+                        struc.pos.y == sourceLink3Flag[0].pos.y )
+
+                )
+                &&
                 struc.structureType === STRUCTURE_LINK &&
                 (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
 
         )}
     })
 
+    //const filledSourceTermimal: StructureTerminal | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
+     //   filter: (struc) => {
+     //       return (
+     //           struc.structureType === STRUCTURE_TERMINAL &&
+     //           struc.room.find(FIND_STRUCTURES,{
+      //              filter:(mySpawn) => mySpawn.structureType === STRUCTURE_SPAWN && mySpawn.name === 'Spawn1'
+      //          }).length === 0 &&
+      //          (struc.store[RESOURCE_ENERGY] >= 100000)
+     //   )}
+   // })
+
+    //if(filledSourceTermimal) {
+       // filledSourceTermimal.t
+   // }
 
 
         const extensionLink = getLinkByTag(creep, 'ExtensionLink');

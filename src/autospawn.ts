@@ -2,7 +2,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { RoomUtils } from "utils/RoomUtils";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { HighUpkeep, LowUpkeep, MediumUpkeep, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
-import { operateLinks } from "links";
+import { operateLinks, sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
 import { getNextClaimFlag } from "claims";
 
 
@@ -143,7 +143,7 @@ export class AutoSpawn {
             if(mineSources) {
                 numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
             }
-            numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * 2) : (mineSources?.length??0);
+            numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * 1.5) : (mineSources?.length??0);
             console.log(spawn.room.name,numberOfNeededMiners)
         }
 
@@ -305,6 +305,10 @@ export class AutoSpawn {
             if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
                 ScaffoldingUtils.createExtensionFarm1(spawn);
                 if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
+
+                    transferEnergyToSpawn1Room();
+                    sendEnergyFromSpawn1();
+
                     ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
                 }
             }
