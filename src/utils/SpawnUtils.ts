@@ -170,7 +170,7 @@ export class SpawnUtils {
                 }
             case 'upgrader':
 
-                if( energyAvailable >= 1300) {
+                if(commandLevel <= 7 && energyAvailable >= 1300) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -182,7 +182,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(energyAvailable >= 800) {
+                else if(commandLevel <= 7 && energyAvailable >= 800) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }

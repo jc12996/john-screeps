@@ -68,9 +68,11 @@ export class Carrier {
         //console.log(creep.room.name,creep.room.energyCapacityAvailable)
         if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name) {
             creep.memory.extensionFarm = 1;
-        } else if(((storage && storage.store[RESOURCE_ENERGY] > 4000) || creep.room.energyCapacityAvailable > 1000) && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
-            creep.memory.extensionFarm = 1;
-        } else if(((terminal && terminal.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && extensionLinkFlag2 && links.length >= 2  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
+        }
+        //else if(((storage && storage.store[RESOURCE_ENERGY] > 4000) || creep.room.energyCapacityAvailable > 1000) && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
+            //creep.memory.extensionFarm = 1;
+        //}
+        else if(((terminal && terminal.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && extensionLinkFlag2 && links.length >= 2  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
             creep.memory.extensionFarm = 2;
         } else {
             creep.memory.extensionFarm = undefined;
@@ -164,7 +166,7 @@ export class Carrier {
             }
         });
 
-        var nearestStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        var nearestStorage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
                    structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
@@ -313,7 +315,18 @@ export class Carrier {
 
             //console.log(creep.room.name,creep.room.energyAvailable, creep.room.energyCapacityAvailable)
 
-            if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && nearestStorage && links.length >= 3) {
+            if(carriers.length > 2 && nearestStorage && nearestStorage.store[RESOURCE_ENERGY] > 400000 && creep.memory?.extensionFarm === undefined && terminal) {
+
+                if(creep.store[RESOURCE_ENERGY] > 0 && terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 TR');
+                    creep.moveTo(terminal );
+
+
+                } else if(roomRallyPointFlag.length) {
+                    creep.moveTo(roomRallyPointFlag[0])
+                }
+            } else if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && nearestStorage && links.length >= 3) {
+
                 if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 S');
                     creep.moveTo(nearestStorage );
@@ -392,14 +405,16 @@ export class Carrier {
                     creep.moveTo(extensionLinkFlag[0].pos.x - 1, extensionLinkFlag[0].pos.y);
                 }
 
-            } else if(extensionLinkFlag2[0]  && creep.memory.extensionFarm === 2) {
+            }
+            else if(extensionLinkFlag2[0]  && (creep.memory.extensionFarm === 2)) {
                 if(terminal && !nearestSpawn.length && !towers.length  && !extension && creep.transfer(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say("🚚 X2TR");
                     creep.moveTo(terminal);
                 } else {
                     creep.moveTo(extensionLinkFlag2[0].pos.x - 1, extensionLinkFlag2[0].pos.y);
                 }
-            }  else  if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }
+            else  if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 if(creep.memory?.extensionFarm === 1) {
                     creep.say("🚚 XC");
                 } else if( creep.memory?.extensionFarm === 2){

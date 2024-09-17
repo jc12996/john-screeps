@@ -202,7 +202,6 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+4,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y+6,STRUCTURE_EXTENSION);
-                    creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+6,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+2,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-5,pos.y,STRUCTURE_EXTENSION);
@@ -302,9 +301,31 @@ export class ScaffoldingUtils {
             }
 
             if (creepOrSpawn.room.controller.level == 8 ) {
+
+                const hasLevelExtensions = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                    filter: (extension) => {
+                        extension.structureType === STRUCTURE_EXTENSION && extension.pos.x == pos.x-6 && extension.pos.y == pos.y+4
+                    }
+                }).length > 0;
+
+                if(!hasLevelExtensions) {
+
+
+                creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+4,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y+6,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+2,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x-5,pos.y,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+1,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y+6,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+6,STRUCTURE_EXTENSION);
+                creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+6,STRUCTURE_EXTENSION);
+                }
                 // Walls on 2nd extension here when hit level 8
                 if(!Game.flags[creepOrSpawn.room.name+'NoWalls']) {
-                    ScaffoldingUtils.createBaseWallsAndRamparts(creepOrSpawn,flag);
+                   // ScaffoldingUtils.createBaseWallsAndRamparts(creepOrSpawn,flag);
                 }
             }
         }

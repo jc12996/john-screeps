@@ -336,11 +336,11 @@ export function operateLinks(creep: Creep | StructureSpawn) {
 
 
             if(transfer1 !== OK) {
-                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink2);
+                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink);
 
 
                 if(transfer2 !== OK) {
-                    filledSourceLink1.transferEnergy(extensionLink);
+                    filledSourceLink1.transferEnergy(extensionLink2);
                 }
             }
 

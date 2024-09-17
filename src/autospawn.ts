@@ -143,7 +143,7 @@ export class AutoSpawn {
             if(mineSources) {
                 numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
             }
-            numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * 1.5) : (mineSources?.length??0);
+            numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * 1.25) : (mineSources?.length??0);
             //console.log(spawn.room.name,numberOfNeededMiners)
         }
 
@@ -154,6 +154,11 @@ export class AutoSpawn {
         if(commandLevel >= 6 && numberOfNeededUpgraders >= 8) {
             numberOfNeededUpgraders = 8;
         }
+
+        if(commandLevel >= 8) {
+            numberOfNeededUpgraders = 1;
+        }
+
 
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
         const totalNumberOfTowers = spawn.room.find(FIND_STRUCTURES,{
