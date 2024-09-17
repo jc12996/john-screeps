@@ -94,7 +94,7 @@ export class MovementUtils {
 
                     const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,6,{
                         filter: (myCreep) => myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0
-                    }).length >= (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .5);
+                    }).length >= (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .8);
                     if(creepIsInSquad) {
                         const tempRallyFlag  = flag;
                         Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);

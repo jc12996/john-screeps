@@ -103,10 +103,10 @@ export function transferEnergyToSpawn1Room() {
             continue;
         }
 
-        // Check if the terminal has more than 100,000 energy
-        if (terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 100000) {
-            // Calculate the amount of energy to transfer (optional, transfer everything above 10k)
-            const transferAmount = terminal.store.getUsedCapacity(RESOURCE_ENERGY) - 10000;
+        // Check if the terminal has more than 10,000 energy
+        if (terminal.store[RESOURCE_ENERGY] > 10000 && terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000) {
+            // Calculate the amount of energy to transfer (optional, transfer everything above 2k)
+            const transferAmount = terminal.store.getUsedCapacity(RESOURCE_ENERGY) - 2000;
 
             // Transfer energy to Spawn1's terminal
             const result = terminal.send(RESOURCE_ENERGY, transferAmount, targetRoom.name);
@@ -125,8 +125,8 @@ export function sendEnergyFromSpawn1() {
     const spawn1Room = Game.spawns['Spawn1'].room;
     const terminal = spawn1Room.terminal;
 
-    // Check if terminal in the spawn1 room has more than 100K energy
-    if (!terminal || terminal.store[RESOURCE_ENERGY] < 100000) {
+    // Check if terminal in the spawn1 room has more than 10K energy
+    if (!terminal || terminal.store[RESOURCE_ENERGY] < 10000) {
         //console.log('Not enough energy in Spawn1 terminal.');
         return;
     }
@@ -141,7 +141,7 @@ export function sendEnergyFromSpawn1() {
         if (controller && controller.level >= 7 && targetTerminal) {
             // Check if the terminal has no energy
             if (targetTerminal.store[RESOURCE_ENERGY] === 0) {
-                const amountToSend = 10000;
+                const amountToSend = 2000;
 
                 // Make sure Spawn1 has enough energy left to send 10K
                 if (terminal.store[RESOURCE_ENERGY] >= amountToSend) {
