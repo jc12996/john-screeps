@@ -33,7 +33,7 @@ export class Attacker {
             if(attackResult !== ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
             }else {
-                console.log('Attack Error',attackResult,creep.name,target)
+                //console.log('Attack Error',attackResult,creep.name,target)
             }
         }
     }

@@ -167,6 +167,18 @@ export class MovementUtils {
                 structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
         });
 
+        const terminal: StructureTerminal | null =  creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                   structure.structureType == STRUCTURE_TERMINAL && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        }) ?? null;
+
+
         const hasStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_STORAGE); }
@@ -223,7 +235,10 @@ export class MovementUtils {
         else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
             creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
         }
-
+        else if(terminal && commandLevel >= 7 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(terminal);
+            return;
+        }
         else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
         }
@@ -302,7 +317,9 @@ export class MovementUtils {
             if(terminal && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && !extensionLink.store[RESOURCE_ENERGY] && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal);
                 return;
-            } else if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            }
+             else if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+
                 creep.moveTo(extensionLink);
                 return;
             }

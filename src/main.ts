@@ -79,6 +79,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
+  transferEnergyToSpawn1Room();
+  sendEnergyFromSpawn1();
+
   AutoSpawn.run();
 
   for(var room_it in Game.rooms) {
@@ -89,6 +92,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
       handleRamparts({ room: room });
       Tower.defendMyRoom(room)
+
   }
 
 

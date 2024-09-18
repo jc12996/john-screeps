@@ -311,8 +311,6 @@ export class AutoSpawn {
                 ScaffoldingUtils.createExtensionFarm1(spawn);
                 if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
 
-                    transferEnergyToSpawn1Room();
-                    sendEnergyFromSpawn1();
 
                     ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
                 }

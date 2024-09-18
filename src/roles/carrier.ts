@@ -193,7 +193,7 @@ export class Carrier {
 
         let sources = 4;
         if(spawns) {
-            sources = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawns as StructureSpawn);
+            //sources = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawns as StructureSpawn);
         }
 
 
@@ -273,7 +273,7 @@ export class Carrier {
                 }
             });
 
-
+/*
             if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(droppedSources);
             } else if(tombstones[0] && creep.withdraw(tombstones[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -289,7 +289,8 @@ export class Carrier {
             } else {
                 MovementUtils.randomDirectionSelector();
             }
-
+*/
+            MovementUtils.generalGatherMovement(creep)
 
         } else if(creep.memory.carrying) {
 
