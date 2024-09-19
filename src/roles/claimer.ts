@@ -26,12 +26,27 @@ export class Claimer {
 
             const enemyController = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                 filter: function(object) {
-                    return object.structureType === STRUCTURE_CONTROLLER
+                    return object.structureType === STRUCTURE_CONTROLLER && object.owner?.username !== 'Invader'
                 }
             });
 
+
+
             if(!creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller.pos.y,1)) {
                 creep.moveTo(creep.room.controller);
+                return;
+            }
+
+            if(creep.memory.role === 'attackClaimer') {
+                if(enemyController && creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                    //creep.moveTo(creep.room.controller);
+                }else if(Game.flags.attackClaim && Game.flags.attackClaim.room === creep.room && Game.flags.attackClaim.room?.controller?.owner === undefined){
+                    Game.flags.attackClaim.remove();
+                } else if(Game.flags.attackClaim2 && Game.flags.attackClaim2.room === creep.room && Game.flags.attackClaim2.room?.controller?.owner === undefined){
+                    Game.flags.attackClaim2.remove();
+                } else if(Game.flags.attackClaim3 && Game.flags.attackClaim3.room === creep.room && Game.flags.attackClaim3.room?.controller?.owner === undefined){
+                    Game.flags.attackClaim3.remove();
+                }
                 return;
             }
 
@@ -40,6 +55,8 @@ export class Claimer {
             }else if(creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 //creep.moveTo(creep.room.controller);
             }
+
+
 
             const claimTargetCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
                 filter: function(object) {

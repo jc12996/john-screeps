@@ -197,7 +197,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     if(creep.memory.role == 'settler') {
       Settler.run(creep);
     }
-    if(creep.memory.role == 'claimer') {
+    if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
       Claimer.run(creep);
     }
     if(creep.memory.role == 'healer') {

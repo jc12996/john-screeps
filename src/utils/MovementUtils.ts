@@ -275,27 +275,32 @@ export class MovementUtils {
 
 
 
-        // if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-        //     creep.memory.hitWaypointFlag = true;
-        // }else if(!!Game.flags.wayPointFlag && !!!creep.memory.hitWaypointFlag && Game.flags.wayPointFlag.pos !== creep.pos) {
-
-        //     MovementUtils.goToFlag(creep,Game.flags.wayPointFlag);
-
-        //     return false;
-        // }
-
-        // creep.memory.hitWaypointFlag2 = undefined;
-        // if(!!creep.memory.hitWaypointFlag2 && !!!creep.memory.hitWaypointFlag2 && creep.pos && creep.pos.inRangeTo(Game.flags.wayPointFlag2.pos.x,Game.flags.wayPointFlag.pos.y,2)) {
-        //     creep.memory.hitWaypointFlag2 = true;
-        // }else if(!!Game.flags.wayPointFlag2 && !!!creep.memory.hitWaypointFlag2 && Game.flags.wayPointFlag2.pos !== creep.pos) {
-
-        //     MovementUtils.goToFlag(creep,Game.flags.wayPointFlag2);
-
-        //     return false;
-        // }
-
-        if(creep.memory.role !== 'settler' && creep.memory.role !== 'claimer') {
+        if(creep.memory.role !== 'settler' && creep.memory.role !== 'claimer' && creep.memory.role !== 'attackClaimer') {
             return true;
+        }
+
+        if(creep.memory.role === 'attackClaimer') {
+
+            if(Game.flags.attackClaim) {
+                MovementUtils.goToFlag(creep,Game.flags.attackClaim);
+                if(Game.flags.attackClaim.room === creep.room && creep.pos.inRangeTo(Game.flags.attackClaim.pos,2)) {
+                    return true;
+                }
+            } else if(Game.flags.attackClaim2) {
+                MovementUtils.goToFlag(creep,Game.flags.attackClaim2);
+                if(Game.flags.attackClaim2.room === creep.room && creep.pos.inRangeTo(Game.flags.attackClaim2.pos,2)) {
+                    return true;
+                }
+            } else if(Game.flags.attackClaim3) {
+                MovementUtils.goToFlag(creep,Game.flags.attackClaim3);
+                if(Game.flags.attackClaim3.room === creep.room && creep.pos.inRangeTo(Game.flags.attackClaim3.pos,2)) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+
+            return false;
         }
 
         if(!!!AutoSpawn.nextClaimFlag) {

@@ -77,10 +77,11 @@ export class Tower {
                 // Find all hostile creeps in the room
                 const hostileCreeps = room.find(FIND_HOSTILE_CREEPS);
 
-                if (hostileCreeps.length > 0) {
+                if (hostileCreeps.length > 0 || hostileCreeps[0].owner.username === 'Invader') {
                     // Separate healers from attackers
                     const healers = hostileCreeps.filter(creep => creep.getActiveBodyparts(HEAL) > 0);
                     const attackers = hostileCreeps.filter(creep => creep.getActiveBodyparts(ATTACK) > 0);
+                    const dismantlers = hostileCreeps.filter(creep => creep.getActiveBodyparts(WORK) > 0);
 
                     // Sort healers and attackers by their distance from the tower
                     healers.sort((a, b) => tower.pos.getRangeTo(a) - tower.pos.getRangeTo(b));
@@ -104,6 +105,12 @@ export class Tower {
                         // If no healers, attack the closest attacker
                         const closestAttacker = attackers[0];
                         tower.attack(closestAttacker);
+                    } else if (dismantlers.length > 0) {
+                        // If no healers, attack the closest attacker
+                        const dismantler = dismantlers[0];
+                        tower.attack(dismantler);
+                    } else if(hostileCreeps[0].owner.username === 'Invader') {
+                        tower.attack(hostileCreeps[0])
                     } else {
                         tower.attack(attackers[0])
                     }

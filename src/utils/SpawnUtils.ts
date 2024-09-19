@@ -46,26 +46,22 @@ export class SpawnUtils {
         const energyAvailable = spawn.room.energyAvailable;
 
         switch(archetype) {
+
+            case 'attackClaimer':
+                if(Game.flags.attackClaim && energyAvailable >= 3650) {
+
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CLAIM);
+                    }
+                    for (let i = 0; i < 25; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    break;
+                } else {
+                    return null;
+                }
             case 'claimer':
-                if(Game.flags.hardClaim && energyAvailable >= 1850) {
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 3; i++) {
-                        partsPattern.push(CLAIM);
-                    }
-                    break;
-                }
-                else if(Game.flags.hardClaim && energyAvailable >= 1250) {
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 2; i++) {
-                        partsPattern.push(CLAIM);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 650) {
+                if(energyAvailable >= 650) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -76,7 +72,6 @@ export class SpawnUtils {
                 } else {
                     return null;
                 }
-
             case 'miner':
             case 'settler':
                 if(energyAvailable >= 850) {

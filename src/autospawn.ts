@@ -44,6 +44,7 @@ export class AutoSpawn {
         const meatGrinders = _.filter(Game.creeps, (creep) => creep.memory.role == 'meatGrinder');
         const settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
         const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
+        const attackClaimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attackClaimer');
         const healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
 
         const mineFlag = Game.flags[spawn.room.name+'MineFlag'];
@@ -188,6 +189,11 @@ export class AutoSpawn {
             name = 'Claimer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
             options = {memory: {role: 'claimer'}};
+
+        } else if (commandLevel == 8 && (Game.flags.attackClaim || Game.flags.attackClaim2 || Game.flags.attackClaim3) && attackClaimers.length < LowUpkeep.AttackClaimers) {
+            name = 'AttackClaimer' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
+            options = {memory: {role: 'attackClaimer'}};
 
         } else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
             && ((
