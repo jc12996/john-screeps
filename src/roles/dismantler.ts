@@ -26,65 +26,83 @@ export class Dismantler {
 
         const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_CONTROLLER
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_CONTROLLER && creep.owner.username !== 'Invader'
             }
         });
         const findRamparts = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType === STRUCTURE_RAMPART
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType === STRUCTURE_RAMPART && creep.owner.username !== 'Invader'
             }
         });
 
-        const targetWallOrRampart = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const targetWallOrRampart = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter:  (struc) => {
-                return Game.flags.dismantleFlag && Game.flags.dismantleFlag.pos == struc.pos && (struc.structureType === STRUCTURE_RAMPART || struc.structureType === STRUCTURE_WALL)
+                return  (struc.structureType === STRUCTURE_RAMPART || struc.structureType === STRUCTURE_WALL) && creep.owner.username !== 'Invader'
             }
         });
 
+
+        const dismantleHere = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (struc) => {
+                return  !!Game.flags.dismantleHere && Game.flags.dismantleHere?.pos && struc.pos.x == Game.flags.dismantleHere.pos.x && struc.pos.y == Game.flags.dismantleHere.pos.y
+            }
+        });
+
+        const dismantleHere2 = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (struc) => {
+                return  !!Game.flags.dismantleHere2 && Game.flags.dismantleHere2?.pos && struc.pos.x == Game.flags.dismantleHere2.pos.x && struc.pos.y == Game.flags.dismantleHere2.pos.y
+            }
+        });
 
         const findTowers = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType === STRUCTURE_TOWER
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType === STRUCTURE_TOWER && creep.owner.username !== 'Invader'
             }
         });
 
         const findOther = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_CONTROLLER
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)  && creep.structureType !== STRUCTURE_RAMPART && creep.structureType !== STRUCTURE_CONTROLLER && creep.owner.username !== 'Invader'
             }
         });
 
         var findWalls = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (wall) => {
-                return wall.structureType === STRUCTURE_WALL && wall.room?.controller?.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(wall.room?.controller?.owner)
+                return wall.structureType === STRUCTURE_WALL && wall.room?.controller?.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(wall.room?.controller?.owner) && creep.owner.username !== 'Invader'
             }
         });
 
         const enemyController = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (structure) => {
-                return !SpawnUtils.FRIENDLY_OWNERS_FILTER(structure.owner) && structure.structureType === STRUCTURE_CONTROLLER
+                return !SpawnUtils.FRIENDLY_OWNERS_FILTER(structure.owner) && structure.structureType === STRUCTURE_CONTROLLER && creep.owner.username !== 'Invader'
             }
         });
 
 
-        if(hostileStructures.length > 0) {
 
-            if(targetWallOrRampart && Game.flags.dismantleFlag) {
+
+        if(hostileStructures.length > 0 && Game.flags?.dismantleFlag && Game.flags?.dismantleFlag.room === creep.room) {
+
+            if(dismantleHere && !findTowers) {
+                creep.say('🧱 T');
+                Dismantler.dismantleTarget(creep,dismantleHere);
+            } else if(dismantleHere2 && !findTowers) {
+                creep.say('🧱 T');
+                Dismantler.dismantleTarget(creep,dismantleHere2);
+            } else if(targetWallOrRampart && !findTowers) {
                 creep.say('🧱 T');
                 Dismantler.dismantleTarget(creep,targetWallOrRampart);
-            }else if(findRamparts && Game.flags.dismantleFlag) {
-                creep.say('🧱 r');
+            } else if(findRamparts && !findTowers) {
+                creep.say('🧱 t');
                 Dismantler.dismantleTarget(creep,findRamparts);
-            }
-            else if(findTowers) {
+            } else if(findTowers) {
                 creep.say('🧱 t');
                 Dismantler.dismantleTarget(creep,findTowers);
-            }
-            else if(findOther && findOther != enemyController) {
+            }else if(findOther && findOther != enemyController) {
                 creep.say('🧱 o');
                 Dismantler.dismantleTarget(creep,findOther)
             }
-            else if(findWalls && Game.flags.dismantleFlag) {
+            else if(findWalls) {
                 creep.say('🧱 w');
                 Dismantler.dismantleTarget(creep,findWalls);
             }
@@ -95,7 +113,13 @@ export class Dismantler {
                     MovementUtils.goToAttackFlag(creep);
                 }
             }
-        } else if(Game.flags?.dismantleFlag && Game.flags?.attackFlag) {
+        } else if(dismantleHere && !Game.flags?.dismantleFlag) {
+            creep.say('🧱 T');
+            Dismantler.dismantleTarget(creep,dismantleHere);
+        } else if(dismantleHere2 && !Game.flags?.dismantleFlag) {
+            creep.say('🧱 T');
+            Dismantler.dismantleTarget(creep,dismantleHere2);
+        } else if(Game.flags?.dismantleFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.dismantleFlag);
         } else if(Game.flags?.attackFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);

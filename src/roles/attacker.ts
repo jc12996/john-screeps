@@ -87,7 +87,7 @@ export class Attacker {
 
         const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_CONTROLLER
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_RAMPART && creep.structureType !== STRUCTURE_CONTROLLER
             }
         });
 
@@ -97,7 +97,7 @@ export class Attacker {
             }
         });
 
-        const walls = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const walls = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter:  (creep) => {
                 return  creep.structureType == STRUCTURE_WALL
             }
@@ -119,11 +119,20 @@ export class Attacker {
 
         const isSafeRoom = creep.room.controller?.safeMode ?? false;
 
+
+        const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType === STRUCTURE_WALL
+        });
+
+
+
         if(nearestHostileTower) {
             creep.say('⚔ T');
             Attacker.attackTarget(creep,nearestHostileTower);
             return;
         }
+
+
 
         if (!isSafeRoom && hostileCreeps) {
             creep.say('⚔ ⚔');
@@ -148,6 +157,8 @@ export class Attacker {
             Attacker.attackTarget(creep,hostileSites[0])
             return;
         }
+
+
 
         if(invaderCore) {
             creep.say('⚔ 🚧');

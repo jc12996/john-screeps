@@ -359,42 +359,11 @@ export class SpawnUtils {
                    return null;
                 }
             case 'healer':
-                if(energyAvailable >= 6100) {
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(HEAL);
-                    }
-                    break;
-                } else if(energyAvailable >= 3050) {
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(HEAL);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 2450) {
-                    for (let i = 0; i < 9; i++) {
+                if(energyAvailable >= 3200) {
+                    for (let i = 0; i < 24; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 8; i++) {
-                        partsPattern.push(HEAL);
-                    }
-                    break;
-                } else if(energyAvailable >= 1450) {
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(HEAL);
                     }
                     break;
