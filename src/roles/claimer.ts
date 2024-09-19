@@ -39,7 +39,7 @@ export class Claimer {
 
             if(creep.memory.role === 'attackClaimer') {
                 if(enemyController && creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                    //creep.moveTo(creep.room.controller);
+                    creep.moveTo(creep.room.controller);
                 }else if(Game.flags.attackClaim && Game.flags.attackClaim.room === creep.room && Game.flags.attackClaim.room?.controller?.owner === undefined){
                     Game.flags.attackClaim.remove();
                 } else if(Game.flags.attackClaim2 && Game.flags.attackClaim2.room === creep.room && Game.flags.attackClaim2.room?.controller?.owner === undefined){

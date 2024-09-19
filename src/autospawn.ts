@@ -244,7 +244,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
         }
-        else if (defenders.length < numberOfNeededDefenders) {
+        else if ((commandLevel <= 7 || defenders.length == 0) && defenders.length < numberOfNeededDefenders) {
             name = 'Defender' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};
