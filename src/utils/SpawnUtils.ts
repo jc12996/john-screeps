@@ -277,29 +277,33 @@ export class SpawnUtils {
                 }
             case 'dismantler':
 
-                if(energyAvailable >= 3100) {
-                    for (let i = 0; i < 20; i++) {
+                if(energyAvailable >= 3750) {
+                    for (let i = 0; i < 25; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
+                    for (let i = 0; i < 25; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    break;
+                }else if(energyAvailable >= 3000) {
+                    for (let i = 0; i < 20; i++) {
+                        partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 20; i++) {
                         partsPattern.push(WORK);
                     }
                     break;
-                } else if(energyAvailable >= 1300) {
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 7; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    break;
-                } else {
+                }
+                // else if(energyAvailable >= 1300) {
+                //     for (let i = 0; i < 10; i++) {
+                //         partsPattern.push(MOVE);
+                //     }
+                //     for (let i = 0; i < 8; i++) {
+                //         partsPattern.push(WORK);
+                //     }
+                //     break;
+                // }
+                else {
                     return null;
                 }
             case 'meatGrinder':

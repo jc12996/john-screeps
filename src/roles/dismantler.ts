@@ -54,6 +54,20 @@ export class Dismantler {
             }
         });
 
+
+        const dismantleHere3 = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (struc) => {
+                return  !!Game.flags.dismantleHere3 && Game.flags.dismantleHere3?.pos && struc.pos.x == Game.flags.dismantleHere3.pos.x && struc.pos.y == Game.flags.dismantleHere3.pos.y
+            }
+        });
+
+
+        const dismantleHere4 = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (struc) => {
+                return  !!Game.flags.dismantleHere4 && Game.flags.dismantleHere4?.pos && struc.pos.x == Game.flags.dismantleHere4.pos.x && struc.pos.y == Game.flags.dismantleHere4.pos.y
+            }
+        });
+
         const findTowers = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType === STRUCTURE_TOWER && creep.owner.username !== 'Invader'
@@ -83,16 +97,22 @@ export class Dismantler {
 
         if(hostileStructures.length > 0 && Game.flags?.dismantleFlag && Game.flags?.dismantleFlag.room === creep.room) {
 
-            if(dismantleHere && !findTowers) {
+            if(dismantleHere && !findTowers && !findOther) {
                 creep.say('🧱 T');
                 Dismantler.dismantleTarget(creep,dismantleHere);
-            } else if(dismantleHere2 && !findTowers) {
+            } else if(dismantleHere2 && !findTowers && !findOther) {
                 creep.say('🧱 T');
                 Dismantler.dismantleTarget(creep,dismantleHere2);
-            } else if(targetWallOrRampart && !findTowers) {
+            } else if(dismantleHere3 && !findTowers && !findOther) {
+                creep.say('🧱 T');
+                Dismantler.dismantleTarget(creep,dismantleHere3);
+            } else if(dismantleHere4 && !findTowers && !findOther) {
+                creep.say('🧱 T');
+                Dismantler.dismantleTarget(creep,dismantleHere4);
+            } else if(targetWallOrRampart && !findTowers && !findOther) {
                 creep.say('🧱 T');
                 Dismantler.dismantleTarget(creep,targetWallOrRampart);
-            } else if(findRamparts && !findTowers) {
+            } else if(findRamparts && !findTowers && !findOther) {
                 creep.say('🧱 t');
                 Dismantler.dismantleTarget(creep,findRamparts);
             } else if(findTowers) {
@@ -119,6 +139,12 @@ export class Dismantler {
         } else if(dismantleHere2 && !Game.flags?.dismantleFlag) {
             creep.say('🧱 T');
             Dismantler.dismantleTarget(creep,dismantleHere2);
+        } else if(dismantleHere3 && !Game.flags?.dismantleFlag) {
+            creep.say('🧱 T');
+            Dismantler.dismantleTarget(creep,dismantleHere3);
+        } else if(dismantleHere4 && !Game.flags?.dismantleFlag) {
+            creep.say('🧱 T');
+            Dismantler.dismantleTarget(creep,dismantleHere4);
         } else if(Game.flags?.dismantleFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.dismantleFlag);
         } else if(Game.flags?.attackFlag) {

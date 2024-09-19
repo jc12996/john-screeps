@@ -30,6 +30,24 @@ export class MovementUtils {
                 }
             });
 
+            const invadorCoreTower = flag.room?.find(FIND_HOSTILE_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType === STRUCTURE_TOWER && structure.owner && structure.owner.username === 'Invader'
+                }
+            });
+
+            if(invadorCoreTower && invadorCoreTower.length > 0) {
+                if(flag.name === 'rallyFlag') {
+                    Game.flags.rallyFlag.remove();
+                }
+                if(flag.name === 'rallyFlag2') {
+                    Game.flags.rallyFlag2.remove();
+                }
+                if(flag.name === 'dismantleFlag') {
+                    Game.flags.dismantleFlag.remove();
+                }
+            }
+
             const isPatrolCreep = (
                 creep.memory.role === 'healer' || creep.memory.role === 'attacker' || creep.memory.role === 'meatGrinder' || creep.memory.role === 'dismantler'
             );
