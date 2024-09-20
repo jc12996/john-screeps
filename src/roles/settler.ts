@@ -96,13 +96,15 @@ export class Settler {
                 }
             });
 
-            if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(droppedSources  && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
-                Harvester.run(creep);
-            }
+            MovementUtils.generalGatherMovement(creep,undefined,targetSource);
+
+            // if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            //     creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            // } else if(droppedSources  && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            // } else if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
+
+            // }
         }else {
 
             var constructSpawn = creep.room.find(FIND_CONSTRUCTION_SITES, {

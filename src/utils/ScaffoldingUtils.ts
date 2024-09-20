@@ -73,7 +73,7 @@ export class ScaffoldingUtils {
             if(creepOrSpawn.room?.controller?.my && creepOrSpawn.room.controller?.level) {
 
 
-                if (creepOrSpawn.room.controller.level == 2) {
+                if (creepOrSpawn.room.controller.level >= 2) {
                     const hasLevelExtensions = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
                         filter: (extension) => {
                             extension.structureType === STRUCTURE_EXTENSION && extension.pos.x == pos.x-6 && extension.pos.y == pos.y+1
@@ -89,7 +89,7 @@ export class ScaffoldingUtils {
 
                 }
 
-                if (creepOrSpawn.room.controller.level == 3 ) {
+                if (creepOrSpawn.room.controller.level >= 3 ) {
                     const hasLevelTower = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
                         filter: (extension) => {
                             extension.structureType === STRUCTURE_TOWER && extension.pos.x == pos.x-3 && extension.pos.y == pos.y+2
@@ -111,7 +111,7 @@ export class ScaffoldingUtils {
 
                 }
 
-                if (creepOrSpawn.room.controller.level == 4 ) {
+                if (creepOrSpawn.room.controller.level >= 4 ) {
                     const hasLevelStorageSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
                         filter: (extension) => {
                             extension.structureType === STRUCTURE_STORAGE && extension.pos.x == pos.x-1 && extension.pos.y == pos.y
@@ -143,11 +143,11 @@ export class ScaffoldingUtils {
                     }
                 }
 
-                if (creepOrSpawn.room.controller.level == 5 ) {
+                if (creepOrSpawn.room.controller.level >= 5 ) {
                     //none
                 }
 
-                if(creepOrSpawn.room.controller.level == 6) {
+                if(creepOrSpawn.room.controller.level >= 6) {
                     const hasLevelLabSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
                         filter: (extension) => {
                             extension.structureType === STRUCTURE_LAB && extension.pos.x == pos.x-2 && extension.pos.y == pos.y
@@ -166,7 +166,7 @@ export class ScaffoldingUtils {
 
                 }
 
-                if(creepOrSpawn.room.controller.level == 7) {
+                if(creepOrSpawn.room.controller.level >= 7) {
                     const hasLevelFactory = creepOrSpawn.room.find(FIND_STRUCTURES, {
                         filter: (extension) => {
                             extension.structureType === STRUCTURE_FACTORY && extension.pos.x == pos.x-1 && extension.pos.y == pos.y+6
@@ -232,7 +232,7 @@ export class ScaffoldingUtils {
 
 
 
-            if (creepOrSpawn.room.controller.level == 5 ) {
+            if (creepOrSpawn.room.controller.level >= 5 ) {
 
 
                 const hasLevelExtensions = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
@@ -262,7 +262,7 @@ export class ScaffoldingUtils {
 
             }
 
-            if (creepOrSpawn.room.controller.level == 6 ) {
+            if (creepOrSpawn.room.controller.level >= 6 ) {
                 if(totalNumberOfLinkSites.length == 0) {
                     creepOrSpawn.room.createFlag(pos.x -2,pos.y+3,creepOrSpawn.room.name+'ExtensionLink2');
                     creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
@@ -306,9 +306,22 @@ export class ScaffoldingUtils {
                     filter: (flag) => {
                         flag.name === creepOrSpawn.room.name+'ControllerLink1';
                     }
+                });
+
+                const hasControllerLinkSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                    filter: (struc) => {
+                        hasControllerLinkFlag[0] && struc.structureType === STRUCTURE_LINK && struc.pos.x === hasControllerLinkFlag[0].pos.x && struc.pos.y === hasControllerLinkFlag[0].pos.y;
+                    }
                 }).length > 0;
 
-                if(!hasControllerLinkFlag) {
+                const hasControllerLink = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                    filter: (struc) => {
+                        hasControllerLinkFlag[0] && struc.structureType === STRUCTURE_LINK && struc.pos.x === hasControllerLinkFlag[0].pos.x && struc.pos.y === hasControllerLinkFlag[0].pos.y;
+                    }
+                }).length > 0;
+
+
+                if(!hasControllerLinkSite && !hasControllerLink) {
                     if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
                         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
                     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
@@ -333,7 +346,7 @@ export class ScaffoldingUtils {
 
             }
 
-            if (creepOrSpawn.room.controller.level == 7 ) {
+            if (creepOrSpawn.room.controller.level >= 7 ) {
 
 
                 var hasSecondSpawn = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {

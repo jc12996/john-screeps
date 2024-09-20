@@ -144,7 +144,7 @@ export class AutoSpawn {
             if(mineSources) {
                 numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
             }
-            numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * 1) : (mineSources?.length??0);
+            numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * 1.5) : (mineSources?.length??0);
             //console.log(spawn.room.name,numberOfNeededMiners)
         }
 

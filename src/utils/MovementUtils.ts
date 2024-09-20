@@ -166,7 +166,7 @@ export class MovementUtils {
         }
     }
 
-    public static generalGatherMovement(creep: Creep, controllerLink: StructureLink | undefined = undefined) {
+    public static generalGatherMovement(creep: Creep, controllerLink: StructureLink | undefined = undefined, targetSource: any = undefined) {
         const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
@@ -229,6 +229,8 @@ export class MovementUtils {
         });
         const commandLevel =  creep.room?.controller?.level ?? 1;
 
+        const activeSource = creep.room.find(FIND_SOURCES_ACTIVE)
+
         /**
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
             if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -262,6 +264,12 @@ export class MovementUtils {
         }
         else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
+        }
+        else if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
+            if(!creep.pos.inRangeTo(targetSource.pos.x,targetSource.pos.y,1)) {
+                creep.moveTo(targetSource);
+            }
+
         }
         else if(roomRallyPointFlag[0]) {
             creep.moveTo(roomRallyPointFlag[0]);
