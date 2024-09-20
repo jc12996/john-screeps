@@ -120,6 +120,31 @@ export function transferEnergyToSpawn1Room() {
     }
 }
 
+export function callForHelp(creep: Creep) {
+
+    const hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
+        {
+            filter: hostileCreep => {
+                return ((hostileCreep.owner &&
+                 !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
+              }
+        }
+    );
+
+    const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
+        filter:  (creep) => {
+            return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_RAMPART && creep.structureType !== STRUCTURE_CONTROLLER
+        }
+    });
+
+    if((hostileCreeps || hostileStructures.length > 0) && !Game.flags.attackFlag) {
+        creep.say('📞...',true)
+        creep.room.createFlag(creep.pos, 'attackFlag');
+    }
+
+}
+
+
 export function sendEnergyFromSpawn1() {
     // Find the room with Spawn1
     const spawn1Room = Game.spawns['Spawn1'].room;

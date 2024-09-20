@@ -17,7 +17,7 @@ import { handleRamparts } from "ramparts";
 import { PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Miner } from "roles/miner";
-import { sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
+import { callForHelp, sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
 
 declare global {
   /*
@@ -212,6 +212,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
     if(creep.memory.role == 'miner') {
       Miner.run(creep);
     }
+
+    callForHelp(creep);
 }
 });
 
