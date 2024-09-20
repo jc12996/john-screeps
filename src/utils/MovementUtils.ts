@@ -39,12 +39,18 @@ export class MovementUtils {
             if(invadorCoreTower && invadorCoreTower.length > 0) {
                 if(flag.name === 'rallyFlag') {
                     Game.flags.rallyFlag.remove();
+                    if(Game.flags.rallyFlag2) {
+                        creep.room.createFlag(Game.flags.rallyFlag2.pos,'rallyFlag')
+                    }
                 }
                 if(flag.name === 'rallyFlag2') {
                     Game.flags.rallyFlag2.remove();
                 }
                 if(flag.name === 'dismantleFlag') {
                     Game.flags.dismantleFlag.remove();
+                }
+                if(flag.name === 'attackFlag') {
+                    Game.flags.attackFlag.remove();
                 }
             }
 

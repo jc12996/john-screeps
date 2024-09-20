@@ -58,7 +58,7 @@ export enum WarTimeEconomy {
 
 export enum PeaceTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE =10,
+    TOTAL_ATTACKER_SIZE =15,
     TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0
