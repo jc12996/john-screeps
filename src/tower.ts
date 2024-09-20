@@ -67,7 +67,7 @@ export class Tower {
         // });
 
 
-        if(hostileCreeps.length > 0) {
+        if(hostileCreeps.length > 0 && room.controller?.my && !room.controller.safeMode) {
             var username = hostileCreeps[0].owner.username;
             console.log(hostileCreeps[0].name)
             Game.notify(`User ${username} spotted in room ${room.name}`);

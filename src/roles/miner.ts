@@ -53,6 +53,11 @@ export class Miner {
                 filter: (creep) => (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 ) && creep.owner.username === 'Invader'
             }).length;
 
+            const mineReserved = mineFlag.room?.controller?.reservation;
+            if(mineReserved) {
+                mineFlag.remove();
+            }
+
             if(mineFlag.room?.controller?.reservation || mineHostiles) {
                 if(creep.room != firstRoom) {
                     creep.say("😨",true)

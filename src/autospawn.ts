@@ -190,7 +190,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
             options = {memory: {role: 'claimer'}};
 
-        } else if (commandLevel == 8 && (Game.flags.attackClaim || Game.flags.attackClaim2 || Game.flags.attackClaim3) && attackClaimers.length < LowUpkeep.AttackClaimers) {
+        } else if (commandLevel == 8 && Game.flags.attackClaim && attackClaimers.length < LowUpkeep.AttackClaimers) {
             name = 'AttackClaimer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
             options = {memory: {role: 'attackClaimer'}};
@@ -244,7 +244,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
         }
-        else if ((commandLevel <= 7 || defenders.length == 0) && defenders.length < numberOfNeededDefenders) {
+        else if ((commandLevel <= 7 || defenders.length == 0) && (defenders.length < numberOfNeededDefenders ||(Game.flags.draftFlag && defenders.length < LowUpkeep.TOTALDRAFT))) {
             name = 'Defender' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
             options = {memory: {role: 'defender'}};

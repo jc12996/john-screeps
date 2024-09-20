@@ -138,8 +138,8 @@ export function callForHelp(creep: Creep) {
     });
 
     if((hostileCreeps || hostileStructures.length > 0)) {
-        creep.say('📞...',true)
-        if(!Game.flags.attackFlag) {
+        creep.say('📞',true)
+        if(!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
             if(hostileCreeps) {
                 creep.room.createFlag(hostileCreeps.pos, 'attackFlag');
             } else if(hostileStructures[0]) {

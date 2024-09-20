@@ -38,14 +38,23 @@ export class Claimer {
             }
 
             if(creep.memory.role === 'attackClaimer') {
-                if(enemyController && creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                const claimAttackCode = creep.attackController(creep.room.controller);
+                console.log('Claim Attack',claimAttackCode)
+                if(enemyController && claimAttackCode == ERR_NOT_IN_RANGE) {
                     creep.moveTo(creep.room.controller);
                 }else if(Game.flags.attackClaim && Game.flags.attackClaim.room === creep.room && Game.flags.attackClaim.room?.controller?.owner === undefined){
                     Game.flags.attackClaim.remove();
-                } else if(Game.flags.attackClaim2 && Game.flags.attackClaim2.room === creep.room && Game.flags.attackClaim2.room?.controller?.owner === undefined){
-                    Game.flags.attackClaim2.remove();
-                } else if(Game.flags.attackClaim3 && Game.flags.attackClaim3.room === creep.room && Game.flags.attackClaim3.room?.controller?.owner === undefined){
-                    Game.flags.attackClaim3.remove();
+                    if(Game.flags.attackClaim2 && Game.flags.attackClaim2.room?.name) {
+                        Game.rooms[Game.flags.attackClaim2.room.name].createFlag(Game.flags.attackClaim2.pos,'attackClaim');
+                        Game.flags.attackClaim2.remove();
+                    } else if(Game.flags.attackClaim3 && Game.flags.attackClaim3.room?.name) {
+                        Game.rooms[Game.flags.attackClaim3.room.name].createFlag(Game.flags.attackClaim3.pos,'attackClaim');
+                        Game.flags.attackClaim3.remove();
+                    } else if(Game.flags.attackClaim4 && Game.flags.attackClaim4.room?.name) {
+                        Game.rooms[Game.flags.attackClaim4.room.name].createFlag(Game.flags.attackClaim4.pos,'attackClaim');
+                        Game.flags.attackClaim4.remove();
+                    }
+
                 }
                 return;
             }

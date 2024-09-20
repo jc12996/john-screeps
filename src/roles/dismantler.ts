@@ -145,7 +145,7 @@ export class Dismantler {
         } else if(dismantleHere4 && !Game.flags?.dismantleFlag) {
             creep.say('🧱 T');
             Dismantler.dismantleTarget(creep,dismantleHere4);
-        } else if(Game.flags?.dismantleFlag) {
+        } else if(Game.flags?.dismantleFlag && !Game.flags.dismantleFlag.room?.controller?.safeMode) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.dismantleFlag);
         } else if(Game.flags?.attackFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);

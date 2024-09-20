@@ -168,6 +168,9 @@ export class Attacker {
 
         if(!isSafeRoom && Game.flags?.attackFlag) {
 
+            if(Game.flags.attackFlag && Game.flags.attackFlag.room?.controller?.my && Game.flags.attackFlag.room.controller.safeMode){
+                Game.flags.attackFlag.remove();
+            }
             if(creep.room === Game.flags.attackFlag.room && hostileStructures.length === 0 && !hostileCreeps) {
                 Game.flags.attackFlag.remove();
             }

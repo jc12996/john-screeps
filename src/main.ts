@@ -174,27 +174,34 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
 
     if(creep.memory.role == 'harvester') {
+      callForHelp(creep);
       Harvester.run(creep);
     }
     if(creep.memory.role == 'carrier') {
+      callForHelp(creep);
       Carrier.run(creep);
     }
     if(creep.memory.role == 'upgrader') {
+      callForHelp(creep);
       Upgrader.run(creep);
     }
     if(creep.memory.role == 'builder') {
+      callForHelp(creep);
       Builder.run(creep);
     }
     if(creep.memory.role == 'defender') {
+      callForHelp(creep);
       Defender.run(creep);
     }
     if(creep.memory.role == 'repairer') {
+      callForHelp(creep);
       Repairer.run(creep);
     }
     if(creep.memory.role == 'attacker') {
       Attacker.run(creep);
     }
     if(creep.memory.role == 'settler') {
+      callForHelp(creep);
       Settler.run(creep);
     }
     if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
@@ -210,10 +217,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
       MeatGrinder.run(creep);
     }
     if(creep.memory.role == 'miner') {
+      callForHelp(creep);
       Miner.run(creep);
     }
 
-    callForHelp(creep);
+
 }
 });
 

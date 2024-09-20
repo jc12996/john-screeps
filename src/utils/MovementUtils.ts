@@ -52,6 +52,7 @@ export class MovementUtils {
                 if(flag.name === 'attackFlag') {
                     Game.flags.attackFlag.remove();
                 }
+
             }
 
             const isPatrolCreep = (
@@ -118,7 +119,7 @@ export class MovementUtils {
 
                     const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,6,{
                         filter: (myCreep) => myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0
-                    }).length >= (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .8);
+                    }).length >= (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .75);
                     if(creepIsInSquad) {
                         const tempRallyFlag  = flag;
                         Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);
@@ -298,16 +299,6 @@ export class MovementUtils {
             if(Game.flags.attackClaim) {
                 MovementUtils.goToFlag(creep,Game.flags.attackClaim);
                 if(Game.flags.attackClaim.room === creep.room && creep.pos.inRangeTo(Game.flags.attackClaim.pos,2)) {
-                    return true;
-                }
-            } else if(Game.flags.attackClaim2) {
-                MovementUtils.goToFlag(creep,Game.flags.attackClaim2);
-                if(Game.flags.attackClaim2.room === creep.room && creep.pos.inRangeTo(Game.flags.attackClaim2.pos,2)) {
-                    return true;
-                }
-            } else if(Game.flags.attackClaim3) {
-                MovementUtils.goToFlag(creep,Game.flags.attackClaim3);
-                if(Game.flags.attackClaim3.room === creep.room && creep.pos.inRangeTo(Game.flags.attackClaim3.pos,2)) {
                     return true;
                 }
             } else {
