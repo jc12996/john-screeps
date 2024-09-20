@@ -137,10 +137,13 @@ export function callForHelp(creep: Creep) {
         }
     });
 
-    if((hostileCreeps || hostileStructures.length > 0) && !Game.flags.attackFlag) {
+    if((hostileCreeps || hostileStructures.length > 0)) {
         creep.say('📞...',true)
-        creep.room.createFlag(creep.pos, 'attackFlag');
+        if(!Game.flags.attackFlag) {
+            creep.room.createFlag(creep.pos, 'attackFlag');
+        }
     }
+
 
 }
 
