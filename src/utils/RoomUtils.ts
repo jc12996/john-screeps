@@ -1,6 +1,57 @@
 
 export class RoomUtils {
 
+    public static setSpawnRoom(spawn: StructureSpawn): void {
+
+        const storages:StructureStorage[] = spawn.room.find(FIND_STRUCTURES, {
+            filter: (structure) => { return (
+                structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
+        }) ?? undefined;
+
+
+        const links:StructureLink[] = spawn.room.find(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    structure.structureType === STRUCTURE_LINK
+
+
+                )
+            }
+        });
+
+        const spawns:StructureSpawn[] = spawn.room.find(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    (structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
+
+
+                ) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        }) ?? undefined;
+
+
+        const containers: StructureContainer[] = spawn.room.find(FIND_STRUCTURES, {
+            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
+        });
+
+        const room = {
+            name: spawn.room.name,
+            links: links,
+            storages: storages,
+            containers: containers,
+            spawns: spawns
+        }
+
+        spawn.memory.room = room
+
+
+    }
+
+    public static getRoomBySpawn(spawn:StructureSpawn): RoomMemory {
+        return spawn.memory.room
+    }
+
     public static getCreepProspectingSlots(source: Source): Array<{
         x: number,
         y: number,

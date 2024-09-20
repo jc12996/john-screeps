@@ -18,6 +18,7 @@ import { PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesU
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Miner } from "roles/miner";
 import { callForHelp, sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
+import { RoomUtils } from "utils/RoomUtils";
 
 declare global {
   /*
@@ -51,6 +52,18 @@ declare global {
     firstSpawnCoords?: string;
     hasJoinedPatrol?: boolean;
     numberOfNeededHarvestorSlots?: number;
+  }
+
+  interface SpawnMemory {
+    room: RoomMemory
+  }
+
+  interface RoomMemory {
+      name: string,
+      links?: StructureLink[],
+      storages?: StructureStorage[],
+      containers?: StructureContainer[],
+      spawns: StructureSpawn[],
   }
 
   interface FlagMemory {
@@ -87,9 +100,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
   for(var room_it in Game.rooms) {
     const room: Room = Game.rooms[room_it]
       var spawn = room.find(FIND_MY_SPAWNS)[0];
+
       if(!spawn) {
           continue;
       }
+      if(!spawn.memory.room) {
+        RoomUtils.setSpawnRoom(spawn)
+      }
+
       handleRamparts({ room: room });
       Tower.defendMyRoom(room)
 
