@@ -223,7 +223,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
       MeatGrinder.run(creep);
     }
     if(creep.memory.role == 'miner') {
-
       MovementUtils.callForHelp(creep);
       Miner.run(creep);
     }
