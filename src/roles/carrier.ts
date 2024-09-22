@@ -7,12 +7,6 @@ export class Carrier {
 
     public static run(creep: Creep, upgradeOnly:boolean = false): void {
 
-        // if(Game.flags.reallocateFlag && creep.memory.firstSpawnCoords === "W3N9" && creep.room.name !== Game.flags.reallocateFlag.room?.name) {
-        //     console.log('reallocating...')
-        //     creep.moveTo(Game.flags.reallocateFlag);
-        //     return;
-        // }
-
         const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
