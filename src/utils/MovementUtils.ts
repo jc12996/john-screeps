@@ -140,9 +140,9 @@ export class MovementUtils {
 
 
 
-            if(creep.moveTo(flag) === ERR_NO_PATH && friendlyRamparts) {
+            if(creep.moveTo(flag,{ ignoreCreeps:true}) === ERR_NO_PATH && friendlyRamparts) {
 
-                creep.moveTo(friendlyRamparts);
+                //creep.moveTo(friendlyRamparts);
 
             }
 
