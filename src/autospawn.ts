@@ -222,7 +222,7 @@ export class AutoSpawn {
             options = {memory: {role: 'carrier'}}
 
         }
-        else if(commandLevel >= 7 && scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE)  {
+        else if(commandLevel >= 7 && Game.flags.rallyFlag2 && !Game.flags.scoutFlag && scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE)  {
             name = 'Scout' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('scout',spawn, commandLevel, 0);
             options = {memory: {role: 'scout', isArmySquad:true}};
