@@ -122,7 +122,7 @@ export function transferEnergyToSpawn1Room() {
 
 export function callForHelp(creep: Creep) {
 
-    const hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
+    const hostileCreeps = creep.room.find(FIND_HOSTILE_CREEPS,
         {
             filter: hostileCreep => {
                 return ((hostileCreep.owner &&
@@ -137,17 +137,17 @@ export function callForHelp(creep: Creep) {
         }
     });
 
-    // if((hostileCreeps || hostileStructures.length > 0)) {
-    //     creep.say('📞',true)
-    //     if(!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
-    //         if(hostileCreeps) {
-    //             creep.room.createFlag(hostileCreeps.pos, 'attackFlag');
-    //         } else if(hostileStructures[0]) {
-    //             creep.room.createFlag(hostileStructures[0].pos, 'attackFlag');
-    //         }
+    if((hostileCreeps.length > 2 ) && Game.flags.rallyFlag2) {
+        creep.say('📞',true)
+        if(!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
+            if(hostileCreeps[0]) {
+                creep.room.createFlag(hostileCreeps[0].pos, 'attackFlag');
+            } else if(hostileStructures[0]) {
+                creep.room.createFlag(hostileStructures[0].pos, 'attackFlag');
+            }
 
-    //     }
-    // }
+        }
+    }
 
 
 }

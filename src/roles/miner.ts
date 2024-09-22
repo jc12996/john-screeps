@@ -55,7 +55,9 @@ export class Miner {
 
             const mineReserved = mineFlag.room?.controller?.reservation;
             if(mineReserved) {
-                mineFlag.remove();
+                //mineFlag.remove();
+                Carrier.run(creep);
+                return;
             }
 
             if(mineFlag.room?.controller?.reservation || mineHostiles) {

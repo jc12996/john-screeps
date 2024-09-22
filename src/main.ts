@@ -216,6 +216,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       Repairer.run(creep);
     }
     if(creep.memory.role == 'attacker') {
+      callForHelp(creep)
       Attacker.run(creep);
     }
     if(creep.memory.role == 'settler') {
@@ -229,6 +230,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       Healer.run(creep);
     }
     if(creep.memory.role == 'dismantler') {
+      callForHelp(creep)
       Dismantler.run(creep);
     }
     if(creep.memory.role == 'meatGrinder') {

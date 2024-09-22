@@ -133,22 +133,20 @@ export class Dismantler {
                     MovementUtils.goToAttackFlag(creep);
                 }
             }
-        } else if(dismantleHere && !Game.flags?.dismantleFlag) {
+        } else if(dismantleHere && !Game.flags?.dismantleFlag && !findOther) {
             creep.say('🧱 T');
             Dismantler.dismantleTarget(creep,dismantleHere);
-        } else if(dismantleHere2 && !Game.flags?.dismantleFlag) {
+        } else if(dismantleHere2 && !Game.flags?.dismantleFlag && !findOther) {
             creep.say('🧱 T');
             Dismantler.dismantleTarget(creep,dismantleHere2);
-        } else if(dismantleHere3 && !Game.flags?.dismantleFlag) {
+        } else if(dismantleHere3 && !Game.flags?.dismantleFlag && !findOther) {
             creep.say('🧱 T');
             Dismantler.dismantleTarget(creep,dismantleHere3);
-        } else if(dismantleHere4 && !Game.flags?.dismantleFlag) {
+        } else if(dismantleHere4 && !Game.flags?.dismantleFlag && !findOther) {
             creep.say('🧱 T');
             Dismantler.dismantleTarget(creep,dismantleHere4);
-        } else if(Game.flags?.dismantleFlag && !Game.flags.dismantleFlag.room?.controller?.safeMode) {
+        } else if(Game.flags?.dismantleFlag && !Game.flags.dismantleFlag.room?.controller?.safeMode  && !findOther) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.dismantleFlag);
-        } else if(Game.flags?.attackFlag) {
-            MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
         } else if(Game.flags?.rallyFlag) {
             MovementUtils.defaultArmyMovement(creep,Game.flags?.rallyFlag);
         }
