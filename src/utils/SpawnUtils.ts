@@ -270,44 +270,25 @@ export class SpawnUtils {
                 else {
                     return null;
                 }
-            case 'dismantler':
-
-                if(energyAvailable >= 3750) {
-                    for (let i = 0; i < 25; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 25; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    break;
-                }else if(energyAvailable >= 3000) {
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    break;
-                }
-                // else if(energyAvailable >= 1300) {
-                //     for (let i = 0; i < 10; i++) {
-                //         partsPattern.push(MOVE);
-                //     }
-                //     for (let i = 0; i < 8; i++) {
-                //         partsPattern.push(WORK);
-                //     }
-                //     break;
-                // }
-                else {
-                    return null;
-                }
             case 'meatGrinder':
-                if(energyAvailable >= 780) {
-                    for (let i = 0; i < 3; i++) {
+                if(energyAvailable >= 1100) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(TOUGH);
                     }
-                    for (let i = 0; i < 15; i++) {
+                    for (let i = 0; i < 20; i++) {
                         partsPattern.push(MOVE);
+                    }
+                    break;
+                } else {
+                    return null;
+                }
+            case 'healer':
+                if(energyAvailable >= 3000) {
+                    for (let i = 0; i < 20; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(HEAL);
                     }
                     break;
                 } else {
@@ -325,50 +306,23 @@ export class SpawnUtils {
 
                     break;
                 }
-                else if(energyAvailable >= 2060) {
-
-                    for (let i = 0; i < 3; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 15; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 17; i++) {
-                        partsPattern.push(ATTACK);
-                    }
-
-                    break;
-                }
-                else if(energyAvailable >= 1320) {
-
-
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 15; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 7; i++) {
-                        partsPattern.push(ATTACK);
-                    }
-
-                    break;
-                }
                 else {
                    return null;
                 }
-            case 'healer':
-                if(energyAvailable >= 3200) {
-                    for (let i = 0; i < 24; i++) {
+            case 'dismantler':
+                if(energyAvailable >= 3100) {
+                    for (let i = 0; i < 22; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(HEAL);
+                    for (let i = 0; i < 20; i++) {
+                        partsPattern.push(WORK);
                     }
                     break;
-                } else {
+                }
+                else {
                     return null;
                 }
+
 
         }
 

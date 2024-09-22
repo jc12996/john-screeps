@@ -86,7 +86,7 @@ export class Carrier {
                   }
             }
         );
-        if(commandLevel <= 5 && playerHostiles.length > 0 && creep.room.controller?.my) {
+        if(commandLevel <= 6 && playerHostiles.length > 0 && creep.room.controller?.my) {
             creep.room.controller.activateSafeMode();
         }
 
