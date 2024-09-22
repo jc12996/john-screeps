@@ -41,6 +41,7 @@ export class AutoSpawn {
         const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room.name == spawn.room.name);
         const repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer' && creep.room.name == spawn.room.name);
         const attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
+        const scouts = _.filter(Game.creeps, (creep) => creep.memory.role == 'scout');
         const meatGrinders = _.filter(Game.creeps, (creep) => creep.memory.role == 'meatGrinder');
         const settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
         const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
@@ -92,9 +93,7 @@ export class AutoSpawn {
         const extensions  = spawn.room.find(FIND_MY_STRUCTURES, {
             filter: { structureType: STRUCTURE_EXTENSION }
         });
-        const activeharvesters = harvesters.filter((hhh) => hhh.memory?.targetSource );
         const nonactiveharvesters = harvesters.filter((hhh) => !hhh.memory?.targetSource );
-        const numberOfNeededHarvestersMax = LowUpkeep.Harvesters * RoomSources.length;
 
 
         let numberOfNeededCarriers = LowUpkeep.Carriers * harvesters.length;
@@ -145,7 +144,6 @@ export class AutoSpawn {
                 numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
             }
             numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * 1.5) : (mineSources?.length??0);
-            //console.log(spawn.room.name,numberOfNeededMiners)
         }
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
@@ -170,21 +168,12 @@ export class AutoSpawn {
 
         var hostileCreeps = spawn.room.find(FIND_HOSTILE_CREEPS);
 
-        const towers: Array<StructureTower> = spawn.room.find(FIND_STRUCTURES, {
-            filter: (structure: StructureTower) => structure.structureType === STRUCTURE_TOWER
-        })
-
-        //console.log(`Energy Available in ${spawn.name}:`,energyAvailable);
-        //console.log(`${spawn.name} has rally flag:`,!!Game.flags.rallyFlag);
+        const isSquadPatrol = commandLevel >= 7 && Game.flags.rallyFlag && (Game.flags.scoutFlag || Game.flags.attackFlag);
         if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
             &&  !!this.nextClaimFlag
             && totalNumberOfControlledRooms < Game.gcl.level
             && !this.nextClaimFlag.room?.controller?.my
             && !this.nextClaimFlag.room?.controller?.owner
-         //   (mineFlag && mineFlag.room && mineFlag.name == (spawn.room.name+'MineFlag') && mineFlag.room.find(FIND_HOSTILE_STRUCTURES, {
-             //   filter: (struc) => struc.owner?.username === 'Invader'
-           // }))
-
         )  {
             name = 'Claimer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
@@ -221,8 +210,6 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }
         }
-
-        //else if (((activeharvesters.length > 0 || harvesters.length == 0) && !spawn.spawning && numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters + harvesters.length) && ActiveRoomSources.length > 0 && harvesters.length < numberOfNeededHarvestersMax)  && nonactiveharvesters.length == 0) {
         else if(numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters) && ActiveRoomSources.length > 0) {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
@@ -235,24 +222,29 @@ export class AutoSpawn {
             options = {memory: {role: 'carrier'}}
 
         }
-        else if(commandLevel >= 7 && Game.flags.rallyFlag && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
+        else if(commandLevel >= 7 && scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE)  {
+            name = 'Scout' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('scout',spawn, commandLevel, 0);
+            options = {memory: {role: 'scout', isArmySquad:true}};
+        }
+        else if(isSquadPatrol && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
             options = {memory: {role: 'attacker', isArmySquad:true}};
         }
-        else if(commandLevel >= 7 && Game.flags.rallyFlag && !Game.flags.rallyFlag2 && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
+        else if(isSquadPatrol && !Game.flags.rallyFlag2 && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
             name = 'Dismantler' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
             options = {memory: {role: 'dismantler', isArmySquad:true}};
         }
-        else if(commandLevel >= 7 && Game.flags.rallyFlag && !Game.flags.rallyFlag2 && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
+        else if(isSquadPatrol && !Game.flags.rallyFlag2 && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
             if(healers.length == 0) {
                 name = 'LeadHealer';
             }
             bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel, 0);
             options = {memory: {role: 'healer', isArmySquad:true}};
-        } else if (commandLevel >= 7 && Game.flags.rallyFlag && !Game.flags.rallyFlag2 && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS) {
+        } else if (isSquadPatrol && !Game.flags.rallyFlag2 && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS) {
             name = 'MeatGrinder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};
