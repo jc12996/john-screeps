@@ -286,6 +286,47 @@ export class MovementUtils {
 
     }
 
+    public static callForHelp(creep: Creep) {
+
+        const hostileCreeps = creep.room.find(FIND_HOSTILE_CREEPS,
+            {
+                filter: hostileCreep => {
+                    return ((hostileCreep.owner &&
+                    !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
+                }
+            }
+        );
+
+        const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_RAMPART && creep.structureType !== STRUCTURE_CONTROLLER
+            }
+        });
+
+        if(hostileCreeps.length > 1) {
+            creep.say('📞',true);
+
+            if(creep.memory.role === 'scout' && !Game.flags.attackFlag) {
+                creep.room.createFlag(hostileCreeps[0].pos, 'scoutFlag');
+
+            }
+
+
+            if(Game.flags.rallyFlag2) {
+
+                if(!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
+                    if(hostileCreeps[0]) {
+                        creep.room.createFlag(hostileCreeps[0].pos, 'attackFlag');
+                    } else if(hostileStructures[0]) {
+                        creep.room.createFlag(hostileStructures[0].pos, 'attackFlag');
+                    }
+
+                }
+            }
+        }
+    }
+
+
     public static claimerSettlerMovementSequence(creep:Creep):boolean {
 
 

@@ -17,9 +17,10 @@ import { handleRamparts } from "ramparts";
 import { PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Miner } from "roles/miner";
-import { callForHelp, sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
+import { sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
 import { RoomUtils } from "utils/RoomUtils";
 import { Scout } from "roles/scout";
+import { MovementUtils } from "utils/MovementUtils";
 
 declare global {
   /*
@@ -193,39 +194,39 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
 
     if(creep.memory.role == 'harvester') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Harvester.run(creep);
     }
     if(creep.memory.role == 'carrier') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Carrier.run(creep);
     }
     if(creep.memory.role == 'upgrader') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Upgrader.run(creep);
     }
     if(creep.memory.role == 'builder') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Builder.run(creep);
     }
     if(creep.memory.role == 'defender') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Defender.run(creep);
     }
     if(creep.memory.role == 'repairer') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Repairer.run(creep);
     }
     if(creep.memory.role == 'attacker') {
-      callForHelp(creep)
+      MovementUtils.callForHelp(creep)
       Attacker.run(creep);
     }
     if(creep.memory.role == 'settler') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Settler.run(creep);
     }
     if(creep.memory.role == 'scout') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Scout.run(creep);
     }
     if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
@@ -241,7 +242,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       MeatGrinder.run(creep);
     }
     if(creep.memory.role == 'miner') {
-      callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Miner.run(creep);
     }
 
