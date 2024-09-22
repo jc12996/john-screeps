@@ -303,7 +303,7 @@ export class MovementUtils {
             }
         });
 
-        if(hostileCreeps.length > 1) {
+        if(hostileCreeps.length > 0) {
             creep.say('📞',true);
 
             if(creep.memory.role === 'scout' && !Game.flags.attackFlag) {

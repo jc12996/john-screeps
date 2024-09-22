@@ -321,7 +321,7 @@ export class ScaffoldingUtils {
                 }).length > 0;
 
 
-                if(!hasControllerLinkSite && !hasControllerLink) {
+                if(!hasControllerLinkSite && !hasControllerLink&& !hasControllerLinkFlag) {
                     if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
                         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
                     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
