@@ -56,7 +56,7 @@ export class MovementUtils {
             }
 
             const isPatrolCreep = (
-                creep.memory.role === 'healer' || creep.memory.role === 'attacker' || creep.memory.role === 'meatGrinder' || creep.memory.role === 'dismantler'
+                creep.memory.role === 'healer' || creep.memory.role === 'attacker' || creep.memory.role === 'meatGrinder' || creep.memory.role === 'dismantler' || creep.memory.role === 'scout'
             );
 
 
@@ -118,8 +118,8 @@ export class MovementUtils {
                 if(flag.name === 'rallyFlag' && creepIsNearFlag && isPatrolCreep) {
 
                     const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,6,{
-                        filter: (myCreep) => myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0
-                    }).length >= (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .75);
+                        filter: (myCreep) => (myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0) || (myCreep.memory.role === 'scout' && !Game.flags.scoutFlag)
+                    }).length >= (!Game.flags.scoutFlag ? PeaceTimeEconomy.TOTAL_SCOUT_SIZE : (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .75)) ;
                     if(creepIsInSquad) {
                         const tempRallyFlag  = flag;
                         Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);

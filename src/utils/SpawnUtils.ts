@@ -297,7 +297,7 @@ export class SpawnUtils {
             case 'attacker':
                 if(energyAvailable >= 3040) {
 
-                    for (let i = 0; i < 24; i++) {
+                    for (let i = 0; i < 25; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 23; i++) {
@@ -308,6 +308,18 @@ export class SpawnUtils {
                 }
                 else {
                    return null;
+                }
+            case 'scout':
+                if(energyAvailable >= 2500) {
+
+                    for (let i = 0; i < 50; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    break;
+                }
+                else {
+                    return null;
                 }
             case 'dismantler':
                 if(energyAvailable >= 3100) {

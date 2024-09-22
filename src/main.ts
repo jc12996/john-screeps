@@ -19,6 +19,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { Miner } from "roles/miner";
 import { callForHelp, sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
 import { RoomUtils } from "utils/RoomUtils";
+import { Scout } from "roles/scout";
 
 declare global {
   /*
@@ -223,6 +224,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
       callForHelp(creep);
       Settler.run(creep);
     }
+    if(creep.memory.role == 'scout') {
+      callForHelp(creep);
+      Scout.run(creep);
+    }
     if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
       Claimer.run(creep);
     }
@@ -230,7 +235,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
       Healer.run(creep);
     }
     if(creep.memory.role == 'dismantler') {
-      callForHelp(creep)
       Dismantler.run(creep);
     }
     if(creep.memory.role == 'meatGrinder') {
