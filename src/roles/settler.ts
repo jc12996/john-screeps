@@ -7,6 +7,7 @@ import { MovementUtils } from "utils/MovementUtils";
 import { Carrier } from "./carrier";
 import { Upgrader } from "./upgrader";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
+import { Miner } from "./miner";
 
 export class Settler {
 
@@ -85,6 +86,11 @@ export class Settler {
                     )
                 }
             });
+
+            if(!targetSource) {
+                Miner.run(creep)
+                return;
+            }
 
             let ruinsSource = creep.pos.findClosestByPath(FIND_RUINS, {
                 filter:  (source) => {

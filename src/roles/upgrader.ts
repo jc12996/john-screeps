@@ -91,7 +91,7 @@ export class Upgrader {
                 return;
             }
 
-            if((extensions.length > 0 || constructSpawn)  && (creep.room.energyCapacityAvailable < 1000 || creep.room.energyAvailable == 0)) {
+            if(((extensions.length > 0 && creep.room.energyCapacityAvailable < 400) || constructSpawn)  && (creep.room.energyCapacityAvailable < 1000 || creep.room.energyAvailable == 0)) {
 
                 creep.say('⚡ build');
 

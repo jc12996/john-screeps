@@ -102,7 +102,8 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                } else if(energyAvailable >= 400) {
+                }
+                else if(energyAvailable >= 400) {
 
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
@@ -115,7 +116,23 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                } else {
+                }
+                else if(commandLevel < 3 && energyAvailable >= 300) {
+
+                    for (let i = 0; i < 2; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 2; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+
+                else {
                     return null;
                 }
             case 'carrier':
