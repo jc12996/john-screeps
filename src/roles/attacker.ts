@@ -174,6 +174,7 @@ export class Attacker {
             }
             if(creep.room === Game.flags.attackFlag.room && hostileStructures.length === 0 && !hostileCreeps) {
                 Game.flags.attackFlag.remove();
+                Game.flags.scoutFlag.remove();
             }
             MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
             return;
