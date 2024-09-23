@@ -7,7 +7,7 @@ export class Scout {
     public static run(creep: Creep): void {
 
 
-        creep.say('👀');
+        creep.say('👀',true);
         MovementUtils.defaultArmyMovement(creep,Game.flags.rallyFlag);
 
 
