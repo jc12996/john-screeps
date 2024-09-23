@@ -159,9 +159,9 @@ export class ScaffoldingUtils {
                         }
                     }).length > 0;
                     if(!hasLevelLab && !hasLevelLabSite) {
-                        creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y,STRUCTURE_LAB);
-                        creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y,STRUCTURE_LAB);
-                        creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_LAB);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y,STRUCTURE_LAB);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y,STRUCTURE_LAB);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_LAB);
                     }
 
                 }
@@ -178,10 +178,10 @@ export class ScaffoldingUtils {
                         }
                     }).length > 0;
                     if(!hasLevelFactory && !hasLevelFactorySite) {
-                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_LAB);
-                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_LAB);
-                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_LAB);
-                        creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_FACTORY);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_LAB);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_LAB);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_LAB);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_FACTORY);
                     }
 
                 }
@@ -200,7 +200,7 @@ export class ScaffoldingUtils {
                     }).length == 1;
 
                     if(!hasPowerSpawn && !hasPowerSpawnSite) {
-                        creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y,STRUCTURE_POWER_SPAWN);
+                        //creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y,STRUCTURE_POWER_SPAWN);
                     }
                 }
 
