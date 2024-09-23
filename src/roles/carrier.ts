@@ -66,7 +66,7 @@ export class Carrier {
 
 
         //console.log(creep.room.name,creep.room.energyCapacityAvailable)
-        if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name) {
+        if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 1;
         }
         //else if(((storage && storage.store[RESOURCE_ENERGY] > 4000) || creep.room.energyCapacityAvailable > 1000) && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
@@ -316,7 +316,7 @@ export class Carrier {
 
             //console.log(creep.room.name,creep.room.energyAvailable, creep.room.energyCapacityAvailable)
 
-            if(carriers.length > 2 && nearestStorage && nearestStorage.store[RESOURCE_ENERGY] > 400000 && creep.memory?.extensionFarm === undefined && terminal) {
+            if(carriers.length > 2 && nearestStorage && nearestStorage.store[RESOURCE_ENERGY] > 300000 && creep.memory?.extensionFarm === undefined && terminal) {
 
                 if(creep.store[RESOURCE_ENERGY] > 0 && terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 TR');
