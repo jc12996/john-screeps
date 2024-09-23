@@ -292,7 +292,7 @@ export class MovementUtils {
             {
                 filter: hostileCreep => {
                     return ((hostileCreep.owner &&
-                    !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
+                    (!SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && !(hostileCreep.getActiveBodyparts(WORK) < 10))) || hostileCreep?.owner?.username === 'Invader')
                 }
             }
         );
@@ -306,7 +306,7 @@ export class MovementUtils {
         if(hostileCreeps.length > 0) {
             creep.say('📞',true);
 
-            if(creep.memory.role === 'scout' && !Game.flags.attackFlag) {
+            if(creep.memory.role === 'scout' && !Game.flags.attackFlag && !creep.room.controller?.safeMode) {
                 creep.room.createFlag(hostileCreeps[0].pos, 'scoutFlag');
 
             }

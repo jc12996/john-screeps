@@ -158,6 +158,9 @@ export class AutoSpawn {
             numberOfNeededUpgraders = 1;
         }
 
+        if(commandLevel >= 8 && Game.flags.draftFlag) {
+            numberOfNeededDefenders = numberOfNeededDefenders + LowUpkeep.TOTALDRAFT
+        }
 
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
         const totalNumberOfTowers = spawn.room.find(FIND_STRUCTURES,{
@@ -227,6 +230,11 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('scout',spawn, commandLevel, 0);
             options = {memory: {role: 'scout', isArmySquad:true}};
         }
+        else if ((defenders.length < numberOfNeededDefenders ||(Game.flags.draftFlag && defenders.length < LowUpkeep.TOTALDRAFT))) {
+            name = 'Defender' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
+            options = {memory: {role: 'defender'}};
+        }
         else if(isSquadPatrol && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
@@ -259,11 +267,6 @@ export class AutoSpawn {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
             options = {memory: {role: 'builder'}}
-        }
-        else if ((defenders.length == 0) && (defenders.length < numberOfNeededDefenders ||(Game.flags.draftFlag && defenders.length < LowUpkeep.TOTALDRAFT))) {
-            name = 'Defender' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
-            options = {memory: {role: 'defender'}};
         }
 
 
