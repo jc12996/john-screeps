@@ -74,7 +74,20 @@ export class SpawnUtils {
                 }
             case 'miner':
             case 'settler':
-                if(energyAvailable >= 850) {
+                if(commandLevel >= 6 && energyAvailable >= 1700) {
+
+                    for (let i = 0; i < 16; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 6; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }else if(energyAvailable >= 850) {
 
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
