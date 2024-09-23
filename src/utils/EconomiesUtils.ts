@@ -54,7 +54,7 @@ export enum WarTimeEconomy {
     TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE =0,
     TOTAL_MEAT_GRINDERS = 0,
-    TOTAL_SCOUT_SIZE = 2
+    TOTAL_SCOUT_SIZE = 3
 
 }
 
@@ -64,7 +64,7 @@ export enum PeaceTimeEconomy {
     TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE = 0,
     TOTAL_MEAT_GRINDERS = 0,
-    TOTAL_SCOUT_SIZE = 2
+    TOTAL_SCOUT_SIZE = 3
 
 }
 

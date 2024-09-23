@@ -7,7 +7,7 @@ export class Defender {
     public static run(creep: Creep): void {
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say('🛡');
+            creep.say('🛑',true);
         }
 
         const defenders = creep.room.find(FIND_MY_CREEPS, {
