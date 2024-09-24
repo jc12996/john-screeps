@@ -167,15 +167,14 @@ export class AutoSpawn {
         }
 
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
-        const totalNumberOfTowers = spawn.room.find(FIND_STRUCTURES,{
-            filter: (struc: { structureType: string; }) => {
-                return struc.structureType === STRUCTURE_TOWER
-            }
-        });
 
         var hostileCreeps = spawn.room.find(FIND_HOSTILE_CREEPS);
 
-        const isSquadPatrol = commandLevel >= 7 && Game.flags.rallyFlag;
+        let isSquadPatrol = commandLevel >= 7 && Game.flags.rallyFlag;
+
+        if(Game.flags.startPatrol && isSquadPatrol) {
+            isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
+        }
         if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
             &&  !!this.nextClaimFlag
             && totalNumberOfControlledRooms < Game.gcl.level
