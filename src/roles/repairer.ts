@@ -19,65 +19,73 @@ export class Repairer {
             creep.say('🚧 repair');
         }
 
-        var spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                    structure.structureType == STRUCTURE_SPAWN  && creep.room.controller?.my
-
-
-                )
-            }
-        });
-
-
         if(creep.memory.repairing) {
 
 
-            const walls = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax && object.hits <= RepairUtils.buildingRatios(object).maxWallStrength && creep.room.controller?.my && object.structureType == STRUCTURE_WALL
-            });
 
-            const roads = creep.room.find(FIND_STRUCTURES, {
+            const room = creep.room;
+            const roads = room.find(FIND_STRUCTURES, {
                 filter:  (structure) => {
-                    return structure.structureType === STRUCTURE_ROAD && structure.hits < RepairUtils.buildingRatios(structure).maxRoadStrength
+                    return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrength)
                 }
             });
 
-            const containers = creep.room.find(FIND_STRUCTURES, {
+            const containers = room.find(FIND_STRUCTURES, {
                 filter:  (structure) => {
-                    return structure.structureType === STRUCTURE_CONTAINER && structure.hits < RepairUtils.buildingRatios(structure).maxContainerStrength
+                    return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength)
                 }
             });
 
-            const ramparts = creep.room.find(FIND_STRUCTURES, {
+            const ramparts = room.find(FIND_STRUCTURES, {
                 filter:  (structure) => {
-                    return structure.structureType === STRUCTURE_RAMPART && structure.hits < RepairUtils.buildingRatios(structure).maxRampartStrength
+                    return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength)
                 }
             });
 
-            var extensions = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+            const walls = room.find(FIND_STRUCTURES, {
                 filter:  (structure) => {
-                    return (
-                        structure.structureType == STRUCTURE_EXTENSION
-
-
-                    ) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && creep.room.controller?.my;
+                    return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength)
                 }
             });
 
-            if(creep.repair(containers[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffffff'}});
+
+            if(containers.length > 0 ) {
+                // Find the container with the lowest health
+                const weakestContainer = containers.reduce((weakest, container) => {
+                    return (container.hits < weakest.hits) ? container : weakest;
+                });
+                if(creep.repair(weakestContainer) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(weakestContainer, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
-            else if (creep.repair(roads[0])  == ERR_NOT_IN_RANGE) {
-                creep.moveTo(roads[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(ramparts.length > 0 && room.controller?.my) {
+                // Find the rampart with the lowest health
+                const weakestRampart = ramparts.reduce((weakest, rampart) => {
+                    return (rampart.hits < weakest.hits) ? rampart : weakest;
+                });
+                if (creep.repair(weakestRampart)  == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(weakestRampart, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
-            else if(creep.repair(ramparts[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(ramparts[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(walls.length > 0 && room.controller?.my && room.controller?.level < 5 ) {
+                // Find the wall with the lowest health
+                const weakestWall = walls.reduce((weakest, wall) => {
+                    return (wall.hits < weakest.hits) ? wall : weakest;
+                });
+                if(creep.repair(weakestWall) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(weakestWall, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
-            else if(creep.repair(walls[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            else if(roads.length > 0 ) {
+                // Find the road with the lowest health
+                const weakestRoad = roads.reduce((weakest, road) => {
+                    return (road.hits < weakest.hits) ? road : weakest;
+                });
+                if (creep.repair(weakestRoad)  == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(weakestRoad, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
+
 
 
         }
