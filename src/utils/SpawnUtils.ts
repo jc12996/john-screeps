@@ -17,7 +17,9 @@ export enum PartCosts {
 
 const myFriends = [
     'gnat',
-    'Xarroc'
+    'Xarroc',
+    'legendeck',
+    'Matticus'
 ];
 
 export class SpawnUtils {
@@ -239,12 +241,19 @@ export class SpawnUtils {
                     return null;
                 }
             case 'defender':
+                if(commandLevel == 8 && Game.flags.draftFlag && energyAvailable >= 2800) {
 
-                if(energyAvailable >= 2000) {
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
+                    for (let i = 0; i < 40; i++) {
+                        partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 22; i++) {
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(ATTACK);
+                    }
+
+                    break;
+                }
+                else if(energyAvailable >= 2000) {
+                    for (let i = 0; i < 24; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
@@ -253,22 +262,16 @@ export class SpawnUtils {
                     break;
                 } else if(energyAvailable >= 1500) {
 
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 12; i++) {
+                    for (let i = 0; i < 14; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(ATTACK);
                     }
                     break;
-                }  else if(energyAvailable >= 800) {
+                }  else if(energyAvailable >= 770) {
 
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 9; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 4; i++) {
@@ -308,9 +311,9 @@ export class SpawnUtils {
                     return null;
                 }
             case 'attacker':
-                if(energyAvailable >= 3040) {
+                if(energyAvailable >= 3140) {
 
-                    for (let i = 0; i < 25; i++) {
+                    for (let i = 0; i < 27; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 23; i++) {

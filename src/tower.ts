@@ -52,15 +52,10 @@ export class Tower {
 
         const ramparts = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength)
+                return structure.structureType === STRUCTURE_RAMPART && structure.hits < 1000
             }
         });
 
-        const walls = room.find(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength)
-            }
-        });
 
         // towers.forEach(tower => {
         //     tower.room?.createConstructionSite(tower.pos.x,tower.pos.y,STRUCTURE_RAMPART);
@@ -127,24 +122,20 @@ export class Tower {
                 return (container.hits < weakest.hits) ? container : weakest;
             });
             towers.forEach(tower => tower.repair(weakestContainer));
-        } else if(ramparts.length > 0) {
+        }
+        else if(ramparts.length > 0 && room.controller?.my) {
             // Find the rampart with the lowest health
             const weakestRampart = ramparts.reduce((weakest, rampart) => {
                 return (rampart.hits < weakest.hits) ? rampart : weakest;
             });
             towers.forEach(tower => tower.repair(weakestRampart));
-        } else if(roads.length > 0 ) {
+        }
+        else if(roads.length > 0 ) {
             // Find the road with the lowest health
             const weakestRoad = roads.reduce((weakest, road) => {
                 return (road.hits < weakest.hits) ? road : weakest;
              });
             towers.forEach(tower => tower.repair(weakestRoad));
-        } else if(walls.length > 0 ) {
-             // Find the wall with the lowest health
-             const weakestWall = walls.reduce((weakest, wall) => {
-                return (wall.hits < weakest.hits) ? wall : weakest;
-             });
-             towers.forEach(tower => tower.repair(weakestWall));
         }
     }
 }

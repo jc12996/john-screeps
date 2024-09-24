@@ -98,7 +98,7 @@ export class AutoSpawn {
 
         let numberOfNeededCarriers = LowUpkeep.Carriers * harvesters.length;
         let numberOfNeededBuilders = LowUpkeep.Builder * 1;
-        let numberOfNeededRepairers = LowUpkeep.Repairer * RoomSources.length;
+        let numberOfNeededRepairers = LowUpkeep.Repairer * 1;
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
         let numberOfNeededMiners = LowUpkeep.Miners * 1;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
@@ -117,7 +117,7 @@ export class AutoSpawn {
                 numberOfNeededCarriers = MediumUpkeep.Carriers * harvesters.length;
                 numberOfNeededUpgraders = MediumUpkeep.Upgrader * RoomSources.length
                 numberOfNeededBuilders = MediumUpkeep.Builder * 1
-                numberOfNeededRepairers = MediumUpkeep.Repairer * RoomSources.length
+                numberOfNeededRepairers = MediumUpkeep.Repairer * 1
                 numberOfNeededDefenders = numberOfNeededDefenders + MediumUpkeep.AdditionalDraftedDefenders;
                 numberOfNeededSettlers = MediumUpkeep.Settlers;
                 numberOfNeededMiners = MediumUpkeep.Miners;
@@ -126,7 +126,7 @@ export class AutoSpawn {
                 numberOfNeededCarriers = HighUpkeep.Carriers * harvesters.length;
                 numberOfNeededUpgraders = HighUpkeep.Upgrader * RoomSources.length
                 numberOfNeededBuilders = HighUpkeep.Builder * 1
-                numberOfNeededRepairers = HighUpkeep.Repairer *RoomSources.length
+                numberOfNeededRepairers = HighUpkeep.Repairer *  1
                 numberOfNeededSettlers = HighUpkeep.Settlers;
                 numberOfNeededMiners = HighUpkeep.Miners;
                 numberOfNeededDefenders = numberOfNeededDefenders + HighUpkeep.AdditionalDraftedDefenders;
@@ -175,7 +175,7 @@ export class AutoSpawn {
 
         var hostileCreeps = spawn.room.find(FIND_HOSTILE_CREEPS);
 
-        const isSquadPatrol = commandLevel >= 7 && Game.flags.rallyFlag && (Game.flags.scoutFlag || Game.flags.attackFlag);
+        const isSquadPatrol = commandLevel >= 7 && Game.flags.rallyFlag;
         if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
             &&  !!this.nextClaimFlag
             && totalNumberOfControlledRooms < Game.gcl.level
@@ -274,7 +274,7 @@ export class AutoSpawn {
         }
 
 
-        else if(totalNumberOfTowers.length == 0 && repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
+        else if(repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
 
             name = 'Repairer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)

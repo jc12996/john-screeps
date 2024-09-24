@@ -298,20 +298,20 @@ export function operateLinks(creep: Creep | StructureSpawn) {
 
 
 
-            if(filledSourceLink1 && filledSourceLink1.structureType === STRUCTURE_LINK) {
-                creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
+            // if(filledSourceLink1 && filledSourceLink1.structureType === STRUCTURE_LINK) {
+            //     creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
 
-                if(controllerLink) {
-                    creep.room?.createConstructionSite(controllerLink.pos.x,controllerLink.pos.y,STRUCTURE_RAMPART);
-                }
-            }
+            //     if(controllerLink) {
+            //         creep.room?.createConstructionSite(controllerLink.pos.x,controllerLink.pos.y,STRUCTURE_RAMPART);
+            //     }
+            // }
 
             if(largeStorage && creep.room.controller && creep.room.controller.my && creep.room.controller.level == 7 ) {
 
                 // SOURCE -> EXTENSION 1 -> [EXTENSION 2, CONTROLLER]
-                if(filledSourceLink1 && largeTerminalStorage) {
+                if(filledSourceLink1 && extensionLink) {
                     filledSourceLink1.transferEnergy(extensionLink);
-                }else if(extensionLink2 && !largeTerminalStorage && filledSourceLink1 &&  filledSourceLink1.structureType === STRUCTURE_LINK) {
+                }else if(extensionLink2 && filledSourceLink1 &&  filledSourceLink1.structureType === STRUCTURE_LINK) {
                     filledSourceLink1.transferEnergy(extensionLink2);
                 } else if(controllerLink) {
                     extensionLink.transferEnergy(controllerLink);
@@ -330,9 +330,9 @@ export function operateLinks(creep: Creep | StructureSpawn) {
             let transfer1 = null;
 
             if(creep.room.controller && (creep.room.controller?.level <= 7 || !largeStorage)) {
-                if((largeTerminalStorage && controllerLink)) {
+                if((largeTerminalStorage && controllerLink && creep.room.controller?.level ==7)) {
                     transfer1 = filledSourceLink1.transferEnergy(controllerLink);
-                }else  if((largeStorage) && !hostileCreeps && controllerLink && (minimumStorageThreshold)  && creep.room.controller && creep.room.controller?.level == 7 && (creep.room.energyAvailable == creep.room.energyCapacityAvailable) && creep.room.energyAvailable > 0) {
+                }else  if((largeStorage) && !hostileCreeps && controllerLink && creep.room.controller?.level ==7 && (minimumStorageThreshold)  && creep.room.controller && creep.room.controller?.level == 7 && (creep.room.energyAvailable == creep.room.energyCapacityAvailable) && creep.room.energyAvailable > 0) {
                     transfer1 = filledSourceLink1.transferEnergy(controllerLink);
                 }
 
@@ -349,12 +349,16 @@ export function operateLinks(creep: Creep | StructureSpawn) {
             //level 8 final
 
             if(transfer1 !== OK) {
-                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink2);
+                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink);
 
 
                 if(transfer2 !== OK) {
-                    filledSourceLink1.transferEnergy(extensionLink);
+                    filledSourceLink1.transferEnergy(extensionLink2);
                 }
+            }
+
+            if(creep.room.controller?.level ==8 && controllerLink && extensionLink){
+                controllerLink.transferEnergy(extensionLink)
             }
 
 

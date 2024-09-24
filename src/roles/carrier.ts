@@ -91,8 +91,8 @@ export class Carrier {
         }
 
 
-        if((creep.memory.extensionFarm === 2) && commandLevel >= 7) {
-            extension = creep.pos.findInRange(FIND_STRUCTURES,11, {
+        if((creep.memory.extensionFarm !== undefined) && commandLevel >= 7) {
+            extension = creep.pos.findInRange(FIND_STRUCTURES,9, {
                 filter:  (structure) => {
                     return (
                         (structure.structureType == STRUCTURE_EXTENSION) && structure.room?.controller?.my
@@ -280,7 +280,7 @@ export class Carrier {
 
             //console.log(creep.room.name,creep.room.energyAvailable, creep.room.energyCapacityAvailable)
 
-            if(carriers.length > 2 && nearestStorage && nearestStorage.store[RESOURCE_ENERGY] > 300000 && creep.memory?.extensionFarm === undefined && terminal) {
+            if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && terminal) {
 
                 if(creep.store[RESOURCE_ENERGY] > 0 && terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.say('🚚 TR');
