@@ -172,7 +172,7 @@ export class AutoSpawn {
 
         let isSquadPatrol = commandLevel >= 7 && Game.flags.rallyFlag;
 
-        if(Game.flags.startPatrol && isSquadPatrol) {
+        if(Game.flags.startScouting && isSquadPatrol) {
             isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
         }
         if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
@@ -228,7 +228,7 @@ export class AutoSpawn {
             options = {memory: {role: 'carrier'}}
 
         }
-        else if(commandLevel >= 7 && Game.flags.rallyFlag2 && !Game.flags.scoutFlag && scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE)  {
+        else if(Game.flags.startScouting && commandLevel >= 7 && Game.flags.rallyFlag2 && !Game.flags.scoutFlag && scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE)  {
             name = 'Scout' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('scout',spawn, commandLevel, 0);
             options = {memory: {role: 'scout', isArmySquad:true}};
