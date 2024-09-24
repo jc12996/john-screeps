@@ -10,7 +10,6 @@ export class Attacker {
         const nearestExit = creep.room.find(FIND_EXIT_TOP)
 
 
-
         if(target) {
 
             let isNearExt = false;

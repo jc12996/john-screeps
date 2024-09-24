@@ -176,39 +176,31 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
 
     if(creep.memory.role == 'harvester') {
-      //MovementUtils.callForHelp(creep);
       Harvester.run(creep);
     }
     if(creep.memory.role == 'carrier') {
-      //MovementUtils.callForHelp(creep);
       Carrier.run(creep);
     }
     if(creep.memory.role == 'upgrader') {
-      //MovementUtils.callForHelp(creep);
       Upgrader.run(creep);
     }
     if(creep.memory.role == 'builder') {
-      //MovementUtils.callForHelp(creep);
       Builder.run(creep);
     }
     if(creep.memory.role == 'defender') {
-      //MovementUtils.callForHelp(creep);
       Defender.run(creep);
     }
     if(creep.memory.role == 'repairer') {
-      //MovementUtils.callForHelp(creep);
       Repairer.run(creep);
     }
     if(creep.memory.role == 'attacker') {
-      //ovementUtils.callForHelp(creep)
       Attacker.run(creep);
     }
     if(creep.memory.role == 'settler') {
-      //MovementUtils.callForHelp(creep);
       Settler.run(creep);
     }
     if(creep.memory.role == 'scout') {
-      //MovementUtils.callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Scout.run(creep);
     }
     if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
@@ -227,6 +219,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
       Miner.run(creep);
     }
+
     MovementUtils.callForHelp(creep);
 
 

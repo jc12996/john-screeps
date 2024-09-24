@@ -129,7 +129,7 @@ export class ScaffoldingUtils {
                         creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_EXTENSION);
                         creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+2,STRUCTURE_EXTENSION);
                         creepOrSpawn.room?.createConstructionSite(pos.x-5,pos.y,STRUCTURE_EXTENSION);
-                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+1,STRUCTURE_EXTENSION);
+                        creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+7,STRUCTURE_EXTENSION);
                         creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y+6,STRUCTURE_EXTENSION);
                         creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y,STRUCTURE_EXTENSION);
                         creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+6,STRUCTURE_EXTENSION);
@@ -144,7 +144,16 @@ export class ScaffoldingUtils {
                 }
 
                 if (creepOrSpawn.room.controller.level >= 5 ) {
-                    //none
+                    const totalNumberOfLinkSites = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES,{
+                        filter: (struc: { structureType: string; }) => {
+                            return struc.structureType === STRUCTURE_LINK
+                        }
+                    });
+
+                    if(totalNumberOfLinkSites.length == 0) {
+                        creepOrSpawn.room.createFlag(pos.x -2,pos.y,creepOrSpawn.room.name+'ExtensionLink');
+                        creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y,STRUCTURE_LINK);//ExtensionLink Link
+                    }
                 }
 
                 if(creepOrSpawn.room.controller.level >= 6) {
@@ -248,17 +257,14 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+2,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-5,pos.y,STRUCTURE_EXTENSION);
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+5,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y+6,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+6,STRUCTURE_EXTENSION);
                 }
 
 
-                if(totalNumberOfLinkSites.length == 0) {
-                    creepOrSpawn.room.createFlag(pos.x -2,pos.y+3,creepOrSpawn.room.name+'ExtensionLink');
-                    creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
-                }
+
 
             }
 
@@ -384,7 +390,6 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+2,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-5,pos.y,STRUCTURE_EXTENSION);
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+1,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y+6,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+6,STRUCTURE_EXTENSION);

@@ -24,7 +24,7 @@ export class MovementUtils {
 
     public static goToFlag(creep: Creep, flag:Flag | Creep): void {
 
-            var friendlyRamparts = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+            var friendlyRamparts = creep.pos.findClosestByRange(FIND_HOSTILE_STRUCTURES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_RAMPART && !site.isPublic && site.owner && SpawnUtils.FRIENDLY_OWNERS_FILTER(site.owner))
                 }
@@ -117,9 +117,9 @@ export class MovementUtils {
 
                 if(flag.name === 'rallyFlag' && creepIsNearFlag && isPatrolCreep) {
 
-                    const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,6,{
+                    const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,9,{
                         filter: (myCreep) => (myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0) || (myCreep.memory.role === 'scout' && !Game.flags.scoutFlag)
-                    }).length >= (!Game.flags.scoutFlag ? 1 : (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .75)) ;
+                    }).length >= (Game.flags.scoutFlag ? 1 : (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .75)) ;
                     if(creepIsInSquad) {
                         const tempRallyFlag  = flag;
                         Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);
@@ -140,9 +140,9 @@ export class MovementUtils {
 
 
 
-            if(creep.moveTo(flag,{ ignoreCreeps:true}) === ERR_NO_PATH && friendlyRamparts) {
+            if(creep.moveTo(flag) === ERR_NO_PATH && friendlyRamparts) {
 
-                //creep.moveTo(friendlyRamparts);
+                creep.moveTo(friendlyRamparts);
 
             }
 
@@ -192,7 +192,7 @@ export class MovementUtils {
                 structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
         });
 
-        const terminal: StructureTerminal | null =  creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        let terminal: StructureTerminal | null =  creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
                    structure.structureType == STRUCTURE_TERMINAL && structure.room?.controller?.my
@@ -202,6 +202,10 @@ export class MovementUtils {
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
         }) ?? null;
+
+        if(creep.memory.extensionFarm == 1) {
+            terminal = null;
+        }
 
 
         const hasStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -292,7 +296,7 @@ export class MovementUtils {
             {
                 filter: hostileCreep => {
                     return ((hostileCreep.owner &&
-                    (!SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && !(hostileCreep.getActiveBodyparts(WORK) < 10))) || hostileCreep?.owner?.username === 'Invader')
+                    (!SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner))) || hostileCreep?.owner?.username === 'Invader')
                 }
             }
         );
