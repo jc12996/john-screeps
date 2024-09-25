@@ -311,7 +311,7 @@ export class SpawnUtils {
                     return null;
                 }
             case 'attacker':
-                if(energyAvailable >= 3140) {
+                if(energyAvailable >= 3190) {
 
                     for (let i = 0; i < 27; i++) {
                         partsPattern.push(MOVE);
