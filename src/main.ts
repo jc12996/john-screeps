@@ -217,10 +217,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
     if(creep.memory.role == 'miner') {
 
+      MovementUtils.callForHelp(creep);
       Miner.run(creep);
     }
 
-    MovementUtils.callForHelp(creep);
 
 
 }
