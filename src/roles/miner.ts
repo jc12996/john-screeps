@@ -124,7 +124,7 @@ export class Miner {
                 }
             });
 
-            if(largeStorage || creep.room.controller?.level == 7 || (creep.room.energyAvailable > 0 && creep.room.energyAvailable == creep.room.energyCapacityAvailable)) {
+            if((!Game.flags.attackFlag && !Game.flags.draftFlag) && (creep.room.energyAvailable > 1000)) {
 
                 Carrier.run(creep,true);
 
