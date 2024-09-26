@@ -22,25 +22,55 @@ export class RoomUtils {
         const spawns:StructureSpawn[] = spawn.room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                    (structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
+                    structure.structureType === STRUCTURE_SPAWN
 
 
-                ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                )
             }
-        }) ?? undefined;
+        });
+
+
+        const terminals:StructureTerminal[] = spawn.room.find(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    structure.structureType === STRUCTURE_TERMINAL
+
+
+                )
+            }
+        });
 
 
         const containers: StructureContainer[] = spawn.room.find(FIND_STRUCTURES, {
             filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50) && structure.room?.controller?.my; }
         });
 
+        const extensions: StructureExtension[] = spawn.room.find(FIND_STRUCTURES, {
+            filter: (structure) => { return structure.structureType == STRUCTURE_EXTENSION && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.room?.controller?.my; }
+        });
+
+        const towers: StructureTower[] = spawn.room.find(FIND_STRUCTURES, {
+            filter: (structure) => { return structure.structureType == STRUCTURE_TOWER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.room?.controller?.my; }
+        });
+
+        const nearestAvailableWorkingRoleCreeps = spawn.pos.findClosestByPath(FIND_MY_CREEPS, {
+            filter:  (creep) => {
+                return (
+                (creep.memory.role === 'builder' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
+            }
+        });
+
         const room = {
             name: spawn.room.name,
-            links: links,
-            storages: storages,
+            links: links.map(link => link.id ),
+            storages: storages.map(storage => storage.id ),
             containers: containers,
-            spawns: spawns
+            spawns: spawns.map(spawn => spawn.id ),
+            extensions: extensions.map(extension => extension.id ),
+            terminals: terminals.map(terminal => terminal.id ),
+            towers: towers.map(tower => tower.id),
+            nearestAvailableWorkingRoleCreep: nearestAvailableWorkingRoleCreeps?.id ?? null
+
         }
 
         spawn.memory.room = room
@@ -48,7 +78,11 @@ export class RoomUtils {
 
     }
 
-    public static getRoomBySpawn(spawn:StructureSpawn): RoomMemory {
+    public static getRoomBySpawn(spawn:StructureSpawn): RoomMemory | undefined {
+        if(!spawn || !spawn?.memory?.room) {
+            return;
+        }
+        console.log(spawn.memory.room);
         return spawn.memory.room
     }
 

@@ -62,10 +62,14 @@ declare global {
 
   interface RoomMemory {
       name: string,
-      links?: StructureLink[],
-      storages?: StructureStorage[],
-      containers?: StructureContainer[],
-      spawns: StructureSpawn[],
+      links: Array<any>,
+      storages: Array<any>,
+      containers?: Array<any>,
+      spawns: Array<any>,
+      extensions: Array<any>,
+      terminals: Array<any>,
+      towers: Array<any>,
+      nearestAvailableWorkingRoleCreep: any
   }
 
   interface FlagMemory {
@@ -106,7 +110,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       if(!spawn) {
           continue;
       }
-      if(!spawn.memory.room) {
+      if(!spawn.memory.room || Game.time % 10) {
         RoomUtils.setSpawnRoom(spawn)
       }
 

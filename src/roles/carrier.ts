@@ -2,20 +2,11 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { getLinkByTag } from "links";
 import { MovementUtils } from "utils/MovementUtils";
 import { RoomUtils } from "utils/RoomUtils";
+import { link } from "fs";
 
 export class Carrier {
 
     public static run(creep: Creep, upgradeOnly:boolean = false): void {
-
-        const initialSpawn: StructureSpawn = creep.room.find(FIND_STRUCTURES)[0] as StructureSpawn;
-
-        if(!initialSpawn) {
-            return;
-        }
-
-        const roomMemory: RoomMemory = RoomUtils.getRoomBySpawn(initialSpawn);
-
-        const spawn: StructureSpawn = roomMemory.spawns[0];
 
         const extensionLinkFlag2= creep.room.find(FIND_FLAGS, {
             filter: (link) => {
@@ -24,23 +15,191 @@ export class Carrier {
         });
 
 
-        const links = roomMemory.links ? roomMemory.links : []
-
-        let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
-        const commandLevel =  creep.room?.controller?.level ?? 1;
-
-        const storage:StructureStorage | undefined = roomMemory.storages ? roomMemory.storages[0] : undefined;
-
-        const terminal: StructureTerminal | null =  creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const myRoomSpawns = creep.room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                   structure.structureType == STRUCTURE_TERMINAL && structure.room?.controller?.my
+                    (structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
+
+
+                )
+            }
+        });
+        const getSpawn:StructureSpawn = myRoomSpawns[0] as StructureSpawn;
+        let spawn = getSpawn;
+
+        let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == getSpawn?.room.name);
+        const commandLevel =  creep.room?.controller?.level ?? 1;
+
+        var nearestSpawn = creep.pos.findInRange(FIND_STRUCTURES, 10, {
+            filter:  (structure) => {
+                return (
+                    (structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
 
 
                 ) &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
-        }) ?? null;
+        });
+
+
+        let links = [];
+        let spawns = [];
+        let towers = [];
+        let extension: StructureExtension | null = null;
+        let terminal: StructureTerminal | null = null;
+        let storage: StructureStorage | null = null;
+        let nearestStorage: StructureStorage | null = null;
+        let nearestAvailableWorkingRoleCreep: Creep | null = null;
+
+        if(getSpawn?.memory?.room) {
+            const linkIds = getSpawn.memory.room?.links ?? [];
+            links = linkIds.map(linkId => {
+                return Game.getObjectById(linkId);
+            }) as Array<StructureLink>;
+
+            const spawnIds = getSpawn.memory.room?.spawns ?? [];
+            spawns = spawnIds.map(spawnId => {
+                return Game.getObjectById(spawnId);
+            }) as Array<StructureLink>;
+
+            const towerIds = getSpawn.memory.room?.towers ?? [];
+            towers = towerIds.map(towerID => {
+                return Game.getObjectById(towerID);
+            }) as Array<StructureTower>;
+
+
+            const extensionId = getSpawn.memory.room?.extensions[0] ?? null
+            extension = Game.getObjectById(extensionId) as StructureExtension;
+
+            const storageID = getSpawn.memory.room?.storages[0] ?? null
+            storage = Game.getObjectById(storageID) as StructureStorage;
+            nearestStorage = storage;
+
+            const terminalID = getSpawn.memory.room?.terminals[0] ?? null
+            terminal = Game.getObjectById(terminalID) as StructureTerminal;
+
+            const creepID = getSpawn.memory.room?.nearestAvailableWorkingRoleCreep ?? null
+            nearestAvailableWorkingRoleCreep = Game.getObjectById(creepID) as Creep;
+
+
+
+            spawn = getSpawn as StructureSpawn;
+
+        } else {
+            links = creep.room.find(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                        structure.structureType === STRUCTURE_LINK
+
+
+                    )
+                }
+            });
+
+            extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    (structure.structureType == STRUCTURE_EXTENSION) && structure.room?.controller?.my
+
+
+                    ) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            });
+
+            storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                       structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
+
+                    ) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            });
+
+            terminal = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                       structure.structureType == STRUCTURE_TERMINAL && structure.room?.controller?.my
+
+
+                    ) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            }) as StructureTerminal ?? null;
+
+            spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_SPAWN && structure.room?.controller?.my
+
+
+                    )
+                }
+            }) as StructureSpawn;
+
+
+            spawns = creep.room.find(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                        structure.structureType === STRUCTURE_SPAWN  && structure.room?.controller?.my &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+
+
+                    )
+                }
+            });
+
+
+
+
+
+
+            towers = creep.pos.findInRange(FIND_STRUCTURES, 10, {
+                filter:  (structure) => {
+                    return (
+                    structure.structureType == STRUCTURE_TOWER && structure.room?.controller?.my
+
+
+                    ) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 800 && carriers.length && ((commandLevel >=  6 && creep.room.energyAvailable > 800) || (commandLevel < 6));
+                }
+            });
+
+            nearestStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                    structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+
+
+                    )
+                }
+            }) as StructureStorage;
+
+
+
+
+
+
+
+        }
+
+        nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+            filter:  (creep) => {
+                return (
+                (creep.memory.role === 'builder' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
+            }
+        }) as Creep;
+
+        const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
+            filter: (link) => {
+                return link.name == creep.room.name+'ExtensionLink'
+            }
+        });
+
+
+
 
 
 
@@ -67,18 +226,8 @@ export class Carrier {
            }
         }
 
-        let extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                    (structure.structureType == STRUCTURE_EXTENSION) && structure.room?.controller?.my
 
-
-                ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-            }
-        });
-
-                const playerHostiles = creep.room.find(FIND_HOSTILE_CREEPS,
+        const playerHostiles = creep.room.find(FIND_HOSTILE_CREEPS,
             {
                 filter: (hostileCreep) => {
                     return ((hostileCreep.owner &&
@@ -86,12 +235,12 @@ export class Carrier {
                   }
             }
         );
+
         if(commandLevel <= 6 && playerHostiles.length > 0 && creep.room.controller?.my) {
             creep.room.controller.activateSafeMode();
         }
 
 
-        /*
         if((creep.memory.extensionFarm !== undefined) && commandLevel >= 7) {
             extension = creep.pos.findInRange(FIND_STRUCTURES,9, {
                 filter:  (structure) => {
@@ -102,59 +251,9 @@ export class Carrier {
                     ) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                 }
-            })[0] ?? null;
-        }*/
+            })[0] as StructureExtension ?? null;
+        }
 
-        var spawns = RoomUtils.getRoomBySpawn(spawn);
-
-        var nearestSpawn = creep.pos.findInRange(FIND_STRUCTURES, 10, {
-            filter:  (structure) => {
-                return (
-                    (structure.structureType == STRUCTURE_SPAWN) && structure.room?.controller?.my
-
-
-                ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-            }
-        });
-
-
-
-        const towers = creep.pos.findInRange(FIND_STRUCTURES, 10, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_TOWER && structure.room?.controller?.my
-
-
-                ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.store[RESOURCE_ENERGY] < 800 && carriers.length && ((commandLevel >=  6 && creep.room.energyAvailable > 800) || (commandLevel < 6));
-            }
-        });
-
-        var nearestStorage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
-
-
-                )
-            }
-        });
-
-        const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
-            filter: (link) => {
-                return link.name == creep.room.name+'ExtensionLink'
-            }
-        });
-
-
-
-        const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-            filter:  (creep) => {
-                return (
-                   (creep.memory.role === 'builder' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
-            }
-        });
 
         let sources = 4;
         if(spawns) {
