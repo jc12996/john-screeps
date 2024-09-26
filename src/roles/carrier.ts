@@ -177,20 +177,20 @@ export class Carrier {
                 }
             }) as StructureStorage;
 
+            console.log('no memory')
 
 
 
-
+            nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+                filter:  (creep) => {
+                    return (
+                    (creep.memory.role === 'builder' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
+                }
+            }) as Creep;
 
 
         }
 
-        nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-            filter:  (creep) => {
-                return (
-                (creep.memory.role === 'builder' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
-            }
-        }) as Creep;
 
         const extensionLinkFlag= creep.room.find(FIND_FLAGS, {
             filter: (link) => {
