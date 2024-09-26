@@ -17,9 +17,14 @@ import { handleRamparts } from "ramparts";
 import { PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Miner } from "roles/miner";
+<<<<<<< HEAD
 import { sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
 import { Scout } from "roles/scout";
 import { MovementUtils } from "utils/MovementUtils";
+=======
+import { callForHelp, sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
+import { Scout } from "roles/scout";
+>>>>>>> 8bb1623 (updates)
 
 declare global {
   /*
@@ -200,7 +205,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
       Settler.run(creep);
     }
     if(creep.memory.role == 'scout') {
+<<<<<<< HEAD
       MovementUtils.callForHelp(creep);
+=======
+      callForHelp(creep);
+>>>>>>> 8bb1623 (updates)
       Scout.run(creep);
     }
     if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
