@@ -32,10 +32,18 @@ export class Claimer {
 
 
 
+
             if(!creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller.pos.y,1)) {
-                creep.moveTo(creep.room.controller);
+                if(creep.room.controller) {
+                    if(creep.signController(creep.room.controller, "Mine mine mine! -- Xarroc") == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.controller);
+                    }
+                } else {
+                    creep.moveTo(creep.room.controller);
+                }
                 return;
             }
+
 
             if(creep.memory.role === 'attackClaimer') {
                 const claimAttackCode = creep.attackController(creep.room.controller);
