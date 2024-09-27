@@ -142,12 +142,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
     var creep = Game.creeps[name];
 
 
-    if(Game.flags.reallocateFlag && creep.memory.firstSpawnCoords === "W3N9" && creep.room.name !== Game.flags.reallocateFlag.room?.name) {
-      console.log('reallocating...')
-      creep.say("↔")
-      creep.moveTo(Game.flags.reallocateFlag);
-      return;
-    }
+    // if(Game.flags.reallocateFlag && creep.memory.firstSpawnCoords === "W3N9" && creep.room.name !== Game.flags.reallocateFlag.room?.name) {
+    //   console.log('reallocating...')
+    //   creep.say("↔")
+    //   creep.moveTo(Game.flags.reallocateFlag);
+    //   return;
+    // }
 
     if(creep.memory?.isArmySquad && Memory?.economyType && Game.flags.rallyFlag?.pos &&  creep?.pos &&  Game.flags.stagingFlag &&  !creep.pos.inRangeTo(Game.flags.stagingFlag.pos.x,Game.flags.stagingFlag.pos.y,6)) {
       const totalArmySize =  _.filter(Game.creeps, (creep) => creep.memory.isArmySquad )?.length ?? 0;
