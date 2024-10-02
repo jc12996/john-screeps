@@ -258,6 +258,9 @@ export class MovementUtils {
             return;
         }*/
 
+        const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+
+
         if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -281,8 +284,14 @@ export class MovementUtils {
                 creep.moveTo(targetSource);
             }
 
+        } else if(nearestSource && creep.harvest(nearestSource) == ERR_NOT_IN_RANGE) {
+            if(!creep.pos.inRangeTo(nearestSource.pos.x,nearestSource.pos.y,1)) {
+                creep.moveTo(nearestSource);
+            }
+
         }
         else if(roomRallyPointFlag[0]) {
+
             creep.moveTo(roomRallyPointFlag[0]);
         } else {
             creep.move(MovementUtils.randomDirectionSelector())

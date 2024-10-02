@@ -48,6 +48,12 @@ export class Repairer {
                 }
             });
 
+            const weakWalls = room.find(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return structure.structureType === STRUCTURE_WALL && structure.hits < 1000
+                }
+            });
+
 
             if(containers.length > 0 ) {
                 // Find the container with the lowest health
@@ -56,6 +62,15 @@ export class Repairer {
                 });
                 if(creep.repair(weakestContainer) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(weakestContainer, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
+            }
+            else if(weakWalls.length > 0 && room.controller?.my && room.controller?.level < 5 ) {
+                // Find the wall with the lowest health
+                const weakestWall = weakWalls.reduce((weakest, wall) => {
+                    return (wall.hits < weakest.hits) ? wall : weakest;
+                });
+                if(creep.repair(weakestWall) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(weakestWall, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
             else if(ramparts.length > 0 && room.controller?.my) {
