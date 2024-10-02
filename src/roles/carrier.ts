@@ -201,7 +201,7 @@ export class Carrier {
            })
 
 
-        const capacitySpawnLimit = (creep.room.controller && creep.room.controller?.level > 4) ? 100 : 50;
+        const capacitySpawnLimit = (creep.room.controller && creep.room.controller?.level > 6) ? 100 : 50;
         if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0 || (creep.store[RESOURCE_ENERGY] > capacitySpawnLimit))) {
             creep.memory.carrying = true;
 

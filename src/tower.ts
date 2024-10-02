@@ -56,6 +56,12 @@ export class Tower {
             }
         });
 
+        const weakWalls = room.find(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return structure.structureType === STRUCTURE_WALL && structure.hits < 1000
+            }
+        });
+
 
         // towers.forEach(tower => {
         //     tower.room?.createConstructionSite(tower.pos.x,tower.pos.y,STRUCTURE_RAMPART);
@@ -123,6 +129,7 @@ export class Tower {
             });
             towers.forEach(tower => tower.repair(weakestContainer));
         }
+
         else if(ramparts.length > 0 && room.controller?.my) {
             // Find the rampart with the lowest health
             const weakestRampart = ramparts.reduce((weakest, rampart) => {
@@ -136,6 +143,13 @@ export class Tower {
                 return (road.hits < weakest.hits) ? road : weakest;
              });
             towers.forEach(tower => tower.repair(weakestRoad));
+        }
+        else if(weakWalls.length > 0 && room.controller?.my) {
+            // Find the rampart with the lowest health
+            const weakestWall = weakWalls.reduce((weakest, rampart) => {
+                return (rampart.hits < weakest.hits) ? rampart : weakest;
+            });
+            towers.forEach(tower => tower.repair(weakestWall));
         }
     }
 }

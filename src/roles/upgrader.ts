@@ -72,6 +72,14 @@ export class Upgrader {
             }
         });
 
+        if(creep.room.controller?.my && creep.room.controller.sign?.username && creep.room.controller.sign?.username !== 'Xarroc') {
+            if(creep.room.controller && creep.room.controller.my &&
+                creep.signController(creep.room.controller, 'This is mine') == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#FF0000'}});
+            }
+            return;
+        }
+
 
 
         const controllerLink = getLinkByTag(creep,'ControllerLink1');

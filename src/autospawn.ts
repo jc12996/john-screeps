@@ -83,6 +83,10 @@ export class AutoSpawn {
             console.log(spawn.room.name,'numberOfNeededHarvesters to memory ',spawn.room.memory.numberOfNeededHarvestorSlots)
         }
 
+        // if(spawn.room.name === 'E43S52') {
+        //     spawn.room.memory.numberOfNeededHarvestorSlots = 5;
+        // }
+
         const numberOfNeededHarvesters = spawn.room.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
 
         const storage  = spawn.room.find(FIND_STRUCTURES, {
@@ -140,6 +144,8 @@ export class AutoSpawn {
             if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined || mineFlag.memory.numberOfNeededHarvestorSlots === 0) {
                 mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
             }
+
+
             if(mineSources) {
                 numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
             }
@@ -148,6 +154,7 @@ export class AutoSpawn {
                 mineMultiplier = 1;
             }
             numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
+
         }
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
@@ -211,17 +218,16 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
             options = {memory: {role: 'carrier'}}
         }
-        else if(spawn.room.energyCapacityAvailable > 250 && hostileCreeps.length == 0 && carriers.length >= 2 && (upgraders.length < 3)) {
-            name = 'Upgrader' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
-            options = {memory: {role: 'upgrader'}                }
-        }
         else if(numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters) && ActiveRoomSources.length > 0) {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
         }
-
+        else if(spawn.room.energyCapacityAvailable > 250 && hostileCreeps.length == 0 && carriers.length >= 2 && (upgraders.length < 3)) {
+            name = 'Upgrader' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
+            options = {memory: {role: 'upgrader'}                }
+        }
         else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
