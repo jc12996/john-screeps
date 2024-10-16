@@ -19,8 +19,14 @@ const myFriends = [
     'gnat',
     'Xarroc',
     'legendeck',
+    'Matticus',
+    'dreamlane',
+    'legendeck',
+    'kailin-limble',
+    'Redfro',
     'Matticus'
 ];
+// Starter Base for Bot Season 10/2024 - W7S4
 
 export class SpawnUtils {
     static SHOW_VISUAL_CREEP_ICONS: boolean = true;

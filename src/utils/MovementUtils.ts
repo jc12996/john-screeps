@@ -242,7 +242,7 @@ export class MovementUtils {
 
         const activeSource = creep.room.find(FIND_SOURCES_ACTIVE)
 
-        /**
+
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
             if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controllerLink, {visualizePathStyle: {stroke: "#ffffff"}});
@@ -256,7 +256,7 @@ export class MovementUtils {
             }
 
             return;
-        }*/
+        }
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 

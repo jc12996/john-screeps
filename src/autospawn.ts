@@ -83,9 +83,9 @@ export class AutoSpawn {
             console.log(spawn.room.name,'numberOfNeededHarvesters to memory ',spawn.room.memory.numberOfNeededHarvestorSlots)
         }
 
-        // if(spawn.room.name === 'E43S52') {
-        //     spawn.room.memory.numberOfNeededHarvestorSlots = 5;
-        // }
+        if(spawn.room.name === 'W1N6') {
+            spawn.room.memory.numberOfNeededHarvestorSlots = 5;
+        }
 
         const numberOfNeededHarvesters = spawn.room.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
 
