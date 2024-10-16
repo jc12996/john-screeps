@@ -163,16 +163,6 @@ export function sendEnergyFromSpawn1() {
 
 export function operateLinks(creep: Creep | StructureSpawn) {
 
-    var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-        filter:  (structure) => {
-            return (
-                structure.structureType == STRUCTURE_CONTAINER
-
-            ) &&
-                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-        }
-    });
-
     const sourceLink1Flag = creep.room.find(FIND_FLAGS, {
         filter: (site) => {
             return site.name == creep.room.name+'SourceLink1'
@@ -237,135 +227,28 @@ export function operateLinks(creep: Creep | StructureSpawn) {
                 (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
 
         )}
-    })
-
-    //const filledSourceTermimal: StructureTerminal | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
-     //   filter: (struc) => {
-     //       return (
-     //           struc.structureType === STRUCTURE_TERMINAL &&
-     //           struc.room.find(FIND_STRUCTURES,{
-      //              filter:(mySpawn) => mySpawn.structureType === STRUCTURE_SPAWN && mySpawn.name === 'Spawn1'
-      //          }).length === 0 &&
-      //          (struc.store[RESOURCE_ENERGY] >= 100000)
-     //   )}
-   // })
-
-    //if(filledSourceTermimal) {
-       // filledSourceTermimal.t
-   // }
-
-
-        const extensionLink = getLinkByTag(creep, 'ExtensionLink');
-        const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
-        const controllerLink = getLinkByTag(creep,'ControllerLink1');
-        const hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
-            }
-        });
-        const minimumStorageThreshold = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
-
-
-                ) &&
-                    structure.store[RESOURCE_ENERGY] > 800;
-            }
-        });
-
-        const largeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
-
-
-                ) &&
-                    structure.store[RESOURCE_ENERGY] > 100000;
-            }
-        });
-
-        const largeTerminalStorage: StructureTerminal | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter:  (structure) => {
-                return (
-                   structure.structureType == STRUCTURE_TERMINAL && structure.room?.controller?.my
-
-
-                ) &&
-                    structure.store[RESOURCE_ENERGY] > 50000;
-            }
-        });
-
-
-
-            // if(filledSourceLink1 && filledSourceLink1.structureType === STRUCTURE_LINK) {
-            //     creep.room?.createConstructionSite(filledSourceLink1.pos.x,filledSourceLink1.pos.y,STRUCTURE_RAMPART)
-
-            //     if(controllerLink) {
-            //         creep.room?.createConstructionSite(controllerLink.pos.x,controllerLink.pos.y,STRUCTURE_RAMPART);
-            //     }
-            // }
-
-            if(largeStorage && creep.room.controller && creep.room.controller.my && creep.room.controller.level == 7 ) {
-
-                // SOURCE -> EXTENSION 1 -> [EXTENSION 2, CONTROLLER]
-                if(filledSourceLink1 && extensionLink) {
-                    filledSourceLink1.transferEnergy(extensionLink);
-                }else if(extensionLink2 && filledSourceLink1 &&  filledSourceLink1.structureType === STRUCTURE_LINK) {
-                    filledSourceLink1.transferEnergy(extensionLink2);
-                } else if(controllerLink) {
-                    extensionLink.transferEnergy(controllerLink);
-                }
-
-
-                return;
-            }
-
-
-            if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
-                return;
-            }
-
-            // SOURCE -> CONTROLLER (IF Storage is above 800) -> EXTENSION 1 -> EXTENSION 2
-            let transfer1 = null;
-
-            if(creep.room.controller && (creep.room.controller?.level <= 7 || !largeStorage)) {
-                if((largeTerminalStorage && controllerLink && creep.room.controller?.level ==7)) {
-                    transfer1 = filledSourceLink1.transferEnergy(controllerLink);
-                }else  if((largeStorage) && !hostileCreeps && controllerLink && creep.room.controller?.level ==7 && (minimumStorageThreshold)  && creep.room.controller && creep.room.controller?.level == 7 && (creep.room.energyAvailable == creep.room.energyCapacityAvailable) && creep.room.energyAvailable > 0) {
-                    transfer1 = filledSourceLink1.transferEnergy(controllerLink);
-                }
-
-                if(transfer1 !== OK) {
-                    let transfer2  =  filledSourceLink1.transferEnergy(extensionLink);
-
-
-                    if(transfer2 !== OK) {
-                        filledSourceLink1.transferEnergy(extensionLink2);
-                    }
-                }
-            }
-
-            //level 8 final
-
-            if(transfer1 !== OK) {
-                let transfer2  =  filledSourceLink1.transferEnergy(extensionLink);
-
-
-                if(transfer2 !== OK) {
-                    filledSourceLink1.transferEnergy(extensionLink2);
-                }
-            }
-
-            if(creep.room.controller?.level ==8 && controllerLink && extensionLink){
-                controllerLink.transferEnergy(extensionLink)
-            }
+    });
 
 
 
 
+    const extensionLink = getLinkByTag(creep, 'ExtensionLink');
+    const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
+    const controllerLink = getLinkByTag(creep,'ControllerLink1');
 
+    if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
+        return;
+    }
+
+    // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
+    if(creep.room.controller?.my) {
+        filledSourceLink1.transferEnergy(extensionLink2);
+        filledSourceLink1.transferEnergy(extensionLink);
+        filledSourceLink1.transferEnergy(controllerLink);
+    }
 }
+
+
 
 export function getLinkByTag(creep: Creep | StructureSpawn, linkTag: string): StructureLink {
     const linkFlag= creep.room.find(FIND_FLAGS, {

@@ -123,7 +123,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(commandLevel < 3 && energyAvailable >= 300) {
+                else if(energyAvailable >= 300) {
 
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
