@@ -366,7 +366,7 @@ export class Carrier {
         extensionLinkFlag2:any,
         nearestSpawn: any
     ) {
-        if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && terminal) {
+        if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && terminal && terminal.store[RESOURCE_ENERGY] < 100000) {
 
             if(creep.store[RESOURCE_ENERGY] > 0 && terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 TR');

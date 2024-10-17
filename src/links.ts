@@ -246,15 +246,18 @@ export function operateLinks(creep: Creep | StructureSpawn) {
     if(creep.room.controller?.my) {
 
 
-        if(filledSourceLink1.transferEnergy(extensionLink2) !== OK){
-            if(filledSourceLink1.transferEnergy(extensionLink) !== OK){
+        if(extensionLink?.store && extensionLink.store[RESOURCE_ENERGY] == 0 && filledSourceLink1.transferEnergy(extensionLink) !== OK){
+            if(filledSourceLink1.transferEnergy(extensionLink2) !== OK){
                 filledSourceLink1.transferEnergy(controllerLink);
             }
+        } else if(extensionLink2?.store && extensionLink2.store[RESOURCE_ENERGY] == 0 && filledSourceLink1.transferEnergy(extensionLink2) !== OK){
+            filledSourceLink1.transferEnergy(controllerLink);
+        } else if(extensionLink && filledSourceLink1.transferEnergy(extensionLink) !== OK){
+            filledSourceLink1.transferEnergy(extensionLink2);
         }
 
-
-
     }
+
 }
 
 

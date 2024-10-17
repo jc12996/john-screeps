@@ -65,30 +65,19 @@ export class Repairer {
                 }
             }
             else if(weakWalls.length > 0 && room.controller?.my && room.controller?.level < 5 ) {
-                // Find the wall with the lowest health
-                const weakestWall = weakWalls.reduce((weakest, wall) => {
-                    return (wall.hits < weakest.hits) ? wall : weakest;
-                });
-                if(creep.repair(weakestWall) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(weakestWall, {visualizePathStyle: {stroke: '#ffffff'}});
+
+                if(creep.repair(weakWalls[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(weakWalls[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
             else if(ramparts.length > 0 && room.controller?.my) {
-                // Find the rampart with the lowest health
-                const weakestRampart = ramparts.reduce((weakest, rampart) => {
-                    return (rampart.hits < weakest.hits) ? rampart : weakest;
-                });
-                if (creep.repair(weakestRampart)  == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(weakestRampart, {visualizePathStyle: {stroke: '#ffffff'}});
+                if (creep.repair(ramparts[0])  == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(ramparts[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
             else if(walls.length > 0 && room.controller?.my && room.controller?.level < 5 ) {
-                // Find the wall with the lowest health
-                const weakestWall = walls.reduce((weakest, wall) => {
-                    return (wall.hits < weakest.hits) ? wall : weakest;
-                });
-                if(creep.repair(weakestWall) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(weakestWall, {visualizePathStyle: {stroke: '#ffffff'}});
+                if(creep.repair(walls[0]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
             else if(roads.length > 0 ) {
