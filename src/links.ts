@@ -1,3 +1,4 @@
+import { link } from "fs";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { getHeapSpaceStatistics } from "v8";
 
@@ -236,21 +237,21 @@ export function operateLinks(creep: Creep | StructureSpawn) {
     const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
     const controllerLink = getLinkByTag(creep,'ControllerLink1');
 
+
     if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
         return;
     }
 
-    // SOURCE -> EXTENSION 1 -> EXTENSION 2 -> CONTROLLER LINK
+    // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
     if(creep.room.controller?.my) {
 
-        const link1 = filledSourceLink1.transferEnergy(extensionLink);
-        if(link1 !== OK) {
 
-        const link2 = filledSourceLink1.transferEnergy(extensionLink2);
-            if(link2 !== OK){
+        if(filledSourceLink1.transferEnergy(extensionLink2) !== OK){
+            if(filledSourceLink1.transferEnergy(extensionLink) !== OK){
                 filledSourceLink1.transferEnergy(controllerLink);
             }
         }
+
 
 
     }
