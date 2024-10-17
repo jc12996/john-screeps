@@ -8,7 +8,7 @@ export class RepairUtils {
         maxWallStrength: number
     } {
         let maxWallStrength = 10000;
-        let maxContainerStrength = 50000;
+        let maxContainerStrength = 10000;
         let maxRoadStrength = 100;
 
         if(target.room.controller && target.room.controller.my && target.room.controller.level > 0) {
