@@ -154,7 +154,7 @@ export class AutoSpawn {
                 mineMultiplier = 1;
             }
             numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
-            numberOfNeededMiners = numberOfNeededMiners * ((attackClaimers?.length > 0) ? attackClaimers.length : 1)
+            numberOfNeededMiners = numberOfNeededMiners * ((attackClaimers?.length > 0) ? 1.25 : 1)
 
         }
 
