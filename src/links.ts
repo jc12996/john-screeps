@@ -242,9 +242,12 @@ export function operateLinks(creep: Creep | StructureSpawn) {
 
     // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
     if(creep.room.controller?.my) {
-        filledSourceLink1.transferEnergy(extensionLink2);
-        filledSourceLink1.transferEnergy(extensionLink);
-        filledSourceLink1.transferEnergy(controllerLink);
+        const link2 = filledSourceLink1.transferEnergy(extensionLink2);
+        const link1 = filledSourceLink1.transferEnergy(extensionLink);
+        if(link1 !== OK && link2 !== OK){
+            filledSourceLink1.transferEnergy(controllerLink);
+        }
+
     }
 }
 
