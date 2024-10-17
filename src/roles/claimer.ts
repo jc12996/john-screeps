@@ -15,6 +15,26 @@ export class Claimer {
             creep.say('🚩');
         }
 
+
+        if(creep.memory.role === 'attackClaimer') {
+            const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && (!flag.room?.controller?.reservation || flag.room === creep.room));
+            if(mineFlags[0]) {
+                const mineRoom = mineFlags[0].room;
+                if(mineRoom?.controller) {
+                    const reservationCode = creep.reserveController(mineRoom?.controller);
+
+                    if((!mineRoom.controller.sign || !mineRoom.controller.sign.text.includes(creep.id)) && creep.signController(mineRoom.controller, "Mine mine mine! -- Xarroc - "+creep.id) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(mineRoom.controller);
+                    }
+
+                    if(reservationCode == ERR_NOT_IN_RANGE){
+                        creep.moveTo(mineRoom.controller);
+                    }
+                }
+            }
+            return;
+        }
+
         const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
         if(!canProceed){
             return;
@@ -45,27 +65,6 @@ export class Claimer {
             }
 
 
-            if(creep.memory.role === 'attackClaimer') {
-                const claimAttackCode = creep.attackController(creep.room.controller);
-                console.log('Claim Attack',claimAttackCode)
-                if(enemyController && claimAttackCode == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(creep.room.controller);
-                }else if(Game.flags.attackClaim && Game.flags.attackClaim.room === creep.room && Game.flags.attackClaim.room?.controller?.owner === undefined){
-                    Game.flags.attackClaim.remove();
-                    if(Game.flags.attackClaim2 && Game.flags.attackClaim2.room?.name) {
-                        Game.rooms[Game.flags.attackClaim2.room.name].createFlag(Game.flags.attackClaim2.pos,'attackClaim');
-                        Game.flags.attackClaim2.remove();
-                    } else if(Game.flags.attackClaim3 && Game.flags.attackClaim3.room?.name) {
-                        Game.rooms[Game.flags.attackClaim3.room.name].createFlag(Game.flags.attackClaim3.pos,'attackClaim');
-                        Game.flags.attackClaim3.remove();
-                    } else if(Game.flags.attackClaim4 && Game.flags.attackClaim4.room?.name) {
-                        Game.rooms[Game.flags.attackClaim4.room.name].createFlag(Game.flags.attackClaim4.pos,'attackClaim');
-                        Game.flags.attackClaim4.remove();
-                    }
-
-                }
-                return;
-            }
 
             if(enemyController && creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 //creep.moveTo(creep.room.controller);

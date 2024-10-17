@@ -56,18 +56,6 @@ export class SpawnUtils {
         switch(archetype) {
 
             case 'attackClaimer':
-                if(Game.flags.attackClaim && energyAvailable >= 3050) {
-
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(CLAIM);
-                    }
-                    for (let i = 0; i < 49; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    break;
-                } else {
-                    return null;
-                }
             case 'claimer':
                 if(energyAvailable >= 650) {
                     for (let i = 0; i < 1; i++) {

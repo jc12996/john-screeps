@@ -154,6 +154,7 @@ export class AutoSpawn {
                 mineMultiplier = 1;
             }
             numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
+            numberOfNeededMiners = numberOfNeededMiners * ((attackClaimers?.length > 0) ? attackClaimers.length : 1)
 
         }
 
@@ -179,6 +180,8 @@ export class AutoSpawn {
 
         let isSquadPatrol = commandLevel >= 7 && Game.flags.rallyFlag;
 
+        const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && !flag.room?.controller?.my);
+
         if(Game.flags.startScouting && isSquadPatrol) {
             isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
         }
@@ -192,7 +195,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
             options = {memory: {role: 'claimer'}};
 
-        } else if (commandLevel == 8 && Game.flags.attackClaim && attackClaimers.length < LowUpkeep.AttackClaimers) {
+        } else if (miners.length > 0 && attackClaimers.length < mineFlags.length) {
             name = 'AttackClaimer' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
             options = {memory: {role: 'attackClaimer'}};
@@ -271,7 +274,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
-        else if (!!mineFlag && (!mineFlag?.room?.controller?.reservation  || mineHostiles)  && miners.length < numberOfNeededMiners) {
+        else if (!!mineFlag && miners.length < numberOfNeededMiners) {
             name = 'Miner' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
             options = {memory: {role: 'miner'}};
