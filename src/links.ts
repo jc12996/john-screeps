@@ -191,7 +191,7 @@ export function operateLinks(creep: Creep | StructureSpawn) {
         filter: (creep) => (creep.memory.extensionFarm == 1 || creep.memory.extensionFarm === 2 || creep.memory.mainUpgrader)
     })
 
-    let xCapacity = 800;
+    let xCapacity = 700;
 
     if(xCreepCapacityCreeps.length) {
         const xCreepCapacity = xCreepCapacityCreeps[0].store.getCapacity();
@@ -199,8 +199,8 @@ export function operateLinks(creep: Creep | StructureSpawn) {
             xCapacity = xCreepCapacity
         }
     }
-    if(xCapacity > 800) {
-        xCapacity = 800;
+    if(xCapacity > 400) {
+        xCapacity = 700;
     }
 
     const filledSourceLink1: StructureLink | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
@@ -238,6 +238,7 @@ export function operateLinks(creep: Creep | StructureSpawn) {
     const controllerLink = getLinkByTag(creep,'ControllerLink1');
 
 
+
     if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
         return;
     }
@@ -245,16 +246,18 @@ export function operateLinks(creep: Creep | StructureSpawn) {
     // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
     if(creep.room.controller?.my) {
 
-
-        if(extensionLink?.store && extensionLink.store[RESOURCE_ENERGY] == 0 && filledSourceLink1.transferEnergy(extensionLink) !== OK){
-            if(filledSourceLink1.transferEnergy(extensionLink2) !== OK){
-                filledSourceLink1.transferEnergy(controllerLink);
+        if(extensionLink2 && extensionLink) {
+            if(extensionLink2.store.energy < extensionLink.store.energy) {
+                filledSourceLink1.transferEnergy(extensionLink2)
+            } else {
+                filledSourceLink1.transferEnergy(extensionLink);
             }
-        } else if(extensionLink2?.store && extensionLink2.store[RESOURCE_ENERGY] == 0 && filledSourceLink1.transferEnergy(extensionLink2) !== OK){
+        } else if(extensionLink) {
+            filledSourceLink1.transferEnergy(extensionLink);
+        } else {
             filledSourceLink1.transferEnergy(controllerLink);
-        } else if(extensionLink && filledSourceLink1.transferEnergy(extensionLink) !== OK){
-            filledSourceLink1.transferEnergy(extensionLink2);
         }
+
 
     }
 
