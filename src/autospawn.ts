@@ -314,14 +314,7 @@ export class AutoSpawn {
 
 
 
-        if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
-            ScaffoldingUtils.createExtensionFarm1(spawn);
-            if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
 
-
-                ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
-            }
-        }
 
         if(spawn && spawn.spawning) {
 
@@ -334,6 +327,15 @@ export class AutoSpawn {
                 spawn.pos.x + 1,
                 spawn.pos.y,
                 {align: 'left', opacity: 0.8});
+
+            if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
+                ScaffoldingUtils.createExtensionFarm1(spawn);
+                if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
+
+
+                    ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
+                }
+            }
 
 
         } else if (bodyParts != null && name != null) {
