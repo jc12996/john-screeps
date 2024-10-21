@@ -115,6 +115,10 @@ export class AutoSpawn {
             numberOfNeededCarriers = 2;
         }
 
+        if(commandLevel >= 7 && numberOfNeededCarriers > 4) {
+            numberOfNeededCarriers = 4;
+        }
+
 
         if(storage){
             if(storage.store[RESOURCE_ENERGY] > 50000) {
@@ -138,6 +142,10 @@ export class AutoSpawn {
             }
         }
 
+        if(commandLevel >= 7) {
+            numberOfNeededDefenders = 0;
+        }
+
         if(!!mineFlag) {
             const mineSources = mineFlag.room?.find(FIND_SOURCES);
 
@@ -154,7 +162,6 @@ export class AutoSpawn {
                 mineMultiplier = 1;
             }
             numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
-            numberOfNeededMiners = numberOfNeededMiners * ((attackClaimers?.length > 0) ? 1.25 : 1)
 
         }
 

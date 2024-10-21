@@ -30,7 +30,7 @@ export function placeSourceLinks(creep: Creep) {
 
     }
 
-    if(creep?.room?.controller?.level && creep?.room?.controller?.level == 8) {
+    if(creep?.room?.controller?.level && creep?.room?.controller?.level == 7) {
         const sourceLink2FlagTemp = creep.room.find(FIND_FLAGS, {
             filter: (site) => {
                 return site.name == creep.room.name+'SourceLink2'
@@ -50,6 +50,7 @@ export function placeSourceLinks(creep: Creep) {
         }
     }
 
+
     if(creep?.room?.controller?.level && creep?.room?.controller?.level == 8) {
         const sourceLink3FlagTemp = creep.room.find(FIND_FLAGS, {
             filter: (site) => {
@@ -66,6 +67,26 @@ export function placeSourceLinks(creep: Creep) {
                 creep.room.createFlag(creep.pos.x,creep.pos.y +1,creep.room.name+'SourceLink3');
             } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y -1,STRUCTURE_LINK) == OK){
                 creep.room.createFlag(creep.pos.x,creep.pos.y -1,creep.room.name+'SourceLink3');
+            }
+
+        }
+    }
+
+    if(creep?.room?.controller?.level && creep?.room?.controller?.level == 8) {
+        const sourceLink2FlagTemp = creep.room.find(FIND_FLAGS, {
+            filter: (site) => {
+                return site.name == creep.room.name+'SourceLink4'
+            }
+        })
+        if (!sourceLink2FlagTemp.length) {
+            if(creep.room?.createConstructionSite(creep.pos.x -1,creep.pos.y,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x -1,creep.pos.y,creep.room.name+'SourceLink4');
+            } else if(creep.room?.createConstructionSite(creep.pos.x +1,creep.pos.y,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x +1,creep.pos.y,creep.room.name+'SourceLink4');
+            } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y +1,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x,creep.pos.y +1,creep.room.name+'SourceLink4');
+            } else if(creep.room?.createConstructionSite(creep.pos.x,creep.pos.y -1,STRUCTURE_LINK) == OK){
+                creep.room.createFlag(creep.pos.x,creep.pos.y -1,creep.room.name+'SourceLink4');
             }
 
         }
@@ -164,26 +185,11 @@ export function sendEnergyFromSpawn1() {
 
 export function operateLinks(creep: Creep | StructureSpawn) {
 
-    const sourceLink1Flag = creep.room.find(FIND_FLAGS, {
+    const sourceFlags = creep.room.find(FIND_FLAGS, {
         filter: (site) => {
-            return site.name == creep.room.name+'SourceLink1'
+            return site.name.includes(creep.room.name+'SourceLink')
         }
     })
-
-    const sourceLink2Flag = creep.room.find(FIND_FLAGS, {
-        filter: (site) => {
-            return site.name == creep.room.name+'SourceLink2'
-        }
-    })
-
-
-    const sourceLink3Flag = creep.room.find(FIND_FLAGS, {
-        filter: (site) => {
-            return site.name == creep.room.name+'SourceLink3'
-        }
-    })
-
-
 
     const activeSources = creep.room.find(FIND_SOURCES_ACTIVE);
 
@@ -203,63 +209,55 @@ export function operateLinks(creep: Creep | StructureSpawn) {
         xCapacity = 700;
     }
 
-    const filledSourceLink1: StructureLink | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
-        filter: (struc) => {
-            return (
-                ((sourceLink1Flag[0] &&
-                sourceLink1Flag[0].pos &&
-                struc.pos.x == sourceLink1Flag[0].pos.x &&
-                struc.pos.y == sourceLink1Flag[0].pos.y )
-                ||
-                (sourceLink2Flag[0] &&
-                    sourceLink2Flag[0].pos &&
-                    struc.pos.x == sourceLink2Flag[0].pos.x &&
-                    struc.pos.y == sourceLink2Flag[0].pos.y )
+    for(const sourceFlag of sourceFlags) {
+        const filledSourceLink1: StructureLink | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
+            filter: (struc) => {
+                return (
+                    (sourceFlag &&
+                    sourceFlag.pos &&
+                    struc.pos.x == sourceFlag.pos.x &&
+                    struc.pos.y == sourceFlag.pos.y )
 
-                    ||
-                    (sourceLink3Flag[0] &&
-                        sourceLink3Flag[0].pos &&
-                        struc.pos.x == sourceLink3Flag[0].pos.x &&
-                        struc.pos.y == sourceLink3Flag[0].pos.y )
+                    &&
+                    struc.structureType === STRUCTURE_LINK &&
+                    (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
 
-                )
-                &&
-                struc.structureType === STRUCTURE_LINK &&
-                (struc.store[RESOURCE_ENERGY] >= xCapacity || (activeSources.length == 0 && struc.store[RESOURCE_ENERGY] >= 100))
-
-        )}
-    });
+            )}
+        });
 
 
 
 
-    const extensionLink = getLinkByTag(creep, 'ExtensionLink');
-    const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
-    const controllerLink = getLinkByTag(creep,'ControllerLink1');
+        const extensionLink = getLinkByTag(creep, 'ExtensionLink');
+        const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
+        const controllerLink = getLinkByTag(creep,'ControllerLink1');
 
 
 
-    if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
-        return;
-    }
-
-    // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
-    if(creep.room.controller?.my) {
-
-        if(extensionLink2 && extensionLink) {
-            if(extensionLink2.store.energy < extensionLink.store.energy) {
-                filledSourceLink1.transferEnergy(extensionLink2)
-            } else {
-                filledSourceLink1.transferEnergy(extensionLink);
-            }
-        } else if(extensionLink) {
-            filledSourceLink1.transferEnergy(extensionLink);
-        } else {
-            filledSourceLink1.transferEnergy(controllerLink);
+        if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
+            return;
         }
 
+        // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
+        if(creep.room.controller?.my) {
 
+            if(extensionLink2 && extensionLink) {
+                if(extensionLink2.store.energy < extensionLink.store.energy) {
+                    filledSourceLink1.transferEnergy(extensionLink2)
+                } else {
+                    filledSourceLink1.transferEnergy(extensionLink);
+                }
+            } else if(extensionLink) {
+                filledSourceLink1.transferEnergy(extensionLink);
+            } else {
+                filledSourceLink1.transferEnergy(controllerLink);
+            }
+
+
+        }
     }
+
+
 
 }
 
