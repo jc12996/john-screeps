@@ -195,12 +195,14 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
             options = {memory: {role: 'claimer'}};
 
-        } else if (miners.length > 0 && attackClaimers.length < mineFlags.length) {
-            name = 'AttackClaimer' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
-            options = {memory: {role: 'attackClaimer'}};
+        }
+        // else if (miners.length > 0 && attackClaimers.length < mineFlags.length) {
+        //     name = 'AttackClaimer' + Game.time;
+        //     bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
+        //     options = {memory: {role: 'attackClaimer'}};
 
-        } else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
+        // }
+        else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
             && ((
                 !!this.nextClaimFlag
                 && this.nextClaimFlag.room?.controller?.my &&
@@ -305,6 +307,15 @@ export class AutoSpawn {
 
 
 
+        if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
+            ScaffoldingUtils.createExtensionFarm1(spawn);
+            if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
+
+
+                ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
+            }
+        }
+
         if(spawn && spawn.spawning) {
 
             var spawningCreep = Game.creeps[spawn.spawning.name];
@@ -317,14 +328,7 @@ export class AutoSpawn {
                 spawn.pos.y,
                 {align: 'left', opacity: 0.8});
 
-            if(spawn.room.controller && spawn.room.controller.my && !!spawn) {
-                ScaffoldingUtils.createExtensionFarm1(spawn);
-                if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
 
-
-                    ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
-                }
-            }
         } else if (bodyParts != null && name != null) {
             let spawnResult = spawn.spawnCreep(bodyParts,name, options);
             if(spawnResult !== 0) {

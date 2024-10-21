@@ -18,7 +18,7 @@ export enum MediumUpkeep {
     Carriers  = 1,// Per Source Slot
     Builder = 2,// Per Source
     Repairer = 2,// Total for Room
-    Upgrader = 3,// Per Source
+    Upgrader = 2,// Per Source
     Defender = 1,// Total Per Room
     AdditionalDraftedDefenders = 2,
     Claimers = 1,// Worldwide Count
@@ -31,7 +31,7 @@ export enum HighUpkeep {
     Carriers  = 1,// Per Source Slot
     Builder = 1,// Per Source
     Repairer = 2,// Total for Room
-    Upgrader = 4,// Per Source
+    Upgrader = 2,// Per Source
     Defender = 1,// Total Per Room
     AdditionalDraftedDefenders = 3,
     Claimers = 1,// Worldwide Count

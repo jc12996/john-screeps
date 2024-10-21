@@ -339,7 +339,10 @@ export class MovementUtils {
                         creep.room.createFlag(hostileStructures[0].pos, 'attackFlag');
                     }
 
-                    Game.flags.startScouting.remove();
+                    if(Game.flags.startScouting) {
+
+                        Game.flags.startScouting.remove();
+                    }
 
                 }
             }
