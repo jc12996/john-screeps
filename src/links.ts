@@ -209,8 +209,12 @@ export function operateLinks(creep: Creep | StructureSpawn) {
         xCapacity = 700;
     }
 
+    const extensionLink = getLinkByTag(creep, 'ExtensionLink');
+    const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
+    const controllerLink = getLinkByTag(creep,'ControllerLink1');
+
     for(const sourceFlag of sourceFlags) {
-        const filledSourceLink1: StructureLink | null = creep.pos.findClosestByPath(FIND_STRUCTURES,{
+        const filledSourceLinks: Array<StructureLink> = creep.room.find(FIND_STRUCTURES,{
             filter: (struc) => {
                 return (
                     (sourceFlag &&
@@ -226,35 +230,34 @@ export function operateLinks(creep: Creep | StructureSpawn) {
         });
 
 
+        for(const filledSourceLink of filledSourceLinks) {
 
-
-        const extensionLink = getLinkByTag(creep, 'ExtensionLink');
-        const extensionLink2 = getLinkByTag(creep,'ExtensionLink2');
-        const controllerLink = getLinkByTag(creep,'ControllerLink1');
-
-
-
-        if(!filledSourceLink1 || filledSourceLink1.structureType !== STRUCTURE_LINK) {
-            return;
-        }
-
-        // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
-        if(creep.room.controller?.my) {
-
-            if(extensionLink2 && extensionLink) {
-                if(extensionLink2.store.energy < extensionLink.store.energy) {
-                    filledSourceLink1.transferEnergy(extensionLink2)
-                } else {
-                    filledSourceLink1.transferEnergy(extensionLink);
-                }
-            } else if(extensionLink) {
-                filledSourceLink1.transferEnergy(extensionLink);
-            } else {
-                filledSourceLink1.transferEnergy(controllerLink);
+            if(!filledSourceLink || filledSourceLink.structureType !== STRUCTURE_LINK) {
+                return;
             }
 
+            // SOURCE -> EXTENSION 2 -> EXTENSION 1 -> CONTROLLER LINK
+            if(creep.room.controller?.my) {
 
+                if(extensionLink2 && extensionLink) {
+                    if(extensionLink2.store.energy < extensionLink.store.energy) {
+                        filledSourceLink.transferEnergy(extensionLink2)
+                    } else {
+                        filledSourceLink.transferEnergy(extensionLink);
+                    }
+                } else if(extensionLink) {
+                    filledSourceLink.transferEnergy(extensionLink);
+                } else {
+                    filledSourceLink.transferEnergy(controllerLink);
+                }
+
+
+            }
         }
+
+
+
+
     }
 
 
