@@ -388,7 +388,7 @@ export class MovementUtils {
         return true;
     }
 
-    public static xHarvesterMovementSequence(creep:Creep,xTarget:any,extensionLink: any,storage: any,spawns: any,towers: any,extension: any,terminal:StructureTerminal | null) {
+    public static xHarvesterMovementSequence(creep:Creep,xTarget:any,extensionLink: any,storage: any,terminal:StructureTerminal | null) {
 
 
         if(creep.memory.extensionFarm === 1) {

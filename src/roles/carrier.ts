@@ -112,9 +112,9 @@ export class Carrier {
         }
 
 
-        /*
-        if((creep.memory.extensionFarm !== undefined) && commandLevel >= 7) {
-            extension = creep.pos.findInRange(FIND_STRUCTURES,9, {
+
+        if(creep.memory.extensionFarm !== undefined && commandLevel >= 7) {
+            extension = creep.pos.findInRange(FIND_STRUCTURES,5, {
                 filter:  (structure) => {
                     return (
                         (structure.structureType == STRUCTURE_EXTENSION) && structure.room?.controller?.my
@@ -124,7 +124,7 @@ export class Carrier {
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                 }
             })[0] ?? null;
-        }*/
+        }
 
         var spawns = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -241,7 +241,7 @@ export class Carrier {
                     const extensionLink = getLinkByTag(creep,'ExtensionLink2');
                     if(creep.memory.role === 'carrier' && (nearestStorage || links.length >= 3) && creep.room?.controller?.level >= 6 && extensionFarm2Flag) {
                         creep.say("🚚 X2");
-                        MovementUtils.xHarvesterMovementSequence(creep,extensionFarm2Flag,extensionLink,nearestStorage,nearestSpawn[0],towers,extension,terminal);
+                        MovementUtils.xHarvesterMovementSequence(creep,extensionFarm2Flag,extensionLink,nearestStorage,terminal);
 
                     }
                     return;
@@ -250,7 +250,7 @@ export class Carrier {
                 const extensionLink1 = getLinkByTag(creep, 'ExtensionLink');
                 if(creep.memory.role === 'carrier' && (nearestStorage || extensionLink1 || links.length >= 1) && creep.room?.controller?.level >= 5) {
                     creep.say("🚚 X");
-                    MovementUtils.xHarvesterMovementSequence(creep,spawn,extensionLink1,nearestStorage,nearestSpawn[0],towers,extension,terminal);
+                    MovementUtils.xHarvesterMovementSequence(creep,spawn,extensionLink1,nearestStorage,terminal);
                     return;
                 }
             }
