@@ -406,13 +406,11 @@ export class MovementUtils {
 
         if(creep.memory.extensionFarm === 2) {
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
-            if(terminal && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && !extensionLink.store[RESOURCE_ENERGY] && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal);
-                return;
-            }
-             else if(extensionLink && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-
+            if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
+                return;
+            } else if(terminal && terminal.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal);
                 return;
             }
             return;
