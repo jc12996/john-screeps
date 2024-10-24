@@ -50,7 +50,9 @@ export class Settler {
             return;
         }
 
-        ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
+        if(creep.room.controller?.my) {
+            ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
+        }
 
         if(creep.memory.delivering && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.delivering = false;
