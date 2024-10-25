@@ -208,7 +208,7 @@ export class AutoSpawn {
             options = {memory: {role: 'claimer'}};
 
         }
-        else if (commandLevel >= 7 && miners.length > 0 && attackClaimers.length < mineFlags.length) {
+        else if (commandLevel >= 7 && energyAvailable > 2000 && miners.length > 0 && attackClaimers.length < mineFlags.length) {
              name = 'AttackClaimer' + Game.time;
              bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
              options = {memory: {role: 'attackClaimer'}};

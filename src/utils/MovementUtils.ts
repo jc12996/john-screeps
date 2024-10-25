@@ -117,9 +117,9 @@ export class MovementUtils {
 
                 if(flag.name === 'rallyFlag' && creepIsNearFlag && isPatrolCreep) {
 
-                    const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,9,{
+                    const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,3,{
                         filter: (myCreep) => (myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0) || (myCreep.memory.role === 'scout' && !Game.flags.scoutFlag)
-                    }).length >= ((!Game.flags.scoutFlag && Game.flags.startScouting) ? 1 : (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * .75)) ;
+                    }).length >= ((!Game.flags.scoutFlag && Game.flags.startScouting) ? 1 : (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE)) ;
                     if(creepIsInSquad) {
                         const tempRallyFlag  = flag;
                         Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);

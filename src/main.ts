@@ -201,13 +201,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
       Repairer.run(creep);
     }
     if(creep.memory.role == 'attacker') {
+      MovementUtils.callForHelp(creep);
       Attacker.run(creep);
     }
     if(creep.memory.role == 'settler') {
       Settler.run(creep);
     }
     if(creep.memory.role == 'scout') {
-      //MovementUtils.callForHelp(creep);
+      MovementUtils.callForHelp(creep);
       Scout.run(creep);
     }
     if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
@@ -223,10 +224,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
       MeatGrinder.run(creep);
     }
     if(creep.memory.role == 'miner') {
-
+      MovementUtils.callForHelp(creep);
       Miner.run(creep);
     }
-    MovementUtils.callForHelp(creep);
+
 
 
 
