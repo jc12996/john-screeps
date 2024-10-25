@@ -24,7 +24,8 @@ const myFriends = [
     'legendeck',
     'kailin-limble',
     'Redfro',
-    'Matticus'
+    'Matticus',
+    'Source Keeper'
 ];
 // Starter Base for Bot Season 10/2024 - W7S4
 
@@ -70,20 +71,20 @@ export class SpawnUtils {
                 }
             case 'miner':
             case 'settler':
-                if(commandLevel >= 6 && energyAvailable >= 1700) {
+                if(commandLevel >= 7 && energyAvailable >= 2900) {
 
-                    for (let i = 0; i < 16; i++) {
+                    for (let i = 0; i < 21; i++) {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < 21; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
-                }else if(energyAvailable >= 850) {
+                }else if(commandLevel < 7 && energyAvailable >= 850) {
 
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
@@ -97,7 +98,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(energyAvailable >= 400) {
+                else if(commandLevel < 7 &&energyAvailable >= 400) {
 
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
@@ -111,7 +112,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(energyAvailable >= 300) {
+                else if(commandLevel < 7 && energyAvailable >= 300) {
 
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);

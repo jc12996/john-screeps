@@ -246,10 +246,6 @@ export class MovementUtils {
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
             if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controllerLink, {visualizePathStyle: {stroke: "#ffffff"}});
-            }else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
-            }  else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
@@ -257,6 +253,12 @@ export class MovementUtils {
             else if(terminal && commandLevel >= 6 && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal);
                 return;
+            }
+            else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+            else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
 
 

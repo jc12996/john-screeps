@@ -142,10 +142,6 @@ export class AutoSpawn {
             }
         }
 
-        if(commandLevel >= 7) {
-            numberOfNeededDefenders = 0;
-        }
-
         if(!!mineFlag) {
             const mineSources = mineFlag.room?.find(FIND_SOURCES);
 
@@ -164,6 +160,15 @@ export class AutoSpawn {
             numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
 
         }
+
+        if(commandLevel >= 7) {
+            numberOfNeededDefenders = 0;
+            numberOfNeededMiners = numberOfNeededMiners > 2 ? 3:0;
+            if(commandLevel === 7){
+                numberOfNeededUpgraders = numberOfNeededUpgraders * 1.1;
+            }
+        }
+
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
             numberOfNeededCarriers = 8;
@@ -203,12 +208,12 @@ export class AutoSpawn {
             options = {memory: {role: 'claimer'}};
 
         }
-        // else if (miners.length > 0 && attackClaimers.length < mineFlags.length) {
-        //     name = 'AttackClaimer' + Game.time;
-        //     bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
-        //     options = {memory: {role: 'attackClaimer'}};
+        else if (commandLevel >= 7 && miners.length > 0 && attackClaimers.length < mineFlags.length) {
+             name = 'AttackClaimer' + Game.time;
+             bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
+             options = {memory: {role: 'attackClaimer'}};
 
-        // }
+        }
         else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
             && ((
                 !!this.nextClaimFlag

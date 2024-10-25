@@ -91,7 +91,8 @@ export class Miner {
                     creep.moveTo(finalSource);
                 }
             } else {
-                creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+                //creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+                Carrier.run(creep);
             }
 
 

@@ -17,12 +17,25 @@ export class Claimer {
 
 
         if(creep.memory.role === 'attackClaimer') {
-            const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && (!flag.room?.controller?.reservation || flag.room === creep.room));
+            const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && (!flag.room?.controller?.reservation
+                || (flag.room === creep.room && flag.room.controller.reservation.ticksToEnd < 100 && flag.room.find(FIND_CREEPS, {
+                    filter: (claimCreep) => {
+                        return claimCreep.memory && claimCreep.memory?.building === true && claimCreep.memory.role === 'attackClaimer'
+                    }
+                }).length === 0)
+            ));
+
+            if(creep.memory.building && creep.room?.controller) {
+                creep.reserveController(creep.room?.controller);
+                return;
+            }
             if(mineFlags[0]) {
                 const mineRoom = mineFlags[0].room;
                 if(mineRoom?.controller) {
                     const reservationCode = creep.reserveController(mineRoom?.controller);
-
+                    if(reservationCode == OK) {
+                        creep.memory.building = true;
+                    }
                     if((!mineRoom.controller.sign || !mineRoom.controller.sign.text.includes(creep.id)) && creep.signController(mineRoom.controller, "Mine mine mine! -- Xarroc - "+creep.id) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(mineRoom.controller);
                     }
