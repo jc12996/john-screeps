@@ -309,6 +309,28 @@ export class Carrier {
     ) {
 
 
+        if(creep.memory.role === 'miner' && creep.room.controller?.my) {
+            if( nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+                creep.say('🚚 P');
+                creep.moveTo(nearestStorageOrTerminal);
+            } else if(nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 S');
+                creep.moveTo(nearestStorage );
+            }else if(terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 TR');
+                creep.moveTo(terminal );
+            } else if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 C');
+                creep.moveTo(nearestAvailableWorkingRoleCreep);
+            } else if(creep.room.controller?.my) {
+                creep.drop(RESOURCE_ENERGY);
+            }
+
+            if(creep.store[RESOURCE_ENERGY] === 0) {
+                creep.memory.carrying = false;
+            }
+            return;
+        }
 
         if(spawns?.room && spawns?.room.energyAvailable < 300 && extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             if(creep.memory?.extensionFarm === 1) {

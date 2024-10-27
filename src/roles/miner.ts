@@ -88,11 +88,11 @@ export class Miner {
             if(finalSource) {
                 const mineResult = creep.harvest(finalSource);
                 if(mineResult == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(finalSource);
+                    creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
                 }
             } else {
-                //creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-                Carrier.run(creep);
+                creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+
             }
 
 
