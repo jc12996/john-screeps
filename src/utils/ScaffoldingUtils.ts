@@ -157,44 +157,6 @@ export class ScaffoldingUtils {
                     }
                 }
 
-                if(creepOrSpawn.room.controller.level >= 6) {
-                    const hasLevelLabSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                        filter: (extension) => {
-                            extension.structureType === STRUCTURE_LAB && extension.pos.x == pos.x-2 && extension.pos.y == pos.y
-                        }
-                    }).length > 0;
-                    const hasLevelLab = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                        filter: (extension) => {
-                            extension.structureType === STRUCTURE_LAB && extension.pos.x == pos.x-2 && extension.pos.y == pos.y
-                        }
-                    }).length > 0;
-                    if(!hasLevelLab && !hasLevelLabSite) {
-                        //creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y,STRUCTURE_LAB);
-                        //creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y,STRUCTURE_LAB);
-                        //creepOrSpawn.room?.createConstructionSite(pos.x-4,pos.y,STRUCTURE_LAB);
-                    }
-
-                }
-
-                if(creepOrSpawn.room.controller.level >= 7) {
-                    const hasLevelFactory = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                        filter: (extension) => {
-                            extension.structureType === STRUCTURE_FACTORY && extension.pos.x == pos.x-1 && extension.pos.y == pos.y+6
-                        }
-                    }).length > 0;
-                    const hasLevelFactorySite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                        filter: (extension) => {
-                            extension.structureType === STRUCTURE_FACTORY && extension.pos.x == pos.x-1 && extension.pos.y == pos.y+6
-                        }
-                    }).length > 0;
-                    if(!hasLevelFactory && !hasLevelFactorySite) {
-                        //creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_LAB);
-                        //creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_LAB);
-                        //creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+4,STRUCTURE_LAB);
-                        //creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+6,STRUCTURE_FACTORY);
-                    }
-
-                }
 
                 if(creepOrSpawn.room.controller.level === 8) {
                     var hasPowerSpawnSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
@@ -210,7 +172,55 @@ export class ScaffoldingUtils {
                     }).length == 1;
 
                     if(!hasPowerSpawn && !hasPowerSpawnSite) {
-                        //creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y,STRUCTURE_POWER_SPAWN);
+                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_POWER_SPAWN);
+                    }
+
+                    var hasObserverSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_OBSERVER)
+                        }
+                    }).length == 1;
+
+                    var hasObserver = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_OBSERVER)
+                        }
+                    }).length == 1;
+
+                    if(!hasObserverSite && !hasObserver) {
+                        creepOrSpawn.room?.createConstructionSite(pos.x+2,pos.y+3,STRUCTURE_OBSERVER);
+                    }
+
+                    var hasNukerSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_NUKER)
+                        }
+                    }).length == 1;
+
+                    var hasNuker = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_NUKER)
+                        }
+                    }).length == 1;
+
+                    if(!hasNukerSite && !hasNuker) {
+                        creepOrSpawn.room?.createConstructionSite(pos.x+2,pos.y+2,STRUCTURE_NUKER);
+                    }
+
+                    var hasFactorySite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_FACTORY)
+                        }
+                    }).length == 1;
+
+                    var hasFactory = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_FACTORY)
+                        }
+                    }).length == 1;
+
+                    if(!hasFactorySite && !hasFactory) {
+                        creepOrSpawn.room?.createConstructionSite(pos.x+2,pos.y+1,STRUCTURE_FACTORY);
                     }
 
                     const hasLevelTower = creepOrSpawn.room.find(FIND_STRUCTURES, {
