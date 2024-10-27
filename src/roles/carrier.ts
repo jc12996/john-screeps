@@ -222,18 +222,8 @@ export class Carrier {
 
 
 
-
-            let ruinsSource = creep.pos.findClosestByPath(FIND_RUINS, {
-                filter:  (source) => {
-                    return (
-                        source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0
-
-
-                    )
-                }
-            });
-
             MovementUtils.generalGatherMovement(creep)
+
 
         } else if(creep.memory.carrying) {
 
