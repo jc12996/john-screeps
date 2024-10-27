@@ -53,14 +53,8 @@ export class Miner {
                 filter: (creep) => (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 ) && creep.owner.username === 'Invader'
             }).length;
 
-            const mineReserved = mineFlag.room?.controller?.reservation && !mineFlag.room?.controller?.sign?.text.includes('Xarroc') && !mineFlag.room?.controller?.owner;
-            if(mineReserved) {
-                //mineFlag.remove();
-                Carrier.run(creep);
-                return;
-            }
 
-            if(mineReserved || mineHostiles) {
+            if(mineHostiles) {
                 if(creep.room != firstRoom) {
                     creep.say("😨",true)
                     creep.moveTo(firstRoom.find(FIND_CREEPS)[0])
@@ -74,6 +68,37 @@ export class Miner {
             if(creep.room != mineFlag.room) {
                 MovementUtils.goToFlag(creep,mineFlag);
                 return;
+            }
+
+
+            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                filter:  (source) => {
+                    return (
+                        source.amount >= 50
+
+
+                    )
+                }
+            });
+
+            if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+                return
+            }
+
+            const droppedT = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+                filter:  (source) => {
+                    return (
+                        source.store.energy >= 50
+
+
+                    )
+                }
+            });
+
+            if(droppedT && creep.withdraw(droppedT,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedT, {visualizePathStyle: {stroke: '#ffaa00'}});
+                return
             }
 
 

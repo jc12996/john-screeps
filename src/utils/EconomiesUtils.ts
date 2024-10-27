@@ -3,7 +3,7 @@ export enum LowUpkeep {
     Carriers  = 1,// Per Source Slot
     Builder = 2,// Total For Room
     Repairer = 1,// Total for Room
-    Upgrader = 2,// Per Source
+    Upgrader = 1.5,// Per Source
     Defender = 1,// Total Per Room
     DraftedDefenderTotal = 1,
     Claimers = 1,// Worldwide Count
@@ -50,8 +50,8 @@ export enum SeigeEconomy {
 
 export enum WarTimeEconomy {
     //ARMY Economy
-    TOTAL_ATTACKER_SIZE = 4,
-    TOTAL_HEALER_SIZE = 1,
+    TOTAL_ATTACKER_SIZE = 2,
+    TOTAL_HEALER_SIZE = 0,
     TOTAL_DISMANTLER_SIZE =0,
     TOTAL_MEAT_GRINDERS = 0,
     TOTAL_SCOUT_SIZE = 1
