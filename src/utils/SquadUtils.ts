@@ -1,7 +1,7 @@
 import { SpawnUtils } from "./SpawnUtils";
 
 export class SquadUtils {
-    public static squadSize = 6; // 3x2 formation (1 lead healer, 3 attackers, 2 healers)
+    public static squadSize = 9; // 3x3 formation (1 lead healer, 4 attackers, 4 healers)
 
     // Directions for each squad position relative to the lead creep
     public static formationOffsets: Array<{ x: number, y: number }> = [
@@ -147,7 +147,14 @@ export class SquadUtils {
                     continue;
                 }
 
+
+
                 if (target  && Game.flags.attackFlag && creep.room === Game.flags.attackFlag.room) {
+                    if(!creep.pos.inRangeTo(leadHealer.pos, 1) && creep.hits < (creep.hitsMax * .75)) {
+                        creep.moveTo(leadHealer);
+                        continue;
+                    }
+
                     if (creep.pos.inRangeTo(target, 1)) {
                         creep.attack(target);
                     } else {
