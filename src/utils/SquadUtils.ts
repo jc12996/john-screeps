@@ -147,8 +147,8 @@ export class SquadUtils {
                     continue;
                 }
 
-                if (target) {
-                    if (creep.pos.inRangeTo(target, 1) && Game.flags.attackFlag && creep.room === Game.flags.attackFlag.room) {
+                if (target  && Game.flags.attackFlag && creep.room === Game.flags.attackFlag.room) {
+                    if (creep.pos.inRangeTo(target, 1)) {
                         creep.attack(target);
                     } else {
                         creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
