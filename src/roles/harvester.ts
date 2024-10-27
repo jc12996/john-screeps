@@ -104,7 +104,20 @@ export class Harvester {
         } else if(finalSource && creep.harvest(finalSource) === OK) {
             creep.memory.targetSource = finalSource.id;
             creep.drop(RESOURCE_ENERGY,creep.store.energy);
-            ScaffoldingUtils.createContainers(creep);
+
+            var tower = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_TOWER
+
+                    ) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
+                }
+            });
+            if(tower || !container) {
+
+                ScaffoldingUtils.createContainers(creep);
+            }
         }
 
 

@@ -16,7 +16,7 @@ export class MeatGrinder {
                 return;
             }
 
-            if(Game.flags?.preMeatFlag){
+            if(Game.flags?.preMeatFlag && !Game.flags?.attackFlag && !Game.flags?.meatFlag){
                 MovementUtils.goToFlag(creep,Game.flags?.preMeatFlag);
                 return;
             }
@@ -26,10 +26,6 @@ export class MeatGrinder {
                 return;
             }
 
-            if(Game.flags?.meatFlag && !Game.flags?.attackFlag) {
-                MovementUtils.goToFlag(creep,Game.flags?.meatFlag)
-                return;
-            }
             // if(Game.flags?.attackFlag && Game.flags?.attackFlag.room !== creep.room) {
 
             //     MovementUtils.goToAttackFlag(creep)
@@ -56,6 +52,10 @@ export class MeatGrinder {
             if(hostileActiveTowers.length > 0 && nearestExit) {
                creep.moveTo(nearestExit);
                return;
+            } else if(Game.flags?.meatFlag) {
+                creep.moveTo(Game.flags?.meatFlag);
+            } else if(Game.flags?.attackFlag) {
+                creep.moveTo(Game.flags?.attackFlag);
             } else {
                 Attacker.run(creep);
             }

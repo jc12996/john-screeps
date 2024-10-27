@@ -7,6 +7,7 @@ import { MovementUtils } from "utils/MovementUtils";
 import { Carrier } from "./carrier";
 import { Upgrader } from "./upgrader";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
+import { Miner } from "./miner";
 
 export class Settler {
 
@@ -49,7 +50,9 @@ export class Settler {
             return;
         }
 
-        ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
+        if(creep.room.controller?.my) {
+            ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
+        }
 
         if(creep.memory.delivering && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.delivering = false;
@@ -86,6 +89,11 @@ export class Settler {
                 }
             });
 
+            if(!targetSource) {
+                Miner.run(creep)
+                return;
+            }
+
             let ruinsSource = creep.pos.findClosestByPath(FIND_RUINS, {
                 filter:  (source) => {
                     return (
@@ -96,13 +104,15 @@ export class Settler {
                 }
             });
 
-            if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(droppedSources  && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
-                Harvester.run(creep);
-            }
+            MovementUtils.generalGatherMovement(creep,undefined,targetSource);
+
+            // if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            //     creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+            // } else if(droppedSources  && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            // } else if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
+
+            // }
         }else {
 
             var constructSpawn = creep.room.find(FIND_CONSTRUCTION_SITES, {
@@ -120,7 +130,7 @@ export class Settler {
                     Builder.run(creep);
                 }
             } else {
-                Upgrader.run(creep)
+                Builder.run(creep)
             }
 
         }

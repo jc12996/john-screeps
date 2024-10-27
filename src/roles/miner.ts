@@ -49,13 +49,22 @@ export class Miner {
                 return;
             }
 
-            const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS).length;
+            const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS, {
+                filter: (creep) => (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 ) && creep.owner.username === 'Invader'
+            }).length;
 
-            if(mineFlag.room?.controller?.reservation || mineHostiles) {
+            const mineReserved = mineFlag.room?.controller?.reservation && !mineFlag.room?.controller?.sign?.text.includes('Xarroc') && !mineFlag.room?.controller?.owner;
+            if(mineReserved) {
+                //mineFlag.remove();
+                Carrier.run(creep);
+                return;
+            }
+
+            if(mineReserved || mineHostiles) {
                 if(creep.room != firstRoom) {
                     creep.say("😨",true)
                     creep.moveTo(firstRoom.find(FIND_CREEPS)[0])
-                } else{
+                } else if(mineHostiles){
                     Carrier.run(creep);
                 }
                 return;
@@ -82,7 +91,8 @@ export class Miner {
                     creep.moveTo(finalSource);
                 }
             } else {
-                creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+                //creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+                Carrier.run(creep);
             }
 
 
@@ -111,10 +121,11 @@ export class Miner {
 
 
                     ) &&
-                        structure.store[RESOURCE_ENERGY] > 10000;
+                        structure.store[RESOURCE_ENERGY] > 500000;
                 }
             });
-            if(largeStorage || creep.room.energyAvailable == creep.room.energyCapacityAvailable) {
+
+            if((!Game.flags.attackFlag && !Game.flags.draftFlag) && (creep.room.energyAvailable > 1000)) {
 
                 Carrier.run(creep,true);
 

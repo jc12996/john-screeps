@@ -18,6 +18,9 @@ import { PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesU
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Miner } from "roles/miner";
 import { SquadUtils } from "utils/SquadUtils";
+import { sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
+import { Scout } from "roles/scout";
+import { MovementUtils } from "utils/MovementUtils";
 
 declare global {
   /*
@@ -37,24 +40,24 @@ declare global {
 
   interface CreepMemory {
     role: string;
-    room?: string;
-    working?: boolean;
     upgrading?: boolean;
     building?: boolean;
     repairing?: boolean;
     targetSource?: Id<Source>;
     delivering?: boolean;
     carrying?: boolean;
-    carryIndex?: number;
-    friendRampartEntered?: boolean;
     isArmySquad?: boolean;
-    hitWaypointFlag?: boolean;
-    hitWaypointFlag2?: boolean;
-    extensionFarm1?: boolean;
-    roomLevel?: number;
-    extensionFarm2?: boolean;
+    // hitWaypointFlag?: boolean;
+    // hitWaypointFlag2?: boolean;
+    extensionFarm?: number;
     mainUpgrader?: boolean;
     firstSpawnCoords?: string;
+    hasJoinedPatrol?: boolean;
+    numberOfNeededHarvestorSlots?: number;
+  }
+
+  interface FlagMemory {
+    numberOfNeededHarvestorSlots?: number;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
@@ -79,6 +82,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
+  transferEnergyToSpawn1Room();
+  sendEnergyFromSpawn1();
+
   AutoSpawn.run();
 
   for(var room_it in Game.rooms) {
@@ -89,6 +95,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
       handleRamparts({ room: room });
       Tower.defendMyRoom(room)
+
   }
 
 
@@ -136,8 +143,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
     var creep = Game.creeps[name];
 
 
-    // if(!creep.room.controller?.my) {
-    //   creep.suicide();
+    // if(Game.flags.reallocateFlag && creep.memory.firstSpawnCoords === "W3N9" && creep.room.name !== Game.flags.reallocateFlag.room?.name) {
+    //   console.log('reallocating...')
+    //   creep.say("↔")
+    //   creep.moveTo(Game.flags.reallocateFlag);
+    //   return;
     // }
 
     if(creep.memory?.isArmySquad && Memory?.economyType && Game.flags.rallyFlag?.pos &&  creep?.pos &&  Game.flags.stagingFlag &&  !creep.pos.inRangeTo(Game.flags.stagingFlag.pos.x,Game.flags.stagingFlag.pos.y,6)) {
@@ -192,10 +202,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
       Repairer.run(creep);
     }
 
-    if(creep.memory.role == 'settler' || creep.memory.role == 'settlerUpgrader') {
+    if(creep.memory.role == 'settler') {
       Settler.run(creep);
     }
-    if(creep.memory.role == 'claimer') {
+    if(creep.memory.role == 'scout') {
+      MovementUtils.callForHelp(creep);
+      Scout.run(creep);
+    }
+    if(creep.memory.role == 'claimer' || creep.memory.role === 'attackClaimer') {
       Claimer.run(creep);
     }
 
@@ -206,51 +220,63 @@ export const loop = ErrorMapper.wrapLoop(() => {
       MeatGrinder.run(creep);
     }
     if(creep.memory.role == 'miner') {
+      MovementUtils.callForHelp(creep);
       Miner.run(creep);
     }
 
        // Find the flag and the squad
        const flag = Game.flags['SquadFlag'];
        if (!flag) {
-          console.log('No flag found for the squad.');
           if(creep.memory.role == 'healer') {
             Healer.run(creep);
           }
 
           if(creep.memory.role == 'attacker') {
+            MovementUtils.callForHelp(creep);
             Attacker.run(creep);
           }
-          continue;
+       } else if(flag && (creep.memory.role == 'attacker' || creep.memory.role == 'healer')) {
+
+
+          // Find the lead healer
+          const leadHealer = Game.creeps['LeadHealer'];
+          const squad: Creep[] = [];
+
+          // Get attackers and healers
+          for (let name in Game.creeps) {
+              const creep = Game.creeps[name];
+              if (creep.memory.role === 'attacker' || creep.memory.role === 'healer') {
+                  squad.push(creep);
+              }
+          }
+
+          // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
+          if (!leadHealer || squad.length !== SquadUtils.squadSize) {
+            creep.moveTo(Game.flags.SquadFlag)
+            console.log('Forming squad');
+
+            if(creep.name === 'LeadHealer') {
+              creep.say('❤',false);
+            } else if(creep.memory.role === 'attacker') {
+              creep.say('⚔');
+            }
+            else if(creep.memory.role === 'healer') {
+              creep.say('🏥',false);
+            }
+
+            continue;
+
+
+          }
+
+          // Assign the squad to combat, handle breaching or post-breach actions
+          SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
+
+
+
        }
 
 
-      // Find the lead healer
-      const leadHealer = Game.creeps['LeadHealer'];
-      const squad: Creep[] = [];
-
-      // Get attackers and healers
-      for (let name in Game.creeps) {
-          const creep = Game.creeps[name];
-          if (creep.memory.role === 'attacker' || creep.memory.role === 'healer') {
-              squad.push(creep);
-          }
-      }
-
-      // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
-      if (!leadHealer || squad.length !== SquadUtils.squadSize) {
-          console.log('Lead healer or squad not formed correctly.');
-          continue;
-      }
-
-      // Find the breached position (if a wall or rampart has been destroyed)
-      const breachPosition = leadHealer.pos.findClosestByRange(FIND_STRUCTURES, {
-          filter: structure =>
-              (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) &&
-              structure.hits === 0 // Checking for the breached (destroyed) structure
-      });
-
-      // Assign the squad to combat, handle breaching or post-breach actions
-      SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag, breachPosition?.pos ?? null);
 
 
 

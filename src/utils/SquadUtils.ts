@@ -1,3 +1,5 @@
+import { SpawnUtils } from "./SpawnUtils";
+
 export class SquadUtils {
     public static squadSize = 9; // 3x3 formation (1 lead healer, 4 attackers, 4 healers)
 
@@ -30,14 +32,14 @@ export class SquadUtils {
     public static getPriorityTarget(creep: Creep): Structure | Creep | null {
         // 1. Hostile towers
         const towers = creep.room.find(FIND_HOSTILE_STRUCTURES, {
-            filter: (structure) => structure.structureType === STRUCTURE_TOWER
+            filter: (structure) => structure.structureType === STRUCTURE_TOWER && structure.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(structure.owner)
         });
 
         if (towers.length > 0) {
             // Attack rampart if protecting the tower
             const rampartedTowers = towers.filter(tower => {
                 const ramparts = tower.pos.lookFor(LOOK_STRUCTURES);
-                return ramparts.some(s => s.structureType === STRUCTURE_RAMPART);
+                return ramparts.some(s => s.structureType === STRUCTURE_RAMPART) &&  creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner);
             });
 
             if (rampartedTowers.length > 0) {
@@ -57,11 +59,12 @@ export class SquadUtils {
         // 3. Spawns, Extensions, and other economic structures
         const importantStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
             filter: (structure) =>
-                structure.structureType === STRUCTURE_SPAWN ||
+                (structure.structureType === STRUCTURE_SPAWN ||
                 structure.structureType === STRUCTURE_EXTENSION ||
                 structure.structureType === STRUCTURE_STORAGE ||
                 structure.structureType === STRUCTURE_TERMINAL ||
-                structure.structureType === STRUCTURE_LAB
+                structure.structureType === STRUCTURE_LAB) &&
+                structure.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(structure.owner)
         });
 
         if (importantStructures.length > 0) {
@@ -73,7 +76,8 @@ export class SquadUtils {
             filter: (structure) => (
                 structure.structureType !== STRUCTURE_WALL &&
                 structure.structureType !== STRUCTURE_RAMPART &&
-                structure.structureType !== STRUCTURE_ROAD
+                structure.structureType !== STRUCTURE_ROAD &&
+                structure.room.controller?.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(structure.room.controller?.owner)
             )
         });
 
@@ -85,17 +89,20 @@ export class SquadUtils {
     }
 
     // Function to assign creeps to formation and handle attacking/healing
-    public static assignSquadFormationAndCombat(squad: Creep[], leadHealer: Creep, flag: Flag, breachPosition: RoomPosition | null): void {
+    public static assignSquadFormationAndCombat(squad: Creep[], leadHealer: Creep, flag: Flag): void {
+        // Find the breached position (if a wall or rampart has been destroyed)
+        const breachPosition = leadHealer.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: structure =>
+            (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART) &&
+            structure.hits === 0 // Checking for the breached (destroyed) structure
+        })?.pos ?? null;
+
         // Ensure the squad size is 9
         if (squad.length !== this.squadSize) {
             console.log('Squad does not have enough creeps!');
             return;
         }
 
-        // Move the lead healer toward the flag
-        if (!leadHealer.pos.inRangeTo(flag.pos, 1)) {
-            leadHealer.moveTo(flag, { visualizePathStyle: { stroke: '#00ff00' } });
-        }
 
         const damagedSquadMembers = squad.filter(creep => creep.hits < creep.hitsMax);
         let isBreachComplete = breachPosition && this.isWalkable(breachPosition);
@@ -103,46 +110,56 @@ export class SquadUtils {
             isBreachComplete = true;
         }
 
+        if(!leadHealer?.pos || !leadHealer || !leadHealer?.room) {
+            return;
+        }
+
         for (let i = 0; i < squad.length; i++) {
             const creep = squad[i];
             const offset = this.formationOffsets[i];
+
+            // Move the lead healer toward the flag
+            if (creep === leadHealer && !leadHealer.pos.inRangeTo(flag.pos, 1)) {
+
+                leadHealer.moveTo(flag, { visualizePathStyle: { stroke: '#00ff00' } });
+                continue;
+            }
+
             const targetPosition = new RoomPosition(
                 leadHealer.pos.x + offset.x,
                 leadHealer.pos.y + offset.y,
                 leadHealer.room.name
             );
 
-            if (!isBreachComplete && creep.memory.role === 'attacker') {
-                // Breach logic: attack the wall/rampart
-                const targetDefense = leadHealer.pos.findClosestByRange(FIND_STRUCTURES, {
-                    filter: (structure) => structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART
-                });
+            if(creep === leadHealer){
+                creep.say('❤',false);
+            }
 
-                if (targetDefense) {
-                    if (creep.pos.inRangeTo(targetDefense, 1) && creep.room.controller && !creep.room.controller.my) {
-                        creep.attack(targetDefense);
-                    } else {
-                        creep.moveTo(targetDefense, { visualizePathStyle: { stroke: '#ff0000' } });
-                    }
-                }
-            } else if (isBreachComplete) {
+
+
                 // Post-breach logic: prioritize towers and hostile creeps
-                const target = this.getPriorityTarget(creep);
+                const target = this.getPriorityTarget(leadHealer);
 
                 if (creep.memory.role === 'attacker') {
-                    if (target && creep.room.controller && !creep.room.controller.my) {
+                    creep.say('⚔');
+                    if (target) {
                         if (creep.pos.inRangeTo(target, 1) ) {
                             creep.attack(target);
                         } else {
                             creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
                         }
+                        continue;
                     } else {
                         // Move to formation if no target
-                        if (!creep.pos.isEqualTo(targetPosition)) {
-                            creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
-                        }
+                        creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
+
                     }
-                } else if (creep.memory.role === 'healer') {
+                }else  if (creep.memory.role === 'healer') {
+                    if(creep.name === 'LeadHealer') {
+                        creep.say('❤',false);
+                    } else {
+                        creep.say('🏥',false);
+                    }
                     if (damagedSquadMembers.length > 0) {
                         // Heal the most damaged squad member
                         const mostDamaged = creep.pos.findClosestByRange(damagedSquadMembers);
@@ -155,14 +172,11 @@ export class SquadUtils {
                         } else {
                             creep.moveTo(mostDamaged, { visualizePathStyle: { stroke: '#00ff00' } });
                         }
-                    } else {
-                        // Move to formation if no healing is needed
-                        if (!creep.pos.isEqualTo(targetPosition)) {
-                            creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#00ff00' } });
-                        }
                     }
+                } else if(!target) {
+                    creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
                 }
-            }
+
         }
 
         // Lead healer should heal if anyone is damaged
@@ -172,8 +186,10 @@ export class SquadUtils {
                 return;
             }
             if (leadHealer.pos.inRangeTo(mostDamaged, 1)) {
+                leadHealer.say('❤',false);
                 leadHealer.heal(mostDamaged);
             } else {
+                leadHealer.say('❤',false);
                 leadHealer.rangedHeal(mostDamaged);
             }
         }

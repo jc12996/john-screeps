@@ -15,6 +15,39 @@ export class Claimer {
             creep.say('🚩');
         }
 
+
+        if(creep.memory.role === 'attackClaimer') {
+            const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && (!flag.room?.controller?.reservation
+                || (flag.room === creep.room && flag.room.controller.reservation.ticksToEnd < 100 && flag.room.find(FIND_CREEPS, {
+                    filter: (claimCreep) => {
+                        return claimCreep.memory && claimCreep.memory?.building === true && claimCreep.memory.role === 'attackClaimer'
+                    }
+                }).length === 0)
+            ));
+
+            if(creep.memory.building && creep.room?.controller) {
+                creep.reserveController(creep.room?.controller);
+                return;
+            }
+            if(mineFlags[0]) {
+                const mineRoom = mineFlags[0].room;
+                if(mineRoom?.controller) {
+                    const reservationCode = creep.reserveController(mineRoom?.controller);
+                    if(reservationCode == OK) {
+                        creep.memory.building = true;
+                    }
+                    if((!mineRoom.controller.sign || !mineRoom.controller.sign.text.includes(creep.id)) && creep.signController(mineRoom.controller, "Mine mine mine! -- Xarroc - "+creep.id) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(mineRoom.controller);
+                    }
+
+                    if(reservationCode == ERR_NOT_IN_RANGE){
+                        creep.moveTo(mineRoom.controller);
+                    }
+                }
+            }
+            return;
+        }
+
         const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
         if(!canProceed){
             return;
@@ -26,20 +59,33 @@ export class Claimer {
 
             const enemyController = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                 filter: function(object) {
-                    return object.structureType === STRUCTURE_CONTROLLER
+                    return object.structureType === STRUCTURE_CONTROLLER && object.owner?.username !== 'Invader'
                 }
             });
 
+
+
+
             if(!creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller.pos.y,1)) {
-                creep.moveTo(creep.room.controller);
+                if(creep.room.controller) {
+                    if(creep.signController(creep.room.controller, "Mine mine mine! -- Xarroc") == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(creep.room.controller);
+                    }
+                } else {
+                    creep.moveTo(creep.room.controller);
+                }
                 return;
             }
+
+
 
             if(enemyController && creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 //creep.moveTo(creep.room.controller);
             }else if(creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 //creep.moveTo(creep.room.controller);
             }
+
+
 
             const claimTargetCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
                 filter: function(object) {

@@ -1,4 +1,4 @@
-import { PeaceTimeEconomy } from "./EconomiesUtils";
+import { PeaceTimeEconomy, SquadEconomy } from "./EconomiesUtils";
 import { RoomUtils } from "./RoomUtils";
 
 export enum PartCosts {
@@ -17,14 +17,23 @@ export enum PartCosts {
 
 const myFriends = [
     'gnat',
-    'Xarroc'
+    'Xarroc',
+    'legendeck',
+    'Matticus',
+    'dreamlane',
+    'legendeck',
+    'kailin-limble',
+    'Redfro',
+    'Matticus',
+    //'Source Keeper'
 ];
+// Starter Base for Bot Season 10/2024 - W7S4
 
 export class SpawnUtils {
     static SHOW_VISUAL_CREEP_ICONS: boolean = true;
-    public static TOTAL_ATTACKER_SIZE = PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * 1;
-    public static TOTAL_HEALER_SIZE = PeaceTimeEconomy.TOTAL_HEALER_SIZE * 1;
-    public static TOTAL_DISMANTLER_SIZE = PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE *1;
+    public static TOTAL_ATTACKER_SIZE = Game.flags.SquadFlag ? SquadEconomy.TOTAL_ATTACKER_SIZE * 1 : PeaceTimeEconomy.TOTAL_ATTACKER_SIZE * 1;
+    public static TOTAL_HEALER_SIZE = Game.flags.SquadFlag ? SquadEconomy.TOTAL_HEALER_SIZE * 1 : PeaceTimeEconomy.TOTAL_HEALER_SIZE * 1;
+    public static TOTAL_DISMANTLER_SIZE = Game.flags.SquadFlag ? SquadEconomy.TOTAL_DISMANTLER_SIZE * 1 : PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE *1;
     public static  TOTAL_MEAT_GRINDERS = PeaceTimeEconomy.TOTAL_MEAT_GRINDERS * 1;
     public static FRIENDLY_OWNERS_FILTER(owner: Owner | undefined): boolean {
         if(!owner) {
@@ -46,26 +55,10 @@ export class SpawnUtils {
         const energyAvailable = spawn.room.energyAvailable;
 
         switch(archetype) {
+
+            case 'attackClaimer':
             case 'claimer':
-                if(Game.flags.hardClaim && energyAvailable >= 1850) {
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 3; i++) {
-                        partsPattern.push(CLAIM);
-                    }
-                    break;
-                }
-                else if(Game.flags.hardClaim && energyAvailable >= 1250) {
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 2; i++) {
-                        partsPattern.push(CLAIM);
-                    }
-                    break;
-                }
-                else if(energyAvailable >= 650) {
+                if(energyAvailable >= 650) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -76,10 +69,23 @@ export class SpawnUtils {
                 } else {
                     return null;
                 }
-
             case 'miner':
             case 'settler':
-                if(energyAvailable >= 850) {
+                const lowerMiner = commandLevel < 7 || (commandLevel >= 7 && energyAvailable < 1000)
+                if(commandLevel >= 7 && energyAvailable >= 2900) {
+
+                    for (let i = 0; i < 21; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 21; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }else if(lowerMiner && energyAvailable >= 850) {
 
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
@@ -92,7 +98,8 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                } else if(energyAvailable >= 400) {
+                }
+                else if(lowerMiner &&energyAvailable >= 400) {
 
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
@@ -105,7 +112,23 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                } else {
+                }
+                else if(lowerMiner && energyAvailable >= 300) {
+
+                    for (let i = 0; i < 2; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 2; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+
+                else {
                     return null;
                 }
             case 'carrier':
@@ -170,7 +193,7 @@ export class SpawnUtils {
                 }
             case 'upgrader':
 
-                if(commandLevel >= 7 && energyAvailable >= 1300) {
+                if(commandLevel <= 7 && energyAvailable >= 1300) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -182,7 +205,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(energyAvailable >= 800) {
+                else if(commandLevel <= 7 && energyAvailable >= 800) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -231,12 +254,19 @@ export class SpawnUtils {
                     return null;
                 }
             case 'defender':
+                if(commandLevel == 8 && Game.flags.draftFlag && energyAvailable >= 2800) {
 
-                if(energyAvailable >= 2000) {
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
+                    for (let i = 0; i < 40; i++) {
+                        partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 22; i++) {
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(ATTACK);
+                    }
+
+                    break;
+                }
+                else if(energyAvailable >= 2000) {
+                    for (let i = 0; i < 24; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
@@ -245,22 +275,16 @@ export class SpawnUtils {
                     break;
                 } else if(energyAvailable >= 1500) {
 
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 12; i++) {
+                    for (let i = 0; i < 14; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(ATTACK);
                     }
                     break;
-                }  else if(energyAvailable >= 800) {
+                }  else if(energyAvailable >= 770) {
 
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 9; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 4; i++) {
@@ -275,106 +299,71 @@ export class SpawnUtils {
                 else {
                     return null;
                 }
-            case 'dismantler':
-
-                if(energyAvailable >= 3100) {
-                    for (let i = 0; i < 20; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 10; i++) {
+            case 'meatGrinder':
+                if(energyAvailable >= 1100) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(TOUGH);
                     }
                     for (let i = 0; i < 20; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    break;
-                } else if(energyAvailable >= 1300) {
-                    for (let i = 0; i < 10; i++) {
                         partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 7; i++) {
-                        partsPattern.push(WORK);
                     }
                     break;
                 } else {
                     return null;
                 }
-            case 'meatGrinder':
-                if(energyAvailable >= 1500) {
-                    for (let i = 0; i < 25; i++) {
-                        partsPattern.push(TOUGH);
-                    }
+            case 'healer':
+                if(energyAvailable >= 3250) {
                     for (let i = 0; i < 25; i++) {
                         partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(HEAL);
                     }
                     break;
                 } else {
                     return null;
                 }
             case 'attacker':
-                if(energyAvailable >= 2340) {
+                if(energyAvailable >= 3250) {
 
-
-                    for (let i = 0; i < 18; i++) {
+                    for (let i = 0; i < 25; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 18; i++) {
+                    for (let i = 0; i < 25; i++) {
                         partsPattern.push(ATTACK);
                     }
-                    break;
-                }
-                else if(energyAvailable >= 130) {
 
-
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(ATTACK);
-                    }
                     break;
                 }
                 else {
                    return null;
                 }
-            case 'healer':
-                if(energyAvailable >= 4030) {
-                    for (let i = 0; i < 3; i++) {
-                        partsPattern.push(TOUGH);
-                    }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 14; i++) {
-                        partsPattern.push(HEAL);
-                    }
-                    break;
-                } else if(energyAvailable >= 2250) {
+            case 'scout':
+                if(energyAvailable >= 2500) {
 
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 50; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 7; i++) {
-                        partsPattern.push(HEAL);
-                    }
+
                     break;
                 }
-                else if(energyAvailable >= 300) {
-
-                    for (let i = 0; i < 1; i++) {
+                else {
+                    return null;
+                }
+            case 'dismantler':
+                if(energyAvailable >= 3100) {
+                    for (let i = 0; i < 22; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(HEAL);
+                    for (let i = 0; i < 20; i++) {
+                        partsPattern.push(WORK);
                     }
                     break;
                 }
                 else {
                     return null;
                 }
+
 
         }
 
