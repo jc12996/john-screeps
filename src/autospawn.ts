@@ -174,6 +174,11 @@ export class AutoSpawn {
             numberOfNeededCarriers = 8;
         }
 
+        if(commandLevel >= 8 && numberOfNeededCarriers >= 3) {
+            numberOfNeededCarriers = 3;
+        }
+
+
         if(commandLevel >= 6 && numberOfNeededUpgraders >= 8) {
             numberOfNeededUpgraders = 8;
         }
@@ -240,7 +245,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,numberOfNeededHarvesters)
             options = {memory: {role: 'harvester'}}
         }
-        else if(spawn.room.energyCapacityAvailable > 250 && hostileCreeps.length == 0 && carriers.length >= 2 && (upgraders.length < 3)) {
+        else if(spawn.room.energyCapacityAvailable > 250 && hostileCreeps.length == 0 && carriers.length >= 2 && (upgraders.length < numberOfNeededUpgraders)) {
             name = 'Upgrader' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
             options = {memory: {role: 'upgrader'}                }

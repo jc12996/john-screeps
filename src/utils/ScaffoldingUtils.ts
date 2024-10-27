@@ -107,6 +107,7 @@ export class ScaffoldingUtils {
                         creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+4,STRUCTURE_EXTENSION);
                         creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+2,STRUCTURE_EXTENSION);
                         creepOrSpawn.room?.createConstructionSite(pos.x-3,pos.y+2,STRUCTURE_TOWER);
+
                     }
 
                 }
@@ -210,6 +211,22 @@ export class ScaffoldingUtils {
 
                     if(!hasPowerSpawn && !hasPowerSpawnSite) {
                         //creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y,STRUCTURE_POWER_SPAWN);
+                    }
+
+                    const hasLevelTower = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                        filter: (extension) => {
+                            extension.structureType === STRUCTURE_TOWER && extension.pos.x == pos.x-2 && extension.pos.y == pos.y+3
+                        }
+                    }).length > 0;
+                    const hasLevelTowerSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                        filter: (extension) => {
+                            extension.structureType === STRUCTURE_TOWER && extension.pos.x == pos.x-2 && extension.pos.y == pos.y+3
+                        }
+                    }).length > 0;
+                    if(!hasLevelTower && !hasLevelTowerSite) {
+                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_TOWER);
+                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+7,STRUCTURE_TOWER);
+                        creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+3,STRUCTURE_TOWER);
                     }
                 }
 
@@ -407,13 +424,13 @@ export class ScaffoldingUtils {
 
                 const hasLevelExtensionsSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
                     filter: (extension) => {
-                        extension.structureType === STRUCTURE_EXTENSION && extension.pos.x == pos.x-6 && extension.pos.y == pos.y+4
+                        extension.structureType === STRUCTURE_EXTENSION && extension.pos.x == pos.x && extension.pos.y == pos.y+6
                     }
                 }).length > 0;
 
                 const hasLevelExtensions = creepOrSpawn.room.find(FIND_STRUCTURES, {
                     filter: (extension) => {
-                        extension.structureType === STRUCTURE_EXTENSION && extension.pos.x == pos.x-6 && extension.pos.y == pos.y+4
+                        extension.structureType === STRUCTURE_EXTENSION && extension.pos.x == pos.x && extension.pos.y == pos.y+6
                     }
                 }).length > 0;
 
@@ -430,6 +447,15 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+6,STRUCTURE_EXTENSION);
                     creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y-1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-5,pos.y-1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-7,pos.y+1,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+5,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-5,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+6,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y,STRUCTURE_EXTENSION);
+                    creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+1,STRUCTURE_EXTENSION);
                 }
                 // Walls on 2nd extension here when hit level 8
                 if(Game.flags[creepOrSpawn.room.name+'HasWalls']) {
@@ -442,14 +468,14 @@ export class ScaffoldingUtils {
                     }
                 }).length == 3;
 
-                var hasThirdSpawnSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_SPAWN)
-                    }
-                }).length == 3;
+                if(!hasThirdSpawn) {
 
-                if(!hasThirdSpawn && !hasThirdSpawnSite) {
-                    creepOrSpawn.room?.createConstructionSite(pos.x-6,pos.y+6,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
+                    const spawns = _.filter(Game.spawns, (spawn) => { return spawn.owner.username === 'Xarroc' });
+
+
+                    const newSpawnName = 'Spawn'+(spawns.length + 1);
+                    const createSpawn = creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_SPAWN, newSpawnName);
+                    console.log('createSpawn',createSpawn, newSpawnName)
                 }
 
 
