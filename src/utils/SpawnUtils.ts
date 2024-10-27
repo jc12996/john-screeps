@@ -71,7 +71,7 @@ export class SpawnUtils {
                 }
             case 'miner':
             case 'settler':
-                const lowerMiner = commandLevel < 7 || (commandLevel >= 7 && energyAvailable < 1000)
+
                 if(commandLevel >= 7 && energyAvailable >= 2900) {
 
                     for (let i = 0; i < 21; i++) {
@@ -85,7 +85,7 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                }else if(lowerMiner && energyAvailable >= 850) {
+                }else if( energyAvailable >= 850) {
 
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
@@ -99,7 +99,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(lowerMiner &&energyAvailable >= 400) {
+                else if(energyAvailable >= 400) {
 
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
@@ -113,7 +113,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(lowerMiner && energyAvailable >= 300) {
+                else if(energyAvailable >= 300) {
 
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);

@@ -362,7 +362,7 @@ export class Carrier {
             }
             creep.moveTo(extension);
         }
-        if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && terminal && terminal.store[RESOURCE_ENERGY] < 100000 && storage?.store?.energy > 20000) {
+        if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && terminal && terminal.store[RESOURCE_ENERGY] < 300000) {
 
             if(creep.store[RESOURCE_ENERGY] > 0 && terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 TR');
