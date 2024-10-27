@@ -66,7 +66,7 @@ export class ScaffoldingUtils {
 
             ScaffoldingUtils.createRoadX(creepOrSpawn);
 
-            if(!Game.flags[creepOrSpawn.room.name+'NoWalls']) {
+            if(Game.flags[creepOrSpawn.room.name+'HasWalls']) {
                 ScaffoldingUtils.createBaseWallsAndRamparts(creepOrSpawn);
             }
 
@@ -432,8 +432,8 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+6,STRUCTURE_EXTENSION);
                 }
                 // Walls on 2nd extension here when hit level 8
-                if(!Game.flags[creepOrSpawn.room.name+'NoWalls']) {
-                   // ScaffoldingUtils.createBaseWallsAndRamparts(creepOrSpawn,flag);
+                if(Game.flags[creepOrSpawn.room.name+'HasWalls']) {
+                   ScaffoldingUtils.createBaseWallsAndRamparts(creepOrSpawn,flag);
                 }
 
                 var hasThirdSpawn = creepOrSpawn.room.find(FIND_STRUCTURES, {

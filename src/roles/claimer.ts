@@ -36,11 +36,9 @@ export class Claimer {
                     if(reservationCode == OK) {
                         creep.memory.building = true;
                     }
-                    if((!mineRoom.controller.sign || !mineRoom.controller.sign.text.includes(creep.id)) && creep.signController(mineRoom.controller, "Mine mine mine! -- Xarroc - "+creep.id) == ERR_NOT_IN_RANGE) {
+                    if(creep.signController(mineRoom.controller, "Mine mine mine!") == ERR_NOT_IN_RANGE) {
                         creep.moveTo(mineRoom.controller);
-                    }
-
-                    if(reservationCode == ERR_NOT_IN_RANGE){
+                    }else if(reservationCode == ERR_NOT_IN_RANGE){
                         creep.moveTo(mineRoom.controller);
                     }
                 }
@@ -68,7 +66,7 @@ export class Claimer {
 
             if(!creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller.pos.y,1)) {
                 if(creep.room.controller) {
-                    if(creep.signController(creep.room.controller, "Mine mine mine! -- Xarroc") == ERR_NOT_IN_RANGE) {
+                    if(creep.signController(creep.room.controller, "Mine mine mine! -- X") == ERR_NOT_IN_RANGE) {
                         creep.moveTo(creep.room.controller);
                     }
                 } else {

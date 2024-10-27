@@ -116,6 +116,8 @@ export class Upgrader {
                     }
                 }
 
+            } else if(creep.room.controller && creep.room.controller.my && !creep.room.controller.sign && creep.signController(creep.room.controller, "X") == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller);
             } else if(creep.room.controller && creep.room.controller.my &&
                 creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);

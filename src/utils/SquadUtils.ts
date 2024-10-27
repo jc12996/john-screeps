@@ -1,7 +1,7 @@
 import { SpawnUtils } from "./SpawnUtils";
 
 export class SquadUtils {
-    public static squadSize = 9; // 3x3 formation (1 lead healer, 4 attackers, 4 healers)
+    public static squadSize = 4; // 3x3 formation (1 lead healer, 4 attackers, 4 healers)
 
     // Directions for each squad position relative to the lead creep
     public static formationOffsets: Array<{ x: number, y: number }> = [
@@ -123,11 +123,20 @@ export class SquadUtils {
 
             if(keepersLairs.length && creep.room === flag.room) {
                 const mostClosestSpawningKeepersLairs = keepersLairs.filter((lair)=> {
-                    return lair.ticksToSpawn && lair.ticksToSpawn < 20
+                    return lair.ticksToSpawn && lair.ticksToSpawn < 60
                 });
 
                 if(mostClosestSpawningKeepersLairs.length > 0) {
                     Game.flags.SquadFlag.setPosition(mostClosestSpawningKeepersLairs[0].pos);
+                }
+
+                if(keepersLairs.length >= 4 && Game.flags[creep.room.name+'KeeperMine']) {
+                    const keepers = creep.room.find(FIND_HOSTILE_CREEPS);
+                    if(keepers.length < keepersLairs.length) {
+                        Game.flags[creep.room.name+'MineFlag'].setPosition(keepersLairs[0].pos);
+                    } else if(Game.flags[creep.room.name+'MineFlag']) {
+                        Game.flags[creep.room.name+'MineFlag'].remove();
+                    }
                 }
 
             }
@@ -148,8 +157,9 @@ export class SquadUtils {
             }
 
 
-            if(!leadHealer){
+            if(!leadHealer || !leadHealer?.pos || offset?.x ===undefined){
                 creep.moveTo(Game.flags.SquadFlag)
+                continue;
             }
 
             const targetPosition = new RoomPosition(
