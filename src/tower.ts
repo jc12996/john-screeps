@@ -40,7 +40,7 @@ export class Tower {
 
         const roads = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrength * extensionFillThresholdPercentage)
+                return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrength)
             }
         });
 

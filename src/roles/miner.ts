@@ -107,31 +107,11 @@ export class Miner {
                 return;
             }
 
-            const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
-                filter:  (creep) => {
-                    return (
-                       ( creep.memory.role === 'builder' || creep.memory.role === 'upgrader') && creep.store.getFreeCapacity() > 0)
-                }
-            });
-
-            const largeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter:  (structure) => {
-                    return (
-                       structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+            const sites = creep.room.find(FIND_MY_CONSTRUCTION_SITES);
+            const upgradeOrBuildOnlyTranser = (sites.length > 0 && creep.room.controller?.my) || ((!Game.flags.attackFlag && !Game.flags.draftFlag) && (creep.room.energyAvailable > 1000))
+            Carrier.run(creep,upgradeOrBuildOnlyTranser);
 
 
-                    ) &&
-                        structure.store[RESOURCE_ENERGY] > 500000;
-                }
-            });
-
-            if((!Game.flags.attackFlag && !Game.flags.draftFlag) && (creep.room.energyAvailable > 1000)) {
-
-                Carrier.run(creep,true);
-
-            } else {
-                Carrier.run(creep);
-            }
 
 
 

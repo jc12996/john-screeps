@@ -5,7 +5,7 @@ import { RoomUtils } from "utils/RoomUtils";
 
 export class Carrier {
 
-    public static run(creep: Creep, upgradeOnly:boolean = false): void {
+    public static run(creep: Creep, upgradeOrBuildOnly:boolean = false): void {
 
         const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -37,9 +37,6 @@ export class Carrier {
         let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
         const commandLevel =  creep.room?.controller?.level ?? 1;
 
-        const extensionCount = creep.room.find(FIND_STRUCTURES, {
-            filter: (stru) => stru.structureType === STRUCTURE_EXTENSION
-        }).length
 
         const storage:StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -62,6 +59,15 @@ export class Carrier {
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
         }) ?? null;
+
+
+        const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath((FIND_STRUCTURES),{
+                filter: (structure) => {
+                    return (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE)  &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.room?.controller?.my;
+                }
+            } )
+
 
 
 
@@ -171,13 +177,6 @@ export class Carrier {
             }
         });
 
-        let sources = 4;
-        if(spawns) {
-            //sources = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawns as StructureSpawn);
-        }
-
-
-
 
         const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
             filter: (flag) => {
@@ -286,7 +285,7 @@ export class Carrier {
             });
             const prioritySpawn = (creep.room.controller && spawns && creep.room.controller?.level <= 4) ? spawns : nearestSpawn[0];
 
-            if(upgradeOnly && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if(upgradeOrBuildOnly && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
 
                 creep.say('🚚 C');
 
@@ -311,7 +310,9 @@ export class Carrier {
                 extensionLinkFlag,
                 spawn,
                 extensionLinkFlag2,
-                nearestSpawn);
+                nearestSpawn,
+                nearestStorageOrTerminal
+            );
 
 
 
@@ -349,18 +350,11 @@ export class Carrier {
         extensionLinkFlag:any,
         spawn: any,
         extensionLinkFlag2:any,
-        nearestSpawn: any
+        nearestSpawn: any,
+        nearestStorageOrTerminal: any
     ) {
 
-        let nearestStorageOrTerminal = null;
-        if(terminal && storage && creep.memory?.extensionFarm === undefined ){
-            nearestStorageOrTerminal = creep.pos.findClosestByPath((FIND_MY_STRUCTURES),{
-                filter: (structure) => {
-                    return (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE)  &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                }
-            } ) as AnyStructure ?? null
-        }
+
 
         if(spawns?.room && spawns?.room.energyAvailable < 300 && extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             if(creep.memory?.extensionFarm === 1) {
@@ -373,7 +367,7 @@ export class Carrier {
             creep.moveTo(extension);
         }
         else if(carriers.length > 2 && nearestStorageOrTerminal && creep.memory?.extensionFarm === undefined  &&  creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
-            creep.say('🚚 STR');
+            creep.say('🚚 P');
             creep.moveTo(nearestStorageOrTerminal);
         }
         else if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && nearestStorage  && links.length >= 3 ) {
