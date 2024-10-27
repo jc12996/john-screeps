@@ -207,6 +207,13 @@ export class MovementUtils {
             terminal = null;
         }
 
+        const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath((FIND_STRUCTURES),{
+            filter: (structure) => {
+                return (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE)  &&
+                structure.store[RESOURCE_ENERGY] > 0 && structure.room?.controller?.my;
+            }
+        } )
+
 
         const hasStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
@@ -249,11 +256,14 @@ export class MovementUtils {
             } else if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controllerLink, {visualizePathStyle: {stroke: "#ffffff"}});
             }
+            else if(nearestStorageOrTerminal && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
+            }
             else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
             }
             else if(terminal && commandLevel >= 6 && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal);
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: "#ffffff"}});
                 return;
             }
             else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

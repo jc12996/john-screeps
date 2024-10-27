@@ -111,12 +111,6 @@ export class Miner {
             const upgradeOrBuildOnlyTranser = (sites.length > 0 && creep.room.controller?.my) || ((!Game.flags.attackFlag && !Game.flags.draftFlag) && (creep.room.energyAvailable > 1000))
             Carrier.run(creep,upgradeOrBuildOnlyTranser);
 
-
-
-
-
-
-
         }
     }
 

@@ -197,16 +197,6 @@ export class Carrier {
 
 
         if(!creep.memory.carrying) {
-            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-                filter:  (source) => {
-                    return (
-                        source.amount >= 50 && source.room?.controller?.my
-
-
-                    )
-                }
-            });
-
 
             if(spawn && spawn?.pos && (creep.memory.extensionFarm === 2 || creep.memory.extensionFarm === 1) &&  creep.room?.controller  && creep.room?.controller.my) {
 
