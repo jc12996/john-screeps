@@ -271,12 +271,12 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
             options = {memory: {role: 'attacker', isArmySquad:true}};
         }
-        else if(isSquadPatrol && !Game.flags.rallyFlag2 && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
+        else if(isSquadPatrol && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
             name = 'Dismantler' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
             options = {memory: {role: 'dismantler', isArmySquad:true}};
         }
-        else if(isSquadPatrol && !Game.flags.rallyFlag2 && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
+        else if(isSquadPatrol && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
             name = 'Healer' + Game.time;
 
             const leadHealer = Game.creeps['LeadHealer'];

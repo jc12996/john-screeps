@@ -54,6 +54,7 @@ declare global {
     firstSpawnCoords?: string;
     hasJoinedPatrol?: boolean;
     numberOfNeededHarvestorSlots?: number;
+    leadHealer?: boolean;
   }
 
   interface FlagMemory {
@@ -239,7 +240,14 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
 
           // Find the lead healer
-          const leadHealer = Game.creeps['LeadHealer'];
+          let healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
+          let leadHealers = healers.filter((leadHealer) => leadHealer.memory.leadHealer);
+          if(leadHealers.length === 0) {
+            healers[0].memory.leadHealer = true;
+            healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
+            leadHealers = healers.filter((leadHealer) => leadHealer.memory.leadHealer);
+          }
+          const leadHealer = leadHealers[0] ?? healers[0];
           const squad: Creep[] = [];
 
           // Get attackers and healers
@@ -250,27 +258,30 @@ export const loop = ErrorMapper.wrapLoop(() => {
               }
           }
 
+          if(creep === leadHealer) {
+            creep.say('❤',false);
+          } else if(creep.memory.role === 'attacker') {
+            creep.say('⚔');
+          }
+          else if(creep.memory.role === 'healer') {
+            creep.say('🏥',false);
+          }
+
+
           // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
-          if (!leadHealer || squad.length !== SquadUtils.squadSize) {
+          if (!leadHealer || squad.length < SquadUtils.squadSize) {
             creep.moveTo(Game.flags.SquadFlag)
             console.log('Forming squad');
 
-            if(creep.name === 'LeadHealer') {
-              creep.say('❤',false);
-            } else if(creep.memory.role === 'attacker') {
-              creep.say('⚔');
-            }
-            else if(creep.memory.role === 'healer') {
-              creep.say('🏥',false);
-            }
-
-            continue;
 
 
+
+          } else {
+            // Assign the squad to combat, handle breaching or post-breach actions
+            SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
           }
 
-          // Assign the squad to combat, handle breaching or post-breach actions
-          SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
+
 
 
 

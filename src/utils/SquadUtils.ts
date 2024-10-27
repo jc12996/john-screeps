@@ -1,7 +1,7 @@
 import { SpawnUtils } from "./SpawnUtils";
 
 export class SquadUtils {
-    public static squadSize = 9; // 3x3 formation (1 lead healer, 4 attackers, 4 healers)
+    public static squadSize = 6; // 3x2 formation (1 lead healer, 3 attackers, 2 healers)
 
     // Directions for each squad position relative to the lead creep
     public static formationOffsets: Array<{ x: number, y: number }> = [
@@ -98,7 +98,7 @@ export class SquadUtils {
         })?.pos ?? null;
 
         // Ensure the squad size is 9
-        if (squad.length !== this.squadSize) {
+        if (squad.length  < this.squadSize) {
             console.log('Squad does not have enough creeps!');
             return;
         }
@@ -110,20 +110,18 @@ export class SquadUtils {
             isBreachComplete = true;
         }
 
-        if(!leadHealer?.pos || !leadHealer || !leadHealer?.room) {
-            return;
-        }
 
         for (let i = 0; i < squad.length; i++) {
             const creep = squad[i];
             const offset = this.formationOffsets[i];
 
-            // Move the lead healer toward the flag
-            if (creep === leadHealer && !leadHealer.pos.inRangeTo(flag.pos, 1)) {
-
-                leadHealer.moveTo(flag, { visualizePathStyle: { stroke: '#00ff00' } });
+            if(creep !== leadHealer && creep.room !== leadHealer.room) {
+                creep.moveTo(Game.flags.SquadFlag)
                 continue;
             }
+
+
+
 
             const targetPosition = new RoomPosition(
                 leadHealer.pos.x + offset.x,
@@ -137,61 +135,87 @@ export class SquadUtils {
 
 
 
-                // Post-breach logic: prioritize towers and hostile creeps
-                const target = this.getPriorityTarget(leadHealer);
 
-                if (creep.memory.role === 'attacker') {
-                    creep.say('⚔');
-                    if (target) {
-                        if (creep.pos.inRangeTo(target, 1) ) {
-                            creep.attack(target);
-                        } else {
-                            creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
-                        }
-                        continue;
-                    } else {
-                        // Move to formation if no target
-                        creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
+            // Post-breach logic: prioritize towers and hostile creeps
+            const target = this.getPriorityTarget(leadHealer);
 
-                    }
-                }else  if (creep.memory.role === 'healer') {
-                    if(creep.name === 'LeadHealer') {
-                        creep.say('❤',false);
-                    } else {
-                        creep.say('🏥',false);
-                    }
-                    if (damagedSquadMembers.length > 0) {
-                        // Heal the most damaged squad member
-                        const mostDamaged = creep.pos.findClosestByRange(damagedSquadMembers);
-                        if(!mostDamaged) {
-                            creep.moveTo(targetPosition);
-                            return;
-                        }
-                        if (creep.pos.inRangeTo(mostDamaged, 1)) {
-                            creep.heal(mostDamaged);
-                        } else {
-                            creep.moveTo(mostDamaged, { visualizePathStyle: { stroke: '#00ff00' } });
-                        }
-                    }
-                } else if(!target) {
-                    creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
+            if (creep.memory.role === 'attacker') {
+
+
+                creep.say('⚔');
+                if(creep.room !== leadHealer.room){
+                    continue;
                 }
 
+                if (target) {
+                    if (creep.pos.inRangeTo(target, 1) && Game.flags.attackFlag && creep.room === Game.flags.attackFlag.room) {
+                        creep.attack(target);
+                    } else {
+                        creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
+                    }
+                    continue;
+                } else {
+                    // Move to formation if no target
+                    creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
+
+                }
+            }else  if (creep.memory.role === 'healer') {
+                if(creep.memory.leadHealer) {
+                    creep.say('❤',false);
+                } else {
+                    creep.say('🏥',false);
+                    if(creep.room !== leadHealer.room){
+                        continue;
+                    }
+
+                }
+                if (damagedSquadMembers.length > 0) {
+                    // Heal the most damaged squad member
+                    const mostDamaged = creep.pos.findClosestByRange(damagedSquadMembers);
+                    if(!mostDamaged) {
+                        creep.moveTo(targetPosition);
+                        return;
+                    }
+                    if (creep.pos.inRangeTo(mostDamaged, 1)) {
+                        creep.heal(mostDamaged);
+                    } else {
+                        creep.moveTo(mostDamaged, { visualizePathStyle: { stroke: '#00ff00' } });
+                    }
+                } else if(creep !== leadHealer) {
+                    // Move to formation if no target
+                    creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
+
+                } else if (creep === leadHealer && !leadHealer.pos.inRangeTo(flag.pos, 1)) { // Move the lead healer toward the flag
+
+                    // Lead healer should heal if anyone is damaged
+                    if (damagedSquadMembers.length > 0) {
+                        const mostDamaged = leadHealer.pos.findClosestByRange(damagedSquadMembers);
+                        if(!mostDamaged) {
+                            leadHealer.moveTo(flag, { visualizePathStyle: { stroke: '#00ff00' } });
+                            return;
+                        }
+                        if (leadHealer.pos.inRangeTo(mostDamaged, 1)) {
+                            leadHealer.say('❤',false);
+                            leadHealer.heal(mostDamaged);
+                        } else {
+                            leadHealer.say('❤',false);
+                            leadHealer.rangedHeal(mostDamaged);
+                        }
+                    }else {
+                        leadHealer.moveTo(flag, { visualizePathStyle: { stroke: '#00ff00' } });
+                    }
+                    continue;
+                }
+            } else if(!target) {
+                creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
+            } else {
+                // Move to formation if no target
+                creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });
+
+            }
+
         }
 
-        // Lead healer should heal if anyone is damaged
-        if (damagedSquadMembers.length > 0) {
-            const mostDamaged = leadHealer.pos.findClosestByRange(damagedSquadMembers);
-            if(!mostDamaged) {
-                return;
-            }
-            if (leadHealer.pos.inRangeTo(mostDamaged, 1)) {
-                leadHealer.say('❤',false);
-                leadHealer.heal(mostDamaged);
-            } else {
-                leadHealer.say('❤',false);
-                leadHealer.rangedHeal(mostDamaged);
-            }
-        }
+
     }
 }

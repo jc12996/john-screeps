@@ -313,7 +313,7 @@ export class SpawnUtils {
                 }
             case 'healer':
                 if(energyAvailable >= 3250) {
-                    for (let i = 0; i < 25; i++) {
+                    for (let i = 0; i < 20; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 8; i++) {
