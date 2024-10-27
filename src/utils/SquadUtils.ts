@@ -115,13 +115,42 @@ export class SquadUtils {
             const creep = squad[i];
             const offset = this.formationOffsets[i];
 
+            const keepersLairs = creep.room.find(FIND_STRUCTURES, {
+                filter: function(structure) {
+                    return structure.structureType === STRUCTURE_KEEPER_LAIR;
+                }
+                }) as StructureKeeperLair[];
+
+            if(keepersLairs.length && creep.room === flag.room) {
+                const mostClosestSpawningKeepersLairs = keepersLairs.filter((lair)=> {
+                    return lair.ticksToSpawn && lair.ticksToSpawn < 20
+                });
+
+                if(mostClosestSpawningKeepersLairs.length > 0) {
+                    Game.flags.SquadFlag.setPosition(mostClosestSpawningKeepersLairs[0].pos);
+                }
+
+            }
+
+            if(leadHealer && leadHealer === creep && leadHealer.room !== Game.flags.SquadFlag.room){
+                leadHealer.moveTo(Game.flags.SquadFlag, { visualizePathStyle: { stroke: '#ffffff' } });
+                continue;
+            }
+
             if(creep !== leadHealer && creep.room !== leadHealer.room) {
-                creep.moveTo(Game.flags.SquadFlag)
+                creep.moveTo(Game.flags.SquadFlag, { visualizePathStyle: { stroke: '#ffffff' } });
+                continue;
+            }
+
+            if(creep !== leadHealer && creep.room !== leadHealer.room){
+                creep.moveTo(Game.flags.SquadFlag, { visualizePathStyle: { stroke: '#ffffff' } });
                 continue;
             }
 
 
-
+            if(!leadHealer){
+                creep.moveTo(Game.flags.SquadFlag)
+            }
 
             const targetPosition = new RoomPosition(
                 leadHealer.pos.x + offset.x,
@@ -144,6 +173,7 @@ export class SquadUtils {
 
                 creep.say('⚔');
                 if(creep.room !== leadHealer.room){
+                    creep.moveTo(Game.flags.SquadFlag, { visualizePathStyle: { stroke: '#ffffff' } });
                     continue;
                 }
 
@@ -172,6 +202,7 @@ export class SquadUtils {
                 } else {
                     creep.say('🏥',false);
                     if(creep.room !== leadHealer.room){
+                        creep.moveTo(Game.flags.SquadFlag, { visualizePathStyle: { stroke: '#ffffff' } });
                         continue;
                     }
 
@@ -211,7 +242,6 @@ export class SquadUtils {
                     }else {
                         leadHealer.moveTo(flag, { visualizePathStyle: { stroke: '#00ff00' } });
                     }
-                    continue;
                 }
             } else if(!target) {
                 creep.moveTo(targetPosition, { visualizePathStyle: { stroke: '#ffffff' } });

@@ -272,15 +272,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
           if (!leadHealer || squad.length < SquadUtils.squadSize) {
             creep.moveTo(Game.flags.SquadFlag)
             console.log('Forming squad');
-
-
-
-
           } else {
             // Assign the squad to combat, handle breaching or post-breach actions
             SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
           }
-
 
 
 
