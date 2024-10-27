@@ -352,6 +352,16 @@ export class Carrier {
         nearestSpawn: any
     ) {
 
+        let nearestStorageOrTerminal = null;
+        if(terminal && storage && creep.memory?.extensionFarm === undefined ){
+            nearestStorageOrTerminal = creep.pos.findClosestByPath((FIND_MY_STRUCTURES),{
+                filter: (structure) => {
+                    return (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE)  &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            } ) as AnyStructure ?? null
+        }
+
         if(spawns?.room && spawns?.room.energyAvailable < 300 && extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             if(creep.memory?.extensionFarm === 1) {
                 creep.say("🚚 XE");
@@ -362,22 +372,27 @@ export class Carrier {
             }
             creep.moveTo(extension);
         }
-        if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && terminal && terminal.store[RESOURCE_ENERGY] < 300000) {
+        else if(carriers.length > 2 && nearestStorageOrTerminal && creep.memory?.extensionFarm === undefined  &&  creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+            creep.say('🚚 STR');
+            creep.moveTo(nearestStorageOrTerminal);
+        }
+        else if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && nearestStorage  && links.length >= 3 ) {
 
-            if(creep.store[RESOURCE_ENERGY] > 0 && terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.say('🚚 TR');
-                creep.moveTo(terminal );
+
+            if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 S');
+                creep.moveTo(nearestStorage );
 
 
             } else if(roomRallyPointFlag.length) {
                 creep.moveTo(roomRallyPointFlag[0])
             }
         }
-        else if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && nearestStorage && links.length >= 3) {
+        if(carriers.length > 2 && creep.memory?.extensionFarm === undefined && terminal && terminal.store[RESOURCE_ENERGY] < 300000) {
 
-            if(creep.store[RESOURCE_ENERGY] > 0 && nearestStorage  && creep.transfer(nearestStorage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.say('🚚 S');
-                creep.moveTo(nearestStorage );
+            if(creep.store[RESOURCE_ENERGY] > 0 && terminal  && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 TR');
+                creep.moveTo(terminal );
 
 
             } else if(roomRallyPointFlag.length) {

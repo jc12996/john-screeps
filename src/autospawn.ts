@@ -163,6 +163,7 @@ export class AutoSpawn {
 
         if(commandLevel >= 7) {
             numberOfNeededDefenders = 0;
+            numberOfNeededMiners = numberOfNeededMiners > 2 ? 3:0;
             if(commandLevel === 7){
                 numberOfNeededUpgraders = numberOfNeededUpgraders * 1.1;
             }
