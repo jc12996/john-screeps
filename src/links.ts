@@ -125,6 +125,8 @@ export function transferEnergyToSpawn1Room() {
             continue;
         }
 
+        const mineral = terminal.room.find(FIND_MINERALS)[0];
+
         // Check if the terminal has more than 10,000 energy
         if (terminal.store[RESOURCE_ENERGY] > 10000 && terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000) {
             // Calculate the amount of energy to transfer (optional, transfer everything above 2k)
@@ -137,6 +139,20 @@ export function transferEnergyToSpawn1Room() {
                 console.log(`Transferred ${transferAmount} energy from ${roomName} to ${targetRoom.name}`);
             } else {
                 console.log(`Failed to transfer energy from ${roomName} to ${targetRoom.name}: ${result}`);
+            }
+        }
+
+        if(mineral && terminal.store[mineral.mineralType] > 10000 && terminal.store.getUsedCapacity(mineral.mineralType) > 0 && terminal.store.getUsedCapacity(mineral.mineralType) < 2000) {
+
+            // Calculate the amount of energy to transfer (optional, transfer everything below 2k)
+            const transferAmount = terminal.store.getUsedCapacity(mineral.mineralType) + 2000;
+            // Transfer energy to Spawn1's terminal
+            const result = terminal.send(mineral.mineralType, transferAmount, targetRoom.name);
+
+            if (result === OK) {
+                console.log(`Transferred ${transferAmount} ${mineral.mineralType} from ${roomName} to ${targetRoom.name}`);
+            } else {
+                console.log(`Failed to transfer ${mineral.mineralType} from ${roomName} to ${targetRoom.name}: ${result}`);
             }
         }
     }

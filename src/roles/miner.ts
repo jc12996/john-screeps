@@ -43,8 +43,14 @@ export class Miner {
             filter: (structure) => structure.structureType === STRUCTURE_STORAGE
         })[0] ?? null;
 
+        const terminal = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType === STRUCTURE_TERMINAL
+        })[0] ?? null;
 
-        if(storage && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 7) {
+        const mineral = creep.room.find(FIND_MINERALS)[0];
+
+
+        if(storage && mineral && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 6) {
             creep.memory.extractorMiner = true;
         } else {
             creep.memory.extractorMiner = false;
@@ -58,12 +64,13 @@ export class Miner {
 
         const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
 
+
         if(creep.memory.extractorMiner === true) {
             if(creep.store[RESOURCE_ENERGY] > 0) {
                 this.dropOffStuff(creep,firstRoom);
                 return;
             }
-            this.creepExtractor(creep,extractor,storage);
+            this.creepExtractor(creep,extractor,storage,terminal,mineral);
             return;
         }
 
@@ -73,13 +80,13 @@ export class Miner {
 
     }
 
-    private static creepExtractor(creep:Creep,extractor:AnyStructure,storage:AnyStructure) {
+    private static creepExtractor(creep:Creep,extractor:AnyStructure,storage:AnyStructure,terminal:AnyStructure,mineral:Mineral) {
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say("⛏ ⛰");
         }
 
-        const mineral = creep.room.find(FIND_MINERALS)[0];
+
 
 
 
@@ -123,9 +130,13 @@ export class Miner {
                 creep.moveTo(droppedMinerals, {visualizePathStyle: {stroke: '#ffaa00'}});
             }else if(extractor && mineral && creep.harvest(mineral) === ERR_NOT_IN_RANGE){
                 creep.moveTo(extractor, {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else if(storage && creep.room.controller?.my && mineral && creep.withdraw(storage,mineral.mineralType) === ERR_NOT_IN_RANGE){
+                creep.moveTo(storage, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
-            if(storage && mineral && creep.transfer(storage,mineral.mineralType) === ERR_NOT_IN_RANGE){
+            if(terminal && mineral && creep.transfer(terminal,mineral.mineralType) === ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }else if(storage && mineral && creep.transfer(storage,mineral.mineralType) === ERR_NOT_IN_RANGE){
                 creep.moveTo(storage, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
 

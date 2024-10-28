@@ -72,15 +72,15 @@ export class Carrier {
 
 
         //console.log(creep.room.name,creep.room.energyCapacityAvailable)
-        if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name && creep.room.energyAvailable > 0) {
+        if(((terminal && terminal.store[RESOURCE_ENERGY] > 2000) || (creep.room.energyCapacityAvailable > 1000 )) && extensionLinkFlag2 && creep.room.energyAvailable > 0 && links.length >= 2  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
+            creep.memory.extensionFarm = 2;
+        }else if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 1;
         }
         //else if(((storage && storage.store[RESOURCE_ENERGY] > 4000) || creep.room.energyCapacityAvailable > 1000) && carriers.length > 4 && carriers[3] &&  creep.name === carriers[3].name && commandLevel >= 6) {
             //creep.memory.extensionFarm = 1;
         //}
-        else if(((terminal && terminal.store[RESOURCE_ENERGY] > 2000) || (creep.room.energyCapacityAvailable > 1000 )) && extensionLinkFlag2 && creep.room.energyAvailable > 0 && links.length >= 2  && carriers.length > 0 && carriers[1] &&  creep.name === carriers[1].name) {
-            creep.memory.extensionFarm = 2;
-        } else {
+        else {
             creep.memory.extensionFarm = undefined;
         }
 
