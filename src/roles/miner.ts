@@ -260,9 +260,7 @@ export class Miner {
                 return;
             }
 
-            const sites = creep.room.find(FIND_MY_CONSTRUCTION_SITES);
-            const upgradeOrBuildOnlyTranser = (sites.length > 0 && creep.room.controller?.my) || ((!Game.flags.attackFlag && !Game.flags.draftFlag) && (creep.room.energyAvailable > 1000))
-            Carrier.run(creep,upgradeOrBuildOnlyTranser);
+            Carrier.run(creep);
     }
 
 }

@@ -192,7 +192,7 @@ export class MovementUtils {
         const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
-        });
+        }) as StructureStorage;
 
         let terminal: StructureTerminal | null =  creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -253,7 +253,9 @@ export class MovementUtils {
 
 
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
-            if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && nearestStorageOrTerminal.store[RESOURCE_ENERGY] > 1000 && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
+            } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             else if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

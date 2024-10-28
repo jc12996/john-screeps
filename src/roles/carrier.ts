@@ -5,7 +5,7 @@ import { RoomUtils } from "utils/RoomUtils";
 
 export class Carrier {
 
-    public static run(creep: Creep, upgradeOrBuildOnly:boolean = false): void {
+    public static run(creep: Creep): void {
 
         const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
