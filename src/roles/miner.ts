@@ -44,7 +44,7 @@ export class Miner {
         })[0] ?? null;
 
 
-        if(storage && extractor && miners[0] &&  creep.name === miners[0]?.name) {
+        if(storage && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 7) {
             creep.memory.extractorMiner = true;
         } else {
             creep.memory.extractorMiner = false;
