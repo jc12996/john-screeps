@@ -51,13 +51,23 @@ export class Miner {
         }
 
 
+        if(!!!creep.memory?.firstSpawnCoords) {
+            return;
+        }
+
+
+        const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
 
         if(creep.memory.extractorMiner === true) {
+            if(creep.store[RESOURCE_ENERGY] > 0) {
+                this.dropOffStuff(creep,firstRoom);
+                return;
+            }
             this.creepExtractor(creep,extractor,storage);
             return;
         }
 
-        this.creepMiner(creep);
+        this.creepMiner(creep,firstRoom);
 
 
 
@@ -122,7 +132,7 @@ export class Miner {
         }
     }
 
-    private static creepMiner(creep:Creep) {
+    private static creepMiner(creep:Creep,firstRoom:any) {
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say("⛏");
@@ -137,12 +147,6 @@ export class Miner {
             creep.memory.carrying = false;
         }
 
-        if(!!!creep.memory?.firstSpawnCoords) {
-            return;
-        }
-
-
-        const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
 
         if(!creep.memory.carrying) {
 
@@ -151,8 +155,6 @@ export class Miner {
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("⛏ 🔄");
             }
-             // if(creep.room.controller?.my && creep.room.find(FIND))
-
             const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
 
 
@@ -232,7 +234,15 @@ export class Miner {
             }
 
         }else {
-            const roomStructures = firstRoom.find(FIND_MY_SPAWNS)
+            this.dropOffStuff(creep,firstRoom)
+
+        }
+
+
+    }
+
+    private static dropOffStuff(creep:Creep,firstRoom: any) {
+        const roomStructures = firstRoom.find(FIND_MY_SPAWNS)
 
             if(creep.room !== firstRoom) {
                 creep.moveTo(roomStructures[0]);
@@ -242,10 +252,6 @@ export class Miner {
             const sites = creep.room.find(FIND_MY_CONSTRUCTION_SITES);
             const upgradeOrBuildOnlyTranser = (sites.length > 0 && creep.room.controller?.my) || ((!Game.flags.attackFlag && !Game.flags.draftFlag) && (creep.room.energyAvailable > 1000))
             Carrier.run(creep,upgradeOrBuildOnlyTranser);
-
-        }
-
-
     }
 
 }
