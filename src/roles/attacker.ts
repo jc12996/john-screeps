@@ -168,11 +168,16 @@ export class Attacker {
 
             if(Game.flags.attackFlag && Game.flags.attackFlag.room?.controller?.my && Game.flags.attackFlag.room.controller.safeMode){
                 Game.flags.attackFlag.remove();
-                Game.flags.scoutFlag.remove();
+                if(Game.flags.scoutFlag) {
+                    Game.flags.scoutFlag.remove();
+                }
+
             }
-            if(creep.room === Game.flags.attackFlag.room && hostileStructures.length === 0 && !hostileCreeps) {
+            if(creep.room === Game.flags.attackFlag?.room && hostileStructures.length === 0 && !hostileCreeps) {
                 Game.flags.attackFlag.remove();
-                Game.flags.scoutFlag.remove();
+                if(Game.flags.scoutFlag) {
+                    Game.flags.scoutFlag.remove();
+                }
             }
             MovementUtils.defaultArmyMovement(creep,Game.flags?.attackFlag);
             return;

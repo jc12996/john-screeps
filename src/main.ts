@@ -55,6 +55,7 @@ declare global {
     hasJoinedPatrol?: boolean;
     numberOfNeededHarvestorSlots?: number;
     leadHealer?: boolean;
+    extractorMiner?: boolean;
   }
 
   interface FlagMemory {

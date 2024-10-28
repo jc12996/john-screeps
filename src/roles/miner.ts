@@ -11,6 +11,123 @@ export class Miner {
     public static run(creep: Creep): void {
 
 
+
+
+
+
+
+
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("⛏");
+        }
+
+
+        const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter:  (structure) => {
+                return (
+                    structure.structureType == STRUCTURE_SPAWN && structure.room?.controller?.my
+
+
+                )
+            }
+        });
+
+        let miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner' && creep.room.name == spawn?.room.name);
+
+        const extractor = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType === STRUCTURE_EXTRACTOR
+        })[0] ?? null;
+
+        const storage = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => structure.structureType === STRUCTURE_STORAGE
+        })[0] ?? null;
+
+
+        if(storage && extractor && miners[0] &&  creep.name === miners[0]?.name) {
+            creep.memory.extractorMiner = true;
+        } else {
+            creep.memory.extractorMiner = false;
+        }
+
+
+
+        if(creep.memory.extractorMiner === true) {
+            this.creepExtractor(creep,extractor,storage);
+            return;
+        }
+
+        this.creepMiner(creep);
+
+
+
+    }
+
+    private static creepExtractor(creep:Creep,extractor:AnyStructure,storage:AnyStructure) {
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("⛏ ⛰");
+        }
+
+        const mineral = creep.room.find(FIND_MINERALS)[0];
+
+
+
+        if(!mineral || !extractor || !storage) {
+            return;
+        }
+
+        if(!creep.memory.carrying && ((creep.store.getFreeCapacity() == 0) || (creep?.ticksToLive && creep.ticksToLive < 60))) {
+            creep.memory.carrying = true;
+
+        }
+
+        if(creep.memory.carrying && creep.store[mineral.mineralType] == 0) {
+            creep.memory.carrying = false;
+        }
+
+        if(!creep.memory.carrying) {
+
+            const droppedMinerals = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                filter:  (source) => {
+                    return (
+                        source.amount >= 0 && source.resourceType === mineral.mineralType
+
+
+                    )
+                }
+            });
+
+            const droppedMineralTombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+                filter:  (tomb) => {
+                    return (
+                        tomb.store && tomb.store[mineral.mineralType] > 0
+
+                    )
+                }
+            });
+
+            if(droppedMineralTombstone && creep.withdraw(droppedMineralTombstone,mineral.mineralType) === ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedMineralTombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }else if(droppedMinerals && creep.pickup(droppedMinerals) === ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedMinerals, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }else if(extractor && mineral && creep.harvest(mineral) === ERR_NOT_IN_RANGE){
+                creep.moveTo(extractor, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+        } else {
+            if(storage && mineral && creep.transfer(storage,mineral.mineralType) === ERR_NOT_IN_RANGE){
+                creep.moveTo(storage, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+
+        }
+    }
+
+    private static creepMiner(creep:Creep) {
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("⛏");
+        }
+
         if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0)) {
             creep.memory.carrying = true;
 
@@ -25,12 +142,7 @@ export class Miner {
         }
 
 
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("⛏");
-        }
-
         const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
-
 
         if(!creep.memory.carrying) {
 
@@ -39,8 +151,7 @@ export class Miner {
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("⛏ 🔄");
             }
-
-           // if(creep.room.controller?.my && creep.room.find(FIND))
+             // if(creep.room.controller?.my && creep.room.find(FIND))
 
             const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
 
@@ -120,10 +231,6 @@ export class Miner {
 
             }
 
-
-
-
-
         }else {
             const roomStructures = firstRoom.find(FIND_MY_SPAWNS)
 
@@ -137,6 +244,8 @@ export class Miner {
             Carrier.run(creep,upgradeOrBuildOnlyTranser);
 
         }
+
+
     }
 
 }

@@ -64,7 +64,9 @@ export class MovementUtils {
             if(Game.flags.rallyFlag2 && Game.flags.rallyFlag && isPatrolCreep) {
 
                 if(!!Game.flags?.stopPatrolFlag) {
-                    Game.flags.rallyFlag2.remove();
+                    if(Game.flags.rallyFlag2) {
+                        Game.flags.rallyFlag2.remove();
+                    }
                     Game.flags.stopPatrolFlag.remove();
                     return;
                 }
