@@ -98,7 +98,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
       handleRamparts({ room: room });
       Tower.defendMyRoom(room);
-      Nukers.awaitingNuke(room);
+      if(room.controller?.my && room.controller.level === 8) {
+        Nukers.awaitingNuke(room);
+      }
+
 
   }
 
