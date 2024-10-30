@@ -45,7 +45,7 @@ export class Miner {
 
         const terminal = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => structure.structureType === STRUCTURE_TERMINAL
-        })[0] ?? null;
+        })[0] as StructureTerminal ?? null;
 
         const mineral = creep.room.find(FIND_MINERALS)[0];
 
@@ -67,7 +67,7 @@ export class Miner {
         const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
 
 
-        if(creep.memory.extractorMiner === true) {
+        if(creep.memory.extractorMiner === true && terminal.store[mineral.mineralType] < 50000) {
             if(creep.store[RESOURCE_ENERGY] > 0) {
                 this.dropOffStuff(creep,firstRoom);
                 return;
@@ -82,7 +82,7 @@ export class Miner {
 
     }
 
-    private static creepExtractor(creep:Creep,extractor:AnyStructure,storage:AnyStructure,terminal:AnyStructure,mineral:Mineral) {
+    private static creepExtractor(creep:Creep,extractor:AnyStructure,storage:AnyStructure,terminal:StructureTerminal,mineral:Mineral) {
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say("⛏ ⛰");
