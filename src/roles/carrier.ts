@@ -2,6 +2,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { getLinkByTag } from "links";
 import { MovementUtils } from "utils/MovementUtils";
 import { RoomUtils } from "utils/RoomUtils";
+import { LabMapper } from "labs";
 
 export class Carrier {
 
@@ -31,6 +32,12 @@ export class Carrier {
 
 
                 )
+            }
+        });
+
+        const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType === STRUCTURE_LAB
             }
         });
 
@@ -93,7 +100,6 @@ export class Carrier {
             creep.say("🚚 X");
            } else if( creep.memory?.extensionFarm === 2){
             creep.say("🚚 X2");
-            // creep.drop(RESOURCE_HYDROGEN)
            } else if( creep.memory?.extensionFarm === 3){
             creep.say("🚚 X3");
            }else   {
@@ -198,20 +204,38 @@ export class Carrier {
 
         }
 
-        if(creep.memory.carrying && creep.store.getCapacity() == 0) {
-            creep.memory.carrying = false;
+        if(!creep.memory.carrying && creep.memory.extensionFarm === 3
+            && (creep.store[RESOURCE_UTRIUM] > 0
+            || creep.store[RESOURCE_LEMERGIUM] > 0
+            || creep.store[RESOURCE_ZYNTHIUM] > 0
+            || creep.store[RESOURCE_KEANIUM] > 0
+            || creep.store[RESOURCE_HYDROGEN] > 0
+            || creep.store[RESOURCE_ENERGY] > 0
+            || creep.store[RESOURCE_OXYGEN] > 0)) {
+                creep.memory.carrying = true;
         }
 
+        if(
+            creep.memory.carrying && creep.store[RESOURCE_ENERGY] == 0 && creep.memory.extensionFarm !== 3
 
-        // const nukerEnergy: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        //     filter: (structure) => {
-        //         return structure.structureType === STRUCTURE_NUKER && structure.store  &&  structure.store[RESOURCE_ENERGY] < structure.store.getCapacity(RESOURCE_ENERGY);
-        //     }
-        // }) ?? null;
+        ) {
+            creep.memory.carrying = false;
+        }
+        if(creep.memory.extensionFarm === 3) {
+            console.log(creep.memory.carrying)
+        }
 
-        // if(!nukerEnergy) {
-        //     creep.drop(RESOURCE_HYDROGEN)
-        // }
+        if(creep.memory.carrying && creep.memory.extensionFarm === 3
+            && creep.store[RESOURCE_UTRIUM] === 0
+            && creep.store[RESOURCE_LEMERGIUM] === 0
+            && creep.store[RESOURCE_ZYNTHIUM] === 0
+            && creep.store[RESOURCE_KEANIUM] === 0
+            && creep.store[RESOURCE_HYDROGEN] === 0
+            && creep.store[RESOURCE_ENERGY] === 0
+            && creep.store[RESOURCE_OXYGEN] === 0) {
+                creep.memory.carrying = false;
+        }
+
 
 
         if(!creep.memory.carrying) {
@@ -260,18 +284,56 @@ export class Carrier {
 
 
 
-            if(creep.memory.extensionFarm === 3 && terminal) {
-                console.log('here',creep.name)
-                const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return structure.structureType === STRUCTURE_LAB
+            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
+                    const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
+                    if(!canContinue) {
+                        return;
                     }
-                });
-                if(labs.length > 0) {
-                    this.scienceCarrierSequence(creep, labs);
+                    return;
+
+
+            }
+
+            if(creep.memory.extensionFarm !== undefined && commandLevel >= 8) {
+                if(terminal && creep.store[RESOURCE_LEMERGIUM] > 0) {
+
+                    if(creep.transfer(terminal,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(terminal)
+                    }
                     return;
                 }
 
+                if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
+
+                    if(creep.transfer(terminal,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(terminal)
+                    }
+                    return;
+                }
+
+                if(terminal && creep.store[RESOURCE_ZYNTHIUM] > 0) {
+
+                    if(creep.transfer(terminal,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(terminal)
+                    }
+                    return;
+                }
+
+                if(terminal && creep.store[RESOURCE_KEANIUM] > 0) {
+
+                    if(creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(terminal)
+                    }
+                    return;
+                }
+
+                if(terminal && creep.store[RESOURCE_UTRIUM] > 0) {
+
+                    if(creep.transfer(terminal,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(terminal)
+                    }
+                    return;
+                }
             }
 
             this.normalCarrierSequence(creep,
@@ -313,30 +375,26 @@ export class Carrier {
         }
     }
 
-    private static scienceCarrierSequence(creep:Creep, labs:StructureLab[]) {
+    private static scienceCarrierSequence(creep:Creep,labs:StructureLab[],terminal:StructureTerminal): boolean {
 
-        // // Make sure the nuke is full of energy
-        // if(nukerEnergy) {
-        //     if(creep.store[RESOURCE_ENERGY] === 0) {
-        //         creep.memory.carrying = false;
-        //         return;
-        //     }
-        //     creep.say('🚚 X3N')
-        //     if(creep.transfer(nukerEnergy,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
 
-        //         creep.moveTo(nukerEnergy);
-        //         return;
-        //     }
-        // }
 
+        const energyNuker: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType === STRUCTURE_NUKER && structure.store && structure.store[RESOURCE_ENERGY] < 300000;
+            }
+        }) ?? null
 
 
 
         // Make sure every lab has some energy in it.
         let labsAreFull = true;
+        let labNumber = 0;
         labs.forEach(lab => {
-            if(lab.store[RESOURCE_ENERGY] < lab.store.getCapacity(RESOURCE_ENERGY)) {
+            labNumber++;
+            if(lab.store[RESOURCE_ENERGY] < 2000) {
                 labsAreFull = false;
+                creep.say('🚚 X3L')
                 if(creep.transfer(lab,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE){
                     creep.moveTo(lab);
                 }
@@ -345,43 +403,173 @@ export class Carrier {
 
         });
 
+        const H_lab1 = labs[LabMapper.RESOURCE_HYDROGEN] ?? null
+        const H_lab2 = labs[LabMapper.RESOURCE_HYDROGEN2] ?? null
+        const H_lab3 = labs[LabMapper.RESOURCE_HYDROGEN3] ?? null
+        const H_lab4 = labs[LabMapper.RESOURCE_HYDROGEN4] ?? null
+        const H_lab5 = labs[LabMapper.RESOURCE_HYDROGEN5] ?? null
+        const L_lab = labs[LabMapper.RESOURCE_LEMERGIUM] ?? null;
+        const U_lab = labs[LabMapper.RESOURCE_UTRIUM] ?? null;
 
-        let labNumber = 0;
-        let labMap: Array<RESOURCE_LEMERGIUM | RESOURCE_UTRIUM | RESOURCE_KEANIUM | RESOURCE_ZYNTHIUM | RESOURCE_HYDROGEN> = [];
-        labMap[0] = RESOURCE_LEMERGIUM;
-        labMap[1] = RESOURCE_UTRIUM;
-        labMap[2] = RESOURCE_KEANIUM;
-        labMap[3] = RESOURCE_ZYNTHIUM;
-        labMap[4] = RESOURCE_HYDROGEN;
-        labs.forEach(lab => {
-            const resource  = labMap[labNumber];
-            if(resource && lab && (lab.store.getFreeCapacity(resource) === 0 || lab.store[resource] > 0)  && lab.store[resource] < lab.store.getCapacity(resource)) {
+
+
+        if(H_lab1  || H_lab2 || H_lab3 || H_lab4 || H_lab5) {
+            if(H_lab1 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab1.store[RESOURCE_HYDROGEN] < 3000) {
+                if(!labsAreFull) {
+                    creep.say('🚚 X3L'+ RESOURCE_HYDROGEN)
+                }
+
                 if(creep.store[RESOURCE_ENERGY] > 0) {
                     creep.drop(RESOURCE_ENERGY)
                 }
-
-                if(creep.store[resource] === 0) {
-                    creep.memory.carrying = false;
-                    return;
-                }
-                console.log(resource)
                 labsAreFull = false;
-                if(creep.transfer(lab,resource) === ERR_NOT_IN_RANGE){
-                    creep.moveTo(lab);
+                if(creep.transfer(H_lab1,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE){
+                    creep.moveTo(H_lab1);
                 }
 
+                return false;
+            } else if(H_lab2 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab2.store[RESOURCE_HYDROGEN] < 3000) {
+                if(!labsAreFull) {
+                    creep.say('🚚 X3L'+ RESOURCE_HYDROGEN)
+                }
 
-                return;
+                if(creep.store[RESOURCE_ENERGY] > 0) {
+                    creep.drop(RESOURCE_ENERGY)
+                }
+                labsAreFull = false;
+                if(creep.transfer(H_lab2,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE){
+                    creep.moveTo(H_lab2);
+                }
+
+                return false;
+            } else if(H_lab3 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab3.store[RESOURCE_HYDROGEN] < 3000) {
+                if(!labsAreFull) {
+                    creep.say('🚚 X3L'+ RESOURCE_HYDROGEN)
+                }
+
+                if(creep.store[RESOURCE_ENERGY] > 0) {
+                    creep.drop(RESOURCE_ENERGY)
+                }
+                labsAreFull = false;
+                if(creep.transfer(H_lab3,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE){
+                    creep.moveTo(H_lab3);
+                }
+
+                return false;
+            } else if(H_lab4 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab4.store[RESOURCE_HYDROGEN] < 3000) {
+                if(!labsAreFull) {
+                    creep.say('🚚 X3L'+ RESOURCE_HYDROGEN)
+                }
+
+                if(creep.store[RESOURCE_ENERGY] > 0) {
+                    creep.drop(RESOURCE_ENERGY)
+                }
+                labsAreFull = false;
+                if(creep.transfer(H_lab4,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE){
+                    creep.moveTo(H_lab4);
+                }
+
+                return false;
+            } else if(H_lab5 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab5.store[RESOURCE_HYDROGEN] < 3000) {
+                if(!labsAreFull) {
+                    creep.say('🚚 X3L'+ RESOURCE_HYDROGEN)
+                }
+
+                if(creep.store[RESOURCE_ENERGY] > 0) {
+                    creep.drop(RESOURCE_ENERGY)
+                }
+                labsAreFull = false;
+                if(creep.transfer(H_lab5,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE){
+                    creep.moveTo(H_lab5);
+                }
+
+                return false;
             }
-            labNumber++;
+        }
 
-        });
+        if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
 
-        if(!labsAreFull) {
-            creep.say('🚚 X3L')
+            if(creep.transfer(terminal,RESOURCE_HYDROGEN)  === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
         }
 
 
+
+        if(L_lab && creep.store[RESOURCE_LEMERGIUM] > 0 && L_lab.store[RESOURCE_LEMERGIUM] < 3000 && creep.store.U > 0) {
+
+            labsAreFull = false;
+            if(!labsAreFull) {
+                console.log('U')
+                console.log('lemergium amount: ',creep.store[RESOURCE_LEMERGIUM])
+                creep.say('🚚 X3L'+ RESOURCE_LEMERGIUM)
+            }
+
+            if(creep.store[RESOURCE_ENERGY] > 0) {
+                creep.drop(RESOURCE_ENERGY)
+            }
+            if(creep.transfer(L_lab,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE){
+                creep.moveTo(L_lab);
+
+            }
+            return false;
+
+        }
+
+        if(terminal && creep.store[RESOURCE_LEMERGIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+
+
+        if(U_lab && creep.store[RESOURCE_UTRIUM] > 0 && U_lab.store[RESOURCE_UTRIUM] < 3000 && creep.store.U > 0) {
+
+            labsAreFull = false;
+            if(!labsAreFull) {
+                console.log('ultrium amount: ',creep.store[RESOURCE_UTRIUM])
+                creep.say('🚚 X3L'+ RESOURCE_UTRIUM)
+            }
+
+            if(creep.store[RESOURCE_ENERGY] > 0) {
+                creep.drop(RESOURCE_ENERGY)
+            }
+            if(creep.transfer(U_lab,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE){
+                creep.moveTo(U_lab);
+
+            }
+            return false;
+
+        }
+
+        if(terminal && creep.store[RESOURCE_UTRIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(energyNuker && labsAreFull) {
+            creep.say('🚚 X3N')
+            if(energyNuker.store && energyNuker.store[RESOURCE_ENERGY] < 300000 && creep.transfer(energyNuker,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(energyNuker);
+
+            }
+            return false;
+        }
+
+        if(terminal  && terminal.store[RESOURCE_ENERGY] < 300000 && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.say('🚚 TR');
+            creep.moveTo(terminal );
+            return false;
+        }
+
+        return true;
 
     }
 

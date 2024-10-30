@@ -1,6 +1,7 @@
 import { AutoSpawn } from "autospawn";
 import { SpawnUtils } from "./SpawnUtils";
 import { PeaceTimeEconomy } from "./EconomiesUtils";
+import { LabMapper } from "labs";
 
 export class MovementUtils {
 
@@ -189,6 +190,12 @@ export class MovementUtils {
                 structure.structureType == STRUCTURE_SPAWN && structure.store[RESOURCE_ENERGY] >= totalSpawnStore) && creep.memory.role !== 'settler'; }
         });
 
+        const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType === STRUCTURE_LAB
+            }
+        });
+
         const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => { return (
                 structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0); }
@@ -241,7 +248,7 @@ export class MovementUtils {
            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
             filter:  (source) => {
                 return (
-                    source.amount >= 50 && source.room?.controller?.my
+                    source.amount >= 50 && source.room?.controller?.my && ((creep.memory.extensionFarm !== 3 && source.resourceType === RESOURCE_ENERGY) || creep.memory.extensionFarm === 3 || creep.memory.extractorMiner)
 
 
                 )
@@ -279,32 +286,53 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-        // const nukerEnergy: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        //     filter: (structure) => {
-        //         return structure.structureType === STRUCTURE_NUKER && structure.store  &&  structure.store[RESOURCE_ENERGY] < structure.store.getCapacity(RESOURCE_ENERGY);
-        //     }
-        // }) ?? null;
+        if(creep.memory.extensionFarm === 3) {
+            console.log('Scientist:');
+            console.log('lab:',labs[LabMapper.RESOURCE_LEMERGIUM].store.L,LabMapper.RESOURCE_LEMERGIUM, RESOURCE_LEMERGIUM);
+            console.log(labs[LabMapper.RESOURCE_ZYNTHIUM].id == '671f6f7067dfb916d3de0d64', 'yes?')
+        }
+        if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_LEMERGIUM] > 0 &&creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        // if(!nukerEnergy) {
-        //     creep.drop(RESOURCE_HYDROGEN)
-        // }
+        } else if(labs[LabMapper.RESOURCE_UTRIUM] && labs[LabMapper.RESOURCE_UTRIUM].store[RESOURCE_UTRIUM] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_UTRIUM] > 0 &&creep.withdraw(terminal,RESOURCE_UTRIUM) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        // if(!nukerEnergy && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-        //     (terminal.store[RESOURCE_LEMERGIUM] > 0 || terminal.store[RESOURCE_ZYNTHIUM] > 0 || terminal.store[RESOURCE_HYDROGEN] > 0 || terminal.store[RESOURCE_KEANIUM] > 0 || terminal.store[RESOURCE_UTRIUM] > 0)
-        // ) {
-        //     if(creep.withdraw(terminal,RESOURCE_UTRIUM) == ERR_NOT_IN_RANGE){
-        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-        //     } else if(creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
-        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-        //     } else if(creep.withdraw(terminal,RESOURCE_ZYNTHIUM) == ERR_NOT_IN_RANGE){
-        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-        //     } else if(creep.withdraw(terminal,RESOURCE_KEANIUM) == ERR_NOT_IN_RANGE){
-        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-        //     } else if(creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-        //     }
-        // } else
-        if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+        }
+        else if(labs[LabMapper.RESOURCE_HYDROGEN] && labs[LabMapper.RESOURCE_HYDROGEN].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        } else if(labs[LabMapper.RESOURCE_HYDROGEN2] && labs[LabMapper.RESOURCE_HYDROGEN2].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_HYDROGEN3] && labs[LabMapper.RESOURCE_HYDROGEN3].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_HYDROGEN3] && labs[LabMapper.RESOURCE_HYDROGEN3].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_HYDROGEN4] && labs[LabMapper.RESOURCE_HYDROGEN4].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_HYDROGEN5] && labs[LabMapper.RESOURCE_HYDROGEN5].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if (creep.memory.extensionFarm === 3 && target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        }
+        else if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
@@ -312,10 +340,13 @@ export class MovementUtils {
         else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
             creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
         }
-        else if(nearestStorageOrTerminal && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        else if (creep.memory.extensionFarm === 3 && target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        }
+        else if(creep.memory.extensionFarm === undefined && nearestStorageOrTerminal && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
         }
-        else if(terminal && commandLevel >= 7 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        else if(terminal && terminal.store[RESOURCE_ENERGY] < 290000 && commandLevel >= 7 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(terminal);
             return;
         }

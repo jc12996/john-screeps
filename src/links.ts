@@ -142,10 +142,10 @@ export function transferEnergyToSpawn1Room() {
             }
         }
 
-        if(mineral && terminal.store[mineral.mineralType] > 10000 && terminal.store.getUsedCapacity(mineral.mineralType) > 0 && terminal.store.getUsedCapacity(mineral.mineralType) < 2000) {
+        if(mineral && terminal.store[mineral.mineralType] > 10000 && targetRoom.terminal && targetRoom.terminal?.store[mineral.mineralType] < 4000) {
 
             // Calculate the amount of energy to transfer (optional, transfer everything below 2k)
-            const transferAmount = terminal.store.getUsedCapacity(mineral.mineralType) + 2000;
+            const transferAmount = 3000;
             // Transfer energy to Spawn1's terminal
             const result = terminal.send(mineral.mineralType, transferAmount, targetRoom.name);
 

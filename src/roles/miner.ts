@@ -50,7 +50,7 @@ export class Miner {
         const mineral = creep.room.find(FIND_MINERALS)[0];
 
 
-        if(storage && mineral && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 6) {
+        if(storage && mineral && mineral.mineralAmount > 0 && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 6) {
             creep.memory.extractorMiner = true;
         } else {
             creep.memory.extractorMiner = false;
