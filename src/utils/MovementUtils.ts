@@ -291,28 +291,43 @@ export class MovementUtils {
             console.log('lab:',labs[LabMapper.RESOURCE_LEMERGIUM].store.L,LabMapper.RESOURCE_LEMERGIUM, RESOURCE_LEMERGIUM);
             console.log(labs[LabMapper.RESOURCE_ZYNTHIUM].id == '671f6f7067dfb916d3de0d64', 'yes?')
         }
-         if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+         if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] <2200 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
              terminal.store[RESOURCE_LEMERGIUM] > 0 &&creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
                  creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
-        else if(labs[LabMapper.RESOURCE_UTRIUM] && labs[LabMapper.RESOURCE_UTRIUM].store[RESOURCE_UTRIUM] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+        else if(labs[LabMapper.RESOURCE_UTRIUM] && labs[LabMapper.RESOURCE_UTRIUM].store[RESOURCE_UTRIUM] < 2200 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
          terminal.store[RESOURCE_UTRIUM] > 0 &&creep.withdraw(terminal,RESOURCE_UTRIUM) == ERR_NOT_IN_RANGE){
                  creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
-        else if(labs[LabMapper.RESOURCE_ZYNTHIUM] && labs[LabMapper.RESOURCE_ZYNTHIUM].store[RESOURCE_ZYNTHIUM] < 3000
+        else if(labs[LabMapper.RESOURCE_ZYNTHIUM] && labs[LabMapper.RESOURCE_ZYNTHIUM].store[RESOURCE_ZYNTHIUM] < 2200
             && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
             terminal.store[RESOURCE_ZYNTHIUM] > 0 &&creep.withdraw(terminal,RESOURCE_ZYNTHIUM) == ERR_NOT_IN_RANGE){
                     creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
-        else if(labs[LabMapper.RESOURCE_KEANIUM] && labs[LabMapper.RESOURCE_KEANIUM].store[RESOURCE_KEANIUM] < 3000
+        else if(labs[LabMapper.RESOURCE_KEANIUM] && labs[LabMapper.RESOURCE_KEANIUM].store[RESOURCE_KEANIUM] < 2200
             && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
             terminal.store[RESOURCE_KEANIUM] > 0 &&creep.withdraw(terminal,RESOURCE_KEANIUM) == ERR_NOT_IN_RANGE){
                     creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
+        else if(labs[LabMapper.RESOURCE_ZK] && labs[LabMapper.RESOURCE_ZK].store[RESOURCE_ZYNTHIUM_KEANITE] > 1000
+            && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal
+             && creep.withdraw(labs[LabMapper.RESOURCE_ZK],RESOURCE_ZYNTHIUM_KEANITE)== ERR_NOT_IN_RANGE){
+                    creep.moveTo(labs[LabMapper.RESOURCE_ZK], {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_LU] && labs[LabMapper.RESOURCE_LU].store[RESOURCE_UTRIUM_LEMERGITE] > 1000
+            && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal
+             && creep.withdraw(labs[LabMapper.RESOURCE_LU],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
+                    creep.moveTo(labs[LabMapper.RESOURCE_LU], {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+
+
+        /*
         else if(labs[LabMapper.RESOURCE_HYDROGEN] && labs[LabMapper.RESOURCE_HYDROGEN].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
             terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -322,7 +337,7 @@ export class MovementUtils {
                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
-        /*
+
         else if(labs[LabMapper.RESOURCE_HYDROGEN3] && labs[LabMapper.RESOURCE_HYDROGEN3].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
             terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});

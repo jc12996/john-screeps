@@ -211,7 +211,10 @@ export class Carrier {
             || creep.store[RESOURCE_KEANIUM] > 0
             || creep.store[RESOURCE_HYDROGEN] > 0
             || creep.store[RESOURCE_ENERGY] > 0
-            || creep.store[RESOURCE_OXYGEN] > 0)) {
+            || creep.store[RESOURCE_OXYGEN] > 0
+            || creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0
+            || creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0
+        )) {
                 creep.memory.carrying = true;
         }
 
@@ -232,6 +235,9 @@ export class Carrier {
             && creep.store[RESOURCE_KEANIUM] === 0
             && creep.store[RESOURCE_HYDROGEN] === 0
             && creep.store[RESOURCE_ENERGY] === 0
+            && creep.store[RESOURCE_UTRIUM_LEMERGITE] === 0
+            && creep.store[RESOURCE_ZYNTHIUM_KEANITE] === 0
+
             && creep.store[RESOURCE_OXYGEN] === 0) {
                 creep.memory.carrying = false;
         }
@@ -404,10 +410,10 @@ export class Carrier {
         });
 
         const H_lab1 = labs[LabMapper.RESOURCE_HYDROGEN] ?? null
-        const H_lab2 = labs[LabMapper.RESOURCE_HYDROGEN2] ?? null
-        const H_lab3 = labs[LabMapper.RESOURCE_HYDROGEN3] ?? null
-        const H_lab4 = labs[LabMapper.RESOURCE_HYDROGEN4] ?? null
-        const H_lab5 = labs[LabMapper.RESOURCE_HYDROGEN5] ?? null
+        const H_lab2 = labs[LabMapper.RESOURCE_HYDROGEN] ?? null
+        const ZK_lab = labs[LabMapper.RESOURCE_ZK] ?? null
+        const LU_lab = labs[LabMapper.RESOURCE_LU] ?? null
+        const GH_lab = labs[LabMapper.RESOURCE_GH] ?? null
 
         const L_lab = labs[LabMapper.RESOURCE_LEMERGIUM] ?? null;
         const U_lab = labs[LabMapper.RESOURCE_UTRIUM] ?? null;
@@ -416,9 +422,17 @@ export class Carrier {
         const Z_lab = labs[LabMapper.RESOURCE_ZYNTHIUM] ?? null;
         const K_lab = labs[LabMapper.RESOURCE_KEANIUM] ?? null;
 
+        if (ZK_lab && Z_lab.store[RESOURCE_ZYNTHIUM] && K_lab.store[RESOURCE_KEANIUM]) {
+            ZK_lab.runReaction(Z_lab,K_lab)
+        }
+
+        if (LU_lab && L_lab.store[RESOURCE_LEMERGIUM] && U_lab.store[RESOURCE_UTRIUM]) {
+            LU_lab.runReaction(L_lab,U_lab)
+        }
 
 
-        if(H_lab1  || H_lab2 || H_lab3 || H_lab4 || H_lab5) {
+/*
+        if(H_lab1  || H_lab2) {
             if(H_lab1 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab1.store[RESOURCE_HYDROGEN] < 3000) {
                 if(!labsAreFull) {
                     creep.say('🚚 X3L'+ RESOURCE_HYDROGEN)
@@ -448,6 +462,7 @@ export class Carrier {
 
                 return false;
             }
+ */
             /*
             else if(H_lab3 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab3.store[RESOURCE_HYDROGEN] < 3000) {
                 if(!labsAreFull) {
@@ -493,7 +508,7 @@ export class Carrier {
                 return false;
             }
             */
-        }
+
 
         if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
 
@@ -505,7 +520,7 @@ export class Carrier {
 
 
 
-        if(L_lab && creep.store[RESOURCE_LEMERGIUM] > 0 && L_lab.store[RESOURCE_LEMERGIUM] < 3000 && creep.store.L > 0) {
+        if(L_lab && creep.store[RESOURCE_LEMERGIUM] > 0 && L_lab.store[RESOURCE_LEMERGIUM] < 2200 && creep.store.L > 0) {
 
             labsAreFull = false;
             if(!labsAreFull) {
@@ -535,7 +550,7 @@ export class Carrier {
 
 
 
-        if(U_lab && creep.store[RESOURCE_UTRIUM] > 0 && U_lab.store[RESOURCE_UTRIUM] < 3000 && creep.store.U > 0) {
+        if(U_lab && creep.store[RESOURCE_UTRIUM] > 0 && U_lab.store[RESOURCE_UTRIUM] < 2200 && creep.store.U > 0) {
 
             labsAreFull = false;
             if(!labsAreFull) {
@@ -562,7 +577,7 @@ export class Carrier {
             return false;
         }
 
-        if(Z_lab && creep.store[RESOURCE_ZYNTHIUM] > 0 && Z_lab.store[RESOURCE_ZYNTHIUM] < 3000 && creep.store.Z > 0) {
+        if(Z_lab && creep.store[RESOURCE_ZYNTHIUM] > 0 && Z_lab.store[RESOURCE_ZYNTHIUM] < 2200 && creep.store.Z > 0) {
 
             labsAreFull = false;
             if(!labsAreFull) {
@@ -590,7 +605,7 @@ export class Carrier {
             return false;
         }
 
-        if(K_lab && creep.store[RESOURCE_KEANIUM] > 0 && K_lab.store[RESOURCE_KEANIUM] < 3000 && creep.store.K > 0) {
+        if(K_lab && creep.store[RESOURCE_KEANIUM] > 0 && K_lab.store[RESOURCE_KEANIUM] < 2200 && creep.store.K > 0) {
 
             labsAreFull = false;
             if(!labsAreFull) {
@@ -613,6 +628,33 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_KEANIUM] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+/*
+        if(terminal && ZK_lab && ZK_lab.store.ZK > 300 && creep.store[RESOURCE_ZYNTHIUM_KEANITE] === 0) {
+           if(creep.pos.inRangeTo(ZK_lab,1)){
+            creep.drop(RESOURCE_ENERGY)
+           }
+          //  creep.drop(RESOURCE_ENERGY)
+            if(creep.withdraw(ZK_lab,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(ZK_lab)
+            }
+            return false;
+        }
+*/
+        if(terminal && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal)
             }
             return false;
