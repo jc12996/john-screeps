@@ -293,7 +293,6 @@ export class Carrier {
 
             if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
                 const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
-                console.log(creep.store[RESOURCE_GHODIUM],'gho')
                 if(!canContinue) {
                     return;
                 }
