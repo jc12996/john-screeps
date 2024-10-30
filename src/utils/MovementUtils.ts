@@ -340,8 +340,8 @@ export class MovementUtils {
             terminal.store[RESOURCE_GHODIUM] > 0 && creep.withdraw(terminal,RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
                     creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        }else if(labs[LabMapper.RESOURCE_GH] && labs[LabMapper.RESOURCE_GH].store[RESOURCE_GHODIUM] > 1000
-             && creep.withdraw(labs[LabMapper.RESOURCE_GH],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
+        }else if(labs[LabMapper.RESOURCE_GH] && labs[LabMapper.RESOURCE_GH].store[RESOURCE_GHODIUM] > 500
+             && creep.withdraw(labs[LabMapper.RESOURCE_GH],RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
                     creep.moveTo(labs[LabMapper.RESOURCE_GH], {visualizePathStyle: {stroke: '#ffaa00'}});
 
         } else if(

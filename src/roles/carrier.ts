@@ -292,7 +292,8 @@ export class Carrier {
 
 
             if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
-                    const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
+                console.log(labs[LabMapper.RESOURCE_LEMERGIUM]?.id)
+                const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
                     if(!canContinue) {
                         return;
                     }
