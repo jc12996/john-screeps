@@ -442,7 +442,9 @@ export class Carrier {
                 }
 
                 return false;
-            } else if(H_lab3 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab3.store[RESOURCE_HYDROGEN] < 3000) {
+            }
+            /*
+            else if(H_lab3 && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab3.store[RESOURCE_HYDROGEN] < 3000) {
                 if(!labsAreFull) {
                     creep.say('🚚 X3L'+ RESOURCE_HYDROGEN)
                 }
@@ -485,6 +487,7 @@ export class Carrier {
 
                 return false;
             }
+            */
         }
 
         if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
@@ -497,7 +500,7 @@ export class Carrier {
 
 
 
-        if(L_lab && creep.store[RESOURCE_LEMERGIUM] > 0 && L_lab.store[RESOURCE_LEMERGIUM] < 3000 && creep.store.U > 0) {
+        if(L_lab && creep.store[RESOURCE_LEMERGIUM] > 0 && L_lab.store[RESOURCE_LEMERGIUM] < 3000 && creep.store.L > 0) {
 
             labsAreFull = false;
             if(!labsAreFull) {

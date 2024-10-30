@@ -50,7 +50,9 @@ export class Miner {
         const mineral = creep.room.find(FIND_MINERALS)[0];
 
 
-        if(storage && mineral && mineral.mineralAmount > 0 && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 6) {
+        if(storage && mineral
+            && mineral.mineralAmount > 0
+             && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 6) {
             creep.memory.extractorMiner = true;
         } else {
             creep.memory.extractorMiner = false;
@@ -115,6 +117,17 @@ export class Miner {
                 }
             });
 
+            const hLabs = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (source) => {
+                    return (
+                        source.structureType == STRUCTURE_LAB && source.store.H > 0
+
+
+                    )
+                }
+            });
+
+
             const droppedMineralTombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
                 filter:  (tomb) => {
                     return (
@@ -123,10 +136,17 @@ export class Miner {
                     )
                 }
             });
+            /*
+
+            if(hLabs && creep.withdraw(hLabs,mineral.mineralType) === ERR_NOT_IN_RANGE){
+                creep.moveTo(hLabs, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+            else */
 
             if(droppedMineralTombstone && creep.withdraw(droppedMineralTombstone,mineral.mineralType) === ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedMineralTombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }else if(droppedMinerals && creep.pickup(droppedMinerals) === ERR_NOT_IN_RANGE){
+            }
+            else if(droppedMinerals && creep.pickup(droppedMinerals) === ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedMinerals, {visualizePathStyle: {stroke: '#ffaa00'}});
             }else if(extractor && mineral && creep.harvest(mineral) === ERR_NOT_IN_RANGE){
                 creep.moveTo(extractor, {visualizePathStyle: {stroke: '#ffaa00'}});
