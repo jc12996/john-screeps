@@ -93,6 +93,7 @@ export class Carrier {
             creep.say("🚚 X");
            } else if( creep.memory?.extensionFarm === 2){
             creep.say("🚚 X2");
+            // creep.drop(RESOURCE_HYDROGEN)
            } else if( creep.memory?.extensionFarm === 3){
             creep.say("🚚 X3");
            }else   {
@@ -197,11 +198,20 @@ export class Carrier {
 
         }
 
-        if(creep.memory.carrying && creep.store[RESOURCE_ENERGY] == 0) {
+        if(creep.memory.carrying && creep.store.getCapacity() == 0) {
             creep.memory.carrying = false;
         }
 
 
+        // const nukerEnergy: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        //     filter: (structure) => {
+        //         return structure.structureType === STRUCTURE_NUKER && structure.store  &&  structure.store[RESOURCE_ENERGY] < structure.store.getCapacity(RESOURCE_ENERGY);
+        //     }
+        // }) ?? null;
+
+        // if(!nukerEnergy) {
+        //     creep.drop(RESOURCE_HYDROGEN)
+        // }
 
 
         if(!creep.memory.carrying) {
@@ -249,6 +259,7 @@ export class Carrier {
 
 
 
+
             if(creep.memory.extensionFarm === 3 && terminal) {
                 console.log('here',creep.name)
                 const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
@@ -257,7 +268,7 @@ export class Carrier {
                     }
                 });
                 if(labs.length > 0) {
-                    this.scienceCarrierSequence(creep, terminal, labs);
+                    this.scienceCarrierSequence(creep, labs);
                     return;
                 }
 
@@ -302,22 +313,29 @@ export class Carrier {
         }
     }
 
-    private static scienceCarrierSequence(creep:Creep, terminal:AnyStructure, labs:StructureLab[]) {
+    private static scienceCarrierSequence(creep:Creep, labs:StructureLab[]) {
 
-        const nuker: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType === STRUCTURE_NUKER;
-            }
-        }) ?? null
+        // // Make sure the nuke is full of energy
+        // if(nukerEnergy) {
+        //     if(creep.store[RESOURCE_ENERGY] === 0) {
+        //         creep.memory.carrying = false;
+        //         return;
+        //     }
+        //     creep.say('🚚 X3N')
+        //     if(creep.transfer(nukerEnergy,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+
+        //         creep.moveTo(nukerEnergy);
+        //         return;
+        //     }
+        // }
+
 
 
 
         // Make sure every lab has some energy in it.
         let labsAreFull = true;
-        let labNumber = 0;
         labs.forEach(lab => {
-            labNumber++;
-            if(lab.store[RESOURCE_ENERGY] < 2001) {
+            if(lab.store[RESOURCE_ENERGY] < lab.store.getCapacity(RESOURCE_ENERGY)) {
                 labsAreFull = false;
                 if(creep.transfer(lab,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE){
                     creep.moveTo(lab);
@@ -327,18 +345,43 @@ export class Carrier {
 
         });
 
+
+        let labNumber = 0;
+        let labMap: Array<RESOURCE_LEMERGIUM | RESOURCE_UTRIUM | RESOURCE_KEANIUM | RESOURCE_ZYNTHIUM | RESOURCE_HYDROGEN> = [];
+        labMap[0] = RESOURCE_LEMERGIUM;
+        labMap[1] = RESOURCE_UTRIUM;
+        labMap[2] = RESOURCE_KEANIUM;
+        labMap[3] = RESOURCE_ZYNTHIUM;
+        labMap[4] = RESOURCE_HYDROGEN;
+        labs.forEach(lab => {
+            const resource  = labMap[labNumber];
+            if(resource && lab && (lab.store.getFreeCapacity(resource) === 0 || lab.store[resource] > 0)  && lab.store[resource] < lab.store.getCapacity(resource)) {
+                if(creep.store[RESOURCE_ENERGY] > 0) {
+                    creep.drop(RESOURCE_ENERGY)
+                }
+
+                if(creep.store[resource] === 0) {
+                    creep.memory.carrying = false;
+                    return;
+                }
+                console.log(resource)
+                labsAreFull = false;
+                if(creep.transfer(lab,resource) === ERR_NOT_IN_RANGE){
+                    creep.moveTo(lab);
+                }
+
+
+                return;
+            }
+            labNumber++;
+
+        });
+
         if(!labsAreFull) {
             creep.say('🚚 X3L')
         }
 
-        // Make sure the nuke is full of energy
-        if(nuker && labsAreFull) {
-            creep.say('🚚 X3N')
-            if(nuker.store && nuker.store[RESOURCE_ENERGY] < 300001 && creep.transfer(nuker,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(nuker);
-                return;
-            }
-        }
+
 
     }
 

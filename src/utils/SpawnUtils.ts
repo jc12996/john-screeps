@@ -132,7 +132,15 @@ export class SpawnUtils {
                     return null;
                 }
             case 'carrier':
-                if( energyAvailable >= (PartCosts.MOVE * 8) + (PartCosts.CARRY * 8)) {
+                if(commandLevel >= 8 && energyAvailable >= (PartCosts.MOVE * 25) + (PartCosts.CARRY * 25)) {
+                    for (let i = 0; i < 25; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 25; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }else if( energyAvailable >= (PartCosts.MOVE * 8) + (PartCosts.CARRY * 8)) {
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
                     }

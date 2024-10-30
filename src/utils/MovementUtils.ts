@@ -249,8 +249,6 @@ export class MovementUtils {
         });
         const commandLevel =  creep.room?.controller?.level ?? 1;
 
-        const activeSource = creep.room.find(FIND_SOURCES_ACTIVE)
-
 
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
             if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && nearestStorageOrTerminal.store[RESOURCE_ENERGY] > 1000 && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -281,7 +279,31 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
+        // const nukerEnergy: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        //     filter: (structure) => {
+        //         return structure.structureType === STRUCTURE_NUKER && structure.store  &&  structure.store[RESOURCE_ENERGY] < structure.store.getCapacity(RESOURCE_ENERGY);
+        //     }
+        // }) ?? null;
 
+        // if(!nukerEnergy) {
+        //     creep.drop(RESOURCE_HYDROGEN)
+        // }
+
+        // if(!nukerEnergy && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
+        //     (terminal.store[RESOURCE_LEMERGIUM] > 0 || terminal.store[RESOURCE_ZYNTHIUM] > 0 || terminal.store[RESOURCE_HYDROGEN] > 0 || terminal.store[RESOURCE_KEANIUM] > 0 || terminal.store[RESOURCE_UTRIUM] > 0)
+        // ) {
+        //     if(creep.withdraw(terminal,RESOURCE_UTRIUM) == ERR_NOT_IN_RANGE){
+        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+        //     } else if(creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
+        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+        //     } else if(creep.withdraw(terminal,RESOURCE_ZYNTHIUM) == ERR_NOT_IN_RANGE){
+        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+        //     } else if(creep.withdraw(terminal,RESOURCE_KEANIUM) == ERR_NOT_IN_RANGE){
+        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+        //     } else if(creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+        //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+        //     }
+        // } else
         if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         } else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
