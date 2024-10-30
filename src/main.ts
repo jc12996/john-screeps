@@ -22,6 +22,7 @@ import { sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
 import { Scout } from "roles/scout";
 import { MovementUtils } from "utils/MovementUtils";
 import {  Nukers } from "nukers";
+import { Labs } from "labs";
 
 declare global {
   /*
@@ -99,6 +100,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       handleRamparts({ room: room });
       Tower.defendMyRoom(room);
       if(room.controller?.my && room.controller.level === 8) {
+        Labs.runLabs(room);
         Nukers.awaitingNuke(room);
       }
 
