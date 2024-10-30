@@ -2,6 +2,7 @@ import { AutoSpawn } from "autospawn";
 import { SpawnUtils } from "./SpawnUtils";
 import { PeaceTimeEconomy } from "./EconomiesUtils";
 import { LabMapper } from "labs";
+import { Carrier } from "roles/carrier";
 
 export class MovementUtils {
 
@@ -344,12 +345,12 @@ export class MovementUtils {
              && creep.withdraw(labs[LabMapper.RESOURCE_GH],RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
                     creep.moveTo(labs[LabMapper.RESOURCE_GH], {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        } else if(
+        } else if( labs[LabMapper.RESOURCE_ZK] && labs[LabMapper.RESOURCE_ZK].store[RESOURCE_ZYNTHIUM_KEANITE] < 2200 &&
             terminal.store[RESOURCE_ZYNTHIUM_KEANITE] > 3000 && creep.withdraw(terminal,RESOURCE_ZYNTHIUM_KEANITE) == ERR_NOT_IN_RANGE){
                     creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
-        else if(
+        else if(labs[LabMapper.RESOURCE_UL] && labs[LabMapper.RESOURCE_UL].store[RESOURCE_UTRIUM_LEMERGITE] < 2200 &&
             terminal.store[RESOURCE_UTRIUM_LEMERGITE] > 3000 && creep.withdraw(terminal,RESOURCE_UTRIUM_LEMERGITE) == ERR_NOT_IN_RANGE){
                     creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
@@ -381,9 +382,9 @@ export class MovementUtils {
                     creep.moveTo(labs[LabMapper.RESOURCE_ZK], {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
-        else if(labs[LabMapper.RESOURCE_LU] && labs[LabMapper.RESOURCE_LU].store[RESOURCE_UTRIUM_LEMERGITE] > 1000
-             && creep.withdraw(labs[LabMapper.RESOURCE_LU],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
-                    creep.moveTo(labs[LabMapper.RESOURCE_LU], {visualizePathStyle: {stroke: '#ffaa00'}});
+        else if(labs[LabMapper.RESOURCE_UL] && labs[LabMapper.RESOURCE_UL].store[RESOURCE_UTRIUM_LEMERGITE] > 1000
+             && creep.withdraw(labs[LabMapper.RESOURCE_UL],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
+                    creep.moveTo(labs[LabMapper.RESOURCE_UL], {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
         else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -479,6 +480,12 @@ export class MovementUtils {
 
 
         if(creep.memory.extensionFarm === 1) {
+
+            const canContinue = Carrier.dropOffInTerminal(creep,terminal);
+            if(!canContinue) {
+                return;
+            }
+
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
 
             if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
@@ -492,6 +499,12 @@ export class MovementUtils {
         }
 
         if(creep.memory.extensionFarm === 2) {
+
+            const canContinue = Carrier.dropOffInTerminal(creep,terminal);
+            if(!canContinue) {
+                return;
+            }
+
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
             if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);

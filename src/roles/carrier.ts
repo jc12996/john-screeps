@@ -292,72 +292,20 @@ export class Carrier {
 
 
             if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
-                console.log(labs[LabMapper.RESOURCE_LEMERGIUM]?.id)
                 const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
-                    if(!canContinue) {
-                        return;
-                    }
+                if(!canContinue) {
                     return;
+                }
+                return;
 
 
             }
 
             if(creep.memory.extensionFarm !== undefined && commandLevel >= 8) {
-                if(terminal && creep.store[RESOURCE_LEMERGIUM] > 0) {
-
-                    if(creep.transfer(terminal,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(terminal)
-                    }
+               const canContinue = this.dropOffInTerminal(creep,terminal);
+               if(!canContinue) {
                     return;
-                }
-
-                if(terminal && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0) {
-
-                    if(creep.transfer(terminal,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(terminal)
-                    }
-                    return;
-                }
-
-                if(terminal && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0) {
-
-                    if(creep.transfer(terminal,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(terminal)
-                    }
-                    return;
-                }
-
-                if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
-
-                    if(creep.transfer(terminal,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(terminal)
-                    }
-                    return;
-                }
-
-                if(terminal && creep.store[RESOURCE_ZYNTHIUM] > 0) {
-
-                    if(creep.transfer(terminal,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(terminal)
-                    }
-                    return;
-                }
-
-                if(terminal && creep.store[RESOURCE_KEANIUM] > 0) {
-
-                    if(creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(terminal)
-                    }
-                    return;
-                }
-
-                if(terminal && creep.store[RESOURCE_UTRIUM] > 0) {
-
-                    if(creep.transfer(terminal,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(terminal)
-                    }
-                    return;
-                }
+               }
             }
 
             this.normalCarrierSequence(creep,
@@ -399,6 +347,66 @@ export class Carrier {
         }
     }
 
+    public static dropOffInTerminal(creep: Creep, terminal: StructureTerminal | null) : boolean {
+        if(terminal && creep.store[RESOURCE_LEMERGIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_ZYNTHIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_KEANIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_UTRIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        return true;
+    }
+
     private static scienceCarrierSequence(creep:Creep,labs:StructureLab[],terminal:StructureTerminal): boolean {
 
 
@@ -436,7 +444,7 @@ export class Carrier {
         const H_lab1 = labs[LabMapper.RESOURCE_HYDROGEN] ?? null
         const H_lab2 = labs[LabMapper.RESOURCE_HYDROGEN] ?? null
         const ZK_lab = labs[LabMapper.RESOURCE_ZK] ?? null
-        const LU_lab = labs[LabMapper.RESOURCE_LU] ?? null
+        const LU_lab = labs[LabMapper.RESOURCE_UL] ?? null
         const GH_lab = labs[LabMapper.RESOURCE_GH] ?? null
 
         const L_lab = labs[LabMapper.RESOURCE_LEMERGIUM] ?? null;

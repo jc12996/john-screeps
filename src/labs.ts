@@ -2,7 +2,7 @@ export enum LabMapper {
     RESOURCE_KEANIUM = 0,
     RESOURCE_ZK = 1,
     RESOURCE_UTRIUM = 2,
-    RESOURCE_LU = 3,
+    RESOURCE_UL = 3,
     RESOURCE_ZYNTHIUM = 4,
     RESOURCE_GH = 5,
     RESOURCE_KEANIUM2 = 6,
