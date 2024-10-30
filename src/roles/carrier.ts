@@ -293,10 +293,10 @@ export class Carrier {
 
             if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
                 const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
+                console.log(creep.store[RESOURCE_GHODIUM],'gho')
                 if(!canContinue) {
                     return;
                 }
-                return;
 
 
             }
@@ -601,7 +601,7 @@ export class Carrier {
 
         if(terminal && ghodiumNuker && creep.store[RESOURCE_GHODIUM] > 0) {
 
-            if(ghodiumNuker && creep.transfer(ghodiumNuker,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+            if(ghodiumNuker && ghodiumNuker.store[RESOURCE_GHODIUM] < 5000 && creep.transfer(ghodiumNuker,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(ghodiumNuker)
             }else if(terminal && creep.transfer(terminal,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal)
@@ -650,9 +650,11 @@ export class Carrier {
         nearestStorageOrTerminal: any
     ) {
 
+        if(creep.memory?.extensionFarm === 3) {
 
+        console.log('here3')
 
-
+        }
         if(creep.memory.role === 'miner' && creep.room.controller?.my) {
             if( nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
                 creep.say('🚚 P');

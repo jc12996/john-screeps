@@ -337,11 +337,17 @@ export class MovementUtils {
 
     private static generalScientistGather(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage) {
 
+        const nuker: StructureNuker | null = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType === STRUCTURE_NUKER
+            }
+        })[0] as StructureNuker ?? null;
+
         if (
-            terminal.store[RESOURCE_GHODIUM] > 0 && creep.withdraw(terminal,RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
+            nuker && nuker.store[RESOURCE_GHODIUM] < 5000 && commandLevel >= 8 && terminal.store[RESOURCE_GHODIUM] > 0 && creep.withdraw(terminal,RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
                     creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        }else if(labs[LabMapper.RESOURCE_GH] && labs[LabMapper.RESOURCE_GH].store[RESOURCE_GHODIUM] > 500
+        } else if(labs[LabMapper.RESOURCE_GH] && labs[LabMapper.RESOURCE_GH].store[RESOURCE_GHODIUM] > 500
              && creep.withdraw(labs[LabMapper.RESOURCE_GH],RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
                     creep.moveTo(labs[LabMapper.RESOURCE_GH], {visualizePathStyle: {stroke: '#ffaa00'}});
 
