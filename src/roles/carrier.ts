@@ -41,6 +41,8 @@ export class Carrier {
             }
         });
 
+        // console.log(labs[LabMapper.H]?.id)
+
         let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn?.room.name);
         const commandLevel =  creep.room?.controller?.level ?? 1;
 
@@ -382,18 +384,18 @@ export class Carrier {
 
         });
 
-        const H_lab1 = labs[LabMapper.RESOURCE_HYDROGEN] ?? null
-        const H_lab2 = labs[LabMapper.RESOURCE_HYDROGEN] ?? null
-        const ZK_lab = labs[LabMapper.RESOURCE_ZK] ?? null
-        const LU_lab = labs[LabMapper.RESOURCE_UL] ?? null
-        const GH_lab = labs[LabMapper.RESOURCE_GH] ?? null
+        const H_lab1 = labs[LabMapper.H] ?? null
+        const H_lab2 = labs[LabMapper.H] ?? null
+        const ZK_lab = labs[LabMapper.ZK] ?? null
+        const LU_lab = labs[LabMapper.UL] ?? null
+        const GH_lab = labs[LabMapper.GH] ?? null
 
-        const L_lab = labs[LabMapper.RESOURCE_LEMERGIUM] ?? null;
-        const U_lab = labs[LabMapper.RESOURCE_UTRIUM] ?? null;
+        const L_lab = labs[LabMapper.L] ?? null;
+        const U_lab = labs[LabMapper.U] ?? null;
 
 
-        const Z_lab = labs[LabMapper.RESOURCE_ZYNTHIUM] ?? null;
-        const K_lab = labs[LabMapper.RESOURCE_KEANIUM] ?? null;
+        const Z_lab = labs[LabMapper.Z] ?? null;
+        const K_lab = labs[LabMapper.K] ?? null;
 
         if(GH_lab && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE]) {
             console.log('creating ghodium!')
