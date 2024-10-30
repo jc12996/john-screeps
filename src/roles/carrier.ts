@@ -384,8 +384,7 @@ export class Carrier {
 
         });
 
-        const H_lab1 = labs[LabMapper.H] ?? null
-        const H_lab2 = labs[LabMapper.H] ?? null
+
         const ZK_lab = labs[LabMapper.ZK] ?? null
         const LU_lab = labs[LabMapper.UL] ?? null
         const GH_lab = labs[LabMapper.GH] ?? null
@@ -396,6 +395,8 @@ export class Carrier {
 
         const Z_lab = labs[LabMapper.Z] ?? null;
         const K_lab = labs[LabMapper.K] ?? null;
+
+        const H_lab = labs[LabMapper.H] ?? null
 
         if(GH_lab && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE]) {
             console.log('creating ghodium!')
@@ -438,6 +439,35 @@ export class Carrier {
             }
             return false;
         }
+
+        if(H_lab && creep.store[RESOURCE_HYDROGEN] > 0 && H_lab.store[RESOURCE_HYDROGEN] < 2200 && creep.store.H > 0) {
+
+            labsAreFull = false;
+            if(!labsAreFull) {
+                creep.say('🚚 X3'+ RESOURCE_HYDROGEN)
+            }
+
+            if(creep.store[RESOURCE_ENERGY] > 0) {
+                creep.drop(RESOURCE_ENERGY)
+            }
+            if(creep.transfer(H_lab,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE){
+                creep.moveTo(H_lab);
+
+            }
+            return false;
+
+        }
+
+
+
+        if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
 
         if(LU_lab && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0 && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] < 2200 && creep.store.UL > 0) {
 

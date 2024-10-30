@@ -20,8 +20,6 @@ export class Labs {
       }
   }) as StructureLab[];
 
-    const H_lab = labs[LabMapper.H] ?? null
-
     const ZK_lab = labs[LabMapper.ZK] ?? null
     const LU_lab = labs[LabMapper.UL] ?? null
     const GH_lab = labs[LabMapper.GH] ?? null

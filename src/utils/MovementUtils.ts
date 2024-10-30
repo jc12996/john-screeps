@@ -393,6 +393,12 @@ export class MovementUtils {
                     creep.moveTo(labs[LabMapper.UL], {visualizePathStyle: {stroke: '#ffaa00'}});
 
         }
+        else if(labs[LabMapper.H] && labs[LabMapper.H].store[RESOURCE_HYDROGEN] < 2200
+            &&
+            terminal.store[RESOURCE_HYDROGEN] > 0 && creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
         else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
         }
