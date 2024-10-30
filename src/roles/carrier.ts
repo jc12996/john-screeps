@@ -302,7 +302,7 @@ export class Carrier {
             }
 
             if(creep.memory.extensionFarm !== undefined && commandLevel >= 8) {
-               const canContinue = this.dropOffInTerminal(creep,terminal);
+               const canContinue = MovementUtils.dropOffInTerminal(creep,terminal);
                if(!canContinue) {
                     return;
                }
@@ -347,65 +347,7 @@ export class Carrier {
         }
     }
 
-    public static dropOffInTerminal(creep: Creep, terminal: StructureTerminal | null) : boolean {
-        if(terminal && creep.store[RESOURCE_LEMERGIUM] > 0) {
 
-            if(creep.transfer(terminal,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal)
-            }
-            return false;
-        }
-
-        if(terminal && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0) {
-
-            if(creep.transfer(terminal,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal)
-            }
-            return false;
-        }
-
-        if(terminal && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0) {
-
-            if(creep.transfer(terminal,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal)
-            }
-            return false;
-        }
-
-        if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
-
-            if(creep.transfer(terminal,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal)
-            }
-            return false;
-        }
-
-        if(terminal && creep.store[RESOURCE_ZYNTHIUM] > 0) {
-
-            if(creep.transfer(terminal,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal)
-            }
-            return false;
-        }
-
-        if(terminal && creep.store[RESOURCE_KEANIUM] > 0) {
-
-            if(creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal)
-            }
-            return false;
-        }
-
-        if(terminal && creep.store[RESOURCE_UTRIUM] > 0) {
-
-            if(creep.transfer(terminal,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(terminal)
-            }
-            return false;
-        }
-
-        return true;
-    }
 
     private static scienceCarrierSequence(creep:Creep,labs:StructureLab[],terminal:StructureTerminal): boolean {
 
