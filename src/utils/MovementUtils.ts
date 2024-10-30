@@ -336,12 +336,6 @@ export class MovementUtils {
     }
 
     private static generalScientistGather(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage) {
-        if(creep.memory.extensionFarm === 3) {
-            console.log('Scientist:');
-            console.log('lab:',labs[LabMapper.RESOURCE_LEMERGIUM].store.L,LabMapper.RESOURCE_LEMERGIUM, RESOURCE_LEMERGIUM);
-            console.log(labs[LabMapper.RESOURCE_ZYNTHIUM].id == '671f6f7067dfb916d3de0d64', 'yes?')
-        }
-
 
         if (
             terminal.store[RESOURCE_GHODIUM] > 0 && creep.withdraw(terminal,RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
@@ -351,7 +345,17 @@ export class MovementUtils {
              && creep.withdraw(labs[LabMapper.RESOURCE_GH],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
                     creep.moveTo(labs[LabMapper.RESOURCE_GH], {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        } else if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] <2200 &&
+        } else if(
+            terminal.store[RESOURCE_ZYNTHIUM_KEANITE] > 3000 && creep.withdraw(terminal,RESOURCE_ZYNTHIUM_KEANITE) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(
+            terminal.store[RESOURCE_UTRIUM_LEMERGITE] > 3000 && creep.withdraw(terminal,RESOURCE_UTRIUM_LEMERGITE) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] <2200 &&
              terminal.store[RESOURCE_LEMERGIUM] > 0 && creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
                  creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
