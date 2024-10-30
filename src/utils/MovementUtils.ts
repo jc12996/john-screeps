@@ -351,7 +351,16 @@ export class MovementUtils {
              && creep.withdraw(labs[LabMapper.RESOURCE_GH],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
                     creep.moveTo(labs[LabMapper.RESOURCE_GH], {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        } else if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] <2200 &&
+        } else if(
+            terminal.store[RESOURCE_ZYNTHIUM_KEANITE] > 3000 && creep.withdraw(terminal,RESOURCE_ZYNTHIUM_KEANITE) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(
+            terminal.store[RESOURCE_UTRIUM_LEMERGITE] > 3000 && creep.withdraw(terminal,RESOURCE_UTRIUM_LEMERGITE) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }else if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] <2200 &&
              terminal.store[RESOURCE_LEMERGIUM] > 0 && creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
                  creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 

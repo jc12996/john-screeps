@@ -43,9 +43,9 @@ export class Miner {
             filter: (structure) => structure.structureType === STRUCTURE_STORAGE
         })[0] ?? null;
 
-        const terminal = creep.room.find(FIND_STRUCTURES, {
+        const terminal:StructureTerminal = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => structure.structureType === STRUCTURE_TERMINAL
-        })[0] ?? null;
+        })[0] as StructureTerminal ?? null;
 
         const mineral = creep.room.find(FIND_MINERALS)[0];
 
@@ -82,7 +82,7 @@ export class Miner {
 
     }
 
-    private static creepExtractor(creep:Creep,extractor:AnyStructure,storage:AnyStructure,terminal:AnyStructure,mineral:Mineral) {
+    private static creepExtractor(creep:Creep,extractor:AnyStructure,storage:AnyStructure,terminal:StructureTerminal,mineral:Mineral) {
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say("⛏ ⛰");
@@ -117,10 +117,10 @@ export class Miner {
                 }
             });
 
-            const hLabs = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
                 filter:  (source) => {
                     return (
-                        source.structureType == STRUCTURE_LAB && source.store.H > 0
+                        source.structureType == STRUCTURE_LAB && (source.store.L > 0 || source.store.Z > 0 || source.store.U > 0 || source.store.K > 0)
 
 
                     )
@@ -142,7 +142,45 @@ export class Miner {
                 creep.moveTo(hLabs, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             else */
+            // if(terminal && terminal.store.UL >= 3000 && terminal.store.ZK >= 3000) {
+            //     labs.forEach(lab => {
+            //         if(lab.store.L > 0  && creep.withdraw(lab,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
+            //             creep.moveTo(lab, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //             return;
+            //         }
+            //         if(lab.store.U > 0  && creep.withdraw(lab,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE) {
+            //             creep.moveTo(lab, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //             return;
+            //         }
+            //         if(lab.store.K > 0  && creep.withdraw(lab,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
+            //             creep.moveTo(lab, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //             return;
+            //         }
+            //         if(lab.store.Z > 0  && creep.withdraw(lab,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE) {
+            //             creep.moveTo(lab, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //             return;
+            //         }
+            //     })
 
+            //     if(terminal && creep.store.Z > 0 && creep.transfer(terminal,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE){
+            //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //         return;
+            //     }
+            //     if(terminal && creep.store.U > 0 && creep.transfer(terminal,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE){
+            //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //         return;
+            //     }
+            //     if(terminal && creep.store.L > 0 && creep.transfer(terminal,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE){
+            //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //         return;
+            //     }
+            //     if(terminal && creep.store.K > 0 && creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE){
+            //         creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //         return;
+            //     }
+
+            //     return;
+            // }
             if(droppedMineralTombstone && creep.withdraw(droppedMineralTombstone,mineral.mineralType) === ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedMineralTombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
