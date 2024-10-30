@@ -583,6 +583,15 @@ export class MovementUtils {
             return false;
         }
 
+        if(terminal && creep.store[RESOURCE_GHODIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+
         return true;
     }
 }
