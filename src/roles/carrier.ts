@@ -88,7 +88,7 @@ export class Carrier {
         }else if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 1;
         }
-        else if(isInSpawn1Room && ((storage && storage.store[RESOURCE_ENERGY] > 100000)) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel === 8) {
+        else if(isInSpawn1Room && storage && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel === 8) {
             creep.memory.extensionFarm = 3;
         }
         else {
