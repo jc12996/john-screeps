@@ -21,6 +21,7 @@ import { SquadUtils } from "utils/SquadUtils";
 import { sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
 import { Scout } from "roles/scout";
 import { MovementUtils } from "utils/MovementUtils";
+import {  Nukers } from "nukers";
 
 declare global {
   /*
@@ -96,7 +97,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
           continue;
       }
       handleRamparts({ room: room });
-      Tower.defendMyRoom(room)
+      Tower.defendMyRoom(room);
+      Nukers.awaitingNuke(room);
 
   }
 
