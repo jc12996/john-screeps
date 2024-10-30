@@ -286,83 +286,14 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-        if(creep.memory.extensionFarm === 3) {
-            console.log('Scientist:');
-            console.log('lab:',labs[LabMapper.RESOURCE_LEMERGIUM].store.L,LabMapper.RESOURCE_LEMERGIUM, RESOURCE_LEMERGIUM);
-            console.log(labs[LabMapper.RESOURCE_ZYNTHIUM].id == '671f6f7067dfb916d3de0d64', 'yes?')
-        }
-         if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] <2200 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-             terminal.store[RESOURCE_LEMERGIUM] > 0 &&creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
-                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_UTRIUM] && labs[LabMapper.RESOURCE_UTRIUM].store[RESOURCE_UTRIUM] < 2200 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-         terminal.store[RESOURCE_UTRIUM] > 0 &&creep.withdraw(terminal,RESOURCE_UTRIUM) == ERR_NOT_IN_RANGE){
-                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_ZYNTHIUM] && labs[LabMapper.RESOURCE_ZYNTHIUM].store[RESOURCE_ZYNTHIUM] < 2200
-            && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_ZYNTHIUM] > 0 &&creep.withdraw(terminal,RESOURCE_ZYNTHIUM) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_KEANIUM] && labs[LabMapper.RESOURCE_KEANIUM].store[RESOURCE_KEANIUM] < 2200
-            && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_KEANIUM] > 0 &&creep.withdraw(terminal,RESOURCE_KEANIUM) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_ZK] && labs[LabMapper.RESOURCE_ZK].store[RESOURCE_ZYNTHIUM_KEANITE] > 1000
-            && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal
-             && creep.withdraw(labs[LabMapper.RESOURCE_ZK],RESOURCE_ZYNTHIUM_KEANITE)== ERR_NOT_IN_RANGE){
-                    creep.moveTo(labs[LabMapper.RESOURCE_ZK], {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_LU] && labs[LabMapper.RESOURCE_LU].store[RESOURCE_UTRIUM_LEMERGITE] > 1000
-            && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal
-             && creep.withdraw(labs[LabMapper.RESOURCE_LU],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
-                    creep.moveTo(labs[LabMapper.RESOURCE_LU], {visualizePathStyle: {stroke: '#ffaa00'}});
-
+        if(creep && terminal && commandLevel >= 8 && creep.memory.extensionFarm === 3 && commandLevel >= 8) {
+            this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage);
+            return;
         }
 
 
-        /*
-        else if(labs[LabMapper.RESOURCE_HYDROGEN] && labs[LabMapper.RESOURCE_HYDROGEN].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
 
-        } else if(labs[LabMapper.RESOURCE_HYDROGEN2] && labs[LabMapper.RESOURCE_HYDROGEN2].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-
-        else if(labs[LabMapper.RESOURCE_HYDROGEN3] && labs[LabMapper.RESOURCE_HYDROGEN3].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_HYDROGEN3] && labs[LabMapper.RESOURCE_HYDROGEN3].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_HYDROGEN4] && labs[LabMapper.RESOURCE_HYDROGEN4].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.RESOURCE_HYDROGEN5] && labs[LabMapper.RESOURCE_HYDROGEN5].store[RESOURCE_HYDROGEN] < 3000 && creep.memory.extensionFarm === 3 && commandLevel >= 8 && terminal &&
-            terminal.store[RESOURCE_HYDROGEN] > 0 &&creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-                creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-                */
-        else if (creep.memory.extensionFarm === 3 && target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
-        }
-        else if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+        if(commandLevel < 6 && ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         }
         else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -402,6 +333,59 @@ export class MovementUtils {
             creep.move(MovementUtils.randomDirectionSelector())
         }
 
+    }
+
+    private static generalScientistGather(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage) {
+        if(creep.memory.extensionFarm === 3) {
+            console.log('Scientist:');
+            console.log('lab:',labs[LabMapper.RESOURCE_LEMERGIUM].store.L,LabMapper.RESOURCE_LEMERGIUM, RESOURCE_LEMERGIUM);
+            console.log(labs[LabMapper.RESOURCE_ZYNTHIUM].id == '671f6f7067dfb916d3de0d64', 'yes?')
+        }
+
+
+        if (
+            terminal.store[RESOURCE_GHODIUM] > 0 && creep.withdraw(terminal,RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }else if(labs[LabMapper.RESOURCE_GH] && labs[LabMapper.RESOURCE_GH].store[RESOURCE_GHODIUM] > 1000
+             && creep.withdraw(labs[LabMapper.RESOURCE_GH],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
+                    creep.moveTo(labs[LabMapper.RESOURCE_GH], {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        } else if(labs[LabMapper.RESOURCE_LEMERGIUM] && labs[LabMapper.RESOURCE_LEMERGIUM].store[RESOURCE_LEMERGIUM] <2200 &&
+             terminal.store[RESOURCE_LEMERGIUM] > 0 && creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
+                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_UTRIUM] && labs[LabMapper.RESOURCE_UTRIUM].store[RESOURCE_UTRIUM] < 2200 &&
+         terminal.store[RESOURCE_UTRIUM] > 0 && creep.withdraw(terminal,RESOURCE_UTRIUM) == ERR_NOT_IN_RANGE){
+                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_ZYNTHIUM] && labs[LabMapper.RESOURCE_ZYNTHIUM].store[RESOURCE_ZYNTHIUM] < 2200
+            &&
+            terminal.store[RESOURCE_ZYNTHIUM] > 0 && creep.withdraw(terminal,RESOURCE_ZYNTHIUM) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_KEANIUM] && labs[LabMapper.RESOURCE_KEANIUM].store[RESOURCE_KEANIUM] < 2200
+            &&
+            terminal.store[RESOURCE_KEANIUM] > 0 && creep.withdraw(terminal,RESOURCE_KEANIUM) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_ZK] && labs[LabMapper.RESOURCE_ZK].store[RESOURCE_ZYNTHIUM_KEANITE] > 1000
+             && creep.withdraw(labs[LabMapper.RESOURCE_ZK],RESOURCE_ZYNTHIUM_KEANITE)== ERR_NOT_IN_RANGE){
+                    creep.moveTo(labs[LabMapper.RESOURCE_ZK], {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if(labs[LabMapper.RESOURCE_LU] && labs[LabMapper.RESOURCE_LU].store[RESOURCE_UTRIUM_LEMERGITE] > 1000
+             && creep.withdraw(labs[LabMapper.RESOURCE_LU],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
+                    creep.moveTo(labs[LabMapper.RESOURCE_LU], {visualizePathStyle: {stroke: '#ffaa00'}});
+
+        }
+        else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        }
     }
 
     public static callForHelp(creep: Creep) {

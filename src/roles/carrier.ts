@@ -214,6 +214,7 @@ export class Carrier {
             || creep.store[RESOURCE_OXYGEN] > 0
             || creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0
             || creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0
+            || creep.store[RESOURCE_GHODIUM] > 0
         )) {
                 creep.memory.carrying = true;
         }
@@ -237,6 +238,7 @@ export class Carrier {
             && creep.store[RESOURCE_ENERGY] === 0
             && creep.store[RESOURCE_UTRIUM_LEMERGITE] === 0
             && creep.store[RESOURCE_ZYNTHIUM_KEANITE] === 0
+            && creep.store[RESOURCE_GHODIUM] === 0
 
             && creep.store[RESOURCE_OXYGEN] === 0) {
                 creep.memory.carrying = false;
@@ -389,6 +391,12 @@ export class Carrier {
             filter: (structure) => {
                 return structure.structureType === STRUCTURE_NUKER && structure.store && structure.store[RESOURCE_ENERGY] < 300000;
             }
+        }) ?? null;
+
+        const ghodiumNuker: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType === STRUCTURE_NUKER && structure.store && structure.store[RESOURCE_GHODIUM] < 5000;
+            }
         }) ?? null
 
 
@@ -428,6 +436,10 @@ export class Carrier {
 
         if (LU_lab && L_lab.store[RESOURCE_LEMERGIUM] && U_lab.store[RESOURCE_UTRIUM]) {
             LU_lab.runReaction(L_lab,U_lab)
+        }
+
+        if(GH_lab && ZK_lab.store[RESOURCE_ZYNTHIUM] && LU_lab.store[RESOURCE_LEMERGIUM]) {
+            GH_lab.runReaction(ZK_lab,LU_lab)
         }
 
 
@@ -632,18 +644,7 @@ export class Carrier {
             }
             return false;
         }
-/*
-        if(terminal && ZK_lab && ZK_lab.store.ZK > 300 && creep.store[RESOURCE_ZYNTHIUM_KEANITE] === 0) {
-           if(creep.pos.inRangeTo(ZK_lab,1)){
-            creep.drop(RESOURCE_ENERGY)
-           }
-          //  creep.drop(RESOURCE_ENERGY)
-            if(creep.withdraw(ZK_lab,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(ZK_lab)
-            }
-            return false;
-        }
-*/
+
         if(terminal && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
@@ -655,6 +656,16 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && ghodiumNuker && creep.store[RESOURCE_GHODIUM] > 0) {
+
+            if(ghodiumNuker && creep.transfer(ghodiumNuker,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(ghodiumNuker)
+            }else if(terminal && creep.transfer(terminal,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal)
             }
             return false;
