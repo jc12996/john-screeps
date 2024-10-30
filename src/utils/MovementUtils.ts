@@ -92,7 +92,6 @@ export class MovementUtils {
                     return;
                 }
 
-                //console.log("roomStatus",Game.flags.rallyFlag2?.room, Game.flags.rallyFlag?.room)
                 if(Game.flags.rallyFlag2?.room && Game.flags.rallyFlag?.room) {
                     new RoomVisual(Game.flags.rallyFlag2.room.name).line(Game.flags.rallyFlag2.pos.x,Game.flags.rallyFlag2.pos.y,Game.flags.rallyFlag2.pos.x-3,Game.flags.rallyFlag2.pos.y,{ color: 'red' });
                     new RoomVisual(Game.flags.rallyFlag2.room.name).line(Game.flags.rallyFlag2.pos.x-3,Game.flags.rallyFlag2.pos.y,Game.flags.rallyFlag2.pos.x-2,Game.flags.rallyFlag2.pos.y+1,{ color: 'red' });
@@ -467,7 +466,7 @@ export class MovementUtils {
         if(AutoSpawn.nextClaimFlag.room == creep.room) {
             return true;
         }
-        console.log(AutoSpawn.nextClaimFlag.room)
+
         MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
         if(!!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room){
             return false;

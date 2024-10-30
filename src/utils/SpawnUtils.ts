@@ -25,7 +25,7 @@ const myFriends = [
     'kailin-limble',
     'Redfro',
     'Matticus',
-    //'Source Keeper'
+    'Source Keeper'
 ];
 // Starter Base for Bot Season 10/2024 - W7S4
 
@@ -132,8 +132,8 @@ export class SpawnUtils {
                     return null;
                 }
             case 'carrier':
-                if(commandLevel >= 8 && energyAvailable >= (PartCosts.MOVE * 10) + (PartCosts.CARRY * 25)) {
-                    for (let i = 0; i < 10; i++) {
+                if(commandLevel >= 8 && energyAvailable >= (PartCosts.MOVE * 25) + (PartCosts.CARRY * 25)) {
+                    for (let i = 0; i < 25; i++) {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 25; i++) {

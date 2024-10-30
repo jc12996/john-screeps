@@ -88,7 +88,7 @@ export class Carrier {
         }else if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 1;
         }
-        else if(isInSpawn1Room && (storage && creep.room.energyAvailable > 3000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel === 8) {
+        else if(isInSpawn1Room && (storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel === 8 && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 3;
         }
         else {
@@ -226,9 +226,7 @@ export class Carrier {
         ) {
             creep.memory.carrying = false;
         }
-        if(creep.memory.extensionFarm === 3) {
-            console.log(creep.memory.carrying)
-        }
+
 
         if(creep.memory.carrying && creep.memory.extensionFarm === 3
             && creep.store[RESOURCE_UTRIUM] === 0
@@ -465,9 +463,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                console.log('ZK')
-                console.log('ZK amount: ',creep.store[RESOURCE_ZYNTHIUM_KEANITE])
-                creep.say('🚚 X3L'+ RESOURCE_ZYNTHIUM_KEANITE)
+                creep.say('🚚 X3'+ RESOURCE_ZYNTHIUM_KEANITE)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -495,8 +491,6 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                console.log('UL')
-                console.log('UL amount: ',creep.store[RESOURCE_UTRIUM_LEMERGITE])
                 creep.say('🚚 X3'+ RESOURCE_UTRIUM_LEMERGITE)
             }
 
@@ -536,9 +530,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                console.log('U')
-                console.log('lemergium amount: ',creep.store[RESOURCE_LEMERGIUM])
-                creep.say('🚚 X3L'+ RESOURCE_LEMERGIUM)
+                creep.say('🚚 X3'+ RESOURCE_LEMERGIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -566,8 +558,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                console.log('ultrium amount: ',creep.store[RESOURCE_UTRIUM])
-                creep.say('🚚 X3L'+ RESOURCE_UTRIUM)
+                creep.say('🚚 X3'+ RESOURCE_UTRIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -593,9 +584,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                console.log('Z')
-                console.log('z amount: ',creep.store[RESOURCE_ZYNTHIUM])
-                creep.say('🚚 X3L'+ RESOURCE_ZYNTHIUM)
+                creep.say('🚚 X3'+ RESOURCE_ZYNTHIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -621,9 +610,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                console.log('K')
-                console.log('k amount: ',creep.store[RESOURCE_KEANIUM])
-                creep.say('🚚 X3L'+ RESOURCE_KEANIUM)
+                creep.say('🚚 X3'+ RESOURCE_KEANIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
