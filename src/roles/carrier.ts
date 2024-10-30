@@ -408,8 +408,13 @@ export class Carrier {
         const H_lab3 = labs[LabMapper.RESOURCE_HYDROGEN3] ?? null
         const H_lab4 = labs[LabMapper.RESOURCE_HYDROGEN4] ?? null
         const H_lab5 = labs[LabMapper.RESOURCE_HYDROGEN5] ?? null
+
         const L_lab = labs[LabMapper.RESOURCE_LEMERGIUM] ?? null;
         const U_lab = labs[LabMapper.RESOURCE_UTRIUM] ?? null;
+
+
+        const Z_lab = labs[LabMapper.RESOURCE_ZYNTHIUM] ?? null;
+        const K_lab = labs[LabMapper.RESOURCE_KEANIUM] ?? null;
 
 
 
@@ -556,6 +561,63 @@ export class Carrier {
             }
             return false;
         }
+
+        if(Z_lab && creep.store[RESOURCE_ZYNTHIUM] > 0 && Z_lab.store[RESOURCE_ZYNTHIUM] < 3000 && creep.store.Z > 0) {
+
+            labsAreFull = false;
+            if(!labsAreFull) {
+                console.log('Z')
+                console.log('z amount: ',creep.store[RESOURCE_ZYNTHIUM])
+                creep.say('🚚 X3L'+ RESOURCE_ZYNTHIUM)
+            }
+
+            if(creep.store[RESOURCE_ENERGY] > 0) {
+                creep.drop(RESOURCE_ENERGY)
+            }
+            if(creep.transfer(Z_lab,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE){
+                creep.moveTo(Z_lab);
+
+            }
+            return false;
+
+        }
+
+        if(terminal && creep.store[RESOURCE_ZYNTHIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(K_lab && creep.store[RESOURCE_KEANIUM] > 0 && K_lab.store[RESOURCE_KEANIUM] < 3000 && creep.store.K > 0) {
+
+            labsAreFull = false;
+            if(!labsAreFull) {
+                console.log('K')
+                console.log('k amount: ',creep.store[RESOURCE_KEANIUM])
+                creep.say('🚚 X3L'+ RESOURCE_KEANIUM)
+            }
+
+            if(creep.store[RESOURCE_ENERGY] > 0) {
+                creep.drop(RESOURCE_ENERGY)
+            }
+            if(creep.transfer(K_lab,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE){
+                creep.moveTo(K_lab);
+
+            }
+            return false;
+
+        }
+
+        if(terminal && creep.store[RESOURCE_KEANIUM] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
 
         if(energyNuker && labsAreFull) {
             creep.say('🚚 X3N')
