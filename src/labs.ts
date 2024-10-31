@@ -7,7 +7,7 @@ export enum LabMapper {
     GH = 5,
     UH = 6,
     L  = 7,
-    U2 = 8,
+    LH = 8,
     H = 9,
   }
 
@@ -35,7 +35,9 @@ export class Labs {
 
     const H_lab = labs[LabMapper.H] ?? null;
 
+    // Boost Labs
     const UH_lab = labs[LabMapper.UH] ?? null;
+    const LH_lab = labs[LabMapper.LH] ?? null;
 
     if(GH_lab && LU_lab && ZK_lab && LU_lab.store[RESOURCE_GHODIUM] < 3000 && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] > 300 && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] > 300) {
         GH_lab.runReaction(ZK_lab,LU_lab)
@@ -54,6 +56,10 @@ export class Labs {
         UH_lab.runReaction(U_lab,H_lab)
     }
 
+    if (LH_lab && L_lab && H_lab && UH_lab.store[RESOURCE_LEMERGIUM_HYDRIDE] < 3000 && L_lab.store[RESOURCE_LEMERGIUM] > 0 && H_lab.store[RESOURCE_HYDROGEN] > 0) {
+      UH_lab.runReaction(L_lab,H_lab)
+  }
+
 
   }
 
@@ -70,14 +76,16 @@ export class Labs {
 
     const labs: StructureLab[] = boost.creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
-            return structure.structureType === STRUCTURE_LAB
+            return structure.structureType === STRUCTURE_LAB && structure.store[RESOURCE_ENERGY] > 0
         }
     }) as StructureLab[];
 
 
+    // Boost Labs
     const UH_lab = labs[LabMapper.UH] ?? null;
+    const LH_lab = labs[LabMapper.LH] ?? null;
 
-    if(labs.length === 0){
+    if(labs.length === 0 || (!UH_lab && !LH_lab)){
       boost.creep.memory.isBoosted = true;
       return true;
     }
@@ -86,31 +94,40 @@ export class Labs {
 
 
     let numberOfAttackParts = boost.creep.getActiveBodyparts(ATTACK);
-    const attackBoostCap = 3;
-    if(numberOfAttackParts > 0) {
+    let attackBoostCap = numberOfAttackParts;
 
-        if(!UH_lab) {
-          boost.creep.memory.isBoosted = true;
-          return true;
+
+    if(numberOfAttackParts > 0 && UH_lab) {
+
+
+      if(!boost.creep.pos.isNearTo(UH_lab)) {
+        boost.creep.moveTo(UH_lab);
+        return false;
+      }
+
+      while(numberOfAttackParts <= attackBoostCap) {
+
+
+        const boostCode = UH_lab.boostCreep(boost.creep,1);
+
+        if(boostCode === ERR_NOT_ENOUGH_RESOURCES) {
+          numberOfAttackParts--
         }
-        let numberOfBoosts = 0;
-        while(numberOfAttackParts > 0 && numberOfBoosts < attackBoostCap) {
-          const boostCode = UH_lab.boostCreep(boost.creep,numberOfAttackParts);
-          if(boostCode === ERR_NOT_IN_RANGE) {
-            boost.creep.moveTo(UH_lab);
-            return false;
-          }else if(boostCode === OK) {
-            numberOfBoosts++;
-            continue;
-          } else  {
-            numberOfAttackParts--;
-          }
+
+        if(boostCode === ERR_NOT_ENOUGH_ENERGY) {
+          numberOfAttackParts--
         }
+
+        attackBoostCap--;
+
+
+      }
 
     }
 
+
     boost.creep.memory.isBoosted = true;
-    return true;
+    return false;
 
   }
 }

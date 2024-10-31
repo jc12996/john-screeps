@@ -366,6 +366,8 @@ export class Carrier {
             }
         }) ?? null;
 
+
+
         // Make sure every lab has some energy in it.
         let labsAreFull = true;
         let labNumber = 0;
@@ -381,6 +383,18 @@ export class Carrier {
             }
 
         });
+
+        const needsEnergyLabs = labs.filter(lab => {
+            return lab.store[RESOURCE_ENERGY] < 2000
+        })
+
+        if(needsEnergyLabs[0]  && creep.store.energy > 0 && needsEnergyLabs[0].store[RESOURCE_ENERGY] < 2000 && creep.transfer(needsEnergyLabs[0] , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            labsAreFull = false;
+            creep.say('🔬L');
+            creep.moveTo(needsEnergyLabs[0]);
+            return false;
+        }
+
 
 
         const ZK_lab = labs[LabMapper.ZK] ?? null
@@ -649,7 +663,7 @@ export class Carrier {
 
 
 
-        if(terminal && creep.store[RESOURCE_ENERGY] > 0) {
+        if(terminal && creep.store[RESOURCE_ENERGY] > 0 && labsAreFull) {
 
             const storage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
@@ -657,7 +671,7 @@ export class Carrier {
                 }
             }) ?? null;
 
-            if(nuker && labsAreFull && nuker.store[RESOURCE_ENERGY] < 300000 && creep.transfer(nuker,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            if(nuker && nuker.store[RESOURCE_ENERGY] < 300000 && creep.transfer(nuker,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.say('🔬NE');
                 creep.moveTo(nuker);
 

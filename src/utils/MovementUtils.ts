@@ -1,7 +1,7 @@
 import { AutoSpawn } from "autospawn";
 import { SpawnUtils } from "./SpawnUtils";
 import { PeaceTimeEconomy } from "./EconomiesUtils";
-import { LabMapper } from "labs";
+import { LabMapper, Labs } from "labs";
 import { Carrier } from "roles/carrier";
 
 export class MovementUtils {
@@ -284,7 +284,7 @@ export class MovementUtils {
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
         if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3) {
-            this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage);
+            this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
             return;
         }
 
@@ -332,13 +332,22 @@ export class MovementUtils {
 
     }
 
-    private static generalScientistGather(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage) {
+    private static generalScientistGather(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage, nearestStorageOrTerminal:StructureTerminal | StructureStorage | null) {
 
         const nuker: StructureNuker | null = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return structure.structureType === STRUCTURE_NUKER
             }
         })[0] as StructureNuker ?? null;
+
+        const needsEnergyLabs = labs.filter(lab => {
+            return lab.store[RESOURCE_ENERGY] < 2000
+        })
+
+        if (needsEnergyLabs[0] && nearestStorageOrTerminal && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
+            return;
+        }
 
         if (
             nuker && nuker.store[RESOURCE_GHODIUM] < 5000 && commandLevel >= 8 && terminal.store[RESOURCE_GHODIUM] > 0 && creep.withdraw(terminal,RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
