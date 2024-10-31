@@ -54,7 +54,7 @@ export class Carrier {
 
 
                 ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0  && structure.store[RESOURCE_ENERGY] < 900000;
             }
         });
 
@@ -72,7 +72,7 @@ export class Carrier {
 
         const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath((FIND_STRUCTURES),{
                 filter: (structure) => {
-                    return (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE)  &&
+                    return (structure.structureType === STRUCTURE_TERMINAL || (structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] < 900000))  &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.room?.controller?.my;
                 }
             } )
@@ -90,7 +90,7 @@ export class Carrier {
         }else if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 1;
         }
-        else if(isInSpawn1Room && (storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel === 8 && creep.room.energyAvailable > 0) {
+        else if((storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel >= 6 && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 3;
         }
         else {
@@ -104,7 +104,7 @@ export class Carrier {
            } else if( creep.memory?.extensionFarm === 2){
             creep.say("🚚 X2");
            } else if( creep.memory?.extensionFarm === 3){
-            creep.say("🚚 X3");
+            creep.say("🔬");
            }else   {
             creep.say("🚚");
            }
@@ -171,7 +171,7 @@ export class Carrier {
         var nearestStorage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
-                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my
+                   structure.structureType == STRUCTURE_STORAGE && structure.room?.controller?.my  && structure.store[RESOURCE_ENERGY] < 900000
 
 
                 )
@@ -302,7 +302,7 @@ export class Carrier {
 
             }
 
-            if(creep.memory.extensionFarm !== undefined && commandLevel >= 8) {
+            if(creep.memory.extensionFarm !== undefined && commandLevel >= 6) {
                const canContinue = MovementUtils.dropOffInTerminal(creep,terminal);
                if(!canContinue) {
                     return;
@@ -375,7 +375,7 @@ export class Carrier {
             labNumber++;
             if(lab.store[RESOURCE_ENERGY] < 2000) {
                 labsAreFull = false;
-                creep.say('🚚 X3L')
+                creep.say('🔬L')
                 if(creep.transfer(lab,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE){
                     creep.moveTo(lab);
                 }
@@ -387,7 +387,6 @@ export class Carrier {
 
         const ZK_lab = labs[LabMapper.ZK] ?? null
         const LU_lab = labs[LabMapper.UL] ?? null
-        const GH_lab = labs[LabMapper.GH] ?? null
 
         const L_lab = labs[LabMapper.L] ?? null;
         const U_lab = labs[LabMapper.U] ?? null;
@@ -398,25 +397,12 @@ export class Carrier {
 
         const H_lab = labs[LabMapper.H] ?? null
 
-        if(GH_lab && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE]) {
-            console.log('creating ghodium!')
-            GH_lab.runReaction(ZK_lab,LU_lab)
-        }
-
-
-        if (ZK_lab && Z_lab.store[RESOURCE_ZYNTHIUM] && K_lab.store[RESOURCE_KEANIUM]) {
-            ZK_lab.runReaction(Z_lab,K_lab)
-        }
-
-        if (LU_lab && L_lab.store[RESOURCE_LEMERGIUM] && U_lab.store[RESOURCE_UTRIUM]) {
-            LU_lab.runReaction(L_lab,U_lab)
-        }
 
         if(ZK_lab && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0 && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] < 2200 && creep.store.ZK > 0) {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                creep.say('🚚 X3'+ RESOURCE_ZYNTHIUM_KEANITE)
+                creep.say('🔬'+ RESOURCE_ZYNTHIUM_KEANITE)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -444,7 +430,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                creep.say('🚚 X3'+ RESOURCE_HYDROGEN)
+                creep.say('🔬'+ RESOURCE_HYDROGEN)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -473,7 +459,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                creep.say('🚚 X3'+ RESOURCE_UTRIUM_LEMERGITE)
+                creep.say('🔬'+ RESOURCE_UTRIUM_LEMERGITE)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -512,7 +498,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                creep.say('🚚 X3'+ RESOURCE_LEMERGIUM)
+                creep.say('🔬'+ RESOURCE_LEMERGIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -540,7 +526,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                creep.say('🚚 X3'+ RESOURCE_UTRIUM)
+                creep.say('🔬'+ RESOURCE_UTRIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -566,7 +552,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                creep.say('🚚 X3'+ RESOURCE_ZYNTHIUM)
+                creep.say('🔬'+ RESOURCE_ZYNTHIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -592,7 +578,7 @@ export class Carrier {
 
             labsAreFull = false;
             if(!labsAreFull) {
-                creep.say('🚚 X3'+ RESOURCE_KEANIUM)
+                creep.say('🔬'+ RESOURCE_KEANIUM)
             }
 
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -642,7 +628,7 @@ export class Carrier {
 
 
         if(energyNuker && labsAreFull) {
-            creep.say('🚚 X3N')
+            creep.say('🔬N')
             if(energyNuker.store && energyNuker.store[RESOURCE_ENERGY] < 300000 && creep.transfer(energyNuker,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(energyNuker);
 
@@ -681,11 +667,6 @@ export class Carrier {
         nearestStorageOrTerminal: any
     ) {
 
-        if(creep.memory?.extensionFarm === 3) {
-
-        console.log('here3')
-
-        }
         if(creep.memory.role === 'miner' && creep.room.controller?.my) {
             if( nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
                 creep.say('🚚 P');

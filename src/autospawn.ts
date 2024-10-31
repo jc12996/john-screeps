@@ -2,7 +2,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { RoomUtils } from "utils/RoomUtils";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { HighUpkeep, LowUpkeep, MediumUpkeep, PeaceTimeEconomy, SeigeEconomy, WarTimeEconomy } from "utils/EconomiesUtils";
-import { operateLinks, sendEnergyFromSpawn1, transferEnergyToSpawn1Room } from "links";
+import { operateLinks } from "links";
 import { getNextClaimFlag } from "claims";
 
 
@@ -352,6 +352,7 @@ export class AutoSpawn {
 
         } else if (bodyParts != null && name != null) {
             let spawnResult = spawn.spawnCreep(bodyParts,name, options);
+
             if(spawnResult !== 0) {
                 let spawnErrorMsg = '';
                 switch(spawnResult) {

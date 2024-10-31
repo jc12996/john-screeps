@@ -219,7 +219,7 @@ export class MovementUtils {
         const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath((FIND_STRUCTURES),{
             filter: (structure) => {
                 return (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE)  &&
-                structure.store[RESOURCE_ENERGY] > 0 && structure.room?.controller?.my;
+                (structure.store[RESOURCE_ENERGY] > 10000 || creep.memory.extensionFarm !== undefined) && structure.room?.controller?.my;
             }
         } )
 
@@ -258,16 +258,13 @@ export class MovementUtils {
 
 
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
-            if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && nearestStorageOrTerminal.store[RESOURCE_ENERGY] > 1000 && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
             } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             else if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controllerLink, {visualizePathStyle: {stroke: "#ffffff"}});
-            }
-            else if(nearestStorageOrTerminal && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
             }
             else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
@@ -286,7 +283,7 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-        if(creep && terminal && commandLevel >= 8 && creep.memory.extensionFarm === 3 && commandLevel >= 8) {
+        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3) {
             this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage);
             return;
         }

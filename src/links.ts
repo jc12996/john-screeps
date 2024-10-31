@@ -1,4 +1,5 @@
 import { link } from "fs";
+import { forEach } from "lodash";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { getHeapSpaceStatistics } from "v8";
 
@@ -142,10 +143,10 @@ export function transferEnergyToSpawn1Room() {
             }
         }
 
-        if(mineral && terminal.store[mineral.mineralType] > 10000 && targetRoom.terminal && targetRoom.terminal?.store[mineral.mineralType] < 4000) {
+        if(mineral && terminal.store[mineral.mineralType] >= 2000 && targetRoom.terminal && targetRoom.terminal?.store[mineral.mineralType] < 4000) {
 
             // Calculate the amount of energy to transfer (optional, transfer everything below 2k)
-            const transferAmount = 3000;
+            const transferAmount = 2000;
             // Transfer energy to Spawn1's terminal
             const result = terminal.send(mineral.mineralType, transferAmount, targetRoom.name);
 
@@ -163,11 +164,25 @@ export function sendEnergyFromSpawn1() {
     const spawn1Room = Game.spawns['Spawn1'].room;
     const terminal = spawn1Room.terminal;
 
+    const mainTermainalStuff = [
+        RESOURCE_GHODIUM,
+        RESOURCE_LEMERGIUM,
+        RESOURCE_KEANIUM,
+        RESOURCE_ZYNTHIUM,
+        RESOURCE_UTRIUM,
+        RESOURCE_UTRIUM_LEMERGITE,
+        RESOURCE_ZYNTHIUM_KEANITE
+    ];
+
+
     // Check if terminal in the spawn1 room has more than 10K energy
     if (!terminal || terminal.store[RESOURCE_ENERGY] < 10000) {
         //console.log('Not enough energy in Spawn1 terminal.');
         return;
     }
+
+
+
 
     // Loop through all rooms to find terminals in rooms with RCL 7 or above
     for (const roomName in Game.rooms) {
@@ -175,10 +190,12 @@ export function sendEnergyFromSpawn1() {
         const controller = room.controller;
         const targetTerminal = room.terminal;
 
-        // Only consider rooms with RCL >= 7 and an active terminal
-        if (controller && controller.level >= 7 && targetTerminal) {
-            // Check if the terminal has no energy
-            if (targetTerminal.store[RESOURCE_ENERGY] === 0) {
+        // Only consider rooms with RCL >= 6 and an active terminal
+        if (controller && controller.level >= 6 && targetTerminal) {
+
+
+            // Check if the terminal has less than 1K of that resource
+            if (targetTerminal.store[RESOURCE_ENERGY] < 2000 && terminal.store[RESOURCE_ENERGY] >= 4000) {
                 const amountToSend = 2000;
 
                 // Make sure Spawn1 has enough energy left to send 10K
@@ -187,14 +204,32 @@ export function sendEnergyFromSpawn1() {
 
                     if (result === OK) {
                         console.log(`Sent ${amountToSend} energy from Spawn1 to ${roomName}`);
-                    } else {
+                    } else if(result !== ERR_TIRED) {
                         console.log(`Failed to send energy to ${roomName}: ${result}`);
                     }
-                } else {
-                    //console.log('Not enough energy left in Spawn1 terminal to send 10K.');
-                    break;
                 }
             }
+
+            mainTermainalStuff.forEach(resourceConstant => {
+                // Check if the terminal has less than 1K of that resource
+                if (targetTerminal.store[resourceConstant] < 3000 && terminal.store[resourceConstant] >= 6000) {
+                    const amountToSend = 3000;
+
+                    // Make sure Spawn1 has enough energy left to send 10K
+                    if (terminal.store[resourceConstant] >= amountToSend) {
+                        const result = terminal.send(resourceConstant, amountToSend, roomName);
+
+                        if (result === OK) {
+                            console.log(`Sent ${amountToSend} energy from Spawn1 to ${roomName}`);
+                        } else if(result !== ERR_TIRED) {
+                            console.log(`Failed to send energy to ${roomName}: ${result}`);
+                        }
+                    }
+                }
+            })
+
+
+
         }
     }
 }

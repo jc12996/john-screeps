@@ -5,11 +5,13 @@ export enum LabMapper {
     UL = 3,
     Z = 4,
     GH = 5,
-    K2 = 6,
+    UH = 6,
     L  = 7,
     U2 = 8,
     H = 9,
   }
+
+type BoostTypes = 'work' | "attack";
 
 export class Labs {
   public static runLabs(room:Room) {
@@ -31,18 +33,54 @@ export class Labs {
     const Z_lab = labs[LabMapper.Z] ?? null;
     const K_lab = labs[LabMapper.K] ?? null;
 
-    if(GH_lab && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE]) {
-        console.log('creating ghodium!')
+    const H_lab = labs[LabMapper.H] ?? null;
+
+    const UH_lab = labs[LabMapper.UH] ?? null;
+
+    if(GH_lab && LU_lab && ZK_lab && LU_lab.store[RESOURCE_GHODIUM] < 3000 && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE]) {
         GH_lab.runReaction(ZK_lab,LU_lab)
     }
 
 
-    if (ZK_lab && Z_lab.store[RESOURCE_ZYNTHIUM] && K_lab.store[RESOURCE_KEANIUM]) {
+    if (ZK_lab && K_lab && Z_lab && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] < 3000 && Z_lab.store[RESOURCE_ZYNTHIUM] && K_lab.store[RESOURCE_KEANIUM]) {
         ZK_lab.runReaction(Z_lab,K_lab)
     }
 
-    if (LU_lab && L_lab.store[RESOURCE_LEMERGIUM] && U_lab.store[RESOURCE_UTRIUM]) {
+    if (LU_lab && L_lab && U_lab && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] < 3000 && L_lab.store[RESOURCE_LEMERGIUM] && U_lab.store[RESOURCE_UTRIUM]) {
         LU_lab.runReaction(L_lab,U_lab)
+    }
+
+    if (UH_lab && U_lab && H_lab && UH_lab.store[RESOURCE_UTRIUM_HYDRIDE] < 3000 && U_lab.store[RESOURCE_UTRIUM] && H_lab.store[RESOURCE_HYDROGEN]) {
+        UH_lab.runReaction(U_lab,H_lab)
+    }
+
+
+  }
+
+  public static boostCreep(boost: {
+    type: BoostTypes,
+    creep: Creep,
+    bodyParts: number
+  } | undefined) {
+    if(!boost) {
+      return;
+    }
+
+    const labs: StructureLab[] = boost.creep.room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return structure.structureType === STRUCTURE_LAB
+        }
+    }) as StructureLab[];
+
+    if(labs.length === 0){
+      return;
+    }
+
+    switch(boost.type) {
+      case 'attack':
+        const UH_lab = labs[LabMapper.UH] ?? null;
+        UH_lab.boostCreep(boost.creep,boost.bodyParts)
+        break;
     }
   }
 }
