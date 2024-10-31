@@ -37,20 +37,20 @@ export class Labs {
 
     const UH_lab = labs[LabMapper.UH] ?? null;
 
-    if(GH_lab && LU_lab && ZK_lab && LU_lab.store[RESOURCE_GHODIUM] < 3000 && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE]) {
+    if(GH_lab && LU_lab && ZK_lab && LU_lab.store[RESOURCE_GHODIUM] < 3000 && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] > 2100 && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] > 2100) {
         GH_lab.runReaction(ZK_lab,LU_lab)
     }
 
 
-    if (ZK_lab && K_lab && Z_lab && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] < 3000 && Z_lab.store[RESOURCE_ZYNTHIUM] && K_lab.store[RESOURCE_KEANIUM]) {
+    if (ZK_lab && K_lab && Z_lab && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] < 3000 && Z_lab.store[RESOURCE_ZYNTHIUM] > 2100 && K_lab.store[RESOURCE_KEANIUM] > 2100) {
         ZK_lab.runReaction(Z_lab,K_lab)
     }
 
-    if (LU_lab && L_lab && U_lab && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] < 3000 && L_lab.store[RESOURCE_LEMERGIUM] && U_lab.store[RESOURCE_UTRIUM]) {
+    if (LU_lab && L_lab && U_lab && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] < 3000 && L_lab.store[RESOURCE_LEMERGIUM] > 2100 && U_lab.store[RESOURCE_UTRIUM] > 2100) {
         LU_lab.runReaction(L_lab,U_lab)
     }
 
-    if (UH_lab && U_lab && H_lab && UH_lab.store[RESOURCE_UTRIUM_HYDRIDE] < 3000 && U_lab.store[RESOURCE_UTRIUM] && H_lab.store[RESOURCE_HYDROGEN]) {
+    if (UH_lab && U_lab && H_lab && UH_lab.store[RESOURCE_UTRIUM_HYDRIDE] < 3000 && U_lab.store[RESOURCE_UTRIUM] > 2100 && H_lab.store[RESOURCE_HYDROGEN] > 2100) {
         UH_lab.runReaction(U_lab,H_lab)
     }
 

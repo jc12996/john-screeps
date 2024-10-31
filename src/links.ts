@@ -129,7 +129,7 @@ export function transferEnergyToSpawn1Room() {
         const mineral = terminal.room.find(FIND_MINERALS)[0];
 
         // Check if the terminal has more than 10,000 energy
-        if (terminal.store[RESOURCE_ENERGY] > 10000 && terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000) {
+        if (terminal.store[RESOURCE_ENERGY] > 10000 && terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000 && terminal.store[RESOURCE_ENERGY] < 50000) {
             // Calculate the amount of energy to transfer (optional, transfer everything above 2k)
             const transferAmount = terminal.store.getUsedCapacity(RESOURCE_ENERGY) - 2000;
 
@@ -171,7 +171,8 @@ export function sendEnergyFromSpawn1() {
         RESOURCE_ZYNTHIUM,
         RESOURCE_UTRIUM,
         RESOURCE_UTRIUM_LEMERGITE,
-        RESOURCE_ZYNTHIUM_KEANITE
+        RESOURCE_ZYNTHIUM_KEANITE,
+        RESOURCE_ENERGY
     ];
 
 
@@ -195,8 +196,8 @@ export function sendEnergyFromSpawn1() {
 
 
             // Check if the terminal has less than 1K of that resource
-            if (targetTerminal.store[RESOURCE_ENERGY] < 2000 && terminal.store[RESOURCE_ENERGY] >= 4000) {
-                const amountToSend = 2000;
+            if (targetTerminal.store[RESOURCE_ENERGY] < 8000 && terminal.store[RESOURCE_ENERGY] > 100000) {
+                const amountToSend = 8000;
 
                 // Make sure Spawn1 has enough energy left to send 10K
                 if (terminal.store[RESOURCE_ENERGY] >= amountToSend) {
