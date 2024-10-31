@@ -58,6 +58,7 @@ declare global {
     numberOfNeededHarvestorSlots?: number;
     leadHealer?: boolean;
     extractorMiner?: boolean;
+    isBoosted?: boolean;
   }
 
   interface FlagMemory {
@@ -250,7 +251,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
           // Find the lead healer
           let healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
           let leadHealers = healers.filter((leadHealer) => leadHealer.memory.leadHealer);
-          if(leadHealers.length === 0) {
+          if(leadHealers.length === 0 && healers[0]) {
             healers[0].memory.leadHealer = true;
             healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
             leadHealers = healers.filter((leadHealer) => leadHealer.memory.leadHealer);

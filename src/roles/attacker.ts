@@ -1,6 +1,7 @@
 import { MovementUtils } from "utils/MovementUtils";
 import { Defender } from "./defender";
 import { SpawnUtils } from "utils/SpawnUtils";
+import { Labs } from "labs";
 
 export class Attacker {
 
@@ -42,6 +43,16 @@ export class Attacker {
             creep.say('🍖');
         }else {
             creep.say('⚔');
+        }
+
+        if(!creep.memory.isBoosted) {
+            const canContinue = Labs.boostCreep({
+                type: 'attack',
+                creep: creep,
+            })
+            if(!canContinue) {
+                return;
+            }
         }
 
         if(!Game.flags?.rallyFlag && !Game.flags?.attackFlag && creep.memory.role !== 'defender') {

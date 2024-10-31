@@ -1,3 +1,4 @@
+import { Labs } from "labs";
 import { SpawnUtils } from "./SpawnUtils";
 
 export class SquadUtils {
@@ -90,6 +91,10 @@ export class SquadUtils {
 
     // Function to assign creeps to formation and handle attacking/healing
     public static assignSquadFormationAndCombat(squad: Creep[], leadHealer: Creep, flag: Flag): void {
+
+
+
+
         // Find the breached position (if a wall or rampart has been destroyed)
         const breachPosition = leadHealer.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: structure =>
@@ -113,6 +118,17 @@ export class SquadUtils {
 
         for (let i = 0; i < squad.length; i++) {
             const creep = squad[i];
+
+            if(!creep.memory.isBoosted && creep.getActiveBodyparts(ATTACK) > 0) {
+                const canContinue = Labs.boostCreep({
+                    type: 'attack',
+                    creep: creep,
+                })
+                if(!canContinue) {
+                    return;
+                }
+            }
+
             const offset = this.formationOffsets[i];
 
             const keepersLairs = creep.room.find(FIND_STRUCTURES, {

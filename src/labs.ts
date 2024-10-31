@@ -59,11 +59,13 @@ export class Labs {
 
   public static boostCreep(boost: {
     type: BoostTypes,
-    creep: Creep,
-    bodyParts: number
-  } | undefined) {
+    creep: Creep
+  } | undefined): boolean {
+
+
+
     if(!boost) {
-      return;
+      return true;
     }
 
     const labs: StructureLab[] = boost.creep.room.find(FIND_STRUCTURES, {
@@ -72,15 +74,43 @@ export class Labs {
         }
     }) as StructureLab[];
 
+
+    const UH_lab = labs[LabMapper.UH] ?? null;
+
     if(labs.length === 0){
-      return;
+      boost.creep.memory.isBoosted = true;
+      return true;
     }
 
-    switch(boost.type) {
-      case 'attack':
-        const UH_lab = labs[LabMapper.UH] ?? null;
-        UH_lab.boostCreep(boost.creep,boost.bodyParts)
-        break;
+
+
+
+    let numberOfAttackParts = boost.creep.getActiveBodyparts(ATTACK);
+    const attackBoostCap = 3;
+    if(numberOfAttackParts > 0) {
+
+        if(!UH_lab) {
+          boost.creep.memory.isBoosted = true;
+          return true;
+        }
+        let numberOfBoosts = 0;
+        while(numberOfAttackParts > 0 && numberOfBoosts < attackBoostCap) {
+          const boostCode = UH_lab.boostCreep(boost.creep,numberOfAttackParts);
+          if(boostCode === ERR_NOT_IN_RANGE) {
+            boost.creep.moveTo(UH_lab);
+            return false;
+          }else if(boostCode === OK) {
+            numberOfBoosts++;
+            continue;
+          } else  {
+            numberOfAttackParts--;
+          }
+        }
+
     }
+
+    boost.creep.memory.isBoosted = true;
+    return true;
+
   }
 }
