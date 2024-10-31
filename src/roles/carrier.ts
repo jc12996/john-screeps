@@ -354,19 +354,17 @@ export class Carrier {
 
 
 
-        const energyNuker: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const nuker: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType === STRUCTURE_NUKER && structure.store && structure.store[RESOURCE_ENERGY] < 300000;
+                return structure.structureType === STRUCTURE_NUKER && structure.store;
             }
         }) ?? null;
 
-        const ghodiumNuker: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        const factory: StructureFactory | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType === STRUCTURE_NUKER && structure.store && structure.store[RESOURCE_GHODIUM] < 5000;
+                return structure.structureType === STRUCTURE_FACTORY && structure.store;
             }
-        }) ?? null
-
-
+        }) ?? null;
 
         // Make sure every lab has some energy in it.
         let labsAreFull = true;
@@ -409,6 +407,7 @@ export class Carrier {
                 creep.drop(RESOURCE_ENERGY)
             }
             if(creep.transfer(ZK_lab,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE){
+                creep.say('🔬'+RESOURCE_ZYNTHIUM_KEANITE);
                 creep.moveTo(ZK_lab);
 
             }
@@ -421,6 +420,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -437,6 +437,7 @@ export class Carrier {
                 creep.drop(RESOURCE_ENERGY)
             }
             if(creep.transfer(H_lab,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE){
+                creep.say('🔬'+RESOURCE_HYDROGEN);
                 creep.moveTo(H_lab);
 
             }
@@ -449,6 +450,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_HYDROGEN) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -466,6 +468,7 @@ export class Carrier {
                 creep.drop(RESOURCE_ENERGY)
             }
             if(creep.transfer(LU_lab,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE){
+                creep.say('🔬'+RESOURCE_UTRIUM_LEMERGITE);
                 creep.moveTo(LU_lab);
 
             }
@@ -478,6 +481,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -487,6 +491,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_HYDROGEN] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_HYDROGEN)  === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -505,6 +510,7 @@ export class Carrier {
                 creep.drop(RESOURCE_ENERGY)
             }
             if(creep.transfer(L_lab,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE){
+                creep.say('🔬'+RESOURCE_LEMERGIUM);
                 creep.moveTo(L_lab);
 
             }
@@ -515,6 +521,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_LEMERGIUM] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -533,6 +540,7 @@ export class Carrier {
                 creep.drop(RESOURCE_ENERGY)
             }
             if(creep.transfer(U_lab,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE){
+                creep.say('🔬'+RESOURCE_UTRIUM);
                 creep.moveTo(U_lab);
 
             }
@@ -543,6 +551,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_UTRIUM] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_UTRIUM) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -559,6 +568,7 @@ export class Carrier {
                 creep.drop(RESOURCE_ENERGY)
             }
             if(creep.transfer(Z_lab,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE){
+                creep.say('🔬'+RESOURCE_ZYNTHIUM);
                 creep.moveTo(Z_lab);
 
             }
@@ -569,6 +579,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_ZYNTHIUM] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_ZYNTHIUM) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -585,6 +596,7 @@ export class Carrier {
                 creep.drop(RESOURCE_ENERGY)
             }
             if(creep.transfer(K_lab,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE){
+                creep.say('🔬'+RESOURCE_KEANIUM);
                 creep.moveTo(K_lab);
 
             }
@@ -595,6 +607,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_KEANIUM] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_KEANIUM) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -603,6 +616,7 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_ZYNTHIUM_KEANITE) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
@@ -611,36 +625,58 @@ export class Carrier {
         if(terminal && creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_UTRIUM_LEMERGITE) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
         }
 
-        if(terminal && ghodiumNuker && creep.store[RESOURCE_GHODIUM] > 0) {
+        if(creep.store[RESOURCE_GHODIUM] > 0) {
 
-            if(ghodiumNuker && ghodiumNuker.store[RESOURCE_GHODIUM] < 5000 && creep.transfer(ghodiumNuker,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(ghodiumNuker)
+            if(nuker && nuker.store[RESOURCE_GHODIUM] < 5000 && creep.transfer(nuker,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬N'+RESOURCE_GHODIUM);
+                creep.moveTo(nuker)
+            }else if(factory && factory.store[RESOURCE_GHODIUM] < 1000 && creep.transfer(factory,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬F');
+                creep.moveTo(factory)
             }else if(terminal && creep.transfer(terminal,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
                 creep.moveTo(terminal)
             }
             return false;
         }
 
 
-        if(energyNuker && labsAreFull) {
-            creep.say('🔬N')
-            if(energyNuker.store && energyNuker.store[RESOURCE_ENERGY] < 300000 && creep.transfer(energyNuker,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(energyNuker);
 
+
+        if(terminal && creep.store[RESOURCE_ENERGY] > 0) {
+
+            const storage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType === STRUCTURE_STORAGE && structure.store && structure.store[RESOURCE_ENERGY] < 900000;
+                }
+            }) ?? null;
+
+            if(nuker && labsAreFull && nuker.store[RESOURCE_ENERGY] < 300000 && creep.transfer(nuker,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬NE');
+                creep.moveTo(nuker);
+
+            }else if(factory && factory.store[RESOURCE_ENERGY] < 25000 && creep.transfer(factory,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬F');
+                creep.moveTo(factory)
+            } else if(terminal  && terminal.store[RESOURCE_ENERGY] < 300000 && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🔬TR');
+                creep.moveTo(terminal );
+                return false;
+            } else if(storage && storage.store[RESOURCE_ENERGY] < 900000 && creep.transfer(storage,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.say('🔬S');
+                creep.moveTo(storage)
+            } else {
+                return true;
             }
             return false;
         }
 
-        if(terminal  && terminal.store[RESOURCE_ENERGY] < 300000 && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.say('🚚 TR');
-            creep.moveTo(terminal );
-            return false;
-        }
 
         return true;
 
