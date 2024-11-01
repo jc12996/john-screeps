@@ -119,13 +119,17 @@ export class Labs {
 
     const inputLab1Ready = inputLab1.store && inputLab1.store[input1MineralConstant] > 300;
     const inputLab2Ready = inputLab2.store && inputLab2.store[input2MineralConstant] > 300;
-    const outputLabReady = outputLab.store && outputLab.store[outputCompoundConstant] < 3000;
 
 
-    if (outputLab && !!inputLab1 && !!inputLab2 && !!outputLabReady && inputLab1Ready && inputLab2Ready) {
-        outputLab.runReaction(inputLab1,inputLab2)
-        return;
+    for(const outputLab of this.outputLabs) {
+
+      const outputLabReady = outputLab.store && outputLab.store[outputCompoundConstant] < 3000;
+      if (outputLab && !!inputLab1 && !!inputLab2 && !!outputLabReady && inputLab1Ready && inputLab2Ready) {
+          outputLab.runReaction(inputLab1,inputLab2)
+
+      }
     }
+
 
 
 
