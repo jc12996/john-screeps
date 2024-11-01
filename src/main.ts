@@ -106,7 +106,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
 
       if(room.controller?.my && room.controller.level === 8) {
-        Labs.runLabs(room);
+        //Labs.runLabs(room);
         Nukers.awaitingNuke(room);
       }
 

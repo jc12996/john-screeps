@@ -91,6 +91,10 @@ export class Carrier {
             creep.memory.extensionFarm = 1;
         }
         else if((storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel >= 6 && creep.room.energyAvailable > 0) {
+            // if(creep.room.controller?.my && creep.room.controller.level >= 6) {
+            //     Labs.setLabMapper(creep.room);
+            // }
+
             creep.memory.extensionFarm = 3;
         }
         else {
@@ -359,7 +363,6 @@ export class Carrier {
 
     private static scienceCarrierSequence2(creep:Creep,labs:StructureLab[],terminal:StructureTerminal): boolean {
 
-
         const nuker: StructureNuker | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
                 return structure.structureType === STRUCTURE_NUKER && structure.store;
@@ -402,20 +405,16 @@ export class Carrier {
 
 
         let counter = 0;
+
+        const input1 = Labs.MAP.input1 as MineralConstant;
+        const input2 = Labs.MAP.input2 as MineralConstant;
+
+
         for(const inputLab of Labs.inputLabs) {
-            counter++;
 
-            let inputCompound = Labs.MAP.input1 as MineralConstant;
-            if(counter == 2 || creep.store[inputCompound] === 0) {
-                inputCompound = Labs.MAP.input2 as MineralConstant;
-            }
-
-
-            if(!inputCompound){
-                return false;
-            }
-
-            if(creep.store[inputCompound] > 0 && inputLab.store[inputCompound] < 2200 && creep.store[inputCompound] > 0) {
+            counter++
+            const inputCompound = counter === 1 ? input1 : input2;
+            if(creep.store[inputCompound] > 0 && inputLab.store[inputCompound] < 3000 ) {
 
                 labsAreFull = false;
                 if(!labsAreFull) {
@@ -425,11 +424,12 @@ export class Carrier {
                 if(creep.store[RESOURCE_ENERGY] > 0) {
                     creep.drop(RESOURCE_ENERGY)
                 }
+
                 if(creep.transfer(inputLab,inputCompound) === ERR_NOT_IN_RANGE){
                     creep.say('🔬'+inputCompound);
                     creep.moveTo(inputLab);
-
                 }
+
                 return false;
 
             }
@@ -442,6 +442,7 @@ export class Carrier {
                 }
                 return false;
             }
+
 
         }
 

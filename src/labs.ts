@@ -32,7 +32,8 @@ export class Labs {
 
   public static MAP = {
     input1: '',
-    input2: ''
+    input2: '',
+    output: ''
 
   }
 
@@ -59,14 +60,11 @@ export class Labs {
     const inputs = compoundString.split('-');
     this.MAP.input1 = inputs[0] ?? '';
     this.MAP.input2 = inputs[1] ?? '';
+    this.MAP.output = compoundOutputMap[this.MAP.input1+this.MAP.input2]  ?? '' as MineralCompoundConstant;
 
-    this.runLabs2(room)
 
-    return {
-      inputs: this.inputLabs,
-      outputs: this.outputLabs,
-      map: this.MAP
-    }
+    Labs.runLabs2(room);
+
   }
 
   public static runLabs2(room:Room) {
@@ -105,8 +103,31 @@ export class Labs {
       return;
     }
 
-    this.outputLabs.forEach(outputLab => {
-      outputLab.runReaction(this.inputLabs[0],this.inputLabs[1]);
+    const lab1 = this.inputLabs[0] as StructureLab;
+    const lab2 = this.inputLabs[1] as StructureLab;
+
+    if(this.outputLabs[0].room !== lab1.room) {
+      return;
+    }
+    this.outputLabs.forEach((outputLab:StructureLab) => {
+
+
+
+      const input1Ready = lab2.store[this.MAP.input1 as MineralCompoundConstant] > 300 || lab1.store[this.MAP.input1 as MineralCompoundConstant] > 300
+      const input2Ready = lab2.store[this.MAP.input2 as MineralCompoundConstant] > 300 || lab1.store[this.MAP.input2 as MineralCompoundConstant] > 300
+
+      // if(outputLab.room.name === 'W2N7') {
+      //   console.log('here',input1Ready,input2Ready)
+      // }
+      if(outputLab && lab1 && lab2 && input1Ready && input2Ready) {
+        let code =  outputLab.runReaction(lab1,lab2)
+        if(code === ERR_INVALID_ARGS) {
+          code =  outputLab.runReaction(lab2,lab1)
+        }
+        // if(outputLab.room.name === 'W2N7') {
+        //   console.log('reaction code: ',code, outputLab, lab1, lab2)
+        // }
+      }
     })
 
   }
