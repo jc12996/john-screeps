@@ -92,14 +92,14 @@ export class Labs {
       }
   }) as StructureLab[];
 
-    Labs.runLabs2();
+
 
   }
 
   public static runLabs2() {
 
 
-    if(this.outputLabs.length === 0 || this.inputLabs.length < 2) {
+    if(!this.outputLabs || this.outputLabs.length === 0 || !this.inputLabs || this.inputLabs.length < 2) {
       return;
     }
 
@@ -206,25 +206,72 @@ export class Labs {
       return true;
     }
 
-    if(!creep.pos.isNearTo(productionLab)) {
-      creep.moveTo(productionLab);
-      return false;
-    }
+
 
     if(creep.memory.role === 'attacker' && creep.getActiveBodyparts(ATTACK) > 0 && productionLab && outputCompound === RESOURCE_UTRIUM_HYDRIDE) {
-      while(productionLab.boostCreep(creep,1) == OK);
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(ATTACK));
     }
 
     if(creep.memory.role === 'dismantler' && creep.getActiveBodyparts(WORK) > 0 && productionLab && outputCompound === RESOURCE_ZYNTHIUM_HYDRIDE) {
-      while(productionLab.boostCreep(creep,1) == OK);
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(WORK));
     }
 
-    if(creep.memory.role === 'healer' && creep.getActiveBodyparts(HEAL) > 0 && productionLab && outputCompound === RESOURCE_LEMERGIUM_HYDRIDE) {
-      while(productionLab.boostCreep(creep,1) == OK);
+    if((creep.memory.role === 'miner' || creep.memory.role === 'carrier') && creep.getActiveBodyparts(MOVE) > 0 && productionLab && outputCompound === RESOURCE_ZYNTHIUM_OXIDE) {
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(MOVE));
     }
 
-    if(creep.memory.role === 'upgrader' && creep.getActiveBodyparts(TOUGH) > 0 && productionLab && outputCompound === RESOURCE_GHODIUM_HYDRIDE) {
-      while(productionLab.boostCreep(creep,1) == OK);
+    if((creep.memory.role === 'miner' || creep.memory.role === 'carrier') && creep.getActiveBodyparts(CARRY) > 0 && productionLab && outputCompound === RESOURCE_KEANIUM_HYDRIDE) {
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(CARRY));
+    }
+
+
+
+    if((creep.memory.role === 'builder' || creep.memory.role === 'repairer') && creep.getActiveBodyparts(WORK) > 0 && productionLab && outputCompound === RESOURCE_LEMERGIUM_HYDRIDE) {
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(WORK));
+    }
+
+    if(creep.memory.role === 'healer' && creep.getActiveBodyparts(HEAL) > 0 && productionLab && outputCompound === RESOURCE_LEMERGIUM_OXIDE) {
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(HEAL));
+    }
+
+    if(creep.memory.role === 'upgrader' && creep.getActiveBodyparts(WORK) > 0 && productionLab && outputCompound === RESOURCE_GHODIUM_HYDRIDE) {
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(WORK));
+    }
+
+    if(creep.getActiveBodyparts(TOUGH) > 0 && productionLab && outputCompound === RESOURCE_GHODIUM_OXIDE) {
+      if(!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep,creep.getActiveBodyparts(TOUGH));
     }
 
     creep.memory.isBoosted = true;
