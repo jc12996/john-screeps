@@ -93,6 +93,8 @@ export class AutoSpawn {
             filter: { structureType: STRUCTURE_STORAGE }
         })[0] ?? undefined;
         const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];
+        const labFarmFlag = Game.flags[spawn.room.name+'LabFarm'];
+
         var constructionSites = spawn.room.find(FIND_CONSTRUCTION_SITES);
         const extensions  = spawn.room.find(FIND_MY_STRUCTURES, {
             filter: { structureType: STRUCTURE_EXTENSION }
@@ -345,7 +347,13 @@ export class AutoSpawn {
                 if(spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
 
 
-                    ScaffoldingUtils.createExtensionFarm2(spawn,AutoSpawn.totalSpawns,extensionFarm2Flag);
+                    ScaffoldingUtils.createExtensionFarm2(spawn,extensionFarm2Flag);
+                }
+
+                if(spawn.room.controller.level >= 6 && spawn.room.name !== 'W1N6' && !!labFarmFlag) {
+
+
+                    ScaffoldingUtils.createLabFarm(spawn,labFarmFlag);
                 }
             }
 

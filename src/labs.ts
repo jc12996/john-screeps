@@ -15,8 +15,102 @@ export enum LabMapper {
 
   }
 
+export const compoundOutputMap: Record<string, ResourceConstant | null> = {
+  ZK: RESOURCE_ZYNTHIUM_KEANITE,
+  UL: RESOURCE_UTRIUM_LEMERGITE,
+  GH: RESOURCE_GHODIUM,
+  UH: RESOURCE_UTRIUM_HYDRIDE,
+  LH: RESOURCE_LEMERGIUM_HYDRIDE,
+  LO: RESOURCE_LEMERGIUM_OXIDE,
+  GO: RESOURCE_GHODIUM_OXIDE
+};
+
 
 export class Labs {
+
+
+
+  public static MAP = {
+    input1: '',
+    input2: ''
+
+  }
+
+  public static inputLabs: StructureLab[];
+  public static outputLabs: StructureLab[];
+
+  public static setLabMapper(room:Room) {
+    const labSetFlags = room.find(FIND_FLAGS, {
+      filter: (flag) => {
+        return flag.name.includes(room.name+'SetLabs:')
+      }
+    })[0] ?? null;
+
+
+
+
+    if(!labSetFlags) {
+      return;
+    }
+
+
+    const nameOfLabFlag = labSetFlags.name;
+    const compoundString = nameOfLabFlag.split(':')[1];
+    const inputs = compoundString.split('-');
+    this.MAP.input1 = inputs[0] ?? '';
+    this.MAP.input2 = inputs[1] ?? '';
+
+    this.runLabs2(room)
+
+    return {
+      inputs: this.inputLabs,
+      outputs: this.outputLabs,
+      map: this.MAP
+    }
+  }
+
+  public static runLabs2(room:Room) {
+
+    const labFarmFlag = Game.flags[room.name+'LabFarm'];
+
+    if(!labFarmFlag) {
+      return;
+    }
+
+    this.inputLabs = room.find(FIND_STRUCTURES, {
+        filter: (lab) => {
+            return lab.structureType === STRUCTURE_LAB && (
+            (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
+            (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1)
+          )
+        }
+    }) as StructureLab[];
+
+    if(this.inputLabs.length !== 2) {
+      return;
+    }
+
+    this.outputLabs = room.find(FIND_STRUCTURES, {
+        filter: (lab) => {
+            return lab.structureType === STRUCTURE_LAB &&
+            !( (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
+            (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1))
+
+        }
+    }) as StructureLab[];
+
+
+
+    if(this.outputLabs.length === 0) {
+      return;
+    }
+
+    this.outputLabs.forEach(outputLab => {
+      outputLab.runReaction(this.inputLabs[0],this.inputLabs[1]);
+    })
+
+  }
+
   public static runLabs(room:Room) {
 
     const labs: StructureLab[] = room.find(FIND_STRUCTURES, {
