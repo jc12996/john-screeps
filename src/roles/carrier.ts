@@ -18,6 +18,8 @@ export class Carrier {
             }
         });
 
+
+
         const extensionLinkFlag2= creep.room.find(FIND_FLAGS, {
             filter: (link) => {
                 return link.name == creep.room.name+'ExtensionLink2'
@@ -91,11 +93,10 @@ export class Carrier {
             creep.memory.extensionFarm = 1;
         }
         else if((storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel >= 6 && creep.room.energyAvailable > 0) {
-            if(creep.room.controller?.my && creep.room.controller.level >= 6) {
+            creep.memory.extensionFarm = 3;
+            if(creep.room.controller?.my && creep.room.controller.level === 8) {
                 Labs.setLabMapper(creep.room);
             }
-
-            creep.memory.extensionFarm = 3;
         }
         else {
             creep.memory.extensionFarm = undefined;

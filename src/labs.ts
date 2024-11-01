@@ -65,7 +65,7 @@ export class Labs {
     const inputs = compoundString.split('-');
     this.MAP.input1 = inputs[0] ?? '';
     this.MAP.input2 = inputs[1] ?? '';
-    this.MAP.output = compoundOutputMap[this.MAP.input1+this.MAP.input2]  ?? '' as MineralCompoundConstant;
+    this.MAP.output = compoundOutputMap[this.MAP.input1+this.MAP.input2]  ?? '' as MineralCompoundConstant | MineralBaseCompoundsConstant | MineralBoostConstant;
 
 
 
@@ -123,10 +123,9 @@ export class Labs {
 
     for(const outputLab of this.outputLabs) {
 
-      const outputLabReady = outputLab.store && outputLab.store[outputCompoundConstant] < 3000;
+      const outputLabReady = outputLab.store && outputLab.store[outputCompoundConstant] < 2700;
       if (outputLab && !!inputLab1 && !!inputLab2 && !!outputLabReady && inputLab1Ready && inputLab2Ready) {
-          outputLab.runReaction(inputLab1,inputLab2)
-
+          outputLab.runReaction(inputLab1,inputLab2);
       }
     }
 
@@ -194,55 +193,39 @@ export class Labs {
 
   public static boostCreep(creep: Creep): boolean {
 
-    const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
+    const outputCompound = Labs.MAP.output as MineralBoostConstant;
+    const productionLab = creep.pos.findClosestByRange(FIND_STRUCTURES, {
         filter: (structure) => {
-            return structure.structureType === STRUCTURE_LAB && structure.store[RESOURCE_ENERGY] > 0
+            return structure.structureType === STRUCTURE_LAB && structure.store[outputCompound] > 0
         }
-    }) as StructureLab[];
+    }) as StructureLab;
 
     // Boost Labs
-    const UH_lab = labs[LabMapper.UH] ?? null;
-    const LH_lab = labs[LabMapper.LH] ?? null;
-    const LO_lab = labs[LabMapper.LO] ?? null;
-    const GO_lab = labs[LabMapper.GO] ?? null;
-
-    if(labs.length === 0 || (!UH_lab && !LH_lab)){
+    if(!productionLab){
       creep.memory.isBoosted = true;
       return true;
     }
 
-    if(creep.getActiveBodyparts(ATTACK) > 0 && UH_lab) {
-      if(!creep.pos.isNearTo(UH_lab)) {
-        creep.moveTo(UH_lab);
-        return false;
-      }
-      while(UH_lab.boostCreep(creep,1) == OK);
+    if(!creep.pos.isNearTo(productionLab)) {
+      creep.moveTo(productionLab);
+      return false;
     }
 
-    if(creep.getActiveBodyparts(WORK) > 0 && LH_lab) {
-      if(!creep.pos.isNearTo(LH_lab)) {
-        creep.moveTo(LH_lab);
-        return false;
-      }
-      while(LH_lab.boostCreep(creep,1) == OK);
+    if(creep.memory.role === 'attacker' && creep.getActiveBodyparts(ATTACK) > 0 && productionLab && outputCompound === RESOURCE_UTRIUM_HYDRIDE) {
+      while(productionLab.boostCreep(creep,1) == OK);
     }
 
-    if(creep.getActiveBodyparts(HEAL) > 0 && LO_lab) {
-      if(!creep.pos.isNearTo(LO_lab)) {
-        creep.moveTo(LO_lab);
-        return false;
-      }
-      while(LO_lab.boostCreep(creep,1) == OK);
+    if(creep.memory.role === 'dismantler' && creep.getActiveBodyparts(WORK) > 0 && productionLab && outputCompound === RESOURCE_ZYNTHIUM_HYDRIDE) {
+      while(productionLab.boostCreep(creep,1) == OK);
     }
 
-    if(creep.getActiveBodyparts(TOUGH) > 0 && GO_lab) {
-      if(!creep.pos.isNearTo(GO_lab)) {
-        creep.moveTo(GO_lab);
-        return false;
-      }
-      while(GO_lab.boostCreep(creep,1) == OK);
+    if(creep.memory.role === 'healer' && creep.getActiveBodyparts(HEAL) > 0 && productionLab && outputCompound === RESOURCE_LEMERGIUM_HYDRIDE) {
+      while(productionLab.boostCreep(creep,1) == OK);
     }
 
+    if(creep.memory.role === 'upgrader' && creep.getActiveBodyparts(TOUGH) > 0 && productionLab && outputCompound === RESOURCE_GHODIUM_HYDRIDE) {
+      while(productionLab.boostCreep(creep,1) == OK);
+    }
 
     creep.memory.isBoosted = true;
     return true;

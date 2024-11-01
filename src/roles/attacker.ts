@@ -45,6 +45,7 @@ export class Attacker {
             creep.say('⚔');
         }
 
+        creep.memory.isBoosted = undefined;
         if(!creep.memory.isBoosted) {
             const canContinue = Labs.boostCreep(creep)
             if(!canContinue) {
