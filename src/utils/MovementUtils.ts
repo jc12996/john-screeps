@@ -283,12 +283,12 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name === 'W1N6') {
+        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name !== 'W1N6') {
             this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
             return;
         }
 
-        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name !== 'W1N6') {
+        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name === 'W2N7') {
             this.generalScientistGather2(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
             return;
         }

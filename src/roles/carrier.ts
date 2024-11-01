@@ -293,7 +293,7 @@ export class Carrier {
 
 
 
-            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0 && creep.room.name === 'W1N6') {
+            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0 && creep.room.name === 'W2N7') {
                 const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
                 if(!canContinue) {
                     return;
@@ -302,7 +302,7 @@ export class Carrier {
 
             }
 
-            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0 && creep.room.name !== 'W1N6') {
+            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0 && creep.room.name === 'W2N7') {
                 const canContinue = this.scienceCarrierSequence2(creep, labs, terminal);
                 if(!canContinue) {
                     return;
