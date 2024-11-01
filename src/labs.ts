@@ -9,6 +9,9 @@ export enum LabMapper {
     L  = 7,
     LH = 8,
     H = 9,
+    LO = -1, // NON existant todo,
+    O = -1// NON existant todo,
+
   }
 
 type BoostTypes = 'work' | "attack";
@@ -28,16 +31,15 @@ export class Labs {
 
     const L_lab = labs[LabMapper.L] ?? null;
     const U_lab = labs[LabMapper.U] ?? null;
-
-
     const Z_lab = labs[LabMapper.Z] ?? null;
     const K_lab = labs[LabMapper.K] ?? null;
-
     const H_lab = labs[LabMapper.H] ?? null;
+    const O_lab = labs[LabMapper.O] ?? null;
 
     // Boost Labs
     const UH_lab = labs[LabMapper.UH] ?? null;
     const LH_lab = labs[LabMapper.LH] ?? null;
+    const LO_lab = labs[LabMapper.LO] ?? null;
 
     if(GH_lab && LU_lab && ZK_lab && LU_lab.store[RESOURCE_GHODIUM] < 3000 && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] > 300 && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] > 300) {
         GH_lab.runReaction(ZK_lab,LU_lab)
@@ -57,8 +59,12 @@ export class Labs {
     }
 
     if (LH_lab && L_lab && H_lab && UH_lab.store[RESOURCE_LEMERGIUM_HYDRIDE] < 3000 && L_lab.store[RESOURCE_LEMERGIUM] > 0 && H_lab.store[RESOURCE_HYDROGEN] > 0) {
-      UH_lab.runReaction(L_lab,H_lab)
-  }
+        UH_lab.runReaction(L_lab,H_lab)
+    }
+
+    if (LO_lab && L_lab && O_lab && L_lab.store[RESOURCE_LEMERGIUM_OXIDE] < 3000 && L_lab.store[RESOURCE_LEMERGIUM] > 0 && O_lab.store[RESOURCE_OXYGEN] > 0) {
+        LO_lab.runReaction(L_lab,O_lab)
+    }
 
 
   }
@@ -80,54 +86,43 @@ export class Labs {
         }
     }) as StructureLab[];
 
-
     // Boost Labs
     const UH_lab = labs[LabMapper.UH] ?? null;
     const LH_lab = labs[LabMapper.LH] ?? null;
+    const LO_lab = labs[LabMapper.LO] ?? null;
 
     if(labs.length === 0 || (!UH_lab && !LH_lab)){
       boost.creep.memory.isBoosted = true;
       return true;
     }
 
-
-
-
-    let numberOfAttackParts = boost.creep.getActiveBodyparts(ATTACK);
-    let attackBoostCap = numberOfAttackParts;
-
-
-    if(numberOfAttackParts > 0 && UH_lab) {
-
-
+    if(boost.creep.getActiveBodyparts(ATTACK) > 0 && UH_lab) {
       if(!boost.creep.pos.isNearTo(UH_lab)) {
         boost.creep.moveTo(UH_lab);
         return false;
       }
+      while(UH_lab.boostCreep(boost.creep,1) == OK);
+    }
 
-      while(numberOfAttackParts <= attackBoostCap) {
-
-
-        const boostCode = UH_lab.boostCreep(boost.creep,1);
-
-        if(boostCode === ERR_NOT_ENOUGH_RESOURCES) {
-          numberOfAttackParts--
-        }
-
-        if(boostCode === ERR_NOT_ENOUGH_ENERGY) {
-          numberOfAttackParts--
-        }
-
-        attackBoostCap--;
-
-
+    if(boost.creep.getActiveBodyparts(WORK) > 0 && LH_lab) {
+      if(!boost.creep.pos.isNearTo(LH_lab)) {
+        boost.creep.moveTo(LH_lab);
+        return false;
       }
+      while(LH_lab.boostCreep(boost.creep,1) == OK);
+    }
 
+    if(boost.creep.getActiveBodyparts(HEAL) > 0 && LO_lab) {
+      if(!boost.creep.pos.isNearTo(LO_lab)) {
+        boost.creep.moveTo(LO_lab);
+        return false;
+      }
+      while(LO_lab.boostCreep(boost.creep,1) == OK);
     }
 
 
     boost.creep.memory.isBoosted = true;
-    return false;
+    return true;
 
   }
 }
