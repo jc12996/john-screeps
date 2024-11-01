@@ -94,7 +94,14 @@ export class Carrier {
         }
         else if((storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel >= 6 && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 3;
-            if(creep.room.controller?.my && creep.room.controller.level === 8) {
+
+            const labSetFlags = creep.room.find(FIND_FLAGS, {
+                filter: (flag) => {
+                  return flag.name.includes(creep.room.name+'SetLabs:')
+                }
+              })[0] ?? null;
+
+            if(creep.room.controller?.my && creep.room.controller.level >= 7 && labSetFlags) {
                 Labs.setLabMapper(creep.room);
             }
         }
@@ -213,17 +220,10 @@ export class Carrier {
         }
 
         if(!creep.memory.carrying && creep.memory.extensionFarm === 3
-            && (creep.store[RESOURCE_UTRIUM] > 0
-            || creep.store[RESOURCE_LEMERGIUM] > 0
-            || creep.store[RESOURCE_ZYNTHIUM] > 0
-            || creep.store[RESOURCE_KEANIUM] > 0
-            || creep.store[RESOURCE_HYDROGEN] > 0
-            || creep.store[RESOURCE_ENERGY] > 0
-            || creep.store[RESOURCE_OXYGEN] > 0
-            || creep.store[RESOURCE_UTRIUM_LEMERGITE] > 0
-            || creep.store[RESOURCE_ZYNTHIUM_KEANITE] > 0
-            || creep.store[RESOURCE_GHODIUM] > 0
-        )) {
+            && (
+                creep.store[Labs.MAP.input1 as MineralBaseCompoundsConstant | MineralCompoundConstant] > 0) ||
+                creep.store[Labs.MAP.input2 as MineralBaseCompoundsConstant | MineralCompoundConstant] > 0
+            ) {
                 creep.memory.carrying = true;
         }
 
@@ -235,19 +235,11 @@ export class Carrier {
         }
 
 
-        if(creep.memory.carrying && creep.memory.extensionFarm === 3
-            && creep.store[RESOURCE_UTRIUM] === 0
-            && creep.store[RESOURCE_LEMERGIUM] === 0
-            && creep.store[RESOURCE_ZYNTHIUM] === 0
-            && creep.store[RESOURCE_KEANIUM] === 0
-            && creep.store[RESOURCE_HYDROGEN] === 0
-            && creep.store[RESOURCE_ENERGY] === 0
-            && creep.store[RESOURCE_UTRIUM_LEMERGITE] === 0
-            && creep.store[RESOURCE_ZYNTHIUM_KEANITE] === 0
-            && creep.store[RESOURCE_GHODIUM] === 0
-
-            && creep.store[RESOURCE_OXYGEN] === 0) {
-                creep.memory.carrying = false;
+        if(creep.memory.carrying && creep.memory.extensionFarm === 3 &&
+            creep.store[Labs.MAP.input1 as MineralBaseCompoundsConstant | MineralCompoundConstant] === 0  &&
+            creep.store[Labs.MAP.input2 as MineralBaseCompoundsConstant | MineralCompoundConstant] === 0
+        ) {
+            creep.memory.carrying = false;
         }
 
 

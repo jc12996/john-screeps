@@ -102,7 +102,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
       Tower.defendMyRoom(room);
 
       if(room.controller?.my && room.controller.level === 8) {
-        Labs.runLabs2();
         Nukers.awaitingNuke(room);
       }
 

@@ -71,28 +71,28 @@ export class Labs {
 
 
     this.inputLabs = room.find(FIND_STRUCTURES, {
-      filter: (lab) => {
-          return lab.structureType === STRUCTURE_LAB && (
-          (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
-          (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1)
-        )
-      }
-  }) as StructureLab[];
+        filter: (lab) => {
+            return lab.structureType === STRUCTURE_LAB && (
+            (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
+            (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1)
+          )
+        }
+    }) as StructureLab[];
 
-  if(this.inputLabs.length !== 2) {
-    return;
-  }
+    if(this.inputLabs.length !== 2) {
+      return;
+    }
 
-  this.outputLabs = room.find(FIND_STRUCTURES, {
-      filter: (lab) => {
-          return lab.structureType === STRUCTURE_LAB &&
-          !( (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
-          (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1))
+    this.outputLabs = room.find(FIND_STRUCTURES, {
+        filter: (lab) => {
+            return lab.structureType === STRUCTURE_LAB &&
+            !( (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
+            (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1))
 
-      }
-  }) as StructureLab[];
+        }
+    }) as StructureLab[];
 
-
+    Labs.runLabs2();
 
   }
 
