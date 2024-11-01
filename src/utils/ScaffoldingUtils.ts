@@ -471,8 +471,7 @@ export class ScaffoldingUtils {
 
 
                     const newSpawnName = 'Spawn'+(spawns.length + 1);
-                    const createSpawn = creepOrSpawn.room?.createConstructionSite(pos.x,pos.y,STRUCTURE_SPAWN, newSpawnName);
-                    console.log('createSpawn',createSpawn, newSpawnName)
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y,STRUCTURE_SPAWN, newSpawnName);
                 }
 
                 const hasLevelTower = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
@@ -561,8 +560,7 @@ export class ScaffoldingUtils {
 
 
                     const newSpawnName = 'Spawn'+(spawns.length + 1);
-                    const createSpawn = creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_SPAWN, newSpawnName);
-                    console.log('createSpawn',createSpawn, newSpawnName)
+                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_SPAWN, newSpawnName);
                 }
 
 
