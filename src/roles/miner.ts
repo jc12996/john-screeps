@@ -67,7 +67,7 @@ export class Miner {
         const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
 
 
-        if(creep.memory.extractorMiner === true && terminal.store[mineral.mineralType] < 50000) {
+        if(creep.memory.extractorMiner === true && terminal.store.getFreeCapacity() > 0) {
             if(creep.store[RESOURCE_ENERGY] > 0) {
                 this.dropOffStuff(creep,firstRoom);
                 return;
@@ -120,7 +120,7 @@ export class Miner {
             const hLabs = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter:  (source) => {
                     return (
-                        source.structureType == STRUCTURE_LAB && source.store.H > 0
+                        source.structureType == STRUCTURE_LAB && source.store[mineral.mineralType]
 
 
                     )
@@ -136,12 +136,8 @@ export class Miner {
                     )
                 }
             });
-            /*
 
-            if(hLabs && creep.withdraw(hLabs,mineral.mineralType) === ERR_NOT_IN_RANGE){
-                creep.moveTo(hLabs, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
-            else */
+
 
             if(droppedMineralTombstone && creep.withdraw(droppedMineralTombstone,mineral.mineralType) === ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedMineralTombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -152,6 +148,8 @@ export class Miner {
                 creep.moveTo(extractor, {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if(storage && creep.room.controller?.my && mineral && creep.withdraw(storage,mineral.mineralType) === ERR_NOT_IN_RANGE){
                 creep.moveTo(storage, {visualizePathStyle: {stroke: '#ffaa00'}});
+            } else if(hLabs && creep.withdraw(hLabs,mineral.mineralType, 100) === ERR_NOT_IN_RANGE){
+                creep.moveTo(hLabs, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         } else {
             if(terminal && mineral && creep.transfer(terminal,mineral.mineralType) === ERR_NOT_IN_RANGE){

@@ -346,8 +346,8 @@ export class MovementUtils {
         const inputLab1 = Labs.inputLabs[0];
         const inputLab2 = Labs.inputLabs[1];
 
-        const input1Mineral = Labs.MAP.input1 as MineralCompoundConstant;
-        const input2Mineral = Labs.MAP.input2 as MineralCompoundConstant;
+        const input1Mineral = Labs.MAP.input1 as MineralCompoundConstant | MineralConstant | null;
+        const input2Mineral = Labs.MAP.input2 as MineralCompoundConstant | MineralConstant | null;
 
         const droppedMineral = creep.room.find(FIND_DROPPED_RESOURCES)[0] ?? null;
 
@@ -366,11 +366,11 @@ export class MovementUtils {
         //     // console.log('labsAreFull',labsAreFull,input1,input2)
         // }
 
-        if( inputLab1 && inputLab1.store[input1Mineral] < 2700 &&
+        if(input1Mineral && inputLab1 && inputLab1.store[input1Mineral] < 2700 &&
             terminal.store[input1Mineral] > 0 && creep.withdraw(terminal,input1Mineral) == ERR_NOT_IN_RANGE){
             creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
         }
-        else if( inputLab2 && inputLab2.store[input2Mineral] < 2700 &&
+        else if(input2Mineral && inputLab2 && inputLab2.store[input2Mineral] < 2700 &&
             terminal.store[input2Mineral] > 0 && creep.withdraw(terminal,input2Mineral) == ERR_NOT_IN_RANGE){
             creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
         }

@@ -91,9 +91,9 @@ export class Carrier {
             creep.memory.extensionFarm = 1;
         }
         else if((storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel >= 6 && creep.room.energyAvailable > 0) {
-            // if(creep.room.controller?.my && creep.room.controller.level >= 6) {
-            //     Labs.setLabMapper(creep.room);
-            // }
+            if(creep.room.controller?.my && creep.room.controller.level >= 6) {
+                Labs.setLabMapper(creep.room);
+            }
 
             creep.memory.extensionFarm = 3;
         }
@@ -297,7 +297,7 @@ export class Carrier {
 
 
 
-            // if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
+            // if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0 && creep.room.name !== 'W2N7') {
             //     const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
             //     if(!canContinue) {
             //         return;

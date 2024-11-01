@@ -2,7 +2,7 @@ import { Labs } from "labs";
 import { SpawnUtils } from "./SpawnUtils";
 
 export class SquadUtils {
-    public static squadSize = 4; // 3🔬 formation (1 lead healer, 4 attackers, 4 healers)
+    public static squadSize = 9; // 3🔬 formation (1 lead healer, 4 attackers, 4 healers)
 
     // Directions for each squad position relative to the lead creep
     public static formationOffsets: Array<{ x: number, y: number }> = [

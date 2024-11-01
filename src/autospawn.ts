@@ -215,12 +215,12 @@ export class AutoSpawn {
             options = {memory: {role: 'claimer'}};
 
         }
-        // else if (commandLevel >= 7 && energyAvailable > 2000 && miners.length > 0 && attackClaimers.length < mineFlags.length) {
-        //      name = 'AttackClaimer' + Game.time;
-        //      bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
-        //      options = {memory: {role: 'attackClaimer'}};
+        else if (commandLevel >= 7 && energyAvailable > 2000 && miners.length > 0 && attackClaimers.length < mineFlags.length) {
+             name = 'AttackClaimer' + Game.time;
+             bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
+             options = {memory: {role: 'attackClaimer'}};
 
-        // }
+        }
         else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
             && ((
                 !!this.nextClaimFlag

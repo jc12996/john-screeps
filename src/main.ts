@@ -287,8 +287,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
           // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
           if (!leadHealer || squad.length < SquadUtils.squadSize) {
             creep.moveTo(Game.flags.SquadFlag)
-            console.log('Forming squad');
+            if(creep === leadHealer) {
+
+              console.log('Forming squad ' + squad.length + '/' +SquadUtils.squadSize);
+            }
           } else {
+
             // Assign the squad to combat, handle breaching or post-breach actions
             SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
           }

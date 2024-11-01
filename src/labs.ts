@@ -54,6 +54,11 @@ export class Labs {
       return;
     }
 
+    const labFarmFlag = Game.flags[room.name+'LabFarm'];
+    if(!labFarmFlag) {
+      return;
+    }
+
 
     const nameOfLabFlag = labSetFlags.name;
     const compoundString = nameOfLabFlag.split(':')[1];
@@ -63,72 +68,66 @@ export class Labs {
     this.MAP.output = compoundOutputMap[this.MAP.input1+this.MAP.input2]  ?? '' as MineralCompoundConstant;
 
 
-    Labs.runLabs2(room);
+
+
+    this.inputLabs = room.find(FIND_STRUCTURES, {
+      filter: (lab) => {
+          return lab.structureType === STRUCTURE_LAB && (
+          (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
+          (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1)
+        )
+      }
+  }) as StructureLab[];
+
+  if(this.inputLabs.length !== 2) {
+    return;
+  }
+
+  this.outputLabs = room.find(FIND_STRUCTURES, {
+      filter: (lab) => {
+          return lab.structureType === STRUCTURE_LAB &&
+          !( (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
+          (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1))
+
+      }
+  }) as StructureLab[];
+
+    Labs.runLabs2();
 
   }
 
-  public static runLabs2(room:Room) {
+  public static runLabs2() {
 
-    const labFarmFlag = Game.flags[room.name+'LabFarm'];
 
-    if(!labFarmFlag) {
+    if(this.outputLabs.length === 0 || this.inputLabs.length < 2) {
       return;
     }
 
-    this.inputLabs = room.find(FIND_STRUCTURES, {
-        filter: (lab) => {
-            return lab.structureType === STRUCTURE_LAB && (
-            (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
-            (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1)
-          )
-        }
-    }) as StructureLab[];
-
-    if(this.inputLabs.length !== 2) {
+    const inputLab1 = Game.getObjectById(this.inputLabs[0].id) as StructureLab;
+    const inputLab2 =  Game.getObjectById(this.inputLabs[1].id) as StructureLab;
+    const outputLab = Game.getObjectById(this.outputLabs[this.outputLabs.length-1].id) as StructureLab;
+    if(!inputLab1 || !inputLab2 || !outputLab) {
       return;
     }
 
-    this.outputLabs = room.find(FIND_STRUCTURES, {
-        filter: (lab) => {
-            return lab.structureType === STRUCTURE_LAB &&
-            !( (lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
-            (lab.pos.x === labFarmFlag.pos.x+1 && lab.pos.y === labFarmFlag.pos.y+1))
-
-        }
-    }) as StructureLab[];
-
-
-
-    if(this.outputLabs.length === 0) {
+    const input1MineralConstant = this.MAP.input1 as MineralConstant | MineralCompoundConstant | null;
+    const input2MineralConstant = this.MAP.input2 as MineralConstant | MineralCompoundConstant | null;
+    const outputCompoundConstant = this.MAP.output as MineralConstant | MineralCompoundConstant | null;
+    if(!input1MineralConstant || !input2MineralConstant || !outputCompoundConstant) {
       return;
     }
 
-    const lab1 = this.inputLabs[0] as StructureLab;
-    const lab2 = this.inputLabs[1] as StructureLab;
+    const inputLab1Ready = inputLab1.store && inputLab1.store[input1MineralConstant] > 300;
+    const inputLab2Ready = inputLab2.store && inputLab2.store[input2MineralConstant] > 300;
+    const outputLabReady = outputLab.store && outputLab.store[outputCompoundConstant] < 3000;
 
-    if(this.outputLabs[0].room !== lab1.room) {
-      return;
+
+    if (outputLab && !!inputLab1 && !!inputLab2 && !!outputLabReady && inputLab1Ready && inputLab2Ready) {
+        outputLab.runReaction(inputLab1,inputLab2)
+        return;
     }
-    this.outputLabs.forEach((outputLab:StructureLab) => {
 
 
-
-      const input1Ready = lab2.store[this.MAP.input1 as MineralCompoundConstant] > 300 || lab1.store[this.MAP.input1 as MineralCompoundConstant] > 300
-      const input2Ready = lab2.store[this.MAP.input2 as MineralCompoundConstant] > 300 || lab1.store[this.MAP.input2 as MineralCompoundConstant] > 300
-
-      // if(outputLab.room.name === 'W2N7') {
-      //   console.log('here',input1Ready,input2Ready)
-      // }
-      if(outputLab && lab1 && lab2 && input1Ready && input2Ready) {
-        let code =  outputLab.runReaction(lab1,lab2)
-        if(code === ERR_INVALID_ARGS) {
-          code =  outputLab.runReaction(lab2,lab1)
-        }
-        // if(outputLab.room.name === 'W2N7') {
-        //   console.log('reaction code: ',code, outputLab, lab1, lab2)
-        // }
-      }
-    })
 
   }
 
