@@ -258,7 +258,9 @@ export class MovementUtils {
 
 
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
-            if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if(commandLevel >= 7 && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
             } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -346,15 +348,12 @@ export class MovementUtils {
         const input1Mineral = Labs.MAP.input1 as MineralCompoundConstant;
         const input2Mineral = Labs.MAP.input2 as MineralCompoundConstant;
 
-        const droppedMineral = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+        const droppedMineral = creep.room.find(FIND_DROPPED_RESOURCES)[0] ?? null;
 
 
         if( inputLab1 && inputLab1.store[input1Mineral] < 2200 &&
             terminal.store[input1Mineral] > 0 && creep.withdraw(terminal,input1Mineral) == ERR_NOT_IN_RANGE){
             creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-
-
         }
         else if( inputLab2 && inputLab2.store[input2Mineral] < 2200 &&
             terminal.store[input2Mineral] > 0 && creep.withdraw(terminal,input2Mineral) == ERR_NOT_IN_RANGE){
@@ -366,9 +365,6 @@ export class MovementUtils {
         else if (droppedMineral && creep.pickup(droppedMineral) == ERR_NOT_IN_RANGE) {
             creep.moveTo(droppedMineral, {visualizePathStyle: {stroke: "#ffffff"}});
         }
-        // else if (terminal && creep.withdraw(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        //     creep.moveTo(terminal, {visualizePathStyle: {stroke: "#ffffff"}});
-        // }
         else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
         }
@@ -647,6 +643,14 @@ export class MovementUtils {
         if(terminal && creep.store[RESOURCE_GHODIUM] > 0) {
 
             if(creep.transfer(terminal,RESOURCE_GHODIUM) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(terminal)
+            }
+            return false;
+        }
+
+        if(terminal && creep.store[RESOURCE_UTRIUM_HYDRIDE] > 0) {
+
+            if(creep.transfer(terminal,RESOURCE_UTRIUM_HYDRIDE) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal)
             }
             return false;

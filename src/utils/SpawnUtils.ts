@@ -238,7 +238,18 @@ export class SpawnUtils {
                 }
             case 'builder':
             case 'repairer':
-                if(energyAvailable >= 800) {
+                if(commandLevel >= 8 && energyAvailable >= 2900) {
+                    for (let i = 0; i < 15; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 27; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }else if(energyAvailable >= 800) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
