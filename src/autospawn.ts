@@ -350,7 +350,7 @@ export class AutoSpawn {
                     ScaffoldingUtils.createExtensionFarm2(spawn,extensionFarm2Flag);
                 }
 
-                if(spawn.room.controller.level >= 6 && spawn.room.name !== 'W1N6' && !!labFarmFlag) {
+                if(spawn.room.controller.level >= 6 && !!labFarmFlag) {
 
 
                     ScaffoldingUtils.createLabFarm(spawn,labFarmFlag);

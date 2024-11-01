@@ -283,12 +283,12 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name !== 'W1N6') {
-            this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
-            return;
-        }
+        // if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name !== 'W1N6') {
+        //     this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
+        //     return;
+        // }
 
-        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name === 'W2N7') {
+        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3) {
             this.generalScientistGather2(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
             return;
         }
@@ -346,6 +346,8 @@ export class MovementUtils {
         const input1Mineral = Labs.MAP.input1 as MineralCompoundConstant;
         const input2Mineral = Labs.MAP.input2 as MineralCompoundConstant;
 
+        const droppedMineral = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+
 
         if( inputLab1 && inputLab1.store[input1Mineral] < 2200 &&
             terminal.store[input1Mineral] > 0 && creep.withdraw(terminal,input1Mineral) == ERR_NOT_IN_RANGE){
@@ -360,6 +362,9 @@ export class MovementUtils {
 
 
 
+        }
+        else if (droppedMineral && creep.pickup(droppedMineral) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(droppedMineral, {visualizePathStyle: {stroke: "#ffffff"}});
         }
         // else if (terminal && creep.withdraw(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         //     creep.moveTo(terminal, {visualizePathStyle: {stroke: "#ffffff"}});

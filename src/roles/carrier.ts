@@ -293,16 +293,16 @@ export class Carrier {
 
 
 
-            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0 && creep.room.name === 'W2N7') {
-                const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
-                if(!canContinue) {
-                    return;
-                }
+            // if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
+            //     const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
+            //     if(!canContinue) {
+            //         return;
+            //     }
 
 
-            }
+            // }
 
-            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0 && creep.room.name === 'W2N7') {
+            if(creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
                 const canContinue = this.scienceCarrierSequence2(creep, labs, terminal);
                 if(!canContinue) {
                     return;
@@ -371,7 +371,6 @@ export class Carrier {
                 return structure.structureType === STRUCTURE_FACTORY && structure.store;
             }
         }) ?? null;
-
 
 
         // Make sure every lab has some energy in it.
@@ -473,6 +472,7 @@ export class Carrier {
             }
             return false;
         }
+
 
 
         return true;
