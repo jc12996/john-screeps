@@ -119,13 +119,10 @@ export class SquadUtils {
         for (let i = 0; i < squad.length; i++) {
             const creep = squad[i];
 
-            if(!creep.memory.isBoosted && creep.getActiveBodyparts(ATTACK) > 0) {
-                const canContinue = Labs.boostCreep({
-                    type: 'attack',
-                    creep: creep,
-                })
+            if(!creep.memory.isBoosted) {
+                const canContinue = Labs.boostCreep(creep)
                 if(!canContinue) {
-                    return;
+                    continue;
                 }
             }
 

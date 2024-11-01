@@ -1,3 +1,4 @@
+import { Labs } from "labs";
 import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 
@@ -18,6 +19,13 @@ export class Healer {
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say('🏥',false);
+        }
+
+        if(!creep.memory.isBoosted) {
+            const canContinue = Labs.boostCreep(creep)
+            if(!canContinue) {
+                return;
+            }
         }
 
         const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);

@@ -15,7 +15,6 @@ export enum LabMapper {
 
   }
 
-type BoostTypes = 'work' | "attack";
 
 export class Labs {
   public static runLabs(room:Room) {
@@ -75,18 +74,9 @@ export class Labs {
 
   }
 
-  public static boostCreep(boost: {
-    type: BoostTypes,
-    creep: Creep
-  } | undefined): boolean {
+  public static boostCreep(creep: Creep): boolean {
 
-
-
-    if(!boost) {
-      return true;
-    }
-
-    const labs: StructureLab[] = boost.creep.room.find(FIND_STRUCTURES, {
+    const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return structure.structureType === STRUCTURE_LAB && structure.store[RESOURCE_ENERGY] > 0
         }
@@ -99,44 +89,44 @@ export class Labs {
     const GO_lab = labs[LabMapper.GO] ?? null;
 
     if(labs.length === 0 || (!UH_lab && !LH_lab)){
-      boost.creep.memory.isBoosted = true;
+      creep.memory.isBoosted = true;
       return true;
     }
 
-    if(boost.creep.getActiveBodyparts(ATTACK) > 0 && UH_lab) {
-      if(!boost.creep.pos.isNearTo(UH_lab)) {
-        boost.creep.moveTo(UH_lab);
+    if(creep.getActiveBodyparts(ATTACK) > 0 && UH_lab) {
+      if(!creep.pos.isNearTo(UH_lab)) {
+        creep.moveTo(UH_lab);
         return false;
       }
-      while(UH_lab.boostCreep(boost.creep,1) == OK);
+      while(UH_lab.boostCreep(creep,1) == OK);
     }
 
-    if(boost.creep.getActiveBodyparts(WORK) > 0 && LH_lab) {
-      if(!boost.creep.pos.isNearTo(LH_lab)) {
-        boost.creep.moveTo(LH_lab);
+    if(creep.getActiveBodyparts(WORK) > 0 && LH_lab) {
+      if(!creep.pos.isNearTo(LH_lab)) {
+        creep.moveTo(LH_lab);
         return false;
       }
-      while(LH_lab.boostCreep(boost.creep,1) == OK);
+      while(LH_lab.boostCreep(creep,1) == OK);
     }
 
-    if(boost.creep.getActiveBodyparts(HEAL) > 0 && LO_lab) {
-      if(!boost.creep.pos.isNearTo(LO_lab)) {
-        boost.creep.moveTo(LO_lab);
+    if(creep.getActiveBodyparts(HEAL) > 0 && LO_lab) {
+      if(!creep.pos.isNearTo(LO_lab)) {
+        creep.moveTo(LO_lab);
         return false;
       }
-      while(LO_lab.boostCreep(boost.creep,1) == OK);
+      while(LO_lab.boostCreep(creep,1) == OK);
     }
 
-    if(boost.creep.getActiveBodyparts(TOUGH) > 0 && GO_lab) {
-      if(!boost.creep.pos.isNearTo(GO_lab)) {
-        boost.creep.moveTo(GO_lab);
+    if(creep.getActiveBodyparts(TOUGH) > 0 && GO_lab) {
+      if(!creep.pos.isNearTo(GO_lab)) {
+        creep.moveTo(GO_lab);
         return false;
       }
-      while(GO_lab.boostCreep(boost.creep,1) == OK);
+      while(GO_lab.boostCreep(creep,1) == OK);
     }
 
 
-    boost.creep.memory.isBoosted = true;
+    creep.memory.isBoosted = true;
     return true;
 
   }
