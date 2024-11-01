@@ -10,7 +10,8 @@ export enum LabMapper {
     LH = 8,
     H = 9,
     LO = -1, // NON existant todo,
-    O = -1// NON existant todo,
+    O = -1,// NON existant todo,
+    GO = -1// Non existant todo
 
   }
 
@@ -40,6 +41,7 @@ export class Labs {
     const UH_lab = labs[LabMapper.UH] ?? null;
     const LH_lab = labs[LabMapper.LH] ?? null;
     const LO_lab = labs[LabMapper.LO] ?? null;
+    const GO_lab = labs[LabMapper.GO] ?? null;
 
     if(GH_lab && LU_lab && ZK_lab && LU_lab.store[RESOURCE_GHODIUM] < 3000 && ZK_lab.store[RESOURCE_ZYNTHIUM_KEANITE] > 300 && LU_lab.store[RESOURCE_UTRIUM_LEMERGITE] > 300) {
         GH_lab.runReaction(ZK_lab,LU_lab)
@@ -66,6 +68,10 @@ export class Labs {
         LO_lab.runReaction(L_lab,O_lab)
     }
 
+    if (GO_lab && GH_lab && O_lab && GH_lab.store[RESOURCE_GHODIUM_OXIDE] < 3000 && GH_lab.store[RESOURCE_GHODIUM] > 0 && O_lab.store[RESOURCE_OXYGEN] > 0) {
+        GO_lab.runReaction(GH_lab,O_lab)
+    }
+
 
   }
 
@@ -90,6 +96,7 @@ export class Labs {
     const UH_lab = labs[LabMapper.UH] ?? null;
     const LH_lab = labs[LabMapper.LH] ?? null;
     const LO_lab = labs[LabMapper.LO] ?? null;
+    const GO_lab = labs[LabMapper.GO] ?? null;
 
     if(labs.length === 0 || (!UH_lab && !LH_lab)){
       boost.creep.memory.isBoosted = true;
@@ -118,6 +125,14 @@ export class Labs {
         return false;
       }
       while(LO_lab.boostCreep(boost.creep,1) == OK);
+    }
+
+    if(boost.creep.getActiveBodyparts(TOUGH) > 0 && GO_lab) {
+      if(!boost.creep.pos.isNearTo(GO_lab)) {
+        boost.creep.moveTo(GO_lab);
+        return false;
+      }
+      while(GO_lab.boostCreep(boost.creep,1) == OK);
     }
 
 
