@@ -260,11 +260,12 @@ export class MovementUtils {
         if(creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
             if(commandLevel >= 7 && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            } else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
-            } else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
+            // else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            //     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            // }
             else if(creep.memory.role === 'upgrader' && controllerLink && creep.withdraw(controllerLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(controllerLink, {visualizePathStyle: {stroke: "#ffffff"}});
             }
@@ -273,11 +274,10 @@ export class MovementUtils {
             }
             else if(terminal && commandLevel >= 6 && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal, {visualizePathStyle: {stroke: "#ffffff"}});
-                return;
             }
-            else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
-            }
+            // else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
+            // }
 
 
             return;
@@ -343,8 +343,11 @@ export class MovementUtils {
 
     private static generalScientistGather2(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage, nearestStorageOrTerminal:StructureTerminal | StructureStorage | null): boolean {
 
-        const inputLab1 = Labs.inputLabs[0];
-        const inputLab2 = Labs.inputLabs[1];
+        if(!Labs.inputLabs) {
+            return true;
+        }
+        const inputLab1 = Labs.inputLabs[0] ?? null;
+        const inputLab2 = Labs.inputLabs[1] ?? null;
 
         const input1Mineral = Labs.MAP.input1 as MineralCompoundConstant | MineralConstant | null;
         const input2Mineral = Labs.MAP.input2 as MineralCompoundConstant | MineralConstant | null;

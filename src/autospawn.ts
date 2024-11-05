@@ -144,6 +144,7 @@ export class AutoSpawn {
             }
         }
 
+
         if(!!mineFlag) {
             const mineSources = mineFlag.room?.find(FIND_SOURCES);
 

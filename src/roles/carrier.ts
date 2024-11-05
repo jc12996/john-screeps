@@ -74,7 +74,7 @@ export class Carrier {
 
         const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath((FIND_STRUCTURES),{
                 filter: (structure) => {
-                    return (structure.structureType === STRUCTURE_TERMINAL || (structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] < 900000))  &&
+                    return ((structure.structureType === STRUCTURE_TERMINAL && structure.store[RESOURCE_ENERGY] < 200000) || (structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] < 900000))  &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.room?.controller?.my;
                 }
             } )
@@ -137,7 +137,7 @@ export class Carrier {
             {
                 filter: (hostileCreep) => {
                     return ((hostileCreep.owner &&
-                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && hostileCreep.getActiveBodyparts(ATTACK) > 0) && hostileCreep?.owner?.username !== 'Invader')
+                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) && hostileCreep.getActiveBodyparts(ATTACK) > 0))
                   }
             }
         );
@@ -403,6 +403,9 @@ export class Carrier {
         const input2 = Labs.MAP.input2 as MineralConstant;
 
 
+        if(!!!Labs.inputLabs || Labs.inputLabs.length === 0) {
+            return true;
+        }
         for(const inputLab of Labs.inputLabs) {
 
             counter++

@@ -407,6 +407,19 @@ export class ScaffoldingUtils {
                     creepOrSpawn.room?.createConstructionSite(pos.x -5,pos.y+2,STRUCTURE_EXTENSION);
                 }
 
+                const mineralSource = creepOrSpawn.room.find(FIND_MINERALS);
+
+                if(mineralSource.length > 0) {
+                    const mineralExtractor = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                        filter: (structure) => {
+                            return structure.structureType === STRUCTURE_EXTRACTOR
+                        }
+                    })
+                    if(mineralExtractor.length === 0) {
+                        creepOrSpawn.room?.createConstructionSite(mineralSource[0].pos.x,mineralSource[0].pos.y,STRUCTURE_EXTRACTOR);
+                    }
+                }
+
 
                 if(!hasTerminals && creepOrSpawn.room?.controller?.my) {
                     creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y,STRUCTURE_TERMINAL);
