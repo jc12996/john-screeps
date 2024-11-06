@@ -3,6 +3,7 @@ import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Carrier } from "./carrier";
 import { Builder } from "./builder";
+import { Labs } from "labs";
 
 export class Upgrader {
     public static run(creep: Creep): void {
@@ -11,6 +12,14 @@ export class Upgrader {
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say('⚡');
         }
+
+        if(!creep.memory.isBoosted) {
+            const canContinue = Labs.boostCreep(creep)
+            if(!canContinue) {
+                return;
+            }
+        }
+
 
         if(creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.upgrading = false;

@@ -95,15 +95,15 @@ export function placeSourceLinks(creep: Creep) {
 }
 
 
-export function transferEnergyToSpawn1Room() {
+export function transferEnergyToSpawn1Room(room:Room) {
     // Find the room that has the spawn named 'Spawn1' and ensure you own it
     const spawn1 = Game.spawns['Spawn1'];
-    if (!spawn1 || !spawn1.room.controller || !spawn1.room.controller.my) {
+    if (!room.controller || !room.controller.my) {
         //console.log('Spawn1 not found or you do not control the room');
         return;
     }
 
-    const targetRoom = spawn1.room;
+    const targetRoom = room;
     const targetTerminal = targetRoom.terminal;
 
     if (!targetTerminal) {
@@ -129,7 +129,7 @@ export function transferEnergyToSpawn1Room() {
         const mineral = terminal.room.find(FIND_MINERALS)[0];
 
         // Check if the terminal has more than 10,000 energy
-        if (terminal.store[RESOURCE_ENERGY] > 10000 && terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000 && terminal.store[RESOURCE_ENERGY] < 50000 && targetTerminal.store[RESOURCE_ENERGY] < 90000) {
+        if (targetRoom.terminal && targetRoom.terminal.store[RESOURCE_ENERGY] < 10000 && terminal.store[RESOURCE_ENERGY] > 10000 && terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000 && terminal.store[RESOURCE_ENERGY] < 50000 && targetTerminal.store[RESOURCE_ENERGY] < 90000) {
             // Calculate the amount of energy to transfer (optional, transfer everything above 2k)
             const transferAmount = terminal.store.getUsedCapacity(RESOURCE_ENERGY) - 2000;
 

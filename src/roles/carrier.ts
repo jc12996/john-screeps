@@ -8,6 +8,14 @@ export class Carrier {
 
     public static run(creep: Creep): void {
 
+        if(!creep.memory.isBoosted) {
+            const canContinue = Labs.boostCreep(creep)
+            if(!canContinue) {
+                return;
+            }
+        }
+
+
         const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
                 return (
@@ -74,7 +82,7 @@ export class Carrier {
 
         const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath((FIND_STRUCTURES),{
                 filter: (structure) => {
-                    return ((structure.structureType === STRUCTURE_TERMINAL && structure.store[RESOURCE_ENERGY] < 200000) || (structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] < 900000))  &&
+                    return ((structure.structureType === STRUCTURE_TERMINAL && structure.store[RESOURCE_ENERGY] < 10000) || (structure.structureType === STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] < 900000))  &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && structure.room?.controller?.my;
                 }
             } )
@@ -92,7 +100,8 @@ export class Carrier {
         }else if(((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) && carriers[0] &&  creep.name === carriers[0].name && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 1;
         }
-        else if((storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name && commandLevel >= 6 && creep.room.energyAvailable > 0) {
+        else if((storage && storage.store[RESOURCE_ENERGY] > 2000 || creep.room.energyCapacityAvailable > 1000) && carriers.length > 2 && carriers[2] &&  creep.name === carriers[2].name
+        && commandLevel >= 6 && creep.room.energyAvailable > 0) {
             creep.memory.extensionFarm = 3;
 
             const labSetFlags = creep.room.find(FIND_FLAGS, {
@@ -101,7 +110,7 @@ export class Carrier {
                 }
               })[0] ?? null;
 
-            if(creep.room.controller?.my && creep.room.controller.level >= 7 && labSetFlags) {
+            if(creep.room.controller?.my && creep.room.controller.level >= 6 && labSetFlags) {
                 Labs.setLabMapper(creep.room);
             }
         }
@@ -332,7 +341,8 @@ export class Carrier {
                 spawn,
                 extensionLinkFlag2,
                 nearestSpawn,
-                nearestStorageOrTerminal
+                nearestStorageOrTerminal,
+                labs
             );
 
 
@@ -839,7 +849,8 @@ export class Carrier {
         spawn: any,
         extensionLinkFlag2:any,
         nearestSpawn: any,
-        nearestStorageOrTerminal: any
+        nearestStorageOrTerminal: any,
+        labs: StructureLab[]
     ) {
 
         if(creep.memory.role === 'miner' && creep.room.controller?.my) {
@@ -880,6 +891,7 @@ export class Carrier {
             }
             creep.moveTo(towers[0]);
         }
+
         else if(carriers.length > 2 && nearestStorageOrTerminal && (creep.memory?.extensionFarm === undefined || creep.memory?.extensionFarm === 3)  &&  creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
             creep.say('🚚 P');
             creep.moveTo(nearestStorageOrTerminal);

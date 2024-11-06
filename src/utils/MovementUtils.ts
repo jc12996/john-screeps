@@ -369,6 +369,8 @@ export class MovementUtils {
         //     // console.log('labsAreFull',labsAreFull,input1,input2)
         // }
 
+
+
         if(input1Mineral && inputLab1 && inputLab1.store[input1Mineral] < 2700 &&
             terminal.store[input1Mineral] > 0 && creep.withdraw(terminal,input1Mineral) == ERR_NOT_IN_RANGE){
             creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});

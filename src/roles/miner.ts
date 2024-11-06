@@ -3,6 +3,7 @@ import { Carrier } from "./carrier";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Upgrader } from "./upgrader";
 import { Harvester } from "./harvester";
+import { Labs } from "labs";
 
 export class Miner {
 
@@ -14,6 +15,12 @@ export class Miner {
 
 
 
+        if(!creep.memory.isBoosted) {
+            const canContinue = Labs.boostCreep(creep)
+            if(!canContinue) {
+                return;
+            }
+        }
 
 
 
@@ -67,7 +74,7 @@ export class Miner {
         const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
 
 
-        if(creep.memory.extractorMiner === true && terminal.store.getFreeCapacity() > 0) {
+        if(creep.memory.extractorMiner === true && terminal?.store?.getFreeCapacity() > 0) {
             if(creep.store[RESOURCE_ENERGY] > 0) {
                 this.dropOffStuff(creep,firstRoom);
                 return;

@@ -22,7 +22,8 @@ export const compoundOutputMap: Record<string, ResourceConstant | null> = {
   UH: RESOURCE_UTRIUM_HYDRIDE,
   LH: RESOURCE_LEMERGIUM_HYDRIDE,
   LO: RESOURCE_LEMERGIUM_OXIDE,
-  GO: RESOURCE_GHODIUM_OXIDE
+  GO: RESOURCE_GHODIUM_OXIDE,
+  KH: RESOURCE_KEANIUM_HYDRIDE
 };
 
 
@@ -91,7 +92,7 @@ export class Labs {
 
         }
     }) as StructureLab[];
-
+    //console.log(this.outputLabs.length)
     Labs.runLabs2();
 
   }
@@ -106,6 +107,7 @@ export class Labs {
     const inputLab1 = Game.getObjectById(this.inputLabs[0].id) as StructureLab;
     const inputLab2 =  Game.getObjectById(this.inputLabs[1].id) as StructureLab;
     const outputLab = Game.getObjectById(this.outputLabs[this.outputLabs.length-1].id) as StructureLab;
+    console.log(inputLab1,inputLab2,outputLab)
     if(!inputLab1 || !inputLab2 || !outputLab) {
       return;
     }
@@ -113,6 +115,7 @@ export class Labs {
     const input1MineralConstant = this.MAP.input1 as MineralConstant | MineralCompoundConstant | null;
     const input2MineralConstant = this.MAP.input2 as MineralConstant | MineralCompoundConstant | null;
     const outputCompoundConstant = this.MAP.output as MineralConstant | MineralCompoundConstant | null;
+    console.log(input1MineralConstant,input2MineralConstant,outputCompoundConstant)
     if(!input1MineralConstant || !input2MineralConstant || !outputCompoundConstant) {
       return;
     }
@@ -122,7 +125,7 @@ export class Labs {
 
 
     for(const outputLab of this.outputLabs) {
-
+      console.log(outputLab)
       const outputLabReady = outputLab.store && outputLab.store[outputCompoundConstant] < 2700;
       if (outputLab && !!inputLab1 && !!inputLab2 && !!outputLabReady && inputLab1Ready && inputLab2Ready) {
           outputLab.runReaction(inputLab1,inputLab2);
@@ -224,7 +227,7 @@ export class Labs {
       productionLab.boostCreep(creep,creep.getActiveBodyparts(WORK));
     }
 
-    if((creep.memory.role === 'miner' || creep.memory.role === 'carrier') && creep.getActiveBodyparts(MOVE) > 0 && productionLab && outputCompound === RESOURCE_ZYNTHIUM_OXIDE) {
+    if(creep.getActiveBodyparts(MOVE) > 0 && productionLab && outputCompound === RESOURCE_ZYNTHIUM_OXIDE) {
       if(!creep.pos.isNearTo(productionLab)) {
         creep.moveTo(productionLab);
         return false;
@@ -232,7 +235,7 @@ export class Labs {
       productionLab.boostCreep(creep,creep.getActiveBodyparts(MOVE));
     }
 
-    if((creep.memory.role === 'miner' || creep.memory.role === 'carrier') && creep.getActiveBodyparts(CARRY) > 0 && productionLab && outputCompound === RESOURCE_KEANIUM_HYDRIDE) {
+    if( creep.getActiveBodyparts(CARRY) > 0 && productionLab && outputCompound === RESOURCE_KEANIUM_HYDRIDE) {
       if(!creep.pos.isNearTo(productionLab)) {
         creep.moveTo(productionLab);
         return false;

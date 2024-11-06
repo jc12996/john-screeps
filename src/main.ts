@@ -87,7 +87,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
-  transferEnergyToSpawn1Room();
   sendEnergyFromSpawn1();
 
   AutoSpawn.run();
@@ -99,6 +98,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
           continue;
       }
       handleRamparts({ room: room });
+      transferEnergyToSpawn1Room(room);
+
       Tower.defendMyRoom(room);
 
       if(room.controller?.my && room.controller.level === 8) {
