@@ -493,7 +493,7 @@ export class Carrier {
         }
 
         if(creep.memory.extensionFarm === 1) {
-            if(nearestTower.length && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if(nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say("🚚XT");
                 creep.moveTo(nearestTower);
             }
@@ -517,7 +517,7 @@ export class Carrier {
 
         if(creep.memory.extensionFarm === 2) {
 
-            if(nearestTower.length && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if(nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                  creep.say("🚚X2T");
                 creep.moveTo(nearestTower);
             }
