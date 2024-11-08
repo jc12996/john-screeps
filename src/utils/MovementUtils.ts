@@ -285,13 +285,8 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-        // if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3 && creep.room.name !== 'W1N6') {
-        //     this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
-        //     return;
-        // }
-
         if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3) {
-            const canContinue = this.generalScientistGather2(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
+            const canContinue = this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
             if(!canContinue) {
                 return;
             }
@@ -313,7 +308,6 @@ export class MovementUtils {
         }
         else if(terminal && terminal.store[RESOURCE_ENERGY] < 290000 && commandLevel >= 7 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(terminal);
-            return;
         }
         else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
@@ -341,7 +335,7 @@ export class MovementUtils {
 
     }
 
-    private static generalScientistGather2(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage, nearestStorageOrTerminal:StructureTerminal | StructureStorage | null): boolean {
+    private static generalScientistGather(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage, nearestStorageOrTerminal:StructureTerminal | StructureStorage | null): boolean {
 
         if(!Labs.inputLabs) {
             return true;
@@ -353,22 +347,6 @@ export class MovementUtils {
         const input2Mineral = Labs.MAP.input2 as MineralCompoundConstant | MineralConstant | null;
 
         const droppedMineral = creep.room.find(FIND_DROPPED_RESOURCES)[0] ?? null;
-
-
-        // if(creep.room.name === 'W2N7') {
-        //     console.log(
-        //         creep.room.name,
-        //         input1Mineral,
-        //         terminal.store[input1Mineral],
-        //         inputLab1 &&
-        //         inputLab1.store[input1Mineral] < 2700,
-        //         input2Mineral,terminal.store[input2Mineral],
-        //         inputLab2 && inputLab2.store[input2Mineral] < 2700 )
-
-
-        //     // console.log('labsAreFull',labsAreFull,input1,input2)
-        // }
-
 
 
         if(input1Mineral && inputLab1 && inputLab1.store[input1Mineral] < 2700 &&
@@ -390,84 +368,6 @@ export class MovementUtils {
 
         return false;
 
-    }
-
-    private static generalScientistGather(creep:Creep, terminal:StructureTerminal, commandLevel: number, labs:StructureLab[], target_storage: StructureStorage, nearestStorageOrTerminal:StructureTerminal | StructureStorage | null) {
-
-        const nuker: StructureNuker | null = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType === STRUCTURE_NUKER
-            }
-        })[0] as StructureNuker ?? null;
-
-        const needsEnergyLabs = labs.filter(lab => {
-            return lab.store[RESOURCE_ENERGY] < 2000
-        })
-
-        if (needsEnergyLabs[0] && nearestStorageOrTerminal && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
-            return;
-        }
-
-        if (
-            nuker && nuker.store[RESOURCE_GHODIUM] < 5000 && commandLevel >= 8 && terminal.store[RESOURCE_GHODIUM] > 0 && creep.withdraw(terminal,RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        } else if(labs[LabMapper.GH] && labs[LabMapper.GH].store[RESOURCE_GHODIUM] > 500
-             && creep.withdraw(labs[LabMapper.GH],RESOURCE_GHODIUM) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(labs[LabMapper.GH], {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        } else if( labs[LabMapper.ZK] && labs[LabMapper.ZK].store[RESOURCE_ZYNTHIUM_KEANITE] < 2200 &&
-            terminal.store[RESOURCE_ZYNTHIUM_KEANITE] > 3000 && creep.withdraw(terminal,RESOURCE_ZYNTHIUM_KEANITE) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.UL] && labs[LabMapper.UL].store[RESOURCE_UTRIUM_LEMERGITE] < 2200 &&
-            terminal.store[RESOURCE_UTRIUM_LEMERGITE] > 3000 && creep.withdraw(terminal,RESOURCE_UTRIUM_LEMERGITE) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.L] && labs[LabMapper.L].store[RESOURCE_LEMERGIUM] <2200 &&
-             terminal.store[RESOURCE_LEMERGIUM] > 0 && creep.withdraw(terminal,RESOURCE_LEMERGIUM) == ERR_NOT_IN_RANGE){
-                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.U] && labs[LabMapper.U].store[RESOURCE_UTRIUM] < 2200 &&
-         terminal.store[RESOURCE_UTRIUM] > 0 && creep.withdraw(terminal,RESOURCE_UTRIUM) == ERR_NOT_IN_RANGE){
-                 creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.Z] && labs[LabMapper.Z].store[RESOURCE_ZYNTHIUM] < 2200
-            &&
-            terminal.store[RESOURCE_ZYNTHIUM] > 0 && creep.withdraw(terminal,RESOURCE_ZYNTHIUM) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.K] && labs[LabMapper.K].store[RESOURCE_KEANIUM] < 2200
-            &&
-            terminal.store[RESOURCE_KEANIUM] > 0 && creep.withdraw(terminal,RESOURCE_KEANIUM) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.GH]?.store[RESOURCE_GHODIUM] === 0 && labs[LabMapper.ZK] && labs[LabMapper.ZK].store[RESOURCE_ZYNTHIUM_KEANITE] > 1000
-             && creep.withdraw(labs[LabMapper.ZK],RESOURCE_ZYNTHIUM_KEANITE)== ERR_NOT_IN_RANGE){
-                    creep.moveTo(labs[LabMapper.ZK], {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.GH]?.store[RESOURCE_GHODIUM] === 0 && labs[LabMapper.UL] && labs[LabMapper.UL].store[RESOURCE_UTRIUM_LEMERGITE] > 1000
-             && creep.withdraw(labs[LabMapper.UL],RESOURCE_UTRIUM_LEMERGITE)== ERR_NOT_IN_RANGE){
-                    creep.moveTo(labs[LabMapper.UL], {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if(labs[LabMapper.H] && labs[LabMapper.H].store[RESOURCE_HYDROGEN] < 2200
-            &&
-            terminal.store[RESOURCE_HYDROGEN] > 0 && creep.withdraw(terminal,RESOURCE_HYDROGEN) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(terminal, {visualizePathStyle: {stroke: '#ffaa00'}});
-
-        }
-        else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
-        }
     }
 
     public static callForHelp(creep: Creep) {
