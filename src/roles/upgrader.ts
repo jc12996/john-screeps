@@ -128,7 +128,7 @@ export class Upgrader {
 
 
 
-            if((sites.length > 0 || constructSpawn) && creep.room.energyAvailable > 500) {
+            if((sites.length > 0 || constructSpawn) && creep.room.energyAvailable > 250) {
 
                 creep.say('⚡ build');
                 Builder.run(creep)
