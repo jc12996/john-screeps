@@ -4,7 +4,7 @@ export enum LowUpkeep {
     Builder = 2,// Total For Room
     Repairer = 1,// Total for Room
     Upgrader = 3,// Per Source
-    Defender = 1,// Total Per Room
+    Defender = 0,// Total Per Room
     DraftedDefenderTotal = 1,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count,
@@ -14,12 +14,12 @@ export enum LowUpkeep {
 }
 
 export enum MediumUpkeep {
-    Harvesters = 3,// Max Harvester Per Slot
+    Harvesters = 2,// Max Harvester Per Slot
     Carriers  = 1,// Per Source Slot
     Builder = 2,// Per Source
     Repairer = 1,// Total for Room
-    Upgrader = 2,// Per Source
-    Defender = 1,// Total Per Room
+    Upgrader = 3,// Per Source
+    Defender = 0,// Total Per Room
     AdditionalDraftedDefenders = 2,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count
@@ -32,7 +32,7 @@ export enum HighUpkeep {
     Builder = 2,// Per Source
     Repairer = 1,// Total for Room
     Upgrader = 2,// Per Source
-    Defender = 1,// Total Per Room
+    Defender = 0,// Total Per Room
     AdditionalDraftedDefenders = 3,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count

@@ -117,7 +117,7 @@ export class AutoSpawn {
             numberOfNeededCarriers = 2;
         }
 
-        if(commandLevel >= 7 && numberOfNeededCarriers > 4) {
+        if( commandLevel >= 7 && numberOfNeededCarriers > 4) {
             numberOfNeededCarriers = 4;
         }
 
@@ -156,7 +156,7 @@ export class AutoSpawn {
             if(mineSources) {
                 numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
             }
-            let mineMultiplier = 1.5;
+            let mineMultiplier = 1.1;
             if(commandLevel >= 6 && spawn.room.energyAvailable >= 1700) {
                 mineMultiplier = 1;
             }

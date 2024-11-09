@@ -4,6 +4,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { Carrier } from "./carrier";
 import { Builder } from "./builder";
 import { Labs } from "labs";
+import { RoomUtils } from "utils/RoomUtils";
 
 export class Upgrader {
     public static run(creep: Creep): void {
@@ -25,7 +26,7 @@ export class Upgrader {
             creep.memory.upgrading = false;
             creep.say('🔄 harvest');
         }
-        if(!creep.memory.upgrading && (creep.store.getFreeCapacity() == 0 || (creep.memory.mainUpgrader && creep.store[RESOURCE_ENERGY] > 0) || creep.store[RESOURCE_ENERGY] > 50)) {
+        if(!creep.memory.upgrading && (creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 0 || (creep.memory.mainUpgrader && creep.store[RESOURCE_ENERGY] > 0) || creep.store[RESOURCE_ENERGY] > 50)) {
             creep.memory.upgrading = true;
             creep.say('⚡ upgrade');
         }
@@ -45,6 +46,20 @@ export class Upgrader {
                 )
             }
         });
+
+        const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1, {
+            filter:  (source) => {
+                return (
+                    source.amount >= 50 && source.room?.controller?.my &&  source.resourceType === RESOURCE_ENERGY
+
+
+                )
+            }
+        })[0] ?? null;
+
+        if(creep.store.getFreeCapacity() > 0 && droppedSources){
+            creep.pickup(droppedSources);
+        }
 
         let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room.name == spawn?.room.name);
         if(upgraders[0]  !== creep && creep.room.controller?.level == 8) {
@@ -69,11 +84,7 @@ export class Upgrader {
         });
 
 
-        const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (site) => {
-                return (site.structureType == STRUCTURE_EXTENSION)
-            }
-        });
+        const sites = creep.room.find(FIND_CONSTRUCTION_SITES);
 
         const constructSpawn = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
             filter: (site) => {
@@ -109,11 +120,20 @@ export class Upgrader {
                 return;
             }*/
 
-            if(((extensions.length > 0 && creep.room.energyCapacityAvailable < 400) || constructSpawn)  && (creep.room.energyCapacityAvailable < 1000 || creep.room.energyAvailable == 0)) {
+            let numberOfControllerSlots = 0;
+            if(creep.room.controller && creep.room.controller.level >= 4) {
+                numberOfControllerSlots = RoomUtils.getCreepProspectingSlots(creep.room.controller).length;
+               // console.log(creep.room.name,numberOfControllerSlots)
+            }
+
+
+
+            if((sites.length > 0 || constructSpawn) && creep.room.energyAvailable > 500) {
 
                 creep.say('⚡ build');
+                Builder.run(creep)
 
-
+/*
                 if(constructSpawn) {
                     if(creep.build(constructSpawn) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
@@ -123,8 +143,13 @@ export class Upgrader {
                     if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
                     }
-                }
+                }*/
 
+            }
+            else if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
+                creep.moveTo(creep.room.controller);
+            } else if(numberOfControllerSlots === 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,2)){
+                creep.moveTo(creep.room.controller);
             } else if(creep.room.controller && creep.room.controller.my && !creep.room.controller.sign && creep.signController(creep.room.controller, "X") == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
             } else if(creep.room.controller && creep.room.controller.my &&

@@ -3,7 +3,28 @@ import { Repairer } from "./repairer";
 import { AutoSpawn } from "autospawn";
 import { MovementUtils } from "utils/MovementUtils";
 import { Upgrader } from "./upgrader";
+import { RoomUtils } from "utils/RoomUtils";
 export class Builder {
+
+
+    private static moveAndBuild(creep:Creep, target:any) {
+
+        let numberOfBuilderSlots = 0;
+        if(creep.room.controller && creep.room.controller.level >= 4) {
+            numberOfBuilderSlots = RoomUtils.getCreepProspectingSlots(target).length;
+            // console.log(creep.room.name,numberOfBuilderSlots)
+        }
+        console.log(numberOfBuilderSlots,'numberOfBuilderSlots')
+
+        if(numberOfBuilderSlots > 0 && !creep.pos.inRangeTo(target.pos.x,target?.pos.y,1)){
+            creep.moveTo(target);
+        } else  if(target) {
+            if(creep.build(target) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+            }
+        }
+    }
+
     public static run(creep: Creep) {
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say('🔨');
@@ -33,6 +54,12 @@ export class Builder {
             const constructSpawn = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_SPAWN || site.structureType == STRUCTURE_TOWER)
+                }
+            });
+
+            const constructTerminal = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
+                filter: (site) => {
+                    return (site.structureType == STRUCTURE_TERMINAL)
                 }
             });
 
@@ -93,9 +120,10 @@ export class Builder {
                })
 
             if(constructSpawn) {
-                if(creep.build(constructSpawn) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,constructSpawn);
+            }
+            else if(constructTerminal) {
+                this.moveAndBuild(creep,constructTerminal);
             }
             else if(walls.length) {
                 if(creep.build(walls[0]) == ERR_NOT_IN_RANGE) {
