@@ -4,6 +4,7 @@ import { AutoSpawn } from "autospawn";
 import { MovementUtils } from "utils/MovementUtils";
 import { Upgrader } from "./upgrader";
 import { RoomUtils } from "utils/RoomUtils";
+import { link } from "fs";
 export class Builder {
 
 
@@ -14,7 +15,6 @@ export class Builder {
             numberOfBuilderSlots = RoomUtils.getCreepProspectingSlots(target).length;
             // console.log(creep.room.name,numberOfBuilderSlots)
         }
-        console.log(numberOfBuilderSlots,'numberOfBuilderSlots')
 
         if(numberOfBuilderSlots > 0 && !creep.pos.inRangeTo(target.pos.x,target?.pos.y,1)){
             creep.moveTo(target);
@@ -126,49 +126,28 @@ export class Builder {
                 this.moveAndBuild(creep,constructTerminal);
             }
             else if(walls.length) {
-                if(creep.build(walls[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,walls[0]);
             }
             else if(ramparts.length) {
-                if(creep.build(ramparts[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(ramparts[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,ramparts[0]);
             }
             else if(links.length) {
-                if(creep.build(links[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(links[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
-            else if(extensions[0] && creep.room.controller && creep.room.controller.level < 3){
-                if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,links[0]);
             }
             else if(extensions[0]){
-                if(creep.build(extensions[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,extensions[0]);
             }
             else if(storageSite){
-                if(creep.build(storageSite) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(storageSite, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,storageSite);
             }
             else if(container.length){
-                if(creep.build(container[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,container[0]);
             }
             else if(roads.length) {
-                if(creep.build(roads[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(roads[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,roads[0]);
             }
             else if(targets.length) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+                this.moveAndBuild(creep,targets[0]);
             } else if(roomRallyPointFlag[0]) {
                 creep.moveTo(roomRallyPointFlag[0]);
             }else {
