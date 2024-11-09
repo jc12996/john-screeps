@@ -572,7 +572,10 @@ export class Carrier {
             return;
         }
 
-        if(creep.memory.extensionFarm === undefined && creep.room.energyAvailable > 500 && nearestAvailableWorkingRoleCreep &&  nearestAvailableWorkingRoleCreep.store[RESOURCE_ENERGY] < 50 && creep.room.controller && creep.room.controller?.level < 8 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        if(creep.memory.extensionFarm === undefined
+            && creep.room.energyAvailable > 500 &&
+        nearestAvailableWorkingRoleCreep &&  nearestAvailableWorkingRoleCreep.store[RESOURCE_ENERGY] < 50 && creep.room.controller &&
+        creep.room.controller?.level < 8 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say('🚚 C');
             creep.moveTo(nearestAvailableWorkingRoleCreep);
             return;
@@ -586,6 +589,16 @@ export class Carrier {
             creep.say("🚚W");
             creep.moveTo(nearestSpawn);
         }
+        else if(creep.store[RESOURCE_ENERGY] > 0 && terminal && terminal.store.energy < 3000 && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.say('🚚TR');
+            creep.moveTo(terminal );
+        }
+        else if(creep.store[RESOURCE_ENERGY] > 0 && storage && storage.store.energy < 3000 && creep.transfer(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.say('🚚S');
+            creep.moveTo(storage);
+        }
+
+
          else if(!extension && !nearestSpawn && nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
             creep.say('🚚P');
             creep.moveTo(nearestStorageOrTerminal);
@@ -597,7 +610,8 @@ export class Carrier {
         else  if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say('🚚 C');
             creep.moveTo(nearestAvailableWorkingRoleCreep);
-        } else if(roomRallyPointFlag.length) {
+        }
+        else if(roomRallyPointFlag.length) {
             creep.moveTo(roomRallyPointFlag[0])
         }
     }
