@@ -114,7 +114,7 @@ export class AutoSpawn {
         this.nextClaimFlag = getNextClaimFlag(spawn.room,extensionFarm2Flag);
         operateLinks(spawn);
 
-        if(commandLevel >= 6) {
+        if(commandLevel === 5) {
             numberOfNeededCarriers = (LowUpkeep.Carriers * 1.5) * harvesters.length;
         }
 
