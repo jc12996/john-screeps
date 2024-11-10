@@ -86,7 +86,7 @@ export class Upgrader {
 
         const sites = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (site) =>{
-                site.structureType !== STRUCTURE_ROAD && site.structureType !== STRUCTURE_RAMPART && site.structureType !== STRUCTURE_CONTAINER && site.structureType !== STRUCTURE_WALL
+                return site.structureType !== STRUCTURE_ROAD && site.structureType !== STRUCTURE_RAMPART && site.structureType !== STRUCTURE_CONTAINER && site.structureType !== STRUCTURE_WALL
             }
         });
 
@@ -132,7 +132,7 @@ export class Upgrader {
 
 
 
-            if((sites.length > 0 || constructSpawn) && (creep.room.energyAvailable > 250 || creep.room.energyCapacityAvailable < 500)) {
+            if((sites.length > 0 || constructSpawn)) {
 
                 creep.say('⚡ build');
                 Builder.run(creep)
@@ -148,9 +148,11 @@ export class Upgrader {
                         creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
                     }
                 }*/
-                return;
 
-            }
+
+            }else {
+
+
 
             if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
                 creep.moveTo(creep.room.controller);
@@ -166,7 +168,7 @@ export class Upgrader {
             } else if(creep.room.controller && creep.room.controller.my &&
                 creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller);
-            }
+            }}
         }
         else  {
             const controllerLink = getLinkByTag(creep,'ControllerLink1');

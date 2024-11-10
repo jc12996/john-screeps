@@ -103,7 +103,19 @@ export class Harvester {
             }
         } else if(finalSource && creep.harvest(finalSource) === OK) {
             creep.memory.targetSource = finalSource.id;
-            creep.drop(RESOURCE_ENERGY,creep.store.energy);
+            const adjCont = creep.pos.findInRange(FIND_STRUCTURES,1,
+                {
+                    filter: (struc) =>{
+                        return struc.structureType === STRUCTURE_CONTAINER && struc.store.getFreeCapacity() > 0
+
+                    }
+                }
+            )[0] ?? null;
+            if(adjCont){
+                creep.transfer(adjCont,RESOURCE_ENERGY)
+            }{
+                creep.drop(RESOURCE_ENERGY,creep.store.energy);
+            }
 
             var tower = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter:  (structure) => {
