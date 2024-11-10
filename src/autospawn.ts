@@ -76,9 +76,9 @@ export class AutoSpawn {
         const energyAvailable = spawn.room.energyAvailable;
         const energyCapacityAvailable = spawn.room.energyCapacityAvailable;
 
-        //if(spawn.room.name == 'W3N9') {
-         //    spawn.room.memory.numberOfNeededHarvestorSlots = 12
-        // }
+        if(spawn.room.name == 'W18N1') {
+            spawn.room.memory.numberOfNeededHarvestorSlots = 5
+        }
         if(spawn.room.memory?.numberOfNeededHarvestorSlots === undefined || spawn.room.memory.numberOfNeededHarvestorSlots == 0) {
             spawn.room.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawn);
             console.log(spawn.room.name,'numberOfNeededHarvesters to memory ',spawn.room.memory.numberOfNeededHarvestorSlots)
@@ -147,11 +147,6 @@ export class AutoSpawn {
             }
         }
 
-        if(commandLevel >= 6) {
-            if(energyCapacityAvailable >= 800 && numberOfNeededUpgraders > 4){
-                numberOfNeededUpgraders = 4;
-            }
-        }
 
 
         if(!!mineFlag) {
@@ -181,6 +176,26 @@ export class AutoSpawn {
             }
         }
 
+        if(commandLevel >= 6) {
+            if(energyCapacityAvailable >= 800 && numberOfNeededUpgraders > 4){
+                numberOfNeededUpgraders = 4;
+            }
+        }
+
+        if(harvesters.length < upgraders.length) {
+            numberOfNeededUpgraders = 2;
+        }
+
+        if(harvesters.length < miners.length) {
+            numberOfNeededMiners = 0;
+        }
+
+        if(harvesters.length <= builders.length) {
+            numberOfNeededBuilders = 0;
+        }
+
+
+
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
             numberOfNeededCarriers = 8;
@@ -202,6 +217,8 @@ export class AutoSpawn {
         if(commandLevel >= 8 && Game.flags.draftFlag) {
             numberOfNeededDefenders = numberOfNeededDefenders + LowUpkeep.TOTALDRAFT
         }
+
+        console.log(spawn.room.name, numberOfNeededHarvesters)
 
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
 
