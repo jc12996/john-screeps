@@ -84,7 +84,11 @@ export class Upgrader {
         });
 
 
-        const sites = creep.room.find(FIND_CONSTRUCTION_SITES);
+        const sites = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (site) =>{
+                site.structureType !== STRUCTURE_ROAD && site.structureType !== STRUCTURE_RAMPART && site.structureType !== STRUCTURE_CONTAINER && site.structureType !== STRUCTURE_WALL
+            }
+        });
 
         const constructSpawn = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
             filter: (site) => {
@@ -133,7 +137,7 @@ export class Upgrader {
                 creep.say('⚡ build');
                 Builder.run(creep)
 
-/*
+/*=
                 if(constructSpawn) {
                     if(creep.build(constructSpawn) == ERR_NOT_IN_RANGE) {
                         creep.moveTo(constructSpawn, {visualizePathStyle: {stroke: '#ffffff'}});
@@ -144,9 +148,16 @@ export class Upgrader {
                         creep.moveTo(extensions[0], {visualizePathStyle: {stroke: '#ffffff'}});
                     }
                 }*/
+                return;
 
             }
-            else if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
+
+            if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
+                creep.moveTo(creep.room.controller);
+                return;
+            }
+
+            if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
                 creep.moveTo(creep.room.controller);
             } else if(numberOfControllerSlots === 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,2)){
                 creep.moveTo(creep.room.controller);

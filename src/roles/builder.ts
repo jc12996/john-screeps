@@ -125,10 +125,10 @@ export class Builder {
             else if(constructTerminal) {
                 this.moveAndBuild(creep,constructTerminal);
             }
-            else if(walls.length) {
+            else if(walls.length && creep.memory.role !== 'upgrader') {
                 this.moveAndBuild(creep,walls[0]);
             }
-            else if(ramparts.length) {
+            else if(ramparts.length && creep.memory.role !== 'upgrader') {
                 this.moveAndBuild(creep,ramparts[0]);
             }
             else if(links.length) {
@@ -140,10 +140,10 @@ export class Builder {
             else if(storageSite){
                 this.moveAndBuild(creep,storageSite);
             }
-            else if(container.length){
+            else if(container.length && creep.memory.role !== 'upgrader'){
                 this.moveAndBuild(creep,container[0]);
             }
-            else if(roads.length) {
+            else if(roads.length && creep.memory.role !== 'upgrader') {
                 this.moveAndBuild(creep,roads[0]);
             }
             else if(targets.length) {

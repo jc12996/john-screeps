@@ -312,12 +312,12 @@ export class MovementUtils {
         else if(creep.memory.extensionFarm === undefined && nearestStorageOrTerminal && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
         }
-        else if(terminal && terminal.store[RESOURCE_ENERGY] < 290000 && commandLevel >= 7 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        else if(terminal && terminal.store[RESOURCE_ENERGY] > 10000 && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(terminal);
         }
-        // else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        //     creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
-        // }
+        else if (target_storage && target_storage.store[RESOURCE_ENERGY] > 10000 && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        }
         // else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         //     creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
         // }
