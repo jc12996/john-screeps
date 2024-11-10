@@ -218,8 +218,6 @@ export class AutoSpawn {
             numberOfNeededDefenders = numberOfNeededDefenders + LowUpkeep.TOTALDRAFT
         }
 
-        console.log(spawn.room.name, numberOfNeededHarvesters)
-
         const totalNumberOfControlledRooms =  _.filter(Game.rooms, (room) => room.controller?.my).length;
 
         var hostileCreeps = spawn.room.find(FIND_HOSTILE_CREEPS);
