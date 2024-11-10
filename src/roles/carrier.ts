@@ -505,6 +505,13 @@ export class Carrier {
         }
 
 
+
+        const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES,4, {
+            filter: (struc) => {
+                return struc.structureType === STRUCTURE_EXTENSION && struc.store[RESOURCE_ENERGY] == 0
+            }
+        }) as StructureExtension[];
+
         if(creep.memory.extensionFarm === 1) {
 
             if(creep.room.controller && creep.room.controller.level >= 6) {
@@ -518,6 +525,7 @@ export class Carrier {
                     }
                 }).sort((a, b) => creep.pos.getRangeTo(a) - creep.pos.getRangeTo(b))[0] ?? null;
             }
+
 
             if(creep.room.controller && creep.room.controller.level >= 6) {
                 nearestTower = creep.pos.findInRange(FIND_STRUCTURES,4, {
@@ -540,9 +548,13 @@ export class Carrier {
                 creep.say("🚚XE");
                 creep.moveTo(extension);
             }
-            else if(nearestSpawn && creep.room.controller && creep.room.controller?.level >= 6  && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            else if(nearestSpawn && nearestSpawn.store.energy < 300 && extensionsNearMe.length === 0 && creep.room.controller && creep.room.controller?.level >= 6  && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say("🚚XW");
                 creep.moveTo(nearestSpawn);
+            }
+            else if(storage && extensionsNearMe.length === 0 && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say("🚚S");
+                creep.moveTo(storage);
             }
             else {
                 creep.moveTo(spawn.pos.x - 3, spawn.pos.y + 3);
@@ -588,6 +600,10 @@ export class Carrier {
             else if(spawns.length >= 2 && nearestSpawn && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say("🚚X2W");
                 creep.moveTo(nearestSpawn);
+            }
+            else if(terminal && creep.store.energy > 0 && extensionsNearMe.length === 0 && creep.transfer(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say("🚚TR");
+                creep.moveTo(terminal);
             }
             else {
                 const extensionFarm2Flag = Game.flags[spawn.room.name+'ExtensionFarm2'];

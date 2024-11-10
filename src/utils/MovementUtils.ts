@@ -499,16 +499,22 @@ export class MovementUtils {
                 return;
             }
 
+            const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES,4, {
+                filter: (struc) => {
+                    return struc.structureType === STRUCTURE_EXTENSION && struc.store[RESOURCE_ENERGY] == 0
+                }
+            }) as StructureExtension[];
+
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
             if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             }else if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
-            } else if(terminal && terminal.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
+            } else if(terminal && extensionsNearMe.length > 0 && terminal.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal);
                 return;
-            } else if(storage && storage.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(storage , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
+            } else if(storage && !terminal && storage.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(storage , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(storage);
                 return;
             }
