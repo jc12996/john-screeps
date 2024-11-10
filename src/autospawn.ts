@@ -74,6 +74,7 @@ export class AutoSpawn {
         const ActiveRoomSources = spawn.room.find(FIND_SOURCES_ACTIVE);
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
+        const energyCapacityAvailable = spawn.room.energyCapacityAvailable;
 
         //if(spawn.room.name == 'W3N9') {
          //    spawn.room.memory.numberOfNeededHarvestorSlots = 12
@@ -143,6 +144,12 @@ export class AutoSpawn {
                 numberOfNeededMiners = HighUpkeep.Miners;
                 numberOfNeededDefenders = numberOfNeededDefenders + HighUpkeep.AdditionalDraftedDefenders;
                 //console.log(`High Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
+            }
+        }
+
+        if(commandLevel >= 6) {
+            if(energyCapacityAvailable >= 800 && numberOfNeededUpgraders > 4){
+                numberOfNeededUpgraders = 4;
             }
         }
 

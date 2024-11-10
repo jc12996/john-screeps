@@ -245,7 +245,7 @@ export class MovementUtils {
             }
            })
 
-           const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+        const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
             filter:  (source) => {
                 return (
                     source.amount >= 50 && source.room?.controller?.my &&  source.resourceType === RESOURCE_ENERGY
@@ -315,9 +315,9 @@ export class MovementUtils {
         else if(terminal && terminal.store[RESOURCE_ENERGY] < 290000 && commandLevel >= 7 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(terminal);
         }
-        else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
-        }
+        // else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        //     creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
+        // }
         // else if (spawn && !hasStorage && creep.withdraw(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         //     creep.moveTo(spawn, {visualizePathStyle: {stroke: "#ffffff"}});
         // }
@@ -464,6 +464,15 @@ export class MovementUtils {
     public static xHarvesterMovementSequence(creep:Creep,xTarget:any,extensionLink: any,storage: any,terminal:StructureTerminal | null) {
 
 
+        const droppedSources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,4, {
+            filter:  (source) => {
+                return (
+                    source.amount >= 0 && source.room?.controller?.my &&  source.resourceType === RESOURCE_ENERGY
+
+
+                )
+            }
+        })[0] ?? null;
         if(creep.memory.extensionFarm === 1) {
 
             const canContinue = this.dropOffInTerminal(creep,terminal);
@@ -473,7 +482,10 @@ export class MovementUtils {
 
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
 
-            if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+            else if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
             } else if(storage && storage.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(storage , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
@@ -491,7 +503,9 @@ export class MovementUtils {
             }
 
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
-            if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }else if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
             } else if(terminal && terminal.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
