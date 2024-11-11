@@ -540,13 +540,13 @@ export class Carrier {
                 })[0] ?? null;
             }
 
-            if(nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.say("🚚XT");
-                creep.moveTo(nearestTower);
-            }
-            else if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say("🚚XE");
                 creep.moveTo(extension);
+            }
+            else if(nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say("🚚XT");
+                creep.moveTo(nearestTower);
             }
             else if(nearestSpawn && nearestSpawn.store.energy < 300 && extensionsNearMe.length === 0 && creep.room.controller && creep.room.controller?.level >= 6  && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say("🚚XW");
