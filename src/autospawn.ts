@@ -176,11 +176,6 @@ export class AutoSpawn {
             if(numberOfEnergyContainers.length > 0) {
                 const carrierMultiplier = numberOfEnergyContainers.length * .1;
                 numberOfNeededCarriers = (LowUpkeep.Carriers * (1 + carrierMultiplier)) * harvesters.length;
-
-                // if(spawn.room.name === 'W18N1') {
-                //     console.log(spawn.room.name,carrierMultiplier,'carrierMultiplier')
-                //     console.log(spawn.room.name,numberOfNeededCarriers,'numberOfNeededCarriers')
-                // }
             }
 
 
