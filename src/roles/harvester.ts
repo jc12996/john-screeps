@@ -23,11 +23,11 @@ export class Harvester {
             }
         });
 
-        let sources = creep.room.find(FIND_SOURCES, {
-            filter: (source) => {
-                return source.room.controller?.my
+        const adjContainer = creep.pos.findInRange(FIND_STRUCTURES,1,{
+            filter: (struc) => {
+                return struc.structureType === STRUCTURE_CONTAINER && struc.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             }
-        });
+        })[0] ?? null;
 
         let finalSource:Source | null = Harvester.findTargetSource(creep);
 
@@ -104,7 +104,12 @@ export class Harvester {
             }
         } else if(finalSource && creep.harvest(finalSource) === OK) {
             creep.memory.targetSource = finalSource.id;
-            creep.drop(RESOURCE_ENERGY,creep.store.energy);
+            if(adjContainer) {
+                creep.transfer(adjContainer,RESOURCE_ENERGY);
+            } else {
+                creep.drop(RESOURCE_ENERGY,creep.store.energy);
+            }
+
 
             var tower = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter:  (structure) => {
