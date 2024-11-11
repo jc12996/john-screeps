@@ -203,7 +203,7 @@ export class Carrier {
                         (creep.memory.role === 'upgrader' && creep.memory.upgrading !== true)
                         || (
                             (creep.memory.extensionFarm === 1 || creep.memory.extensionFarm ===2) &&
-                            creep.store.energy === 0 && creep.room.energyAvailable < 800 // creep.room.energyCapacityAvailable
+                            creep.store.energy === 0 && creep.room.energyAvailable < ((commandLevel >= 7) ? creep.room.energyCapacityAvailable : 800)
                         )
                     ) &&
                     creep.store.getFreeCapacity() > 0 && creep.store[RESOURCE_ENERGY] == 0
