@@ -270,7 +270,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('settler',spawn, commandLevel, 0);
             options = {memory: {role: 'settler'}};
         }
-         else if ((harvesters.length == 0 || (harvesters.length == 1 && harvesters[0].ticksToLive && harvesters[0].ticksToLive <= 100)) && nonactiveharvesters.length == 0) {
+         else if ((harvesters.length == 0 || (harvesters.length == 1 && harvesters[0].ticksToLive && harvesters[0].ticksToLive <= 100)) && nonactiveharvesters.length == 0 && commandLevel < 7) {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,2)
             options = {memory: {role: 'harvester'}}

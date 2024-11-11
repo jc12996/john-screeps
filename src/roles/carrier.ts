@@ -631,7 +631,8 @@ export class Carrier {
             return;
         }
 
-        if(creep.memory.extensionFarm === undefined
+        const maxEnergyNeeded = creep.room.controller && creep.room.controller.level >= 7 ? 1000 : 300;
+        if(creep.room.energyAvailable > maxEnergyNeeded && creep.memory.extensionFarm === undefined
             && creep.room.energyAvailable >= (creep.room.energyCapacityAvailable * 0.5) &&
         nearestAvailableWorkingRoleCreep &&  nearestAvailableWorkingRoleCreep.store[RESOURCE_ENERGY] < 50 && creep.room.controller &&
         creep.room.controller?.level < 8 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -641,7 +642,7 @@ export class Carrier {
         }
 
 
-        if(!terminal && extension && !terminal && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say('🚚E');
             creep.moveTo(extension);
         }
