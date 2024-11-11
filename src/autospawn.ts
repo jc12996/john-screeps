@@ -114,25 +114,7 @@ export class AutoSpawn {
         this.nextClaimFlag = getNextClaimFlag(spawn.room,extensionFarm2Flag);
         operateLinks(spawn);
 
-        if(commandLevel >= 4) {
-            const numberOfEnergyContainers = spawn.room.find(FIND_STRUCTURES, {
-                filter: (struc: any) => {
-                    return struc.structureType === STRUCTURE_CONTAINER && struc.store[RESOURCE_ENERGY] > 500
-                }
-            }) as StructureConstant[];
 
-            if(numberOfEnergyContainers.length > 0) {
-                const carrierMultiplier = numberOfEnergyContainers.length * .1;
-                numberOfNeededCarriers = (LowUpkeep.Carriers * (1 + carrierMultiplier)) * harvesters.length;
-
-                // if(spawn.room.name === 'W18N1') {
-                //     console.log(spawn.room.name,carrierMultiplier,'carrierMultiplier')
-                //     console.log(spawn.room.name,numberOfNeededCarriers,'numberOfNeededCarriers')
-                // }
-            }
-
-
-        }
 
 
 
@@ -181,6 +163,26 @@ export class AutoSpawn {
                 mineMultiplier = 1;
             }
             numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
+
+        }
+
+        if(commandLevel >= 4) {
+            const numberOfEnergyContainers = spawn.room.find(FIND_STRUCTURES, {
+                filter: (struc: any) => {
+                    return struc.structureType === STRUCTURE_CONTAINER && struc.store[RESOURCE_ENERGY] > 500
+                }
+            }) as StructureConstant[];
+
+            if(numberOfEnergyContainers.length > 0) {
+                const carrierMultiplier = numberOfEnergyContainers.length * .1;
+                numberOfNeededCarriers = (LowUpkeep.Carriers * (1 + carrierMultiplier)) * harvesters.length;
+
+                // if(spawn.room.name === 'W18N1') {
+                //     console.log(spawn.room.name,carrierMultiplier,'carrierMultiplier')
+                //     console.log(spawn.room.name,numberOfNeededCarriers,'numberOfNeededCarriers')
+                // }
+            }
+
 
         }
 
