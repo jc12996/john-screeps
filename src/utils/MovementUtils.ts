@@ -269,7 +269,7 @@ export class MovementUtils {
                     return (struc.structureType === STRUCTURE_CONTAINER || struc.structureType === STRUCTURE_TERMINAL || struc.structureType === STRUCTURE_STORAGE) && struc.store.energy > 1000
                 }
             })
-            if(commandLevel >= 7 && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
@@ -286,7 +286,7 @@ export class MovementUtils {
             else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target_storage, {visualizePathStyle: {stroke: "#ffffff"}});
             }
-            else if(terminal && commandLevel >= 6 && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            else if(terminal && creep.withdraw(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(terminal, {visualizePathStyle: {stroke: "#ffffff"}});
             }
             else if(creep.memory.role === 'builder' && container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -299,7 +299,7 @@ export class MovementUtils {
 
         const nearestSource = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
 
-        if(creep && terminal && commandLevel >= 6 && creep.memory.extensionFarm === 3) {
+        if(creep && terminal && creep.memory.extensionFarm === 3) {
             const canContinue = this.generalScientistGather(creep, terminal, commandLevel, labs, target_storage, nearestStorageOrTerminal);
             if(!canContinue) {
                 return;
@@ -514,7 +514,7 @@ export class MovementUtils {
                 return;
             }
 
-            const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES,4, {
+            const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES,5, {
                 filter: (struc) => {
                     return struc.structureType === STRUCTURE_EXTENSION && struc.store[RESOURCE_ENERGY] == 0
                 }
