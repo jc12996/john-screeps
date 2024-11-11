@@ -174,7 +174,7 @@ export class AutoSpawn {
             }) as StructureConstant[];
 
             if(numberOfEnergyContainers.length > 0) {
-                const carrierMultiplier = numberOfEnergyContainers.length * .1;
+                const carrierMultiplier = numberOfEnergyContainers.length * .25;
                 numberOfNeededCarriers = (LowUpkeep.Carriers * (1 + carrierMultiplier)) * harvesters.length;
             }
 
