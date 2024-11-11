@@ -195,20 +195,17 @@ export class Carrier {
             }
         });
 
-        // const workingcreeps = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-        //     filter: (creep) => {
-        //         return (
-        //             (creep.memory.role === 'builder' || creep.memory.role === 'upgrader' || creep.memory.extensionFarm !== undefined) &&
-        //             creep.store.getFreeCapacity() > 0
-        //         );
-        //     }
-        // };
-
         // Find the creep with the lowest energy
         const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
             filter: (creep) => {
                 return (
-                    ( (creep.memory.role === 'upgrader' && creep.memory.upgrading !== true) || ((creep.memory.extensionFarm === 1||creep.memory.extensionFarm ===2) && creep.store.energy === 0 && creep.room.energyAvailable < creep.room.energyCapacityAvailable)) &&
+                    (
+                        (creep.memory.role === 'upgrader' && creep.memory.upgrading !== true)
+                        || (
+                            (creep.memory.extensionFarm === 1 || creep.memory.extensionFarm ===2) &&
+                            creep.store.energy === 0 && creep.room.energyAvailable < 800 // creep.room.energyCapacityAvailable
+                        )
+                    ) &&
                     creep.store.getFreeCapacity() > 0 && creep.store[RESOURCE_ENERGY] == 0
                 );
             }
