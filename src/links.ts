@@ -131,7 +131,7 @@ export function transferEnergyToSpawn1Room(room:Room) {
         // Check if the terminal has more than 10,000 energy
         if (targetRoom.terminal && targetRoom.terminal.store[RESOURCE_ENERGY] < 10000 && terminal.store[RESOURCE_ENERGY] > 10000 && terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000 && terminal.store[RESOURCE_ENERGY] < 50000 && targetTerminal.store[RESOURCE_ENERGY] < 90000) {
             // Calculate the amount of energy to transfer (optional, transfer everything above 2k)
-            const transferAmount = terminal.store.getUsedCapacity(RESOURCE_ENERGY) - 2000;
+            const transferAmount = 2000;
 
             // Transfer energy to Spawn1's terminal
             const result = terminal.send(RESOURCE_ENERGY, transferAmount, targetRoom.name);
