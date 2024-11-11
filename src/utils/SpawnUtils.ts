@@ -140,7 +140,16 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                }else if( energyAvailable >= (PartCosts.MOVE * 8) + (PartCosts.CARRY * 8)) {
+                }
+                else if(commandLevel >= 6 && energyAvailable >= (PartCosts.MOVE * 10) + (PartCosts.CARRY * 10)) {
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                } else if( energyAvailable >= (PartCosts.MOVE * 8) + (PartCosts.CARRY * 8)) {
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
                     }
