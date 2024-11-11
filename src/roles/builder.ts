@@ -95,7 +95,7 @@ export class Builder {
                 }
             });
 
-            const roads = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            const roads = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_ROAD)
                 }
@@ -143,8 +143,8 @@ export class Builder {
             else if(container.length && creep.memory.role !== 'upgrader'){
                 this.moveAndBuild(creep,container[0]);
             }
-            else if(roads.length && creep.memory.role !== 'upgrader') {
-                this.moveAndBuild(creep,roads[0]);
+            else if(roads && creep.memory.role !== 'upgrader') {
+                this.moveAndBuild(creep,roads);
             }
             else if(targets.length) {
                 this.moveAndBuild(creep,targets[0]);

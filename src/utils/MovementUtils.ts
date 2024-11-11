@@ -264,10 +264,18 @@ export class MovementUtils {
               return;
             }
 
+            const nearestStoreStructure = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (struc) => {
+                    return (struc.structureType === STRUCTURE_CONTAINER || struc.structureType === STRUCTURE_TERMINAL || struc.structureType === STRUCTURE_STORAGE) && struc.store.energy > 1000
+                }
+            })
             if(commandLevel >= 7 && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+            else if (creep.memory.role === 'builder' && nearestStoreStructure && creep.withdraw(nearestStoreStructure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(nearestStoreStructure, {visualizePathStyle: {stroke: "#ffffff"}});
             }
             else if(creep.memory.role === 'builder' && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});

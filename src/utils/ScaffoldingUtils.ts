@@ -157,8 +157,8 @@ export class ScaffoldingUtils {
                     });
 
                     if(totalNumberOfLinkSites.length == 0) {
-                        creepOrSpawn.room.createFlag(pos.x -2,pos.y,creepOrSpawn.room.name+'ExtensionLink');
-                        creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y,STRUCTURE_LINK);//ExtensionLink Link
+                        creepOrSpawn.room.createFlag(pos.x -2,pos.y+3,creepOrSpawn.room.name+'ExtensionLink');
+                        creepOrSpawn.room?.createConstructionSite(pos.x -2,pos.y+3,STRUCTURE_LINK);//ExtensionLink Link
                     }
                 }
 

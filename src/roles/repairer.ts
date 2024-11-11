@@ -26,7 +26,7 @@ export class Repairer {
             const room = creep.room;
             const roads = room.find(FIND_STRUCTURES, {
                 filter:  (structure) => {
-                    return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrength)
+                    return structure.structureType === STRUCTURE_ROAD && structure.hits < (RepairUtils.buildingRatios(structure).maxRoadStrengthRepairer)
                 }
             });
 
@@ -50,7 +50,7 @@ export class Repairer {
 
             const weakWalls = room.find(FIND_STRUCTURES, {
                 filter:  (structure) => {
-                    return structure.structureType === STRUCTURE_WALL && structure.hits < 1000
+                    return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength)
                 }
             });
 
@@ -80,14 +80,9 @@ export class Repairer {
                     creep.moveTo(walls[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            else if(roads.length > 0 ) {
-                // Find the road with the lowest health
-                const weakestRoad = roads.reduce((weakest, road) => {
-                    return (road.hits < weakest.hits) ? road : weakest;
-                });
-                if (creep.repair(weakestRoad)  == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(weakestRoad, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
+            else if(roads.length > 0 && creep.repair(roads[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(roads[0], {visualizePathStyle: {stroke: '#ffffff'}});
+
             }
 
 
