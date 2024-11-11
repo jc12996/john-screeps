@@ -208,7 +208,7 @@ export class Carrier {
         const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
             filter: (creep) => {
                 return (
-                    ( (creep.memory.role === 'upgrader' && creep.memory.upgrading !== true) || ((creep.memory.extensionFarm === 1||creep.memory.extensionFarm ===2) && creep.room.energyAvailable < 800)) &&
+                    ( (creep.memory.role === 'upgrader' && creep.memory.upgrading !== true) || ((creep.memory.extensionFarm === 1||creep.memory.extensionFarm ===2) && creep.store.energy === 0 && creep.room.energyAvailable < creep.room.energyCapacityAvailable)) &&
                     creep.store.getFreeCapacity() > 0 && creep.store[RESOURCE_ENERGY] == 0
                 );
             }
@@ -548,10 +548,10 @@ export class Carrier {
                 creep.say("🚚XT");
                 creep.moveTo(nearestTower);
             }
-            else if(nearestSpawn && nearestSpawn.store.energy < 300 && extensionsNearMe.length === 0 && creep.room.controller && creep.room.controller?.level >= 6  && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.say("🚚XW");
-                creep.moveTo(nearestSpawn);
-            }
+            // else if(nearestSpawn && nearestSpawn.store.energy < 300 && extensionsNearMe.length === 0 && creep.room.controller && creep.room.controller?.level >= 6  && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            //     creep.say("🚚XW");
+            //     creep.moveTo(nearestSpawn);
+            // }
             else if(storage && extensionsNearMe.length === 0 && creep.store.energy > 0 && creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say("🚚S");
                 creep.moveTo(storage);

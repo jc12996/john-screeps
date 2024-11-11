@@ -478,6 +478,16 @@ export class MovementUtils {
                 )
             }
         })[0] ?? null;
+
+        const droppedTombstone = creep.pos.findInRange(FIND_TOMBSTONES,4, {
+            filter:  (tomb) => {
+                return (
+                    tomb.store && tomb.store[RESOURCE_ENERGY] > 0
+
+                )
+            }
+        })[0] ?? null;
+
         if(creep.memory.extensionFarm === 1) {
 
             const canContinue = this.dropOffInTerminal(creep,terminal);
@@ -496,6 +506,9 @@ export class MovementUtils {
 
             if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+            else if(droppedTombstone && creep.withdraw(droppedTombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedTombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             else if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
@@ -523,7 +536,11 @@ export class MovementUtils {
             creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
             if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }else if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            }
+            else if(droppedTombstone && creep.withdraw(droppedTombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedTombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
+            }
+            else if(extensionLink && extensionLink.store[RESOURCE_ENERGY] > 0 && creep.withdraw(extensionLink,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
                 creep.moveTo(extensionLink);
                 return;
             } else if(terminal && extensionsNearMe.length > 0 && terminal.store[RESOURCE_ENERGY] > 0 && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(terminal , RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE) {
