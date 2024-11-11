@@ -641,18 +641,18 @@ export class Carrier {
         }
 
 
-        if(extension && !terminal && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.say('🚚E');
-            creep.moveTo(extension);
-        }else if(!extension && !terminal && nearestSpawn && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        if(nearestSpawn && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say("🚚W");
             creep.moveTo(nearestSpawn);
+        }else if(!nearestSpawn && !terminal && extension && !terminal && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.say('🚚E');
+            creep.moveTo(extension);
         }
-        else if(creep.store[RESOURCE_ENERGY] > 0 && storage && storage.store.energy < 6000 && creep.transfer(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        else if(!nearestSpawn && creep.store[RESOURCE_ENERGY] > 0 && storage && storage.store.energy < 6000 && creep.transfer(storage , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say('🚚S');
             creep.moveTo(storage);
         }
-        else if(creep.store[RESOURCE_ENERGY] > 0 && terminal && terminal.store.energy < 3000 && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        else if(!nearestSpawn && creep.store[RESOURCE_ENERGY] > 0 && terminal && terminal.store.energy < 3000 && creep.transfer(terminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say('🚚TR');
             creep.moveTo(terminal );
         }

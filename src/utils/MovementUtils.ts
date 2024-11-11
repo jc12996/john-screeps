@@ -311,11 +311,11 @@ export class MovementUtils {
         if(ruinsSource[0] && ruinsSource[0].store && creep.withdraw(ruinsSource[0],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
             creep.moveTo(ruinsSource[0], {visualizePathStyle: {stroke: '#ffaa00'}});
         }
-        else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
-        }
         else if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
             creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+        }
+        else if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
         }
         else if(creep.memory.extensionFarm === undefined && nearestStorageOrTerminal && creep.room.energyAvailable !== creep.room.energyCapacityAvailable && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
