@@ -206,7 +206,7 @@ export class Carrier {
                         (creep.memory.role === 'upgrader' && creep.memory.upgrading !== true)
                         || (
                             (creep.memory.extensionFarm === 1 || creep.memory.extensionFarm ===2) &&
-                            creep.store.getFreeCapacity() > 0 && creep.room.energyAvailable < ((commandLevel >= 7) ? creep.room.energyCapacityAvailable : 800)
+                            creep.store.getFreeCapacity() > 0 && creep.room.energyAvailable < ((commandLevel >= 7) ? 1000 : 800)
                         )
                     ) &&
                     creep.store.getFreeCapacity() > 0 && creep.store[RESOURCE_ENERGY] == 0
@@ -482,7 +482,10 @@ export class Carrier {
     ) {
 
         if(creep.memory.role === 'miner' && creep.room.controller?.my) {
-            if(creep.room.controller.level < 8 && creep.room.energyAvailable > 300 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            if( nearestStorageOrTerminal && creep.memory.hauling && creep.store[RESOURCE_ENERGY] > 1000 && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+                creep.say('🚚 P');
+                creep.moveTo(nearestStorageOrTerminal);
+            }else if(creep.room.controller.level < 8 && creep.room.energyAvailable > 300 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 C');
                 creep.moveTo(nearestAvailableWorkingRoleCreep);
             }else if( nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
@@ -671,7 +674,23 @@ export class Carrier {
             creep.moveTo(nearestAvailableWorkingRoleCreep);
         }
         else if(roomRallyPointFlag.length) {
-            creep.moveTo(roomRallyPointFlag[0])
+
+            const droppedTombstone = creep.pos.findInRange(FIND_TOMBSTONES,4, {
+                filter:  (tomb) => {
+                    return (
+                        tomb.store && tomb.store[RESOURCE_ENERGY] > 0
+
+                    )
+                }
+            })[0] ?? null;
+
+            if(droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚TT');
+                creep.moveTo(droppedTombstone);
+            } else {
+
+                creep.moveTo(roomRallyPointFlag[0])
+            }
         }
     }
 }

@@ -6,12 +6,14 @@ export class RepairUtils {
         maxRoadStrength: number,
         maxRampartStrength: number,
         maxWallStrength: number,
-        maxRoadStrengthRepairer: number
+        maxRoadStrengthRepairer: number,
+        maxContainerStrengthRepairer: number
     } {
         let maxWallStrength = 10000;
         let maxContainerStrength = 10000;
         let maxRoadStrength = 1000;
         let maxRoadStrengthRepairer = 1000;
+        let maxContainerStrengthRepairer = 10000;
 
         if(target.room.controller && target.room.controller.my && target.room.controller.level > 0) {
             switch(target.room.controller.level) {
@@ -32,11 +34,13 @@ export class RepairUtils {
                     maxWallStrength = 250000;
                     maxRoadStrength = 3000;
                     maxRoadStrengthRepairer = 4800;
+                    maxContainerStrengthRepairer = 50000;
                     break;
                 case 8:
                     maxWallStrength = 300000;
                     maxRoadStrength = 4000;
                     maxRoadStrengthRepairer = 4900;
+                    maxContainerStrengthRepairer = 50000;
                     break;
             }
 
@@ -49,7 +53,8 @@ export class RepairUtils {
             maxRoadStrength,
             maxRampartStrength,
             maxWallStrength,
-            maxRoadStrengthRepairer
+            maxRoadStrengthRepairer,
+            maxContainerStrengthRepairer
 
         }
     }

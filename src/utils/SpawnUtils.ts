@@ -48,7 +48,7 @@ export class SpawnUtils {
     * TODO: Use factory pattern or something to get rid of the switch statements. For example, each role can be required to describe it's parts pattern.
     */
 
-    public static getBodyPartsForArchetype(archetype: string, spawn: any, commandLevel: number = 1, numberOfNeededTypes:number): Array<BodyPartConstant> | null {
+    public static getBodyPartsForArchetype(archetype: string, spawn: any, commandLevel: number = 1, hauling:boolean = false): Array<BodyPartConstant> | null {
         let partsPattern = new Array<BodyPartConstant>();
         let bodyParts = new Array<BodyPartConstant>();
         let patternCost = 0;
@@ -71,21 +71,24 @@ export class SpawnUtils {
                 }
             case 'miner':
             case 'settler':
-                const lowerMiner = commandLevel < 7 || (commandLevel >= 7 && energyAvailable < 1000)
-                if(commandLevel >= 7 && energyAvailable >= 2900) {
+                const lowerMiner = commandLevel < 6 || (commandLevel >= 6 && energyAvailable < 1000)
 
-                    for (let i = 0; i < 21; i++) {
+                if(!hauling && commandLevel >= 6 && energyAvailable >= 1050) {
+
+                    for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
 
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 21; i++) {
+
+                    for (let i = 0; i < 3; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
-                }else if(lowerMiner && energyAvailable >= 850) {
+                }
+                else if(!hauling && lowerMiner && energyAvailable >= 850) {
 
                     for (let i = 0; i < 8; i++) {
                         partsPattern.push(MOVE);
@@ -99,7 +102,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(lowerMiner &&energyAvailable >= 400) {
+                else if(!hauling && lowerMiner &&energyAvailable >= 400) {
 
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
@@ -113,7 +116,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(lowerMiner && energyAvailable >= 300) {
+                else if(!hauling && lowerMiner && energyAvailable >= 300) {
 
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
@@ -127,7 +130,46 @@ export class SpawnUtils {
                     }
                     break;
                 }
+                else if(hauling && commandLevel >= 7 && energyAvailable >= 1500) {
 
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 20; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(hauling && commandLevel >= 6 && energyAvailable >= 1000) {
+
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(hauling && commandLevel >= 6 &&energyAvailable >= 400) {
+
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(hauling && commandLevel >= 6 && energyAvailable >= 300) {
+
+                    for (let i = 0; i < 2; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
                 else {
                     return null;
                 }

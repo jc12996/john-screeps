@@ -9,6 +9,7 @@ export enum LowUpkeep {
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count,
     Miners = 3.25,
+    Haulers = 3,
     AttackClaimers = 1,
     TOTALDRAFT = 0
 }
@@ -23,7 +24,8 @@ export enum MediumUpkeep {
     AdditionalDraftedDefenders = 2,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count
-    Miners = 3
+    Miners = 3,
+    Haulers = 4
 }
 
 export enum HighUpkeep {
@@ -36,7 +38,8 @@ export enum HighUpkeep {
     AdditionalDraftedDefenders = 3,
     Claimers = 1,// Worldwide Count
     Settlers = 8,// Worldwide Count
-    Miners = 3
+    Miners = 3,
+    Haulers = 4
 }
 
 export enum SeigeEconomy {

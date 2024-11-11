@@ -59,6 +59,7 @@ declare global {
     leadHealer?: boolean;
     extractorMiner?: boolean;
     isBoosted?: boolean;
+    hauling?: boolean;
   }
 
   interface FlagMemory {

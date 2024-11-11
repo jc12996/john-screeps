@@ -50,7 +50,7 @@ export class AutoSpawn {
 
         const mineFlag = Game.flags[spawn.room.name+'MineFlag'];
         const mineHostiles = mineFlag?.room?.find(FIND_HOSTILE_CREEPS).length;
-        const miners = _.filter(Game.creeps, (creep) => {
+        const tempMiners = _.filter(Game.creeps, (creep) => {
             if(!!!mineFlag) {
                 return false;
             }
@@ -64,6 +64,12 @@ export class AutoSpawn {
                 )
             )
         });
+        const haulers = tempMiners.filter(miner => {
+            return miner.memory.hauling === true;
+        })
+        const miners = tempMiners.filter(miner => {
+            return !miner.memory.hauling;
+        })
         const dismantlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'dismantler');
         const carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier' && creep.room.name == spawn.room.name);
         const repairableStuff = spawn.room.find(FIND_STRUCTURES, {
@@ -108,6 +114,7 @@ export class AutoSpawn {
         let numberOfNeededRepairers = LowUpkeep.Repairer * 1;
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
         let numberOfNeededMiners = LowUpkeep.Miners * 1;
+        let numberOfNeededHaulers = LowUpkeep.Haulers * 1
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
         let numberOfNeededDefenders = !!Game.flags.draftFlag ? (LowUpkeep.DraftedDefenderTotal * 1) : (LowUpkeep.Defender * 1);
 
@@ -249,13 +256,13 @@ export class AutoSpawn {
             && !this.nextClaimFlag.room?.controller?.owner
         )  {
             name = 'Claimer' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel, 0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel);
             options = {memory: {role: 'claimer'}};
 
         }
         else if (commandLevel >= 7 && energyAvailable > 2000 && miners.length > 0 && attackClaimers.length < mineFlags.length) {
              name = 'AttackClaimer' + Game.time;
-             bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel, 0);
+             bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel);
              options = {memory: {role: 'attackClaimer'}};
 
         }
@@ -267,17 +274,17 @@ export class AutoSpawn {
             ) || Game.flags.settlerFlag)
         )  {
             name = 'Settler' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('settler',spawn, commandLevel, 0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('settler',spawn, commandLevel);
             options = {memory: {role: 'settler'}};
         }
          else if ((harvesters.length == 0 || (harvesters.length == 1 && harvesters[0].ticksToLive && harvesters[0].ticksToLive <= 100)) && nonactiveharvesters.length == 0 && commandLevel < 7) {
             name = 'Harvester' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel,2)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel)
             options = {memory: {role: 'harvester'}}
         }
         else if (carriers.length == 0 || (carriers.length == 1 && carriers[0].ticksToLive && carriers[0].ticksToLive <= 100)) {
             name = 'Carrier' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,0)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel)
             options = {memory: {role: 'carrier'}}
         }
         else if(numberOfNeededHarvesters > 0 && harvesters.length < (numberOfNeededHarvesters) && ActiveRoomSources.length > 0) {
@@ -287,38 +294,38 @@ export class AutoSpawn {
         }
         else if(spawn.room.energyCapacityAvailable > 250 && hostileCreeps.length == 0 && carriers.length >= 2 && (upgraders.length < numberOfNeededUpgraders)) {
             name = 'Upgrader' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel)
             options = {memory: {role: 'upgrader'}                }
         }
         else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
             name = 'Carrier' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel,numberOfNeededCarriers)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel)
             options = {memory: {role: 'carrier'}}
 
         }
         else if ((hostileCreeps.length == 0) && spawn.room.controller.level >= 2 && constructionSites.length && numberOfNeededBuilders > 0 && builders.length < (numberOfNeededBuilders) && RoomSources.length > 0) {
             name = 'Builder' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel,numberOfNeededBuilders)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel)
             options = {memory: {role: 'builder'}}
         }
         else if(Game.flags.startScouting && commandLevel >= 7 && Game.flags.rallyFlag2 && !Game.flags.scoutFlag && scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE)  {
             name = 'Scout' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('scout',spawn, commandLevel, 0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('scout',spawn, commandLevel);
             options = {memory: {role: 'scout', isArmySquad:true}};
         }
         else if (!Game.flags.SquadFlag && (defenders.length < numberOfNeededDefenders ||(Game.flags.draftFlag && defenders.length < LowUpkeep.TOTALDRAFT))) {
             name = 'Defender' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel,0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('defender',spawn,commandLevel);
             options = {memory: {role: 'defender'}};
         }
         else if(isSquadPatrol && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE)  {
             name = 'Attacker' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel, 0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('attacker',spawn, commandLevel);
             options = {memory: {role: 'attacker', isArmySquad:true}};
         }
         else if(isSquadPatrol && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE)  {
             name = 'Dismantler' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel, 0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('dismantler',spawn, commandLevel);
             options = {memory: {role: 'dismantler', isArmySquad:true}};
         }
         else if(isSquadPatrol && healers.length < SpawnUtils.TOTAL_HEALER_SIZE)  {
@@ -328,27 +335,37 @@ export class AutoSpawn {
             if(healers.length == 0 || !leadHealer) {
                 name = 'LeadHealer';
             }
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel, 0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('healer',spawn, commandLevel);
             options = {memory: {role: 'healer', isArmySquad:true}};
         } else if (isSquadPatrol && !Game.flags.rallyFlag2 && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS) {
             name = 'MeatGrinder' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel, 0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('meatGrinder',spawn, commandLevel);
             options = {memory: {role: 'meatGrinder', isArmySquad:true}};
         }
-        else if (!!mineFlag && miners.length < numberOfNeededMiners) {
+        else if (!!mineFlag  && (commandLevel < 6 || (energyCapacityAvailable <= 1000)) && miners.length < numberOfNeededMiners) {
             name = 'Miner' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,0);
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel);
             options = {memory: {role: 'miner'}};
+        }
+        else if (!!mineFlag  && commandLevel >= 6 && energyCapacityAvailable > 1000 && miners.length < numberOfNeededMiners) {
+            name = 'Miner' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel);
+            options = {memory: {role: 'miner'}};
+        }
+        else if (!!mineFlag  && commandLevel >= 6 && energyCapacityAvailable > 1000  && haulers.length < numberOfNeededHaulers) {
+            name = 'Hauler' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,true);
+            options = {memory: {role: 'miner', hauling: true}};
         }
         else if(repairableStuff.length && numberOfNeededRepairers > 0 && repairers.length < (numberOfNeededRepairers) && ActiveRoomSources.length > 0) {
 
             name = 'Repairer' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel,numberOfNeededRepairers)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('repairer',spawn,commandLevel)
             options = {memory: {role: 'repairer'}            }
         }
         else if(spawn.room.energyAvailable > 400  && (hostileCreeps.length == 0) && (spawn.room.controller.level < 2 || extensions.length >= 4) && (upgraders.length < numberOfNeededUpgraders  || upgraders.length == 0)) {
             name = 'Upgrader' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel,numberOfNeededUpgraders)
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel)
             options = {memory: {role: 'upgrader'}                }
         }
 
