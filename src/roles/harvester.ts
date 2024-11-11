@@ -29,6 +29,12 @@ export class Harvester {
             }
         })[0] ?? null;
 
+        const adjLink = creep.pos.findInRange(FIND_STRUCTURES,1,{
+            filter: (struc) => {
+                return struc.structureType === STRUCTURE_LINK && struc.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            }
+        })[0] ?? null;
+
         let finalSource:Source | null = Harvester.findTargetSource(creep);
 
 
@@ -106,6 +112,8 @@ export class Harvester {
             creep.memory.targetSource = finalSource.id;
             if(adjContainer) {
                 creep.transfer(adjContainer,RESOURCE_ENERGY);
+            } else if(adjLink) {
+                creep.transfer(adjLink,RESOURCE_ENERGY);
             } else {
                 creep.drop(RESOURCE_ENERGY,creep.store.energy);
             }
