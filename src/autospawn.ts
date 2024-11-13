@@ -225,7 +225,6 @@ export class AutoSpawn {
             numberOfNeededCarriers = 4;
             if(energyAvailable > 2000) {
                 numberOfNeededCarriers = 6;
-                numberOfNeededHaulers = numberOfNeededHaulers +1
             }
         }
 
