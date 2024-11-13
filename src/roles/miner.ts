@@ -332,14 +332,10 @@ export class Miner {
 
 
             if(minerType === 'haul') {
-                let containers: StructureContainer[] = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 50
-                }) as StructureContainer[];
 
-                // Use reduce to get the container with the most energy
-                let container = containers.reduce((maxContainer, currentContainer) => {
-                    return currentContainer.store[RESOURCE_ENERGY] > maxContainer.store[RESOURCE_ENERGY] ? currentContainer : maxContainer;
-                }, containers[0]) ?? null;
+                let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
+                })
 
                 if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
