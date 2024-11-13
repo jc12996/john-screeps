@@ -95,8 +95,26 @@ export class Miner {
             } else {
                 mineType = 'allAround';
             }
+            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+                filter:  (source) => {
+                    return (
+                        source.amount >= 50
+
+
+                    )
+                }
+            });
+            if(creep.memory.hauling && mineType !== 'mine' && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+                return
+            }
 
         }
+
+
+
+
+
 
         if(creep.memory.extractorMiner === true && terminal?.store?.getFreeCapacity() > 0 && creep.getActiveBodyparts(WORK) > 0) {
             if(creep.store[RESOURCE_ENERGY] > 0) {
@@ -322,6 +340,11 @@ export class Miner {
                 let container = containers.reduce((maxContainer, currentContainer) => {
                     return currentContainer.store[RESOURCE_ENERGY] > maxContainer.store[RESOURCE_ENERGY] ? currentContainer : maxContainer;
                 }, containers[0]) ?? null;
+
+                if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                    creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    return;
+                }
 
                 if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});

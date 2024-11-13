@@ -94,7 +94,7 @@ export class AutoSpawn {
             spawn.room.memory.numberOfNeededHarvestorSlots = 5;
         }
 
-        const numberOfNeededHarvesters = spawn.room.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
+        let numberOfNeededHarvesters = spawn.room.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
 
         const storage  = spawn.room.find(FIND_STRUCTURES, {
             filter: { structureType: STRUCTURE_STORAGE }
@@ -219,6 +219,18 @@ export class AutoSpawn {
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
             numberOfNeededCarriers = 8;
+        }
+
+        if(commandLevel >= 7 && energyAvailable > 1000 && energyCapacityAvailable > 1000 && numberOfNeededCarriers >= 4 ) {
+            numberOfNeededCarriers = 4;
+            if(energyAvailable > 2000) {
+                numberOfNeededCarriers = 6;
+                numberOfNeededHaulers = numberOfNeededHaulers +2
+            }
+        }
+
+        if(commandLevel >= 7 && energyAvailable > 1000 && energyCapacityAvailable > 1000 && numberOfNeededHarvesters >= 6) {
+            numberOfNeededHarvesters = numberOfNeededHarvesters - 2;
         }
 
         if(commandLevel >= 8 && numberOfNeededCarriers >= 3) {

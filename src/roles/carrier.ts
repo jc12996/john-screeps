@@ -200,16 +200,16 @@ export class Carrier {
 
         // Find the creep with the lowest energy
         const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-            filter: (creep) => {
+            filter: (workCreep) => {
                 return (
                     (
-                        (creep.memory.role === 'upgrader' && creep.memory.upgrading !== true)
+                        (workCreep.memory.role === 'upgrader' && workCreep.memory.upgrading !== true)
                         || (
-                            (creep.memory.extensionFarm === 1 || creep.memory.extensionFarm ===2) &&
-                            creep.store.getFreeCapacity() > 0 && creep.room.energyAvailable < ((commandLevel >= 7) ? 1000 : 800)
+                            (workCreep.memory.extensionFarm === 1 || workCreep.memory.extensionFarm ===2) &&
+                            workCreep.store.getFreeCapacity() > 0 && workCreep.room.energyAvailable < ((commandLevel >= 7) ? (creep.memory.role === 'miner' ? workCreep.room.energyCapacityAvailable : 1000) : 800)
                         )
                     ) &&
-                    creep.store.getFreeCapacity() > 0 && creep.store[RESOURCE_ENERGY] == 0
+                    workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity()  && !creep.memory.hauling
                 );
             }
         })
@@ -305,6 +305,8 @@ export class Carrier {
 
 
             }
+
+
 
             if(creep.memory.extensionFarm !== undefined && commandLevel >= 6) {
                const canContinue = MovementUtils.dropOffInTerminal(creep,terminal);
@@ -481,11 +483,21 @@ export class Carrier {
         nearestStorageOrTerminal: any
     ) {
 
-        if(creep.memory.role === 'miner' && creep.room.controller?.my) {
-            if( nearestStorageOrTerminal && creep.memory.hauling && creep.store[RESOURCE_ENERGY] > 1000 && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
+        if(creep.memory.hauling){
+            console.log('here',creep.room.name);
+        }
+
+        if(creep.memory.role === 'miner' || creep.memory.hauling) {
+
+
+
+            if(nearestStorageOrTerminal && nearestStorageOrTerminal.store.energy < 3000   && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.say('🚚 S');
+                creep.moveTo(nearestStorageOrTerminal );
+            }else if( nearestStorageOrTerminal && creep.store[RESOURCE_ENERGY] > 1000 && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
                 creep.say('🚚 P');
                 creep.moveTo(nearestStorageOrTerminal);
-            }else if(creep.room.controller.level < 8 && creep.room.energyAvailable > 300 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            }else if(creep.room.controller && creep.room.controller.level < 8 && creep.room.energyAvailable > 300 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 C');
                 creep.moveTo(nearestAvailableWorkingRoleCreep);
             }else if( nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE ) {
@@ -634,8 +646,10 @@ export class Carrier {
             return;
         }
 
+
+
         const maxEnergyNeeded = creep.room.controller && creep.room.controller.level >= 7 ? 1000 : 300;
-        if(creep.room.energyAvailable > maxEnergyNeeded && creep.memory.extensionFarm === undefined
+        if(!creep.memory.hauling && creep.room.energyAvailable > maxEnergyNeeded && creep.memory.extensionFarm === undefined
             && creep.room.energyAvailable >= (creep.room.energyCapacityAvailable * 0.5) &&
         nearestAvailableWorkingRoleCreep &&  nearestAvailableWorkingRoleCreep.store[RESOURCE_ENERGY] < 50 && creep.room.controller &&
         creep.room.controller?.level < 8 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -643,6 +657,7 @@ export class Carrier {
             creep.moveTo(nearestAvailableWorkingRoleCreep);
             return;
         }
+
 
 
         if(extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
