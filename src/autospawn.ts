@@ -160,6 +160,10 @@ export class AutoSpawn {
                 mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
             }
 
+            if(mineFlag.room && mineFlag.memory.numberOfNeededHarvestorSlots < mineFlag.room.find(FIND_SOURCES).length) {
+                mineFlag.memory.numberOfNeededHarvestorSlots = mineFlag.room.find(FIND_SOURCES).length;
+            }
+
 
             if(mineSources) {
                 numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
