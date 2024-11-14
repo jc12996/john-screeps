@@ -311,9 +311,7 @@ export class MovementUtils {
 
 
 
-        if(droppedSources && droppedSources.amount >= creep.store.getCapacity() && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-        }else if(container && container.store.energy >= creep.store.getCapacity() && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        if(container && container.store.energy >= creep.store.getCapacity() && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
         }else if(nearestStoreStructure && nearestStoreStructure.store[RESOURCE_ENERGY] >= creep.store.getCapacity() && creep.withdraw(nearestStoreStructure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(nearestStoreStructure, {visualizePathStyle: {stroke: "#ffffff"}});
