@@ -236,9 +236,6 @@ export class AutoSpawn {
         }
 
 
-            console.log(spawn.room.name, numberOfNeededCarriers,'numberOfNeededCarriers');
-
-
         if(commandLevel >= 6 && numberOfNeededUpgraders >= 8) {
             numberOfNeededUpgraders = 8;
         }
@@ -258,6 +255,19 @@ export class AutoSpawn {
         let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
         const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && !flag.room?.controller?.my);
+        let numberOfNeededAttackClaimers = mineFlags.length;
+
+        // for(const mineFlag of mineFlags) {
+        //     const inRoomClaimers = mineFlag.room?.find(FIND_MY_CREEPS, {
+        //         filter: (claimCreep) => {
+        //             return claimCreep.memory.role === 'attackClaimer'
+        //         }
+        //     }) as Creep[]
+
+        //     if(inRoomClaimers.length && inRoomClaimers[0].ticksToLive && inRoomClaimers[0].ticksToLive < 500) {
+        //         numberOfNeededAttackClaimers = numberOfNeededAttackClaimers+1;
+        //     }
+        // }
 
         if(Game.flags.startScouting && isSquadPatrol) {
             isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
@@ -273,7 +283,7 @@ export class AutoSpawn {
             options = {memory: {role: 'claimer'}};
 
         }
-        else if (commandLevel >= 7 && energyAvailable > 2000 && miners.length > 0 && attackClaimers.length < mineFlags.length) {
+        else if (commandLevel >= 7 && energyAvailable > 2000 && miners.length > 0 && (attackClaimers.length < numberOfNeededAttackClaimers)) {
              name = 'AttackClaimer' + Game.time;
              bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel);
              options = {memory: {role: 'attackClaimer'}};

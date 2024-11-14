@@ -385,7 +385,7 @@ export class Miner {
                 return;
             }
 
-            const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
             if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
             }

@@ -17,12 +17,19 @@ export class Claimer {
 
 
         if(creep.memory.role === 'attackClaimer') {
-            const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && (!flag.room?.controller?.reservation
-                || (flag.room === creep.room && flag.room.controller.reservation.ticksToEnd < 100 && flag.room.find(FIND_CREEPS, {
+            const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && (
+                !flag.room?.controller?.reservation
+                || (flag.room === creep.room && flag.room.controller.pos.findInRange(FIND_CREEPS,1, {
                     filter: (claimCreep) => {
                         return claimCreep.memory && claimCreep.memory?.building === true && claimCreep.memory.role === 'attackClaimer'
                     }
                 }).length === 0)
+                || (flag.room === creep.room && flag.room.controller.pos.findInRange(FIND_CREEPS,1, {
+                    filter: (claimCreep) => {
+                        return claimCreep.memory && claimCreep.memory?.building === true && claimCreep.memory.role === 'attackClaimer' && claimCreep.ticksToLive && claimCreep.ticksToLive < 100
+                    }
+                }).length >= 1)
+                || (flag.room === creep.room && flag.room.controller.reservation.ticksToEnd < 1000)
             ));
 
             if(creep.memory.building && creep.room?.controller) {
