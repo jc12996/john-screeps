@@ -24,7 +24,7 @@ export class Claimer {
                     },
                 }).length &&
                 creep.ticksToLive &&
-                creep.ticksToLive > 50
+                creep.ticksToLive > 100
             ) {
                 flag.memory.isassigned = true;
             }
