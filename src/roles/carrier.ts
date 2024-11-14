@@ -483,10 +483,6 @@ export class Carrier {
         nearestStorageOrTerminal: any
     ) {
 
-        if(creep.memory.hauling){
-            console.log('here',creep.room.name);
-        }
-
         if(creep.memory.role === 'miner' || creep.memory.hauling) {
 
 
@@ -651,7 +647,7 @@ export class Carrier {
         const maxEnergyNeeded = creep.room.controller && creep.room.controller.level >= 7 ? 1000 : 300;
         if(!creep.memory.hauling && creep.room.energyAvailable > maxEnergyNeeded && creep.memory.extensionFarm === undefined
             && creep.room.energyAvailable >= (creep.room.energyCapacityAvailable * 0.5) &&
-        nearestAvailableWorkingRoleCreep &&  nearestAvailableWorkingRoleCreep.store[RESOURCE_ENERGY] < 50 && creep.room.controller &&
+        nearestAvailableWorkingRoleCreep &&  nearestAvailableWorkingRoleCreep.store.getFreeCapacity() > 0 && creep.room.controller &&
         creep.room.controller?.level < 8 && nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.say('🚚 C');
             creep.moveTo(nearestAvailableWorkingRoleCreep);

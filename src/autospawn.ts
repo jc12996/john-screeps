@@ -82,17 +82,16 @@ export class AutoSpawn {
         const energyAvailable = spawn.room.energyAvailable;
         const energyCapacityAvailable = spawn.room.energyCapacityAvailable;
 
-        if(spawn.room.name == 'W18N1') {
-            spawn.room.memory.numberOfNeededHarvestorSlots = 5
-        }
         if(spawn.room.memory?.numberOfNeededHarvestorSlots === undefined || spawn.room.memory.numberOfNeededHarvestorSlots == 0) {
             spawn.room.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawn);
             console.log(spawn.room.name,'numberOfNeededHarvesters to memory ',spawn.room.memory.numberOfNeededHarvestorSlots)
         }
 
-        if(spawn.room.name === 'W1N6') {
-            spawn.room.memory.numberOfNeededHarvestorSlots = 5;
+        if(commandLevel >= 5 && spawn.room.memory.numberOfNeededHarvestorSlots < 3) {
+            spawn.room.memory.numberOfNeededHarvestorSlots = 3;
         }
+
+
 
         let numberOfNeededHarvesters = spawn.room.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
 
@@ -235,6 +234,9 @@ export class AutoSpawn {
         if(commandLevel >= 8 && numberOfNeededCarriers >= 3) {
             numberOfNeededCarriers = 3;
         }
+
+
+            console.log(spawn.room.name, numberOfNeededCarriers,'numberOfNeededCarriers');
 
 
         if(commandLevel >= 6 && numberOfNeededUpgraders >= 8) {

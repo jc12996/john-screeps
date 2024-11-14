@@ -104,7 +104,7 @@ export class Miner {
                     )
                 }
             });
-            if(creep.memory.hauling && mineType !== 'mine' && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            if(creep.memory.hauling && creep.room !== firstRoom && mineType !== 'mine' && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
                 return
             }
@@ -302,7 +302,7 @@ export class Miner {
                 }
             });
 
-            if(minerType !== 'mine' && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            if(minerType !== 'mine' && creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
                 return
             }
@@ -337,7 +337,7 @@ export class Miner {
                     filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
                 })
 
-                if(droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+                if(creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
                     return;
                 }
