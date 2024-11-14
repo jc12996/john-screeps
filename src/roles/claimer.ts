@@ -6,6 +6,64 @@ import { SpawnUtils } from "utils/SpawnUtils";
 export class Claimer {
 
 
+    private static choosePriorityReservationFlag(creep: Creep): Flag | null {
+        // Filter flags that meet the specific conditions
+        const validFlags = _.filter(Game.flags, (flag) => {
+            // Reset flag assignment status
+            flag.memory.isassigned = undefined;
+
+            // Check for specific conditions to assign the flag
+            if (
+                flag?.room?.controller?.pos.findInRange(FIND_CREEPS, 1, {
+                    filter: (claimCreep) => {
+                        return (
+                            claimCreep.memory &&
+                            claimCreep.memory?.building === true &&
+                            claimCreep.memory.role === 'attackClaimer'
+                        );
+                    },
+                }).length &&
+                creep.ticksToLive &&
+                creep.ticksToLive > 50
+            ) {
+                flag.memory.isassigned = true;
+            }
+
+            const mineRoomName = flag.name.split('MineFlag')[0];
+            const mineRoom = Game.rooms[mineRoomName];
+
+            return (
+                flag.room &&
+                flag.name &&
+                flag.memory.isassigned === undefined &&
+                flag.name.includes('MineFlag') &&
+                mineRoom?.controller && mineRoom?.controller?.level >= 6 &&
+                (!flag.room?.controller?.reservation ||
+                    flag.room.controller.pos.findInRange(FIND_CREEPS, 1, {
+                        filter: (claimCreep) => {
+                            return (
+                                claimCreep.memory &&
+                                claimCreep.memory?.building === true &&
+                                claimCreep.memory.role === 'attackClaimer'
+                            );
+                        },
+                    }).length === 0)
+            );
+        });
+
+        // If no valid flags, return null
+        if (validFlags.length === 0) {
+            return null;
+        }
+
+        // Sort the valid flags by proximity to the creep
+        const closestFlag = validFlags.reduce((closest, flag) => {
+            const rangeToFlag = creep.pos.getRangeTo(flag.pos);
+            return rangeToFlag < creep.pos.getRangeTo(closest.pos) ? flag : closest;
+        });
+
+        return closestFlag;
+    }
 
     public static run(creep: Creep): void {
 
@@ -16,36 +74,32 @@ export class Claimer {
         }
 
 
+
         if(creep.memory.role === 'attackClaimer') {
-            const mineFlags = _.filter(Game.flags, (flag) => flag.room && flag.name && flag.name.includes('MineFlag') && (
-                !flag.room?.controller?.reservation
-                || (flag.room === creep.room && flag.room.controller.pos.findInRange(FIND_CREEPS,1, {
-                    filter: (claimCreep) => {
-                        return claimCreep.memory && claimCreep.memory?.building === true && claimCreep.memory.role === 'attackClaimer'
-                    }
-                }).length === 0)
-                || (flag.room === creep.room && flag.room.controller.pos.findInRange(FIND_CREEPS,1, {
-                    filter: (claimCreep) => {
-                        return claimCreep.memory && claimCreep.memory?.building === true && claimCreep.memory.role === 'attackClaimer' && claimCreep.ticksToLive && claimCreep.ticksToLive < 100
-                    }
-                }).length >= 1)
-                || (flag.room === creep.room && flag.room.controller.reservation.ticksToEnd < 1000)
-            ));
+
 
             if(creep.memory.building && creep.room?.controller) {
+                creep.say('🚩' + creep.room?.controller.room.name)
                 creep.reserveController(creep.room?.controller);
                 return;
             }
-            if(mineFlags[0]) {
-                const mineRoom = mineFlags[0].room;
+
+
+            const chosenDestinationFlag = this.choosePriorityReservationFlag(creep);
+
+            if(chosenDestinationFlag) {
+                const mineRoom = chosenDestinationFlag.room;
                 if(mineRoom?.controller) {
                     const reservationCode = creep.reserveController(mineRoom?.controller);
                     if(reservationCode == OK) {
+                        creep.say('🚩'+mineRoom.name)
                         creep.memory.building = true;
                     }
                     if(creep.signController(mineRoom.controller, "Mine mine mine!") == ERR_NOT_IN_RANGE) {
+                        creep.say('🚩'+mineRoom.name)
                         creep.moveTo(mineRoom.controller);
                     }else if(reservationCode == ERR_NOT_IN_RANGE){
+                        creep.say('🚩'+mineRoom.name)
                         creep.moveTo(mineRoom.controller);
                     }
                 }

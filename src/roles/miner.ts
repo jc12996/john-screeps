@@ -235,7 +235,7 @@ export class Miner {
 
         const repairContainers = creep.pos.findInRange(FIND_STRUCTURES, 1, {
             filter: (struc) => {
-                return struc.structureType === STRUCTURE_CONTAINER && minerType === 'mine' && struc.hits < (struc.hitsMax - 150000)
+                return struc.structureType === STRUCTURE_CONTAINER && minerType === 'mine' && struc.hits < (struc.hitsMax - (firstRoom.controller && firstRoom.controller.level < 7 ? 220000 : 150000))
             }
         })[0]??null;
 
@@ -385,9 +385,14 @@ export class Miner {
                 return;
             }
 
-            const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
+            const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            const finalSource2 = creep.pos.findClosestByPath(FIND_SOURCES);
+
             if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
+            } else if(finalSource2) {
+
+                creep.moveTo(finalSource2, {visualizePathStyle: {stroke: '#FFFFFF'}});
             }
 
         }else {

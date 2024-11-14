@@ -64,6 +64,7 @@ declare global {
 
   interface FlagMemory {
     numberOfNeededHarvestorSlots?: number;
+    isassigned?: boolean;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
