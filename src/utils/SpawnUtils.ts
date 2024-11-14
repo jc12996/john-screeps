@@ -102,34 +102,6 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(!hauling && lowerMiner &&energyAvailable >= 400) {
-
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(MOVE);
-                    }
-
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 2; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
-                else if(!hauling && lowerMiner && energyAvailable >= 300) {
-
-                    for (let i = 0; i < 2; i++) {
-                        partsPattern.push(MOVE);
-                    }
-
-                    for (let i = 0; i < 1; i++) {
-                        partsPattern.push(WORK);
-                    }
-                    for (let i = 0; i < 2; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
                 else if(hauling && commandLevel >= 7 && energyAvailable >= 1100) {
 
                     for (let i = 0; i < 15; i++) {
@@ -146,26 +118,6 @@ export class SpawnUtils {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 7; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
-                else if(hauling && commandLevel >= 6 &&energyAvailable >= 400) {
-
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 4; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                }
-                else if(hauling && commandLevel >= 6 && energyAvailable >= 300) {
-
-                    for (let i = 0; i < 2; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
