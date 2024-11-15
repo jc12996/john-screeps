@@ -70,7 +70,6 @@ export class SpawnUtils {
                     return null;
                 }
             case 'miner':
-            case 'settler':
                 const lowerMiner = commandLevel < 6 || (commandLevel >= 6 && energyAvailable < 1000)
 
                 if(!hauling && commandLevel >= 6 && energyAvailable >= 1050) {
@@ -240,6 +239,7 @@ export class SpawnUtils {
                     return null;
                 }
             case 'builder':
+            case 'settler':
             case 'repairer':
                 if(commandLevel >= 8 && energyAvailable >= 2900) {
                     for (let i = 0; i < 15; i++) {
