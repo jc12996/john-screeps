@@ -83,6 +83,8 @@ export class Repairer {
             else if(roads.length > 0 && creep.repair(roads[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(roads[0], {visualizePathStyle: {stroke: '#ffffff'}});
 
+            } else {
+                Upgrader.run(creep);   
             }
 
 

@@ -209,7 +209,7 @@ export class Carrier {
                             workCreep.store.getFreeCapacity() > 0 && workCreep.room.energyAvailable < ((commandLevel >= 7) ? (creep.memory.role === 'miner' ? workCreep.room.energyCapacityAvailable : 1000) : 800)
                         )
                     ) &&
-                    workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity()  && !creep.memory.hauling
+                    workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity()  && !creep.memory.hauling && (commandLevel > 4 || creep.room.energyAvailable === creep.room.energyCapacityAvailable)
                 );
             }
         })
