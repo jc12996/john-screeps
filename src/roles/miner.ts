@@ -69,7 +69,7 @@ export class Miner {
 
         if(storage && mineral && firstRoom.terminal && firstRoom.terminal.store[mineral.mineralType] < 50000
             && mineral.mineralAmount > 0
-             && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 6 && creep.getActiveBodyparts(WORK) > 0) {
+             && extractor && miners[0] &&  creep.name === miners[0]?.name && creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 2 && creep.getActiveBodyparts(WORK) > 0) {
             creep.memory.extractorMiner = true;
         } else if(!creep.memory.extractorMiner) {
             creep.memory.extractorMiner = false;
@@ -87,7 +87,7 @@ export class Miner {
 
 
 
-        if(firstRoomCommandLevel >= 6) {
+        if(firstRoomCommandLevel >= 2) {
             if(creep.getActiveBodyparts(WORK) > 0 ) {
                 mineType = 'mine';
             } else if(creep.memory.hauling){

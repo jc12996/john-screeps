@@ -44,7 +44,6 @@ export class Builder {
         const constructionSites = creep.room.find(FIND_CONSTRUCTION_SITES);
 
         if(!constructionSites.length) {
-            Repairer.run(creep);
             return;
         }
 
@@ -150,16 +149,6 @@ export class Builder {
                 this.moveAndBuild(creep,targets[0]);
             } else if(roomRallyPointFlag[0]) {
                 creep.moveTo(roomRallyPointFlag[0]);
-            }else {
-
-
-                // TODO: Replace this backup target logic with a job priority structure.
-                const backupTargets = creep.room.find(FIND_MY_CONSTRUCTION_SITES);
-                if(backupTargets.length > 0) {
-                    if(creep.build(backupTargets[0]) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(backupTargets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                    }
-                } { Repairer.run(creep); }
             }
         }
         else {

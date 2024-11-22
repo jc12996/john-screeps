@@ -508,8 +508,22 @@ export class Carrier {
             } else if(nearestAvailableWorkingRoleCreep && creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 C');
                 creep.moveTo(nearestAvailableWorkingRoleCreep);
-            } else if(creep.room.controller?.my) {
-                creep.drop(RESOURCE_ENERGY);
+            } else if(creep.room.controller && creep.room.controller?.my) {
+                if(creep.pos.inRangeTo(creep.room.controller,4) === false) {
+                    creep.moveTo(creep.room.controller);
+                } else {
+                    const nearestUpgrader = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+                        filter: (workCreep) => {
+                            return (workCreep.memory.role === 'upgrader' && workCreep.memory.upgrading !== true);
+                        }
+                    })
+                    if(nearestUpgrader && creep.transfer(nearestUpgrader, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(nearestUpgrader);
+                    } else if(!nearestUpgrader) {
+                        creep.drop(RESOURCE_ENERGY);
+                    }
+                   
+                }
             }
             return;
 

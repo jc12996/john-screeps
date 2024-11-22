@@ -101,6 +101,20 @@ export class SpawnUtils {
                     }
                     break;
                 }
+                else if(!hauling && commandLevel < 6  && lowerMiner && energyAvailable >= 500) {
+
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
                 else if(hauling && commandLevel >= 7 && energyAvailable >= 1100) {
 
                     for (let i = 0; i < 15; i++) {
@@ -117,6 +131,16 @@ export class SpawnUtils {
                         partsPattern.push(MOVE);
                     }
                     for (let i = 0; i < 7; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
+                else if(hauling && commandLevel < 6 && energyAvailable >= 650) {
+
+                    for (let i = 0; i < 7; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 6; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;

@@ -37,7 +37,7 @@ export class Claimer {
                 flag.name &&
                 flag.memory.isassigned === undefined &&
                 flag.name.includes('MineFlag') &&
-                mineRoom?.controller && mineRoom?.controller?.level >= 6 &&
+                mineRoom?.controller && mineRoom?.controller?.level >= 3 &&
                 (!flag.room?.controller?.reservation ||
                     flag.room.controller.pos.findInRange(FIND_CREEPS, 1, {
                         filter: (claimCreep) => {
@@ -47,13 +47,19 @@ export class Claimer {
                                 claimCreep.memory.role === 'attackClaimer'
                             );
                         },
-                    }).length === 0)
+                    }).length < 3)
             );
         });
 
-        // If no valid flags, return null
+        // If no valid flags, return closest mine flag or null
         if (validFlags.length === 0) {
-            return null;
+            const mineFlags = _.filter(Game.flags, flag => flag.name.includes('MineFlag'));
+            if (mineFlags.length === 0) return null;
+            
+            return mineFlags.reduce((closest, flag) => {
+                const rangeToFlag = creep.pos.getRangeTo(flag.pos);
+                return !closest || rangeToFlag < creep.pos.getRangeTo(closest.pos) ? flag : closest;
+            });
         }
 
         // Sort the valid flags by proximity to the creep
@@ -100,6 +106,8 @@ export class Claimer {
                         creep.moveTo(mineRoom.controller);
                     }else if(reservationCode == ERR_NOT_IN_RANGE){
                         creep.say('🚩'+mineRoom.name)
+                        creep.moveTo(mineRoom.controller);
+                    } else {
                         creep.moveTo(mineRoom.controller);
                     }
                 }
