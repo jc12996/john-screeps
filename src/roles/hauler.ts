@@ -123,7 +123,7 @@ export class Hauler {
                 creep.moveTo(roomStructures[0]);
                 return;
             }
-
+            creep.say('🚚 C');
             Carrier.run(creep);
     }
 

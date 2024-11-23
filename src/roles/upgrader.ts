@@ -132,7 +132,7 @@ export class Upgrader {
 
 
 
-            if((sites.length > 0 || constructSpawn) && creep.room.controller && creep.room.controller.level < 4) {
+            if((sites.length > 0 || constructSpawn) && creep.room.controller && creep.room.controller.level < 6) {
 
                 creep.say('⚡ build');
                 Builder.run(creep)

@@ -170,6 +170,9 @@ export class AutoSpawn {
 
 
 
+        if(commandLevel >= 5 && numberOfNeededCarriers >= 5) {
+            numberOfNeededCarriers = 5;
+        }
 
         if(commandLevel >= 6 && numberOfNeededCarriers >= 8) {
             numberOfNeededCarriers = 8;
