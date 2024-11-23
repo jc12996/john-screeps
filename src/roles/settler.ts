@@ -107,13 +107,6 @@ export class Settler {
 
             MovementUtils.generalGatherMovement(creep,undefined,targetSource);
 
-            // if(ruinsSource && ruinsSource.store && creep.withdraw(ruinsSource,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-            //     creep.moveTo(ruinsSource, {visualizePathStyle: {stroke: '#ffaa00'}});
-            // } else if(droppedSources  && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-            //     creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            // } else if(targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
-
-            // }
         }else {
 
             var constructSpawn = creep.room.find(FIND_CONSTRUCTION_SITES, {
@@ -123,7 +116,10 @@ export class Settler {
             });
 
             if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2) {
-                Upgrader.run(creep)
+                if(creep.room.controller && creep.room.controller.my &&
+                    creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller);
+                }
             } else if(constructSpawn.length) {
                 if(creep.build(constructSpawn[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(constructSpawn[0], {visualizePathStyle: {stroke: '#ffffff'}});
