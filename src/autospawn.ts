@@ -305,8 +305,6 @@ export class AutoSpawn {
                     
                     if(harvesters.length < miners.length) {
                         numberOfNeededMiners = 0;
-                        numberOfNeededAttackClaimers = 0;
-                        numberOfNeededHaulers = 0;
                     }
 
 
@@ -327,6 +325,12 @@ export class AutoSpawn {
         
                         }
                         else if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && ((needsNewAttackClaimer && attackClaimers.length < (numberOfNeededAttackClaimers+1)) || attackClaimers.length < numberOfNeededAttackClaimers)) {
+                            name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
+                            bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
+                            options = { memory: { role: 'attackClaimer', assignedMineFlag: mineFlag.name } };
+                            gotOne = true;
+                        }
+                        else if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && attackClaimers.length < 1) {
                             name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
                             bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
                             options = { memory: { role: 'attackClaimer', assignedMineFlag: mineFlag.name } };
