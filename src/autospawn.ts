@@ -297,8 +297,8 @@ export class AutoSpawn {
                     }
                 }
 
-                if(numberOfNeededMiners > 5) {
-                    numberOfNeededMiners = 5;
+                if(numberOfNeededMiners >= 4) {
+                    numberOfNeededMiners = 4;
                 }
 
                 
