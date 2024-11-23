@@ -294,6 +294,10 @@ export class AutoSpawn {
                     }
                 }
 
+                if(numberOfNeededMiners > 5) {
+                    numberOfNeededMiners = 5;
+                }
+
                 
                 if(harvesters.length < miners.length) {
                     numberOfNeededMiners = 0;
