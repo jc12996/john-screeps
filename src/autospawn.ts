@@ -275,46 +275,52 @@ export class AutoSpawn {
                 numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
     
 
-                
-            }
-
-            if(mineFlags.length > 0) {
+                if(numberOfNeededMiners > 0 || numberOfNeededHaulers > 0 || numberOfNeededAttackClaimers > 0) {
        
     
-                let bodyParts = null;
-                let name = null;
-                let options = undefined;
-                
-                if(harvesters.length < miners.length) {
-                    numberOfNeededMiners = 0;
+                    let bodyParts = null;
+                    let name = null;
+                    let options = undefined;
+                    let gotOne = false;
+                    
+                    if(harvesters.length < miners.length) {
+                        numberOfNeededMiners = 0;
+                    }
+    
+                    if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && (attackClaimers.length < numberOfNeededAttackClaimers)) {
+                        name = 'AttackClaimer' + Game.time;
+                        bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel);
+                        options = {memory: {role: 'attackClaimer', assignedMineFlag: mineFlag.name }};
+                        gotOne = true;
+    
+                    }
+                    else if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && (needsNewAttackClaimer && attackClaimers.length < (numberOfNeededAttackClaimers+1))) {
+                        name = 'AttackClaimer' + Game.time;
+                        bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
+                        options = { memory: { role: 'attackClaimer', assignedMineFlag: mineFlag.name } };
+                        gotOne = true;
+                    }
+                    else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 450 && miners.length < numberOfNeededMiners) {
+                        name = 'Miner' + Game.time;
+                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel);
+                        options = {memory: {role: 'miner', assignedMineFlag: mineFlag.name }};
+                        gotOne = true;
+                    }
+                    else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 650  && haulers.length < numberOfNeededHaulers) {
+                        name = 'Hauler' + Game.time;
+                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,true);
+                        options = {memory: {role: 'miner', hauling: true, assignedMineFlag: mineFlag.name }};
+                        gotOne = true;
+                    }
+    
+                    if(gotOne) {
+                        this.startSpawningSequence(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
+                    }
+             
                 }
-
-                if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && (attackClaimers.length < numberOfNeededAttackClaimers)) {
-                    name = 'AttackClaimer' + Game.time;
-                    bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel);
-                    options = {memory: {role: 'attackClaimer'}};
-
-                }
-                else if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && (needsNewAttackClaimer && attackClaimers.length < (numberOfNeededAttackClaimers+1))) {
-                    name = 'AttackClaimer' + Game.time;
-                    bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
-                    options = { memory: { role: 'attackClaimer' } };
-                }
-                else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 450 && miners.length < numberOfNeededMiners) {
-                    name = 'Miner' + Game.time;
-                    bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel);
-                    options = {memory: {role: 'miner'}};
-                }
-                else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 650  && haulers.length < numberOfNeededHaulers) {
-                    name = 'Hauler' + Game.time;
-                    bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,true);
-                    options = {memory: {role: 'miner', hauling: true}};
-                }
-
-               
-                this.startSpawningSequence(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
-         
             }
+
+           
             
         });
 

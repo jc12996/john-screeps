@@ -91,7 +91,15 @@ export class Claimer {
             }
 
 
-            const chosenDestinationFlag = this.choosePriorityReservationFlag(creep);
+            if(!creep.memory.assignedMineFlag) {
+                return;
+            }
+    
+            const chosenDestinationFlag = Game.flags[creep.memory.assignedMineFlag] as Flag;
+    
+            if(!!!chosenDestinationFlag) {
+                return;
+            }
 
             if(chosenDestinationFlag) {
                 const mineRoom = chosenDestinationFlag.room;

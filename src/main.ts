@@ -61,11 +61,13 @@ declare global {
     extractorMiner?: boolean;
     isBoosted?: boolean;
     hauling?: boolean;
+    assignedMineFlag?: string;
   }
 
   interface FlagMemory {
     numberOfNeededHarvestorSlots?: number;
     isassigned?: boolean;
+    numberOfNeededMiners?: number;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")
@@ -237,6 +239,11 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
     if(creep.memory.role == 'miner') {
       MovementUtils.callForHelp(creep);
+
+      if(!creep.memory.assignedMineFlag) {
+        creep.memory.assignedMineFlag = 'W18N3MineFlag'
+      }
+
       if(creep.getActiveBodyparts(WORK) === 0) {
         Hauler.run(creep);
       }

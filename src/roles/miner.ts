@@ -4,7 +4,6 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { Harvester } from "./harvester";
 import { Labs } from "labs";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
-import { Hauler } from "./hauler";
 
 export class Miner {
 
@@ -256,8 +255,12 @@ export class Miner {
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say("⛏ 🔄");
         }
-        const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
 
+        if(!creep.memory.assignedMineFlag) {
+            return;
+        }
+
+        const mineFlag = Game.flags[creep.memory.assignedMineFlag] as Flag;
 
         if(!!!mineFlag) {
             return;

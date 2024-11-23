@@ -41,8 +41,15 @@ export class Hauler {
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("⛏ 🔄");
             }
-            const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
 
+
+            if(!creep.memory.assignedMineFlag) {
+                creep.memory.assignedMineFlag = 'W18N4MineFlag';
+                return;
+            }
+    
+            const mineFlag = Game.flags[creep.memory.assignedMineFlag] as Flag;
+    
 
             if(!!!mineFlag) {
                 return;
@@ -87,7 +94,7 @@ export class Hauler {
             }
 
             let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
+                filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && (structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity() || structure.store[RESOURCE_ENERGY] >= 200)
             })
 
             if(creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
