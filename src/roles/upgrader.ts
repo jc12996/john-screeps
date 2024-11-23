@@ -132,7 +132,7 @@ export class Upgrader {
 
 
 
-            if((sites.length > 0 || constructSpawn) && creep.room.controller && creep.room.controller.level < 6) {
+            if((sites.length > 0 || constructSpawn) && creep.room.controller && creep.room.controller.level < 6 && creep.room.controller.my && creep.room.controller.ticksToDowngrade >= 2000) {
 
                 creep.say('⚡ build');
                 Builder.run(creep)
@@ -154,21 +154,25 @@ export class Upgrader {
 
 
 
-            if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
-                creep.moveTo(creep.room.controller);
-                return;
-            }
+                if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
+                    creep.moveTo(creep.room.controller);
+                    return;
+                }
 
-            if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
-                creep.moveTo(creep.room.controller);
-            } else if(numberOfControllerSlots === 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,2)){
-                creep.moveTo(creep.room.controller);
-            } else if(creep.room.controller && creep.room.controller.my && !creep.room.controller.sign && creep.signController(creep.room.controller, "X") == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
-            } else if(creep.room.controller && creep.room.controller.my &&
-                creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
-            }}
+                if(numberOfControllerSlots > 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,1)){
+                    creep.moveTo(creep.room.controller);
+                } else if(numberOfControllerSlots === 0 && creep.room.controller && creep.room.controller.my && !creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller?.pos.y,2)){
+                    creep.moveTo(creep.room.controller);
+                } else if(creep.room.controller && creep.room.controller.my && !creep.room.controller.sign && creep.signController(creep.room.controller, "X") == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller);
+                } else if(creep.room.controller && creep.room.controller.my &&
+                    creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller);
+                } else if(creep.room.controller && creep.room.controller.my && creep.room.controller.level <= 2) {
+                    Builder.run(creep);
+                }
+        
+            }
         }
         else  {
             const controllerLink = getLinkByTag(creep,'ControllerLink1');

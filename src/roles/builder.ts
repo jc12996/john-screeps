@@ -30,6 +30,7 @@ export class Builder {
             creep.say('🔨');
         }
 
+     
 
 
         if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
@@ -49,7 +50,23 @@ export class Builder {
 
         if(creep.memory.building) {
 
+            if(creep.room.controller && creep.room.controller.my && creep.room.controller.level <= 2 && (creep.memory.upgrading || creep.room.controller.ticksToDowngrade < 2000) && creep.room.controller.ticksToDowngrade < 6000) {
+                if(creep.room.controller && creep.room.controller.my &&
+                    creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller);
+                } 
+                return;
+            }
 
+            if(creep.memory.upgrading && creep.room.controller && creep.room.controller.my  && creep.room.controller.ticksToDowngrade > 5000) {
+                creep.memory.upgrading = false;
+            }
+            if(!creep.memory.upgrading && creep.room.controller && creep.room.controller.my  && creep.room.controller.ticksToDowngrade <= 5000)  {
+                creep.memory.upgrading = true;
+            }
+
+            creep.memory.upgrading = false;
+    
             const constructSpawn = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
                 filter: (site) => {
                     return (site.structureType == STRUCTURE_SPAWN || site.structureType == STRUCTURE_TOWER)

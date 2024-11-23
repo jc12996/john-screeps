@@ -270,8 +270,7 @@ export class MovementUtils {
               return;
             }
 
-
-            if((creep.memory.role !== 'upgrader' || (droppedSources && creep.pos.inRangeTo(droppedSources.pos,3))) && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            if((creep.memory.role !== 'upgrader' || (creep.room.controller && creep.room.controller.level <= 2) ||  (droppedSources && creep.pos.inRangeTo(droppedSources.pos,3))) && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
             } else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
