@@ -509,6 +509,7 @@ export class Carrier {
                 creep.say('🚚 C');
                 creep.moveTo(nearestAvailableWorkingRoleCreep);
             } else if(creep.room.controller && creep.room.controller?.my) {
+                creep.say('🚚 C');
                 if(creep.pos.inRangeTo(creep.room.controller,4) === false) {
                     creep.moveTo(creep.room.controller);
                 } else {

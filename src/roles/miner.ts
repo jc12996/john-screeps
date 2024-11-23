@@ -22,10 +22,7 @@ export class Miner {
 
 
 
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("⛏");
-        }
-
+    
 
         const spawn = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter:  (structure) => {
@@ -206,11 +203,6 @@ export class Miner {
 
     private static creepMiner(creep:Creep,firstRoom:any, minerType: "mine" | "haul" | "allAround") {
 
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("⛏");
-        }
-
-
 
         if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 500)) {
             creep.memory.carrying = true;
@@ -250,12 +242,6 @@ export class Miner {
 
 
 
-
-
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("⛏ 🔄");
-        }
-
         if(!creep.memory.assignedMineFlag) {
             return;
         }
@@ -265,6 +251,11 @@ export class Miner {
         if(!!!mineFlag) {
             return;
         }
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("⛏"+mineFlag.room?.name);
+        }
+
 
         if(creep.room != mineFlag.room) {
             MovementUtils.goToFlag(creep,mineFlag);

@@ -24,10 +24,6 @@ export class Hauler {
         }
 
 
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("⛏");
-        }
-
         if(!!!creep.memory?.firstSpawnCoords) {
             return;
         }
@@ -37,14 +33,8 @@ export class Hauler {
         if(!creep.memory.carrying) {
 
 
-
-            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-                creep.say("⛏ 🔄");
-            }
-
-
             if(!creep.memory.assignedMineFlag) {
-                creep.memory.assignedMineFlag = 'W18N4MineFlag';
+                creep.memory.assignedMineFlag = creep.memory.firstSpawnCoords+'MineFlag';
                 return;
             }
     
@@ -56,6 +46,9 @@ export class Hauler {
             }
 
 
+            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+                creep.say("🚚"+mineFlag.room?.name);
+            }
 
             if(creep.room != mineFlag.room) {
                 MovementUtils.goToFlag(creep,mineFlag);
