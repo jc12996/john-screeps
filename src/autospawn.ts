@@ -250,10 +250,7 @@ export class AutoSpawn {
           
 
 
-                console.log('mineFlag',mineFlag.name)
-                console.log('haulers',haulers.length)
-                console.log('miners',miners.length)
-                console.log('attackClaimers',attackClaimers.length)
+                
                 const mineSources = mineFlag.room?.find(FIND_SOURCES);
                 if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined || mineFlag.memory.numberOfNeededHarvestorSlots === 0) {
                     mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
@@ -263,18 +260,8 @@ export class AutoSpawn {
                     mineFlag.memory.numberOfNeededHarvestorSlots = mineFlag.room.find(FIND_SOURCES).length;
                 }
 
-                //Get total energy in containers
-                // const totalContainerEnergy = mineFlag.room?.find(FIND_STRUCTURES, {
-                //     filter: (struc) => struc.structureType === STRUCTURE_CONTAINER
-                // }).reduce((sum, container: any) => sum + (container.store[RESOURCE_ENERGY] || 0), 0);
-
-                // if(totalContainerEnergy) {
-                //     const numberOfFullContainers = totalContainerEnergy / 2000;
-                //     // Adjust haulers based on container energy
-                //     if (totalContainerEnergy > 2000) {
-                //         numberOfNeededHaulers = numberOfNeededHaulers + numberOfFullContainers;
-                //     }
-                // }
+               
+                    
                
 
                 if(mineSources) {
@@ -286,6 +273,26 @@ export class AutoSpawn {
                 }
                 numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
                 
+
+                console.log('mineFlag',mineFlag.name,'has',mineFlag.room?.find(FIND_SOURCES).length,'sources')
+                console.log('haulers',haulers.length,'out of',numberOfNeededHaulers)
+                console.log('miners',miners.length,'out of',numberOfNeededMiners)
+                console.log('attackClaimers',attackClaimers.length,'out of',numberOfNeededAttackClaimers)
+
+                //Get total energy in containers
+                if(attackClaimers.length >= numberOfNeededAttackClaimers && haulers.length >= numberOfNeededHaulers && miners.length >= numberOfNeededMiners) {
+                    const totalContainerEnergy = mineFlag.room?.find(FIND_STRUCTURES, {
+                        filter: (struc) => struc.structureType === STRUCTURE_CONTAINER
+                    }).reduce((sum, container: any) => sum + (container.store[RESOURCE_ENERGY] || 0), 0);
+
+                    if(totalContainerEnergy) {
+                        const numberOfFullContainers = totalContainerEnergy / 2000;
+                        // Adjust haulers based on container energy
+                        if (totalContainerEnergy > 2000) {
+                            numberOfNeededHaulers = numberOfNeededHaulers + numberOfFullContainers;
+                        }
+                    }
+                }
 
                 if(numberOfNeededMiners > 0 || numberOfNeededHaulers > 0 || numberOfNeededAttackClaimers > 0) {
        
