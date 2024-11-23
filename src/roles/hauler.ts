@@ -71,6 +71,21 @@ export class Hauler {
                 return
             }
 
+            const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+                filter:  (source) => {
+                    return (
+                        source.store.energy >= 50
+
+
+                    )
+                }
+            });
+
+            if(tombstone && creep.withdraw(tombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(tombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
+                return
+            }
+
             const droppedT = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
                 filter:  (source) => {
                     return (
