@@ -60,11 +60,14 @@ declare global {
     extractorMiner?: boolean;
     isBoosted?: boolean;
     hauling?: boolean;
+    assignedFlag?: string;
   }
 
   interface FlagMemory {
     numberOfNeededHarvestorSlots?: number;
     isassigned?: boolean;
+    numberOfNeededMiners?: number;
+    numberOfNeededClaimers?: number;
   }
 
   // Syntax for adding proprties to `global` (ex "global.log")

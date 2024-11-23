@@ -1,4 +1,5 @@
 import { AutoSpawn } from "autospawn";
+import { Labs } from "labs";
 import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 
@@ -72,103 +73,56 @@ export class Claimer {
     }
 
     public static run(creep: Creep): void {
+        // if (!creep.memory.isBoosted) {
+        //     const canContinue = Labs.boostCreep(creep);
+        //     if (!canContinue) {
+        //         return;
+        //     }
+        // }
 
-
-
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say('🚩');
+        if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("🏴");
         }
 
+        // Handle multiple MineFlags
+        const mineFlags = _.filter(Game.flags, (flag) => flag.name.startsWith(creep.memory.firstSpawnCoords + 'MineFlag'));
 
+        // Assign claimers to flags if not already assigned
+        if (!creep.memory.assignedFlag) {
+            for (const mineFlag of mineFlags) {
+                const assignedClaimers = _.filter(Game.creeps, (claimer) => claimer.memory.role === 'claimer' && claimer.memory.assignedFlag === mineFlag.name);
+                const neededClaimers = mineFlag.memory?.numberOfNeededClaimers || 1; // Default to 1 if not set
 
-        if(creep.memory.role === 'attackClaimer') {
-
-
-            if(creep.memory.building && creep.room?.controller) {
-                creep.say('🚩' + creep.room?.controller.room.name)
-                creep.reserveController(creep.room?.controller);
-                return;
-            }
-
-
-            const chosenDestinationFlag = this.choosePriorityReservationFlag(creep);
-
-            if(chosenDestinationFlag) {
-                const mineRoom = chosenDestinationFlag.room;
-                if(mineRoom?.controller) {
-                    const reservationCode = creep.reserveController(mineRoom?.controller);
-                    if(reservationCode == OK) {
-                        creep.say('🚩'+mineRoom.name)
-                        creep.memory.building = true;
-                    }
-                    if(creep.signController(mineRoom.controller, "Mine mine mine!") == ERR_NOT_IN_RANGE) {
-                        creep.say('🚩'+mineRoom.name)
-                        creep.moveTo(mineRoom.controller);
-                    }else if(reservationCode == ERR_NOT_IN_RANGE){
-                        creep.say('🚩'+mineRoom.name)
-                        creep.moveTo(mineRoom.controller);
-                    } else {
-                        creep.moveTo(mineRoom.controller);
-                    }
+                if (assignedClaimers.length < neededClaimers) {
+                    creep.memory.assignedFlag = mineFlag.name;
+                    break;
                 }
             }
-            return;
         }
 
-        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
-        if(!canProceed){
-            return;
+        // If assigned, go to the assigned flag
+        if (creep.memory.assignedFlag) {
+            const assignedFlag = Game.flags[creep.memory.assignedFlag];
+            if (assignedFlag) {
+                // Only move if not already in the target room
+                if (creep.room.name !== assignedFlag.pos.roomName) {
+                    MovementUtils.goToFlag(creep, assignedFlag);
+                    return;
+                }
+
+                this.claimController(creep, assignedFlag);
+            }
         }
+    }
 
-        //const room = new RoomPosition(AttackSequence.NEXT_BASE_TO_CLAIM.coord.x, AttackSequence.NEXT_BASE_TO_CLAIM.coord.y, AttackSequence.NEXT_BASE_TO_CLAIM.pos);
-
-        if(creep.room.controller && !creep.room.controller.my) {
-
-            const enemyController = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-                filter: function(object) {
-                    return object.structureType === STRUCTURE_CONTROLLER && object.owner?.username !== 'Invader'
-                }
-            });
-
-
-
-
-            if(!creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller.pos.y,1)) {
-                if(creep.room.controller) {
-                    if(creep.signController(creep.room.controller, "Mine mine mine! -- X") == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(creep.room.controller);
-                    }
-                } else {
-                    creep.moveTo(creep.room.controller);
-                }
-                return;
+    private static claimController(creep: Creep, mineFlag: Flag) {
+        if (creep.room.controller && !creep.room.controller.my) {
+            if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
             }
-
-
-
-            if(enemyController && creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                //creep.moveTo(creep.room.controller);
-            }else if(creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                //creep.moveTo(creep.room.controller);
-            }
-
-
-
-            const claimTargetCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-                filter: function(object) {
-                    return object.getActiveBodyparts(CLAIM) > 0;
-                }
-            });
-
-            if(claimTargetCreep) {
-                if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                    //creep.moveTo(creep.room.controller);
-                }
-
-                if(creep.claimController(creep.room.controller) == OK) {
-
-                }
-            }
+        } else if (creep.room.controller && creep.room.controller.my) {
+            // If already claimed, remove the flag
+            mineFlag.remove();
         }
     }
 

@@ -125,7 +125,35 @@ export class Miner {
             return;
         }
 
-        this.creepMiner(creep,firstRoom, mineType);
+        // Handle multiple MineFlags
+        const mineFlags = _.filter(Game.flags, (flag) => flag.name.startsWith(creep.memory.firstSpawnCoords + 'MineFlag'));
+
+        // Assign miners to flags if not already assigned
+        if (!creep.memory.assignedFlag) {
+            for (const mineFlag of mineFlags) {
+                const assignedMiners = _.filter(miners, (miner) => miner.memory.assignedFlag === mineFlag.name);
+                const neededMiners = mineFlag.memory?.numberOfNeededMiners || 1; // Default to 1 if not set
+
+                if (assignedMiners.length < neededMiners) {
+                    creep.memory.assignedFlag = mineFlag.name;
+                    break;
+                }
+            }
+        }
+
+        // If assigned, go to the assigned flag
+        if(creep.memory.assignedFlag ) {
+            const assignedFlag = Game.flags[creep.memory.assignedFlag ?? ''];
+            if (assignedFlag && creep.memory.assignedFlag) {
+                if (creep.room !== assignedFlag.room) {
+                    MovementUtils.goToFlag(creep, assignedFlag);
+                    return;
+                }
+
+                this.creepMiner(creep, firstRoom, mineType, assignedFlag);
+            }
+        }
+        
 
 
 
@@ -210,7 +238,7 @@ export class Miner {
         }
     }
 
-    private static creepMiner(creep:Creep,firstRoom:any, minerType: "mine" | "haul" | "allAround") {
+    private static creepMiner(creep:Creep,firstRoom:any, minerType: "mine" | "haul" | "allAround", mineFlag: Flag) {
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say("⛏");
@@ -263,34 +291,11 @@ export class Miner {
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("⛏ 🔄");
             }
-            const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
 
-
-            if(!!!mineFlag) {
+            if (creep.room != mineFlag.room) {
+                MovementUtils.goToFlag(creep, mineFlag);
                 return;
             }
-
-            // const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS, {
-            //     filter: (creep) => (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 ) && creep.owner.username === 'Invader'
-            // }).length;
-
-
-            // if(mineHostiles) {
-            //     if(creep.room != firstRoom) {
-            //         creep.say("😨",true)
-            //         creep.moveTo(firstRoom.find(FIND_CREEPS)[0])
-            //     } else if(mineHostiles){
-            //         Carrier.run(creep);
-            //     }
-            //     return;
-            // }
-
-
-            if(creep.room != mineFlag.room) {
-                MovementUtils.goToFlag(creep,mineFlag);
-                return;
-            }
-
 
             const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
                 filter:  (source) => {
@@ -385,11 +390,11 @@ export class Miner {
                 return;
             }
 
-            const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            // const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
-            if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
-            }
+            // if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
+            // }
 
         }else {
             this.dropOffStuff(creep,firstRoom)
