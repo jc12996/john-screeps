@@ -133,12 +133,13 @@ export class Builder {
             else if(links.length) {
                 this.moveAndBuild(creep,links[0]);
             }
-            else if(extensions[0]){
-                this.moveAndBuild(creep,extensions[0]);
-            }
             else if(storageSite){
                 this.moveAndBuild(creep,storageSite);
             }
+            else if(extensions[0]){
+                this.moveAndBuild(creep,extensions[0]);
+            }
+            
             else if(container.length && creep.memory.role !== 'upgrader'){
                 this.moveAndBuild(creep,container[0]);
             }
