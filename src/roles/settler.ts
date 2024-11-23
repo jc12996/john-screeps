@@ -22,7 +22,10 @@ export class Settler {
 
         const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
         if(!canProceed){
-            return;
+            if(creep.room.controller && creep.room.controller.my && creep.room.controller.level >= 3) {
+                return;
+            }
+           
         }
 
 

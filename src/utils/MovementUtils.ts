@@ -483,7 +483,13 @@ export class MovementUtils {
             return true;
         }
 
-        MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
+        if(creep.room.controller && (!creep.room.controller.my || (creep.room.controller.level < 3)) && creep.memory.role === 'settler') {
+            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
+        } else if(creep.memory.role !== 'settler') {
+            MovementUtils.goToFlag(creep,AutoSpawn.nextClaimFlag);
+        }
+
+        
         if(!!AutoSpawn.nextClaimFlag && AutoSpawn.nextClaimFlag.room !== creep.room){
             return false;
         }
