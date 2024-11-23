@@ -54,14 +54,11 @@ export class MovementUtils {
                 if(flag.name === 'attackFlag') {
                     Game.flags.attackFlag.remove();
                 }
-
             }
 
             const isPatrolCreep = (
                 creep.memory.role === 'healer' || creep.memory.role === 'attacker' || creep.memory.role === 'meatGrinder' || creep.memory.role === 'dismantler' || creep.memory.role === 'scout'
             );
-
-
 
             if(Game.flags.rallyFlag2 && Game.flags.rallyFlag && isPatrolCreep) {
 
@@ -77,13 +74,27 @@ export class MovementUtils {
                     filter: (fff) => fff.name === 'rallyFlag'
                 }).length > 0);
 
-
                 if(!creep.memory.hasJoinedPatrol) {
                     flag = Game.flags.rallyFlag;
-                    if(creep.moveTo(flag) === ERR_NO_PATH && friendlyRamparts) {
-
+                    if(creep.moveTo(flag, {
+                        costCallback: function(roomName, costMatrix) {
+                            if(Game.rooms[roomName]) {
+                                const sourceKeepers = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS, {
+                                    filter: c => c.owner.username === 'Source Keeper'
+                                });
+                                sourceKeepers.forEach(keeper => {
+                                    for(let x = keeper.pos.x - 5; x <= keeper.pos.x + 5; x++) {
+                                        for(let y = keeper.pos.y - 5; y <= keeper.pos.y + 5; y++) {
+                                            if(x >= 0 && x < 50 && y >= 0 && y < 50) {
+                                                costMatrix.set(x, y, 20);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }) === ERR_NO_PATH && friendlyRamparts) {
                         creep.moveTo(friendlyRamparts);
-
                     }
 
                     if(creepIsNearFlag) {
@@ -103,8 +114,6 @@ export class MovementUtils {
                         Game.flags.rallyFlag2.pos.y,
                         {align: 'right', opacity: 0.8});
 
-
-
                     new RoomVisual(Game.flags.rallyFlag.room.name).line(Game.flags.rallyFlag.pos.x-3,Game.flags.rallyFlag.pos.y,Game.flags.rallyFlag.pos.x,Game.flags.rallyFlag.pos.y,{ color: 'green' });
                     new RoomVisual(Game.flags.rallyFlag.room.name).line(Game.flags.rallyFlag.pos.x,Game.flags.rallyFlag.pos.y,Game.flags.rallyFlag.pos.x-1,Game.flags.rallyFlag.pos.y+1,{ color: 'green' });
                     new RoomVisual(Game.flags.rallyFlag.room.name).line(Game.flags.rallyFlag.pos.x,Game.flags.rallyFlag.pos.y,Game.flags.rallyFlag.pos.x-1,Game.flags.rallyFlag.pos.y-1,{ color: 'green' });
@@ -113,13 +122,9 @@ export class MovementUtils {
                         Game.flags.rallyFlag.pos.x + 8,
                         Game.flags.rallyFlag.pos.y,
                         {align: 'right', opacity: 0.8});
-
                 }
 
-
-
                 if(flag.name === 'rallyFlag' && creepIsNearFlag && isPatrolCreep) {
-
                     const creepIsInSquad = creep.pos.findInRange(FIND_MY_CREEPS,3,{
                         filter: (myCreep) => (myCreep.getActiveBodyparts(ATTACK) > 0 || myCreep.getActiveBodyparts(RANGED_ATTACK) > 0) || (myCreep.memory.role === 'scout' && !Game.flags.scoutFlag)
                     }).length >= ((!Game.flags.scoutFlag && Game.flags.startScouting) ? 1 : (PeaceTimeEconomy.TOTAL_ATTACKER_SIZE)) ;
@@ -129,27 +134,33 @@ export class MovementUtils {
                         Game.flags.rallyFlag2.setPosition(tempRallyFlag.pos);
                         flag = Game.flags.rallyFlag
                     }
-
                 }
 
                 if((!!!Game.flags?.rallyFlag2 && !!!Game.flags?.rallyFlag) && isPatrolCreep) {
                     creep.memory.hasJoinedPatrol = undefined;
                 }
-
             }
 
-
-
-
-
-
-            if(creep.moveTo(flag) === ERR_NO_PATH && friendlyRamparts) {
-
+            if(creep.moveTo(flag, {
+                costCallback: function(roomName, costMatrix) {
+                    if(Game.rooms[roomName]) {
+                        const sourceKeepers = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS, {
+                            filter: c => c.owner.username === 'Source Keeper'
+                        });
+                        sourceKeepers.forEach(keeper => {
+                            for(let x = keeper.pos.x - 5; x <= keeper.pos.x + 5; x++) {
+                                for(let y = keeper.pos.y - 5; y <= keeper.pos.y + 5; y++) {
+                                    if(x >= 0 && x < 50 && y >= 0 && y < 50) {
+                                        costMatrix.set(x, y, 20);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }) === ERR_NO_PATH && friendlyRamparts) {
                 creep.moveTo(friendlyRamparts);
-
             }
-
-
     }
 
     public static goToRally(creep: Creep): void {
@@ -270,9 +281,19 @@ export class MovementUtils {
               return;
             }
 
-            if((creep.memory.role !== 'upgrader' || (creep.room.controller && creep.room.controller.level <= 2) ||  (droppedSources && creep.pos.inRangeTo(droppedSources.pos,3))) && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            if((creep.memory.role === 'builder' || (creep.room.controller && creep.room.controller.level <= 2) ||  (droppedSources && creep.pos.inRangeTo(droppedSources.pos,3))) && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
                 creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            } else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            } 
+            else if (creep.room.controller && creep.room.controller.pos.findInRange(FIND_STRUCTURES, 7, {
+                filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
+            })[0] && creep.withdraw(creep.room.controller.pos.findInRange(FIND_STRUCTURES, 7, {
+                filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
+            })[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller.pos.findInRange(FIND_STRUCTURES, 7, {
+                    filter: (s) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
+                })[0], {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+            else if (nearestStorageOrTerminal && nearestStorageOrTerminal.store && creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(nearestStorageOrTerminal, {visualizePathStyle: {stroke: "#ffffff"}});
             }
             else if (creep.memory.role === 'builder' && nearestStoreStructure && creep.withdraw(nearestStoreStructure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

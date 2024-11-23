@@ -211,6 +211,13 @@ export class Carrier {
                            !creep.memory.hauling && workCreep.memory.upgrading !== true;
                 }
 
+                if (workCreep.room.controller && workCreep.room.controller.my && workCreep.room.controller.level <= 3 && workCreep.room.energyAvailable === workCreep.room.energyCapacityAvailable && workCreep.memory.extensionFarm === undefined) {
+                    return workCreep.memory.role === 'upgrader' && 
+                           workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() && 
+                           !creep.memory.hauling && workCreep.memory.upgrading !== true;
+                }
+
+
                 return (
                     (
                         ((workCreep.memory.role === 'upgrader' || (workCreep.memory.role === 'builder' && commandLevel >= 4)) && workCreep.memory.upgrading !== true)
@@ -496,11 +503,24 @@ export class Carrier {
         if(creep.memory.role === 'miner' || creep.memory.hauling) {
 
 
-
+            const nearestContainerToController = creep.room.controller ? creep.room.controller.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_CONTAINER && 
+                           structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            }) : null;
             if(nearestStorageOrTerminal && nearestStorageOrTerminal.store.energy < 10000   && creep.transfer(nearestStorageOrTerminal , RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.say('🚚 P');
                 creep.moveTo(nearestStorageOrTerminal );
-            } else if(creep.room.controller && creep.room.controller?.my) {
+            } 
+            else if (!nearestStorageOrTerminal && nearestContainerToController) {
+               
+                if (nearestContainerToController && creep.transfer(nearestContainerToController, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('🚚 C');
+                    creep.moveTo(nearestContainerToController);
+                }
+            }
+            else if(creep.room.controller && creep.room.controller?.my) {
                 creep.say('🚚 C');
                 if(creep.pos.inRangeTo(creep.room.controller,4) === false) {
                     creep.moveTo(creep.room.controller);

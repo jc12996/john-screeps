@@ -62,6 +62,9 @@ declare global {
     isBoosted?: boolean;
     hauling?: boolean;
     assignedMineFlag?: string;
+    targetContainerPath?: PathStep[];
+    targetContainerId?: Id<StructureContainer>;
+    targetContainer?: StructureContainer;
   }
 
   interface FlagMemory {

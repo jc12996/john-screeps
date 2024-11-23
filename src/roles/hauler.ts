@@ -6,140 +6,119 @@ import { Carrier } from "./carrier";
 
 export class Hauler {
     public static run(creep: Creep): void {
+        // Early returns for invalid state
+        if (!creep.memory?.firstSpawnCoords) return;
+        
+        // Handle boosting
+        if (!creep.memory.isBoosted && !Labs.boostCreep(creep)) return;
 
-        if (!creep.memory.carrying && creep.store.getFreeCapacity() == 0) {
+        // Update carrying state
+        if (!creep.memory.carrying && creep.store.getFreeCapacity() === 0) {
             creep.memory.carrying = true;
-        }
-
-        if (creep.memory.carrying && creep.store[RESOURCE_ENERGY] == 0) {
+        } else if (creep.memory.carrying && creep.store[RESOURCE_ENERGY] === 0) {
             creep.memory.carrying = false;
-        }
-
-
-        if(!creep.memory.isBoosted) {
-            const canContinue = Labs.boostCreep(creep)
-            if(!canContinue) {
-                return;
-            }
-        }
-
-
-        if(!!!creep.memory?.firstSpawnCoords) {
-            return;
         }
 
         const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
 
-        if(!creep.memory.carrying) {
-
-
-            if(!creep.memory.assignedMineFlag) {
-                creep.memory.assignedMineFlag = creep.memory.firstSpawnCoords+'MineFlag';
-                return;
-            }
-    
-            const mineFlag = Game.flags[creep.memory.assignedMineFlag] as Flag;
-    
-
-            if(!!!mineFlag) {
-                return;
-            }
-
-
-            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-                creep.say("🚚"+mineFlag.room?.name);
-            }
-
-            if(creep.room != mineFlag.room) {
-                MovementUtils.goToFlag(creep,mineFlag);
-                return;
-            }
-
-
-            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-                filter:  (source) => {
-                    return (
-                        source.amount >= 50
-
-
-                    )
-                }
-            });
-
-            if(creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-                return
-            }
-
-            const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-                filter:  (source) => {
-                    return (
-                        source.store.energy >= 50
-
-
-                    )
-                }
-            });
-
-            if(tombstone && creep.withdraw(tombstone,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                creep.moveTo(tombstone, {visualizePathStyle: {stroke: '#ffaa00'}});
-                return
-            }
-
-            const droppedT = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-                filter:  (source) => {
-                    return (
-                        source.store.energy >= 50
-
-
-                    )
-                }
-            });
-
-            if(droppedT && creep.withdraw(droppedT,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedT, {visualizePathStyle: {stroke: '#ffaa00'}});
-                return
-            }
-
-            let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && (structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity() || structure.store[RESOURCE_ENERGY] >= 200)
-            })
-
-            if(creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-                return;
-            }
-
-            if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
-            } else if(!container && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
-
-        }else {
-            this.dropOffStuff(creep,firstRoom)
-
+        if (creep.memory.carrying) {
+            this.dropOffStuff(creep, firstRoom);
+            return;
         }
 
+        // Handle resource collection
+        if (!creep.memory.assignedMineFlag) {
+            creep.memory.assignedMineFlag = creep.memory.firstSpawnCoords + 'MineFlag';
+            return;
+        }
 
+        const mineFlag = Game.flags[creep.memory.assignedMineFlag];
+        if (!mineFlag) return;
 
+        if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("🚚" + mineFlag.room?.name);
+        }
 
+        
 
-
-
-
-
-    }
-
-    private static dropOffStuff(creep:Creep,firstRoom: any) {
-        const roomStructures = firstRoom.find(FIND_MY_SPAWNS)
-
-            if(creep.room !== firstRoom) {
-                creep.moveTo(roomStructures[0]);
+        // Check existing container target
+        if (creep.memory.targetContainerId) {
+            const container = Game.getObjectById(creep.memory.targetContainerId as Id<StructureContainer>);
+            if (container && container.store[RESOURCE_ENERGY] >= 200) {
+                if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(container.pos, {visualizePathStyle: {stroke: "#ffffff"}});
+                }
                 return;
             }
-            creep.say('🚚 C');
-            Carrier.run(creep);
+            delete creep.memory.targetContainerId;
+        }
+
+        // Find new container target
+        const containers = creep.room.find(FIND_STRUCTURES, {
+            filter: s => s.structureType === STRUCTURE_CONTAINER &&
+                s.store[RESOURCE_ENERGY] >= Math.min(creep.store.getCapacity(), 200)
+        }) as StructureContainer[];
+
+        // Get best available container
+        const container = containers
+            .sort((a, b) => b.store[RESOURCE_ENERGY] - a.store[RESOURCE_ENERGY])
+            .find(c => !_.find(Game.creeps, creep => 
+                creep.memory.role === 'hauler' && 
+                creep.memory.hauling && 
+                creep.pos.isEqualTo(c.pos)
+            ));
+
+        if (container && creep.room === mineFlag.room) {
+            creep.memory.targetContainerId = container.id;
+            
+            if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
+            }
+            return;
+        }else if (creep.room !== mineFlag.room) {
+            MovementUtils.goToFlag(creep, mineFlag);
+            return;
+        }
+
+        // Check for dropped resources
+        const droppedSource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            filter: source => source.amount >= 50
+        });
+
+        if (droppedSource && creep.pickup(droppedSource) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(droppedSource, {visualizePathStyle: {stroke: '#ffaa00'}});
+        }
     }
 
+    private static dropOffStuff(creep: Creep, firstRoom: Room) {
+        const spawn = firstRoom.find(FIND_MY_SPAWNS)[0];
+        
+        if (creep.room !== firstRoom) {
+            const sourceKeepers = creep.room.find(FIND_HOSTILE_CREEPS, {
+                filter: c => c.owner.username === 'Source Keeper'
+            });
+            const moveOpts = sourceKeepers.length > 0 ? {
+                costCallback: (roomName: string, costMatrix: CostMatrix) => {
+                    sourceKeepers.forEach(keeper => {
+                        const range = 5;
+                        for (let x = -range; x <= range; x++) {
+                            for (let y = -range; y <= range; y++) {
+                                const xPos = keeper.pos.x + x;
+                                const yPos = keeper.pos.y + y;
+                                if (xPos >= 0 && xPos < 50 && yPos >= 0 && yPos < 50) {
+                                    costMatrix.set(xPos, yPos, 255);
+                                }
+                            }
+                        }
+                    });
+                }
+            } : undefined;
+
+            creep.moveTo(spawn, moveOpts);
+            return;
+        }
+
+        creep.say('🚚 C');
+        Carrier.run(creep);
+    }
 }

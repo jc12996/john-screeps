@@ -263,47 +263,16 @@ export class Miner {
         }
 
 
-        const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-            filter:  (source) => {
-                return (
-                    source.amount >= 50
-
-
-                )
-            }
-        });
-
-        if(minerType !== 'mine' && creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-            return
-        }
-
-        const droppedT = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-            filter:  (source) => {
-                return (
-                    source.store.energy >= 50
-
-
-                )
-            }
-        });
-
-        if(minerType !== 'mine' && droppedT && creep.withdraw(droppedT,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-            creep.moveTo(droppedT, {visualizePathStyle: {stroke: '#ffaa00'}});
-            return
-        }
-
-
-
         let targetSource = Harvester.findTargetSource(creep);
 
-        if(targetSource && minerType !== 'haul') {
+        if(targetSource && !creep.pos.isNearTo(targetSource.pos.x, targetSource.pos.y) && !creep.pos.findInRange(FIND_SOURCES, 1).length) {
             creep.moveTo(targetSource);
+            return;
         }
 
         const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
 
-        if(finalSource && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
+        if(finalSource && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)  && !creep.pos.findInRange(FIND_SOURCES, 1).length) {
             creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
             return;
         }
@@ -313,11 +282,14 @@ export class Miner {
         }
 
         const mineCode = creep.harvest(finalSource);
-        if(mineCode == ERR_NOT_IN_RANGE && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
+        if(mineCode == ERR_NOT_IN_RANGE && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) && !creep.pos.findInRange(FIND_SOURCES, 1).length) {
             creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
+            return;
         }
 
-        if(!constructionContainers && creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
+        if(!constructionContainers && creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) && !creep.pos.findInRange(FIND_STRUCTURES, 1, {
+            filter: (structure) => structure.structureType === STRUCTURE_CONTAINER
+        }).length) {
             ScaffoldingUtils.createContainers(creep);
         }
 

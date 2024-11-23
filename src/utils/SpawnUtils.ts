@@ -145,6 +145,16 @@ export class SpawnUtils {
                     }
                     break;
                 }
+                else if(hauling && commandLevel < 6  && energyAvailable >= 450) {
+
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 5; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }
                 else {
                     return null;
                 }
