@@ -45,7 +45,6 @@ export class AutoSpawn {
         const meatGrinders = _.filter(Game.creeps, (creep) => creep.memory.role == 'meatGrinder');
         const settlers = _.filter(Game.creeps, (creep) => creep.memory.role == 'settler');
         const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
-        const attackClaimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attackClaimer');
         const healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
 
         const mineFlags = _.filter(Game.flags, (flag) => flag.name.startsWith(spawn.room.name + 'MineFlag'));
@@ -94,7 +93,6 @@ export class AutoSpawn {
         let numberOfNeededBuilders = LowUpkeep.Builder * 1;
         let numberOfNeededRepairers = LowUpkeep.Repairer * 1;
         let numberOfNeededUpgraders = LowUpkeep.Upgrader * RoomSources.length;
-        let numberOfNeededMiners = LowUpkeep.Miners * 1;
         let numberOfNeededSettlers = LowUpkeep.Settlers * 1;
         let numberOfNeededDefenders = !!Game.flags.draftFlag ? (LowUpkeep.DraftedDefenderTotal * 1) : (LowUpkeep.Defender * 1);
 
@@ -118,7 +116,6 @@ export class AutoSpawn {
                 numberOfNeededRepairers = MediumUpkeep.Repairer * 1
                 numberOfNeededDefenders = numberOfNeededDefenders + MediumUpkeep.AdditionalDraftedDefenders;
                 numberOfNeededSettlers = MediumUpkeep.Settlers;
-                numberOfNeededMiners = MediumUpkeep.Miners;
                 //console.log(`Medium Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             } else if(storage.store[RESOURCE_ENERGY] > 400000) {
                 numberOfNeededCarriers = HighUpkeep.Carriers * harvesters.length;
@@ -126,7 +123,6 @@ export class AutoSpawn {
                 numberOfNeededBuilders = HighUpkeep.Builder * 1
                 numberOfNeededRepairers = HighUpkeep.Repairer *  1
                 numberOfNeededSettlers = HighUpkeep.Settlers;
-                numberOfNeededMiners = HighUpkeep.Miners;
                 numberOfNeededDefenders = numberOfNeededDefenders + HighUpkeep.AdditionalDraftedDefenders;
                 //console.log(`High Upkeep in ${spawn.name} storage:`,storage.store[RESOURCE_ENERGY],' needed upgraders: ',numberOfNeededUpgraders);
             }
@@ -213,10 +209,7 @@ export class AutoSpawn {
 
         let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
-        let numberOfNeededAttackClaimers = mineFlags.length;
-
-        // Check if any attackClaimer has 100 ticks or less left to live
-        const needsNewAttackClaimer = attackClaimers.some(creep => creep.ticksToLive && creep.ticksToLive <= 300);
+       
 
         mineFlags.forEach(mineFlag => {
 
@@ -239,9 +232,9 @@ export class AutoSpawn {
                     );
             });
 
-            const haulers = tempMiners.filter(miner => miner.memory.hauling === true);
-            const miners = tempMiners.filter(miner => !miner.memory.hauling);
-
+            const haulers = tempMiners.filter(miner => miner.memory.hauling === true && miner.memory.assignedMineFlag == mineFlag.name);
+            const miners = tempMiners.filter(miner => !miner.memory.hauling && miner.memory.assignedMineFlag == mineFlag.name);
+            const attackClaimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attackClaimer' && creep.memory.assignedMineFlag == mineFlag.name);
           
 
 
@@ -249,6 +242,10 @@ export class AutoSpawn {
             // Example: Adjust number of needed miners and haulers based on each mineFlag
             let numberOfNeededMiners = LowUpkeep.Miners * 1
             let numberOfNeededHaulers = LowUpkeep.Haulers * 1
+            let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1
+            
+             // Check if any attackClaimer has 100 ticks or less left to live
+            const needsNewAttackClaimer = attackClaimers.some(creep => creep.ticksToLive && creep.ticksToLive <= 300 && creep.memory.assignedMineFlag == mineFlag.name);
 
           
 
@@ -256,7 +253,8 @@ export class AutoSpawn {
                 console.log('mineFlag',mineFlag.name)
                 console.log('haulers',haulers.length)
                 console.log('miners',miners.length)
-                // const mineSources = mineFlag.room?.find(FIND_SOURCES);
+                console.log('attackClaimers',attackClaimers.length)
+                const mineSources = mineFlag.room?.find(FIND_SOURCES);
                 if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined || mineFlag.memory.numberOfNeededHarvestorSlots === 0) {
                     mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
                 }
@@ -265,7 +263,7 @@ export class AutoSpawn {
                     mineFlag.memory.numberOfNeededHarvestorSlots = mineFlag.room.find(FIND_SOURCES).length;
                 }
 
-                // Get total energy in containers
+                //Get total energy in containers
                 // const totalContainerEnergy = mineFlag.room?.find(FIND_STRUCTURES, {
                 //     filter: (struc) => struc.structureType === STRUCTURE_CONTAINER
                 // }).reduce((sum, container: any) => sum + (container.store[RESOURCE_ENERGY] || 0), 0);
@@ -279,15 +277,15 @@ export class AutoSpawn {
                 // }
                
 
-                // if(mineSources) {
-                //     numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
-                // }
-                // let mineMultiplier = 1.1;
-                // if(commandLevel >= 6 && spawn.room.energyAvailable >= 1700) {
-                //     mineMultiplier = 1;
-                // }
-                // numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
-    
+                if(mineSources) {
+                    numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
+                }
+                let mineMultiplier = 1.1;
+                if(commandLevel >= 6 && spawn.room.energyAvailable >= 1700) {
+                    mineMultiplier = 1;
+                }
+                numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
+                
 
                 if(numberOfNeededMiners > 0 || numberOfNeededHaulers > 0 || numberOfNeededAttackClaimers > 0) {
        
@@ -326,6 +324,8 @@ export class AutoSpawn {
                         options = {memory: {role: 'miner', hauling: true, assignedMineFlag: mineFlag.name }};
                         gotOne = true;
                     }
+
+
     
                     if(gotOne) {
                         this.startSpawningSequence(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
