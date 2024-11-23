@@ -62,6 +62,7 @@ export class AutoSpawn {
         const commandLevel =  spawn.room?.controller?.level ?? 1;
         const energyAvailable = spawn.room.energyAvailable;
         const energyCapacityAvailable = spawn.room.energyCapacityAvailable;
+        const maxNeededWorkParts = 3;
 
         if(spawn.room.memory?.numberOfNeededHarvestorSlots === undefined || spawn.room.memory.numberOfNeededHarvestorSlots == 0) {
             spawn.room.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawn);
@@ -213,177 +214,156 @@ export class AutoSpawn {
         let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
        
-
-        mineFlags.forEach(mineFlag => {
-
-
-               
+        if(harvesters.length >= numberOfNeededHarvesters && carriers.length >= numberOfNeededCarriers && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
+            mineFlags.forEach(mineFlag => {
 
 
-            const tempMiners = _.filter(Game.creeps, (creep) => {
-                if (!mineFlag) {
-                    return false;
-                }
-                const mineFlagRoom = mineFlag.room;
-                return creep.memory.role == 'miner' &&
-                    (
-                        creep.room.name == spawn.room.name ||
+                
+
+
+                const tempMiners = _.filter(Game.creeps, (creep) => {
+                    if (!mineFlag) {
+                        return false;
+                    }
+                    const mineFlagRoom = mineFlag.room;
+                    return creep.memory.role == 'miner' &&
                         (
-                            mineFlagRoom &&
-                            creep.room.name == mineFlagRoom.name
-                        )
-                    );
-            });
+                            creep.room.name == spawn.room.name ||
+                            (
+                                mineFlagRoom &&
+                                creep.room.name == mineFlagRoom.name
+                            )
+                        );
+                });
 
-            const haulers = tempMiners.filter(miner => miner.memory.hauling === true && miner.memory.assignedMineFlag == mineFlag.name);
-            const miners = tempMiners.filter(miner => !miner.memory.hauling && miner.memory.assignedMineFlag == mineFlag.name);
-            const attackClaimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attackClaimer' && creep.memory.assignedMineFlag == mineFlag.name);
-          
-
-
-            // Process each mineFlag as needed
-            // Example: Adjust number of needed miners and haulers based on each mineFlag
-            let numberOfNeededMiners = LowUpkeep.Miners * 1
-            let numberOfNeededHaulers = LowUpkeep.Haulers * 1
-            let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1
+                const haulers = tempMiners.filter(miner => miner.memory.hauling === true && miner.memory.assignedMineFlag == mineFlag.name);
+                const miners = tempMiners.filter(miner => !miner.memory.hauling && miner.memory.assignedMineFlag == mineFlag.name);
+                const attackClaimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attackClaimer' && creep.memory.assignedMineFlag == mineFlag.name);
             
-             // Check if any attackClaimer has 100 ticks or less left to live
-            const needsNewAttackClaimer = attackClaimers.some(creep => creep.ticksToLive && creep.ticksToLive <= 300 && creep.memory.assignedMineFlag == mineFlag.name);
-
-          
 
 
+                // Process each mineFlag as needed
+                // Example: Adjust number of needed miners and haulers based on each mineFlag
+                let numberOfNeededMiners = LowUpkeep.Miners * 1
+                let numberOfNeededHaulers = LowUpkeep.Haulers * 1
+                let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1
                 
-                const mineSources = mineFlag.room?.find(FIND_SOURCES);
-                if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined || mineFlag.memory.numberOfNeededHarvestorSlots === 0) {
-                    mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
-                }
-    
-                if(mineFlag.room && mineFlag.memory.numberOfNeededHarvestorSlots < mineFlag.room.find(FIND_SOURCES).length) {
-                    mineFlag.memory.numberOfNeededHarvestorSlots = mineFlag.room.find(FIND_SOURCES).length;
-                }
+                // Check if any attackClaimer has 100 ticks or less left to live
+                const needsNewAttackClaimer = attackClaimers.some(creep => creep.ticksToLive && creep.ticksToLive <= 300 && creep.memory.assignedMineFlag == mineFlag.name);
 
-               
+            
+
+
                     
-               
+                    const mineSources = mineFlag.room?.find(FIND_SOURCES);
+                    if(mineFlag.memory?.numberOfNeededHarvestorSlots === undefined || mineFlag.memory.numberOfNeededHarvestorSlots === 0) {
+                        mineFlag.memory.numberOfNeededHarvestorSlots = RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(mineFlag);
+                    }
+        
+                    if(mineFlag.room && mineFlag.memory.numberOfNeededHarvestorSlots < mineFlag.room.find(FIND_SOURCES).length) {
+                        mineFlag.memory.numberOfNeededHarvestorSlots = mineFlag.room.find(FIND_SOURCES).length;
+                    }
 
-                if(mineSources) {
-                    numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
-                }
-                let mineMultiplier = 1.1;
-                if(commandLevel >= 6 && spawn.room.energyAvailable >= 1700) {
-                    mineMultiplier = 1;
-                }
-                numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
+                
+                        
                 
 
-                // console.log('mineFlag',mineFlag.name,'has',mineFlag.room?.find(FIND_SOURCES).length,'sources')
-                // console.log('haulers',haulers.length,'out of',numberOfNeededHaulers)
-                // console.log('miners',miners.length,'out of',numberOfNeededMiners)
-                // console.log('attackClaimers',attackClaimers.length,'out of',numberOfNeededAttackClaimers)
+                    if(mineSources) {
+                        numberOfNeededMiners = mineFlag.memory?.numberOfNeededHarvestorSlots ?? RoomSources.length;
+                    }
+                    let mineMultiplier = 1.1;
+                    if(commandLevel >= 6 && spawn.room.energyAvailable >= 1700) {
+                        mineMultiplier = 1;
+                    }
+                    numberOfNeededMiners = numberOfNeededMiners > 0 ? (numberOfNeededMiners * mineMultiplier) : (mineSources?.length??0);
+                    
 
-                //Get total energy in containers
-                if(attackClaimers.length >= numberOfNeededAttackClaimers && haulers.length >= numberOfNeededHaulers && miners.length >= numberOfNeededMiners) {
-                    const totalContainerEnergy = mineFlag.room?.find(FIND_STRUCTURES, {
-                        filter: (struc) => struc.structureType === STRUCTURE_CONTAINER
-                    }).reduce((sum, container: any) => sum + (container.store[RESOURCE_ENERGY] || 0), 0);
+                    // console.log('mineFlag',mineFlag.name,'has',mineFlag.room?.find(FIND_SOURCES).length,'sources')
+                    // console.log('haulers',haulers.length,'out of',numberOfNeededHaulers)
+                    // console.log('miners',miners.length,'out of',numberOfNeededMiners)
+                    // console.log('attackClaimers',attackClaimers.length,'out of',numberOfNeededAttackClaimers)
 
-                    if(totalContainerEnergy) {
-                        const numberOfFullContainers = totalContainerEnergy / 2000;
-                        // Adjust haulers based on container energy
-                        if (totalContainerEnergy > 2000) {
-                            numberOfNeededHaulers = numberOfNeededHaulers + numberOfFullContainers;
+                    //Get total energy in containers
+                    if(attackClaimers.length >= numberOfNeededAttackClaimers && haulers.length >= numberOfNeededHaulers && miners.length >= numberOfNeededMiners) {
+                        const totalContainerEnergy = mineFlag.room?.find(FIND_STRUCTURES, {
+                            filter: (struc) => struc.structureType === STRUCTURE_CONTAINER
+                        }).reduce((sum, container: any) => sum + (container.store[RESOURCE_ENERGY] || 0), 0);
+
+                        if(totalContainerEnergy) {
+                            const numberOfFullContainers = totalContainerEnergy / 2000;
+                            // Adjust haulers based on container energy
+                            if (totalContainerEnergy > 2000) {
+                                numberOfNeededHaulers = numberOfNeededHaulers + numberOfFullContainers;
+                            }
                         }
                     }
-                }
 
-                if(numberOfNeededMiners >= 4) {
-                    numberOfNeededMiners = 4;
-                }
+                    if(numberOfNeededMiners >= 4) {
+                        numberOfNeededMiners = 4;
+                    }
 
+                    
+                    if(harvesters.length < miners.length) {
+                        numberOfNeededMiners = 0;
+                        numberOfNeededAttackClaimers = 0;
+                        numberOfNeededHaulers = 0;
+                    }
+
+
+                    if(numberOfNeededMiners > 0 || numberOfNeededHaulers > 0 || numberOfNeededAttackClaimers > 0) {
+        
                 
-                if(harvesters.length < miners.length) {
-                    numberOfNeededMiners = 0;
-                    numberOfNeededAttackClaimers = 0;
-                    numberOfNeededHaulers = 0;
-                }
+                        let bodyParts = null;
+                        let name = null;
+                        let options = undefined;
+                        let gotOne = false;
+                        
+                        
+                        if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 450 && (miners.length < numberOfNeededMiners || miners.length == 0)) {
+                            name = 'Miner'+ '_' + mineFlag.name + '_' +Game.time;
+                            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel);
+                            options = {memory: {role: 'miner', assignedMineFlag: mineFlag.name }};
+                            gotOne = true;
+                        }
+                        else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 650  && (haulers.length < numberOfNeededHaulers || haulers.length == 0)) {
+                            name = 'Hauler'+ '_' + mineFlag.name + '_' + Game.time;
+                            bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,true);
+                            options = {memory: {role: 'miner', hauling: true, assignedMineFlag: mineFlag.name }};
+                            gotOne = true;
+                        }else if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && (attackClaimers.length < numberOfNeededAttackClaimers || attackClaimers.length == 0)) {
+                            name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
+                            bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel);
+                            options = {memory: {role: 'attackClaimer', assignedMineFlag: mineFlag.name }};
+                            gotOne = true;
+        
+                        }
+                        else if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && ((needsNewAttackClaimer && attackClaimers.length < (numberOfNeededAttackClaimers+1)) || attackClaimers.length < numberOfNeededAttackClaimers)) {
+                            name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
+                            bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
+                            options = { memory: { role: 'attackClaimer', assignedMineFlag: mineFlag.name } };
+                            gotOne = true;
+                        }
+                        
 
 
-                if(numberOfNeededMiners > 0 || numberOfNeededHaulers > 0 || numberOfNeededAttackClaimers > 0) {
-       
+        
+                        if(gotOne) {
+                            this.startSpawningSequence(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
+                        }
+                
+                    }
+                
+
             
-                    let bodyParts = null;
-                    let name = null;
-                    let options = undefined;
-                    let gotOne = false;
-                    
-                    
-                    if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && (attackClaimers.length < numberOfNeededAttackClaimers || attackClaimers.length == 0)) {
-                        name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
-                        bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel);
-                        options = {memory: {role: 'attackClaimer', assignedMineFlag: mineFlag.name }};
-                        gotOne = true;
-    
-                    }
-                    else if (mineFlags.length > 0  && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && ((needsNewAttackClaimer && attackClaimers.length < (numberOfNeededAttackClaimers+1)) || attackClaimers.length < numberOfNeededAttackClaimers)) {
-                        name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
-                        bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
-                        options = { memory: { role: 'attackClaimer', assignedMineFlag: mineFlag.name } };
-                        gotOne = true;
-                    }
-                    else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 450 && (miners.length < numberOfNeededMiners || miners.length == 0)) {
-                        name = 'Miner'+ '_' + mineFlag.name + '_' +Game.time;
-                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel);
-                        options = {memory: {role: 'miner', assignedMineFlag: mineFlag.name }};
-                        gotOne = true;
-                    }
-                    else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 650  && (haulers.length < numberOfNeededHaulers || haulers.length == 0)) {
-                        name = 'Hauler'+ '_' + mineFlag.name + '_' + Game.time;
-                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,true);
-                        options = {memory: {role: 'miner', hauling: true, assignedMineFlag: mineFlag.name }};
-                        gotOne = true;
-                    }
-
-
-    
-                    if(gotOne) {
-                        this.startSpawningSequence(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
-                    }
-             
-                }
-            
-
-           
-            
-        });
-
+                
+            });
+        }
+        
         if(Game.flags.startScouting && isSquadPatrol) {
             isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
         }
-        if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
-            &&  !!this.nextClaimFlag
-            && totalNumberOfControlledRooms < Game.gcl.level
-            && !this.nextClaimFlag.room?.controller?.my
-            && !this.nextClaimFlag.room?.controller?.owner
-        )  {
-            name = 'Claimer' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel);
-            options = {memory: {role: 'claimer'}};
-
-        }
-       
-        else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers
-            && ((
-                !!this.nextClaimFlag
-                && this.nextClaimFlag.room?.controller?.my &&
-                 this.nextClaimFlag.room.find(FIND_HOSTILE_CREEPS).length == 0
-            ) || Game.flags.settlerFlag)
-        )  {
-            name = 'Settler' + Game.time;
-            bodyParts = SpawnUtils.getBodyPartsForArchetype('settler',spawn, commandLevel);
-            options = {memory: {role: 'settler'}};
-        }
-         else if ((harvesters.length == 0 || (harvesters.length == 1 && harvesters[0].ticksToLive && harvesters[0].ticksToLive <= 100)) && nonactiveharvesters.length == 0 && commandLevel < 7) {
+        
+        if ((harvesters.length == 0 || (harvesters.length == 1 && harvesters[0].ticksToLive && harvesters[0].ticksToLive <= 100)) && nonactiveharvesters.length == 0 && commandLevel < 7) {
             name = 'Harvester' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('harvester',spawn,commandLevel)
             options = {memory: {role: 'harvester'}}
@@ -403,7 +383,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel)
             options = {memory: {role: 'upgrader'}                }
         }
-        else if (!spawn.spawning && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
+        else if (!spawn.spawning && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts) && numberOfNeededCarriers > 0 && carriers.length < (numberOfNeededCarriers) && ActiveRoomSources.length > 0) {
             name = 'Carrier' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('carrier',spawn,commandLevel)
             options = {memory: {role: 'carrier'}}
@@ -413,6 +393,32 @@ export class AutoSpawn {
             name = 'Builder' + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype('builder',spawn,commandLevel)
             options = {memory: {role: 'builder'}}
+        }
+        else if(hostileCreeps.length == 0 && claimers.length < LowUpkeep.Claimers
+            && harvesters.length >= numberOfNeededHarvesters
+            && carriers.length >= numberOfNeededCarriers
+            && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)
+            &&  !!this.nextClaimFlag
+            && totalNumberOfControlledRooms < Game.gcl.level
+            && !this.nextClaimFlag.room?.controller?.my
+            && !this.nextClaimFlag.room?.controller?.owner
+        )  {
+            name = 'Claimer' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('claimer',spawn, commandLevel);
+            options = {memory: {role: 'claimer'}};
+
+        }
+       
+        else if(hostileCreeps.length == 0 && settlers.length < LowUpkeep.Settlers && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)
+            && ((
+                !!this.nextClaimFlag
+                && this.nextClaimFlag.room?.controller?.my &&
+                 this.nextClaimFlag.room.find(FIND_HOSTILE_CREEPS).length == 0
+            ) || Game.flags.settlerFlag)
+        )  {
+            name = 'Settler' + Game.time;
+            bodyParts = SpawnUtils.getBodyPartsForArchetype('settler',spawn, commandLevel);
+            options = {memory: {role: 'settler'}};
         }
         else if(Game.flags.startScouting && commandLevel >= 7 && Game.flags.rallyFlag2 && !Game.flags.scoutFlag && scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE)  {
             name = 'Scout' + Game.time;
@@ -459,7 +465,7 @@ export class AutoSpawn {
             bodyParts = SpawnUtils.getBodyPartsForArchetype('upgrader',spawn,commandLevel)
             options = {memory: {role: 'upgrader'}                }
         }
-
+        // console.log(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
         this.startSpawningSequence(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
        
     }

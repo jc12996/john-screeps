@@ -301,10 +301,10 @@ export class SpawnUtils {
                     }
                     break;
                 }  else if(energyAvailable >= 400) {
-                    partsPattern = [MOVE,MOVE,MOVE,CARRY,WORK,WORK];
+                    partsPattern = [MOVE,CARRY,WORK,WORK,WORK];
                     break;
                 } else if(energyAvailable >= 300){
-                    partsPattern = [MOVE,MOVE,MOVE,CARRY,WORK];
+                    partsPattern = [MOVE,CARRY,WORK,WORK];
                     break;
                 } else if(energyAvailable >= 200){
                     partsPattern = [MOVE,CARRY,WORK];
