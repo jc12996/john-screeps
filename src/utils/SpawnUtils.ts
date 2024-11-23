@@ -78,25 +78,25 @@ export class SpawnUtils {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 9; i++) {
                         partsPattern.push(WORK);
                     }
 
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
                 }
                 else if(!hauling && lowerMiner && energyAvailable >= 850) {
 
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 7; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
