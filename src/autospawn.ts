@@ -181,10 +181,9 @@ export class AutoSpawn {
                 }).reduce((sum, container: any) => sum + (container.store[RESOURCE_ENERGY] || 0), 0);
 
                 const numberOfFullContainers = totalContainerEnergy / 2000;
-                const containerMultiplier = numberOfFullContainers > 0 ? numberOfFullContainers : 1;
                 // Adjust haulers based on container energy
                 if(totalContainerEnergy > 2000) {
-                    numberOfNeededHaulers = numberOfNeededHaulers * containerMultiplier;
+                    numberOfNeededHaulers = numberOfNeededHaulers + numberOfFullContainers;
                 }
             }
         }
