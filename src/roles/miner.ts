@@ -1,21 +1,16 @@
 import { MovementUtils } from "utils/MovementUtils";
 import { Carrier } from "./carrier";
 import { SpawnUtils } from "utils/SpawnUtils";
-import { Upgrader } from "./upgrader";
 import { Harvester } from "./harvester";
 import { Labs } from "labs";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
-import { RepairUtils } from "utils/RepairUtils";
-import { RoomUtils } from "utils/RoomUtils";
+import { Hauler } from "./hauler";
 
 export class Miner {
 
 
 
     public static run(creep: Creep): void {
-
-
-
 
 
         if(!creep.memory.isBoosted) {
@@ -256,146 +251,91 @@ export class Miner {
 
 
 
-        if(!creep.memory.carrying) {
 
 
-
-            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-                creep.say("⛏ 🔄");
-            }
-            const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
-
-
-            if(!!!mineFlag) {
-                return;
-            }
-
-            // const mineHostiles = mineFlag.room?.find(FIND_HOSTILE_CREEPS, {
-            //     filter: (creep) => (creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0 ) && creep.owner.username === 'Invader'
-            // }).length;
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("⛏ 🔄");
+        }
+        const mineFlag = Game.flags[creep.memory.firstSpawnCoords + 'MineFlag'];
 
 
-            // if(mineHostiles) {
-            //     if(creep.room != firstRoom) {
-            //         creep.say("😨",true)
-            //         creep.moveTo(firstRoom.find(FIND_CREEPS)[0])
-            //     } else if(mineHostiles){
-            //         Carrier.run(creep);
-            //     }
-            //     return;
-            // }
-
-
-            if(creep.room != mineFlag.room) {
-                MovementUtils.goToFlag(creep,mineFlag);
-                return;
-            }
-
-
-            const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-                filter:  (source) => {
-                    return (
-                        source.amount >= 50
-
-
-                    )
-                }
-            });
-
-            if(minerType !== 'mine' && creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-                return
-            }
-
-            const droppedT = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-                filter:  (source) => {
-                    return (
-                        source.store.energy >= 50
-
-
-                    )
-                }
-            });
-
-            if(minerType !== 'mine' && droppedT && creep.withdraw(droppedT,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                creep.moveTo(droppedT, {visualizePathStyle: {stroke: '#ffaa00'}});
-                return
-            }
-
-
-
-            let targetSource = Harvester.findTargetSource(creep);
-
-            if(targetSource && minerType !== 'haul') {
-                creep.moveTo(targetSource);
-            }
-
-
-            if(minerType === 'haul') {
-
-                let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (structure) => structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
-                })
-
-                if(creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-                    return;
-                }
-
-                if(container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container, {visualizePathStyle: {stroke: "#ffffff"}});
-                } else if(!container && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
-                }
-                return;
-            }
-
-            if(minerType === 'mine') {
-
-                const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
-
-                if(finalSource && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
-                    creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
-                    return;
-                }
-
-                if(!finalSource) {
-                    return;
-                }
-
-                const mineCode = creep.harvest(finalSource);
-                if(mineCode == ERR_NOT_IN_RANGE && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
-                    creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
-                }
-
-                if(!constructionContainers && creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
-                    ScaffoldingUtils.createContainers(creep);
-                }
-
-                if(repairContainers && creep.store.energy > 0) {
-                    creep.repair(repairContainers)
-                }else if(constructionContainers && creep.store.energy > 0) {
-                    creep.build(constructionContainers)
-                } else if(containers) {
-                    creep.transfer(containers,RESOURCE_ENERGY);
-                } else {
-                    creep.drop(RESOURCE_ENERGY);
-                }
-
-                return;
-            }
-
-            const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-
-            if(finalSource && creep.harvest(finalSource) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
-            }
-
-        }else {
-            this.dropOffStuff(creep,firstRoom)
-
+        if(!!!mineFlag) {
+            return;
         }
 
+        if(creep.room != mineFlag.room) {
+            MovementUtils.goToFlag(creep,mineFlag);
+            return;
+        }
+
+
+        const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+            filter:  (source) => {
+                return (
+                    source.amount >= 50
+
+
+                )
+            }
+        });
+
+        if(minerType !== 'mine' && creep.room === mineFlag.room && droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE){
+            creep.moveTo(droppedSources, {visualizePathStyle: {stroke: '#ffaa00'}});
+            return
+        }
+
+        const droppedT = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+            filter:  (source) => {
+                return (
+                    source.store.energy >= 50
+
+
+                )
+            }
+        });
+
+        if(minerType !== 'mine' && droppedT && creep.withdraw(droppedT,RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+            creep.moveTo(droppedT, {visualizePathStyle: {stroke: '#ffaa00'}});
+            return
+        }
+
+
+
+        let targetSource = Harvester.findTargetSource(creep);
+
+        if(targetSource && minerType !== 'haul') {
+            creep.moveTo(targetSource);
+        }
+
+        const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
+
+        if(finalSource && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
+            creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
+            return;
+        }
+
+        if(!finalSource) {
+            return;
+        }
+
+        const mineCode = creep.harvest(finalSource);
+        if(mineCode == ERR_NOT_IN_RANGE && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
+            creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
+        }
+
+        if(!constructionContainers && creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)) {
+            ScaffoldingUtils.createContainers(creep);
+        }
+
+        if(repairContainers && creep.store.energy > 0) {
+            creep.repair(repairContainers)
+        }else if(constructionContainers && creep.store.energy > 0) {
+            creep.build(constructionContainers)
+        } else if(containers) {
+            creep.transfer(containers,RESOURCE_ENERGY);
+        } else {
+            creep.drop(RESOURCE_ENERGY);
+        }
 
     }
 

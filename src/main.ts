@@ -23,6 +23,7 @@ import { Scout } from "roles/scout";
 import { MovementUtils } from "utils/MovementUtils";
 import {  Nukers } from "nukers";
 import { Labs } from "labs";
+import { Hauler } from "roles/hauler";
 
 declare global {
   /*
@@ -236,7 +237,13 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
     if(creep.memory.role == 'miner') {
       MovementUtils.callForHelp(creep);
-      Miner.run(creep);
+      if(creep.getActiveBodyparts(WORK) === 0) {
+        Hauler.run(creep);
+      }
+
+      if(creep.getActiveBodyparts(WORK) > 0) {
+        Miner.run(creep);
+      }
     }
 
        // Find the flag and the squad
