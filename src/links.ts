@@ -191,9 +191,9 @@ export function sendEnergyFromOriginSpawn() {
     const targetTerminal = room.terminal;
 
     // Only consider rooms with RCL >= 6 and an active terminal
-    if (controller && controller.level >= 6 && targetTerminal) {
-      // Check if the terminal has less than 1K of that resource
-      if (targetTerminal.store[RESOURCE_ENERGY] <= 1000 && terminal.store[RESOURCE_ENERGY] >= 40000) {
+    if (controller && controller.level >= 6 && targetTerminal && targetTerminal !== terminal) {
+      // Check if the terminal has less than 2K of that resource
+      if (targetTerminal.store[RESOURCE_ENERGY] < 2000 && terminal.store[RESOURCE_ENERGY] >= 40000) {
         const amountToSend = 20000;
 
         // Make sure Spawn1 has enough energy left to send 20K
