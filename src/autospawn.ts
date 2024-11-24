@@ -266,8 +266,6 @@ export class AutoSpawn {
           );
         });
 
-        const haulers = assignedCreeps.filter(creep => creep.memory.role == "miner" && creep.memory.hauling === true);
-        const miners = assignedCreeps.filter(creep => creep.memory.role == "miner" && !creep.memory.hauling);
         const attackClaimers = assignedCreeps.filter(creep => creep.memory.role == "attackClaimer");
         const numberOfSourcesInMineFlagRoom = mineFlag.room?.find(FIND_SOURCES).length ?? 2;
 
