@@ -227,14 +227,14 @@ export class AutoSpawn {
                     const mineFlagRoom = mineFlag.room;
                     return (
                         creep.memory.assignedMineFlag == mineFlag.name 
-                        // &&
-                        // (
-                        //     creep.room.name == spawn.room.name ||
-                        //     (
-                        //         mineFlagRoom &&
-                        //         creep.room.name == mineFlagRoom.name
-                        //     )
-                        // )
+                        &&
+                        (
+                            creep.room.name == spawn.room.name ||
+                            (
+                                mineFlagRoom &&
+                                creep.room.name == mineFlagRoom.name
+                            )
+                        )
                     );
                 });
 

@@ -13,7 +13,7 @@ export class Hauler {
         if (!creep.memory.isBoosted && !Labs.boostCreep(creep)) return;
 
         // Update carrying state
-        if (!creep.memory.carrying && creep.store.getFreeCapacity() === 0) {
+        if (!creep.memory.carrying && creep.store.getFreeCapacity() === 0 || creep.store[RESOURCE_ENERGY] > 100) {
             creep.memory.carrying = true;
         } else if (creep.memory.carrying && creep.store[RESOURCE_ENERGY] === 0) {
             creep.memory.carrying = false;
