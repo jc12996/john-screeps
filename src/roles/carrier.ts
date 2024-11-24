@@ -562,11 +562,7 @@ export class Carrier {
             }
           })
         : null;
-      if (
-        nearestStorageOrTerminal &&
-        nearestStorageOrTerminal.store.energy < 10000 &&
-        creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-      ) {
+      if (nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.say("🚚 P");
         creep.moveTo(nearestStorageOrTerminal);
       } else if (!nearestStorageOrTerminal && nearestContainerToController) {

@@ -181,7 +181,9 @@ export class AutoSpawn {
     }
 
     if (commandLevel >= 6) {
-      if (energyCapacityAvailable >= 800 && numberOfNeededUpgraders > 4) {
+      if (energyCapacityAvailable >= 2000 && numberOfNeededUpgraders > 6) {
+        numberOfNeededUpgraders = 6;
+      } else if (energyCapacityAvailable >= 800 && numberOfNeededUpgraders > 4) {
         numberOfNeededUpgraders = 4;
       }
     }
