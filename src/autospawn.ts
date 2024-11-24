@@ -359,6 +359,9 @@ export class AutoSpawn {
       });
     }
 
+    if (harvesters.length > 3 && commandLevel >= 3 && numberOfNeededHarvesters > 0) {
+      numberOfNeededHarvesters = numberOfNeededHarvesters - 1;
+    }
     if (Game.flags.startScouting && isSquadPatrol) {
       isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
     }
