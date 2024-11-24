@@ -243,7 +243,7 @@ export class AutoSpawn {
     let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
        
-        if(harvesters.length >= numberOfNeededHarvesters && carriers.length >= numberOfNeededCarriers && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
+        if(harvesters.length >= 2 && carriers.length >= 3 && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
             mineFlags.forEach(mineFlag => {
                 const assignedCreeps = _.filter(Game.creeps, (creep) => {
                     if (!mineFlag) {
@@ -340,7 +340,8 @@ export class AutoSpawn {
             commandLevel >= 2 &&
             energyCapacityAvailable >= 450 &&
             currentRoomCreepCounts.haulers < numberOfNeededHaulers &&
-            numberOfContainers > 0
+            numberOfContainers > 0 &&
+            mineFlag.room?.find(FIND_STRUCTURES).some(structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0)
           ) {
             name = "Hauler" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel, true);
