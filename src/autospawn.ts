@@ -341,6 +341,7 @@ export class AutoSpawn {
             energyCapacityAvailable >= 450 &&
             currentRoomCreepCounts.haulers < numberOfNeededHaulers &&
             numberOfContainers > 0 &&
+            currentRoomCreepCounts.miners >= numberOfNeededMiners &&
             mineFlag.room?.find(FIND_STRUCTURES).some(structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0)
           ) {
             name = "Hauler" + "_" + mineFlag.name + "_" + Game.time;
