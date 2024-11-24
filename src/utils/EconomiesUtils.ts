@@ -5,7 +5,7 @@ export enum LowUpkeep {
   Repairer = 1, // Total for Room
   Upgrader = 3, // Per Source
   Defender = 0, // Total Per Room
-  DraftedDefenderTotal = 1,
+  DraftedDefenderTotal = 0,
   Claimers = 1, // Worldwide Count
   Settlers = 8, // Worldwide Count,
   AttackClaimers = 1,
@@ -19,7 +19,7 @@ export enum MediumUpkeep {
   Repairer = 1, // Total for Room
   Upgrader = 3, // Per Source
   Defender = 0, // Total Per Room
-  AdditionalDraftedDefenders = 2,
+  AdditionalDraftedDefenders = 0,
   Claimers = 1, // Worldwide Count
   Settlers = 8 // Worldwide Count
 }
@@ -31,7 +31,7 @@ export enum HighUpkeep {
   Repairer = 1, // Total for Room
   Upgrader = 2, // Per Source
   Defender = 0, // Total Per Room
-  AdditionalDraftedDefenders = 3,
+  AdditionalDraftedDefenders = 0,
   Claimers = 1, // Worldwide Count
   Settlers = 8 // Worldwide Count
 }
