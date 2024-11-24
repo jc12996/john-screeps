@@ -272,7 +272,7 @@ export class AutoSpawn {
         // Process each mineFlag as needed
         // Example: Adjust number of needed miners and haulers based on each mineFlag
         let numberOfNeededMiners = numberOfSourcesInMineFlagRoom > 2 ? 3 : 2;
-        let numberOfNeededHaulers = numberOfNeededMiners * 2;
+        let numberOfNeededHaulers = numberOfNeededMiners * 1.5;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
         // Check if any attackClaimer has 100 ticks or less left to live
@@ -293,7 +293,15 @@ export class AutoSpawn {
             attackClaimers: creeps.filter(creep => creep.memory.role === "attackClaimer").length
           }));
 
-          const currentRoomCreepCounts = roomCreepCounts[mineFlag.name] || { miners: 0, haulers: 0, attackClaimers: 0 };
+          const currentRoomCreepCounts = roomCreepCounts[mineFlag.name] || {
+            miners: 0,
+            haulers: 0,
+            attackClaimers: 0
+          };
+
+          const numberOfContainers =
+            mineFlag.room?.find(FIND_STRUCTURES).filter(structure => structure.structureType === STRUCTURE_CONTAINER)
+              ?.length ?? 0;
 
           if (
             mineFlags.length > 0 &&
@@ -334,7 +342,8 @@ export class AutoSpawn {
             mineFlags.length > 0 &&
             commandLevel >= 2 &&
             energyCapacityAvailable >= 450 &&
-            currentRoomCreepCounts.haulers < numberOfNeededHaulers
+            currentRoomCreepCounts.haulers < numberOfNeededHaulers &&
+            numberOfContainers > 0
           ) {
             name = "Hauler" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel, true);
