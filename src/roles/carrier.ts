@@ -773,6 +773,12 @@ export class Carrier {
       return;
     }
 
+    const controllerAdjContainer = creep.room.controller?.pos.findInRange(FIND_STRUCTURES, 7, {
+      filter: (structure: StructureContainer) => {
+        return structure.structureType === STRUCTURE_CONTAINER && structure.store.getFreeCapacity() > 0;
+      }
+    });
+
     if (extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.say("🚚E");
       creep.moveTo(extension);
@@ -820,6 +826,12 @@ export class Carrier {
     ) {
       creep.say("🚚 C");
       creep.moveTo(nearestAvailableWorkingRoleCreep);
+    } else if (
+      controllerAdjContainer?.length &&
+      creep.transfer(controllerAdjContainer[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+    ) {
+      creep.say("🚚CC");
+      creep.moveTo(controllerAdjContainer[0]);
     } else if (roomRallyPointFlag.length) {
       const droppedTombstone =
         creep.pos.findInRange(FIND_TOMBSTONES, 4, {
