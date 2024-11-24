@@ -220,7 +220,7 @@ export class Carrier {
 
                 return (
                     (
-                        ((workCreep.memory.role === 'upgrader' || (workCreep.memory.role === 'builder' && commandLevel >= 4)) && workCreep.memory.upgrading !== true)
+                        ((workCreep.memory.role === 'upgrader') && workCreep.memory.upgrading !== true)
                         || (
                             (workCreep.memory.extensionFarm === 1 || workCreep.memory.extensionFarm ===2) &&
                             workCreep.store.getFreeCapacity() > 0 && workCreep.room.energyAvailable < ((commandLevel >= 7) ? (creep.memory.role === 'miner' ? workCreep.room.energyCapacityAvailable : 1000) : 800)

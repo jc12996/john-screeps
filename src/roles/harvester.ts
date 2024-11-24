@@ -111,11 +111,15 @@ export class Harvester {
         } else if(finalSource && creep.harvest(finalSource) === OK) {
             creep.memory.targetSource = finalSource.id;
             if(adjContainer) {
-                creep.transfer(adjContainer,RESOURCE_ENERGY);
+                if (adjContainer.hits < adjContainer.hitsMax) {
+                    creep.repair(adjContainer);
+                } else {
+                    creep.transfer(adjContainer, RESOURCE_ENERGY);
+                }
             } else if(adjLink) {
-                creep.transfer(adjLink,RESOURCE_ENERGY);
+                creep.transfer(adjLink, RESOURCE_ENERGY);
             } else {
-                creep.drop(RESOURCE_ENERGY,creep.store.energy);
+                creep.drop(RESOURCE_ENERGY, creep.store.energy);
             }
 
 

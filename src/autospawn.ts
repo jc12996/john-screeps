@@ -226,14 +226,15 @@ export class AutoSpawn {
                     }
                     const mineFlagRoom = mineFlag.room;
                     return (
-                        creep.memory.assignedMineFlag == mineFlag.name &&
-                        (
-                            creep.room.name == spawn.room.name ||
-                            (
-                                mineFlagRoom &&
-                                creep.room.name == mineFlagRoom.name
-                            )
-                        )
+                        creep.memory.assignedMineFlag == mineFlag.name 
+                        // &&
+                        // (
+                        //     creep.room.name == spawn.room.name ||
+                        //     (
+                        //         mineFlagRoom &&
+                        //         creep.room.name == mineFlagRoom.name
+                        //     )
+                        // )
                     );
                 });
 
@@ -260,30 +261,37 @@ export class AutoSpawn {
                     let options = undefined;
                     let gotOne = false;
                     
-                    
-                    if (mineFlags.length > 0  && mineFlag.room?.controller &&  commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && (attackClaimers.length < numberOfNeededAttackClaimers)) {
-                        name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
-                        bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer',spawn, commandLevel);
-                        options = {memory: {role: 'attackClaimer', assignedMineFlag: mineFlag.name }};
-                        gotOne = true;
-    
-                    }
-                    else if (mineFlags.length > 0 && mineFlag.room?.controller && commandLevel >= 3 && energyAvailable >= 650 && miners.length > 0 && ((needsNewAttackClaimer && attackClaimers.length < (numberOfNeededAttackClaimers+1)) || attackClaimers.length < numberOfNeededAttackClaimers)) {
-                        name = 'AttackClaimer'+ '_' + mineFlag.name + '_' + Game.time;
+                    const roomCreeps = _.groupBy(Game.creeps, (creep) => creep.memory.assignedMineFlag);
+                    const roomCreepCounts = _.mapValues(roomCreeps, (creeps) => ({
+                        miners: creeps.filter(creep => creep.memory.role === 'miner' && !creep.memory.hauling).length,
+                        haulers: creeps.filter(creep => creep.memory.role === 'miner' && creep.memory.hauling).length,
+                        attackClaimers: creeps.filter(creep => creep.memory.role === 'attackClaimer').length
+                    }));
+
+                    const currentRoomCreepCounts = roomCreepCounts[mineFlag.name] || { miners: 0, haulers: 0, attackClaimers: 0 };
+
+                    if (mineFlags.length > 0 && mineFlag.room?.controller && commandLevel >= 3 && energyAvailable >= 650 && currentRoomCreepCounts.miners > 0 && (currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers)) {
+                        name = 'AttackClaimer' + '_' + mineFlag.name + '_' + Game.time;
                         bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
                         options = { memory: { role: 'attackClaimer', assignedMineFlag: mineFlag.name } };
                         gotOne = true;
                     }
-                    else if (mineFlags.length > 0  && commandLevel >= 2 && energyCapacityAvailable >= 450 && (miners.length < numberOfNeededMiners)) {
-                        name = 'Miner'+ '_' + mineFlag.name + '_' +Game.time;
-                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel);
-                        options = {memory: {role: 'miner', assignedMineFlag: mineFlag.name }};
+                    else if (mineFlags.length > 0 && mineFlag.room?.controller && commandLevel >= 3 && energyAvailable >= 650 && currentRoomCreepCounts.miners > 0 && ((needsNewAttackClaimer && currentRoomCreepCounts.attackClaimers < (numberOfNeededAttackClaimers + 1)) || currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers)) {
+                        name = 'AttackClaimer' + '_' + mineFlag.name + '_' + Game.time;
+                        bodyParts = SpawnUtils.getBodyPartsForArchetype('attackClaimer', spawn, commandLevel);
+                        options = { memory: { role: 'attackClaimer', assignedMineFlag: mineFlag.name } };
                         gotOne = true;
                     }
-                    else if (mineFlags.length > 0  && miners.length > 0 && commandLevel >= 2 && energyCapacityAvailable >= 450  && (haulers.length < numberOfNeededHaulers)) {
-                        name = 'Hauler'+ '_' + mineFlag.name + '_' + Game.time;
-                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner',spawn,commandLevel,true);
-                        options = {memory: {role: 'miner', hauling: true, assignedMineFlag: mineFlag.name }};
+                    else if (mineFlags.length > 0 && commandLevel >= 2 && energyCapacityAvailable >= 450 && (currentRoomCreepCounts.miners < numberOfNeededMiners)) {
+                        name = 'Miner' + '_' + mineFlag.name + '_' + Game.time;
+                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner', spawn, commandLevel);
+                        options = { memory: { role: 'miner', assignedMineFlag: mineFlag.name } };
+                        gotOne = true;
+                    }
+                    else if (mineFlags.length > 0 && currentRoomCreepCounts.miners > 0 && commandLevel >= 2 && energyCapacityAvailable >= 450 && (currentRoomCreepCounts.haulers < numberOfNeededHaulers)) {
+                        name = 'Hauler' + '_' + mineFlag.name + '_' + Game.time;
+                        bodyParts = SpawnUtils.getBodyPartsForArchetype('miner', spawn, commandLevel, true);
+                        options = { memory: { role: 'miner', hauling: true, assignedMineFlag: mineFlag.name } };
                         gotOne = true;
                     }
                     
