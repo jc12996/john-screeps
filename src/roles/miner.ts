@@ -116,7 +116,7 @@ export class Miner {
             return;
         }
 
-        this.creepMiner(creep,firstRoom, mineType);
+        this.creepMiner(creep, mineType);
 
 
 
@@ -201,7 +201,7 @@ export class Miner {
         }
     }
 
-    private static creepMiner(creep:Creep,firstRoom:any, minerType: "mine" | "haul" | "allAround") {
+    private static creepMiner(creep:Creep, minerType: "mine" | "haul" | "allAround") {
 
 
         if(!creep.memory.carrying && (creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 500)) {
@@ -263,14 +263,19 @@ export class Miner {
         }
 
 
-        let targetSource = Harvester.findTargetSource(creep);
+        let sources = creep.room.find(FIND_SOURCES);
+        let targetSource = _.min(sources, source => 
+            _.filter(Game.creeps, c => c.memory.role === 'miner' && c.pos.isNearTo(source)).length
+        );
 
         if(targetSource && !creep.pos.isNearTo(targetSource.pos.x, targetSource.pos.y) && !creep.pos.findInRange(FIND_SOURCES, 1).length) {
             creep.moveTo(targetSource);
             return;
         }
 
-        const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
+        const finalSource = _.min(sources, source => 
+            _.filter(Game.creeps, c => c.memory.role === 'miner' && c.pos.isNearTo(source)).length
+        );
 
         if(finalSource && !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)  && !creep.pos.findInRange(FIND_SOURCES, 1).length) {
             creep.moveTo(finalSource, {visualizePathStyle: {stroke: '#FFFFFF'}});
