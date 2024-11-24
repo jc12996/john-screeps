@@ -42,7 +42,7 @@ export class Hauler {
     // Check existing container target
     if (creep.memory.targetContainerId) {
       const container = Game.getObjectById(creep.memory.targetContainerId as Id<StructureContainer>);
-      if (container && container.store[RESOURCE_ENERGY] >= 50) {
+      if (container && container.store[RESOURCE_ENERGY] >= 200) {
         if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
           creep.moveTo(container.pos, { visualizePathStyle: { stroke: "#ffffff" } });
         }
@@ -54,7 +54,7 @@ export class Hauler {
     // Find new container target
     const containers = creep.room.find(FIND_STRUCTURES, {
       filter: s =>
-        s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] >= Math.min(creep.store.getCapacity(), 50)
+        s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] >= Math.min(creep.store.getCapacity(), 200)
     }) as StructureContainer[];
 
     // Get best available container
