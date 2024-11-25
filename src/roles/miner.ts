@@ -257,19 +257,15 @@ export class Miner {
     }
 
 
-    const sources = creep.room.find(FIND_SOURCES);
-    let finalSource = null;
+    const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
 
-    for (const source of sources) {
-      const creepsNearby = source.pos.findInRange(FIND_MY_CREEPS, 1);
-      if (creepsNearby.length === 0) {
-        finalSource = source;
-        break;
-      }
-    }
-
-    if (!finalSource) {
-      finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
+    if (
+      finalSource &&
+      !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
+      !creep.pos.findInRange(FIND_SOURCES, 1).length
+    ) {
+      creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      return;
     }
 
     if (!finalSource) {
@@ -278,7 +274,9 @@ export class Miner {
 
     const mineCode = creep.harvest(finalSource);
     if (
-      mineCode == ERR_NOT_IN_RANGE
+      mineCode == ERR_NOT_IN_RANGE &&
+      !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
+      !creep.pos.findInRange(FIND_SOURCES, 1).length
     ) {
       creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
       return;
