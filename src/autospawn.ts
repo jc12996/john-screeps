@@ -200,6 +200,7 @@ export class AutoSpawn {
       numberOfNeededCarriers = 5;
     }
 
+
     if (commandLevel >= 6 && numberOfNeededCarriers >= 8) {
       numberOfNeededCarriers = 8;
     }
@@ -239,6 +240,8 @@ export class AutoSpawn {
     const totalNumberOfControlledRooms = _.filter(Game.rooms, room => room.controller?.my).length;
 
     var hostileCreeps = spawn.room.find(FIND_HOSTILE_CREEPS);
+
+
 
     let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
@@ -367,10 +370,19 @@ export class AutoSpawn {
 
     if (harvesters.length > 3 && commandLevel >= 3 && numberOfNeededHarvesters > 0) {
       numberOfNeededHarvesters = numberOfNeededHarvesters - 1;
+      
     }
     if (Game.flags.startScouting && isSquadPatrol) {
       isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
     }
+
+    if (commandLevel >= 6 && carriers.length >= 3) {
+        numberOfNeededCarriers = 3 + upgraders.length;
+        if(numberOfNeededCarriers >= 8) {
+          numberOfNeededCarriers = 8;
+        }
+    }
+
 
     if (
       (harvesters.length == 0 ||
