@@ -41,24 +41,24 @@ export class Hauler {
 
     // Check existing container target
     if (creep.memory.targetContainerId) {
-      const droppedSource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+      const droppedSource = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 5, {
         filter: source => source.amount >= 50
       });
 
-      const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+      const tombstone = creep.pos.findInRange(FIND_TOMBSTONES,5, {
         filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 50
       });
 
-      if (droppedSource) {
-        if (creep.pickup(droppedSource) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+      if (droppedSource.length > 0) {
+        if (creep.pickup(droppedSource[0]) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedSource[0], { visualizePathStyle: { stroke: "#ffaa00" } });
         }
         return;
       }
 
-      if (tombstone) {
-        if (creep.withdraw(tombstone, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+      if (tombstone.length > 0) {
+        if (creep.withdraw(tombstone[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(tombstone[0], { visualizePathStyle: { stroke: "#ffaa00" } });
         }
         return;
       }
