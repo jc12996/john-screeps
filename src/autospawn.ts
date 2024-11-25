@@ -275,6 +275,13 @@ export class AutoSpawn {
         let numberOfNeededHaulers = numberOfNeededMiners * 1.5;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
+        const minersInMineFlagRoom = assignedCreeps.filter(creep => creep.memory.role == "miner" && !creep.memory.hauling && creep.room.name == mineFlag.room?.name);
+        minersInMineFlagRoom.forEach(miner => {
+          if (miner.ticksToLive && miner.ticksToLive < 300) {
+            numberOfNeededMiners++;
+          }
+        });
+
         // Check if any attackClaimer has 100 ticks or less left to live
         const needsNewAttackClaimer = attackClaimers.some(
           creep => creep.ticksToLive && creep.ticksToLive <= 300 && creep.memory.assignedMineFlag == mineFlag.name
