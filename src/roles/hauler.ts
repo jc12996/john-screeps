@@ -41,6 +41,28 @@ export class Hauler {
 
     // Check existing container target
     if (creep.memory.targetContainerId) {
+      const droppedSource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+        filter: source => source.amount >= 50
+      });
+
+      const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+        filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 50
+      });
+
+      if (droppedSource) {
+        if (creep.pickup(droppedSource) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
+        return;
+      }
+
+      if (tombstone) {
+        if (creep.withdraw(tombstone, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
+        return;
+      }
+
       const container = Game.getObjectById(creep.memory.targetContainerId as Id<StructureContainer>);
       if (container && container.store[RESOURCE_ENERGY] >= 200) {
         if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
