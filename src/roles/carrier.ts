@@ -81,7 +81,7 @@ export class Carrier {
       {
         filter: structure => {
           return (
-            (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE) &&
+            ((structure.structureType === STRUCTURE_TERMINAL && structure.store.energy < 50000) || structure.structureType === STRUCTURE_STORAGE) &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
             structure.room?.controller?.my
           );
