@@ -20,7 +20,7 @@ export function getNextClaimFlag(room:Room,extensionFarm2Flag:Flag): Flag | unde
             }
 
             const roomSpawn = claimRoom?.find(FIND_MY_SPAWNS);
-            if(roomSpawn?.length) {
+            if(roomSpawn?.length && claimRoom?.controller && claimRoom?.controller.owner) {
                 continue;
             }
             return claimFlag;
