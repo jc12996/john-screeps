@@ -103,11 +103,11 @@ export class SpawnUtils {
                 }
                 else if(!hauling && commandLevel < 6  && lowerMiner && energyAvailable >= 500) {
 
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(WORK);
                     }
                     for (let i = 0; i < 1; i++) {
