@@ -74,11 +74,11 @@ export class SpawnUtils {
 
                 if(!hauling && commandLevel >= 6 && energyAvailable >= 1050) {
 
-                    for (let i = 0; i < 2; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 9; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(WORK);
                     }
 
@@ -89,11 +89,11 @@ export class SpawnUtils {
                 }
                 else if(!hauling && lowerMiner && energyAvailable >= 850) {
 
-                    for (let i = 0; i < 2; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 7; i++) {
+                    for (let i = 0; i < 6; i++) {
                         partsPattern.push(WORK);
                     }
                     for (let i = 0; i < 1; i++) {
@@ -103,11 +103,11 @@ export class SpawnUtils {
                 }
                 else if(!hauling && commandLevel < 6  && lowerMiner && energyAvailable >= 500) {
 
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 3; i++) {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 4; i++) {
+                    for (let i = 0; i < 3; i++) {
                         partsPattern.push(WORK);
                     }
                     for (let i = 0; i < 1; i++) {
