@@ -72,7 +72,21 @@ export class SpawnUtils {
             case 'miner':
                 const lowerMiner = commandLevel < 6 || (commandLevel >= 6 && energyAvailable < 1000)
 
-                if(!hauling && commandLevel >= 6 && energyAvailable >= 1050) {
+                if(!hauling && commandLevel >= 7 && energyAvailable >= 1300) {
+
+                    for (let i = 0; i < 9; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(WORK);
+                    }
+
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CARRY);
+                    }
+                    break;
+                }else if(!hauling && commandLevel >= 6 && energyAvailable >= 1050) {
 
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
