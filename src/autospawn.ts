@@ -267,17 +267,18 @@ export class AutoSpawn {
                 });
 
         const attackClaimers = assignedCreeps.filter(creep => creep.memory.role == "attackClaimer");
+        const numberOfActiveSourcesInMineFlagRoom = mineFlag.room?.find(FIND_SOURCES_ACTIVE).length ?? 1;
         const numberOfSourcesInMineFlagRoom = mineFlag.room?.find(FIND_SOURCES).length ?? 1;
 
         // Process each mineFlag as needed
         // Example: Adjust number of needed miners and haulers based on each mineFlag
-        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom;
-        let numberOfNeededHaulers = numberOfNeededMiners * 1.5;
+        let numberOfNeededMiners = numberOfActiveSourcesInMineFlagRoom;
+        let numberOfNeededHaulers = numberOfNeededMiners;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
-        if(commandLevel >= 7 && numberOfSourcesInMineFlagRoom > 0) {
-          numberOfNeededMiners = numberOfSourcesInMineFlagRoom;
-          numberOfNeededHaulers = numberOfNeededMiners;
+        if(numberOfActiveSourcesInMineFlagRoom == 0) {
+          numberOfNeededMiners = 0;
+          numberOfNeededHaulers = numberOfSourcesInMineFlagRoom * 2;
         }
 
         // Check if any attackClaimer has 100 ticks or less left to live
