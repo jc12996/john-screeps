@@ -257,12 +257,12 @@ export class Miner {
     }
 
 
-    const finalSource = creep.pos.findClosestByPath(FIND_SOURCES);
+    const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
     if (
       finalSource &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
-      !creep.pos.findInRange(FIND_SOURCES, 1).length
+      !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
       creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
       return;
@@ -276,7 +276,7 @@ export class Miner {
     if (
       mineCode == ERR_NOT_IN_RANGE &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
-      !creep.pos.findInRange(FIND_SOURCES, 1).length
+      !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
       creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
       return;
