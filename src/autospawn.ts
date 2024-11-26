@@ -267,11 +267,11 @@ export class AutoSpawn {
                 });
 
         const attackClaimers = assignedCreeps.filter(creep => creep.memory.role == "attackClaimer");
-        const numberOfSourcesInMineFlagRoom = mineFlag.room?.find(FIND_SOURCES).length ?? 2;
+        const numberOfSourcesInMineFlagRoom = mineFlag.room?.find(FIND_SOURCES).length ?? 1;
 
         // Process each mineFlag as needed
         // Example: Adjust number of needed miners and haulers based on each mineFlag
-        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom > 2 ? 3 : 2;
+        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom;
         let numberOfNeededHaulers = numberOfNeededMiners * 1.5;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
