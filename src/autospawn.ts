@@ -245,7 +245,7 @@ export class AutoSpawn {
 
     let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
-       
+
         if(harvesters.length >= 2 && carriers.length >= 3 && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
             mineFlags.forEach(mineFlag => {
                 const assignedCreeps = _.filter(Game.creeps, (creep) => {
@@ -254,7 +254,7 @@ export class AutoSpawn {
                     }
                     const mineFlagRoom = mineFlag.room;
                     return (
-                        creep.memory.assignedMineFlag == mineFlag.name 
+                        creep.memory.assignedMineFlag == mineFlag.name
                         &&
                         (
                             creep.room.name == spawn.room.name ||
@@ -281,6 +281,10 @@ export class AutoSpawn {
             numberOfNeededMiners++;
           }
         });
+
+        if(commandLevel >= 7 && numberOfSourcesInMineFlagRoom > 0) {
+          numberOfNeededMiners = numberOfSourcesInMineFlagRoom;
+        }
 
         // Check if any attackClaimer has 100 ticks or less left to live
         const needsNewAttackClaimer = attackClaimers.some(
@@ -377,7 +381,7 @@ export class AutoSpawn {
 
     if (harvesters.length > 3 && commandLevel >= 3 && numberOfNeededHarvesters > 0) {
       numberOfNeededHarvesters = numberOfNeededHarvesters - 1;
-      
+
     }
     if (Game.flags.startScouting && isSquadPatrol) {
       isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
