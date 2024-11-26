@@ -275,13 +275,6 @@ export class AutoSpawn {
         let numberOfNeededHaulers = numberOfNeededMiners * 1.5;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
-        const minersInMineFlagRoom = assignedCreeps.filter(creep => creep.memory.role == "miner" && !creep.memory.hauling && creep.room.name == mineFlag.room?.name);
-        minersInMineFlagRoom.forEach(miner => {
-          if (miner.ticksToLive && miner.ticksToLive < 300) {
-            numberOfNeededMiners++;
-          }
-        });
-
         if(commandLevel >= 7 && numberOfSourcesInMineFlagRoom > 0) {
           numberOfNeededMiners = numberOfSourcesInMineFlagRoom;
           numberOfNeededHaulers = numberOfNeededMiners;
