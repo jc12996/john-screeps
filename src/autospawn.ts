@@ -415,6 +415,13 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("harvester", spawn, commandLevel, numberOfNeededHarvesters);
       options = { memory: { role: "harvester" } };
     } else if (
+      upgraders.length == 0 ||
+      (upgraders.length == 1 && upgraders[0].ticksToLive && upgraders[0].ticksToLive <= 100)
+    ) {
+      name = "Upgrader" + Game.time;
+      bodyParts = SpawnUtils.getBodyPartsForArchetype("upgrader", spawn, commandLevel);
+      options = { memory: { role: "upgrader" } };
+    } else if (
       spawn.room.energyCapacityAvailable > 250 &&
       hostileCreeps.length == 0 &&
       carriers.length >= 2 &&
