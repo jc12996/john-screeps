@@ -284,6 +284,7 @@ export class AutoSpawn {
 
         if(commandLevel >= 7 && numberOfSourcesInMineFlagRoom > 0) {
           numberOfNeededMiners = numberOfSourcesInMineFlagRoom;
+          numberOfNeededHaulers = numberOfNeededMiners;
         }
 
         // Check if any attackClaimer has 100 ticks or less left to live

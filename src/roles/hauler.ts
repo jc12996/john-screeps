@@ -12,19 +12,7 @@ export class Hauler {
     // Handle boosting
     if (!creep.memory.isBoosted && !Labs.boostCreep(creep)) return;
 
-        // Update carrying state
-        if (!creep.memory.carrying && creep.store.getFreeCapacity() === 0 || creep.store[RESOURCE_ENERGY] > 100) {
-            creep.memory.carrying = true;
-        } else if (creep.memory.carrying && creep.store[RESOURCE_ENERGY] === 0) {
-            creep.memory.carrying = false;
-        }
 
-    const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
-
-    if (creep.memory.carrying) {
-      this.dropOffStuff(creep, firstRoom);
-      return;
-    }
 
     // Handle resource collection
     if (!creep.memory.assignedMineFlag) {
@@ -34,6 +22,20 @@ export class Hauler {
 
     const mineFlag = Game.flags[creep.memory.assignedMineFlag];
     if (!mineFlag) return;
+
+    // Update carrying state
+    if (!creep.memory.carrying && creep.store.getFreeCapacity() === 0) {
+      creep.memory.carrying = true;
+    } else if (creep.memory.carrying && creep.store[RESOURCE_ENERGY] === 0) {
+        creep.memory.carrying = false;
+    }
+
+    const firstRoom = Game.rooms[creep.memory.firstSpawnCoords];
+
+    if (creep.memory.carrying) {
+      this.dropOffStuff(creep, firstRoom);
+      return;
+    }
 
     if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
       creep.say("🚚" + mineFlag.room?.name);
@@ -64,7 +66,7 @@ export class Hauler {
       }
 
       const container = Game.getObjectById(creep.memory.targetContainerId as Id<StructureContainer>);
-      if (container && container.store[RESOURCE_ENERGY] >= 200) {
+      if (container && container.store[RESOURCE_ENERGY] > 0) {
         if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
           creep.moveTo(container.pos, { visualizePathStyle: { stroke: "#ffffff" } });
         }
