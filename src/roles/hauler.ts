@@ -24,7 +24,7 @@ export class Hauler {
     if (!mineFlag) return;
 
     // Update carrying state
-    if (!creep.memory.carrying && creep.store.getFreeCapacity() === 0) {
+    if (!creep.memory.carrying && (creep.store.getFreeCapacity() === 0 || creep.store.energy > 500)) {
       creep.memory.carrying = true;
     } else if (creep.memory.carrying && creep.store[RESOURCE_ENERGY] === 0) {
         creep.memory.carrying = false;

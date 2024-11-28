@@ -446,8 +446,10 @@ export class Carrier {
         }
       }) ?? null;
 
+
     // Make sure every lab has some energy in it.
     let labsAreFull = true;
+/*
     let labNumber = 0;
     labs.forEach(lab => {
       labNumber++;
@@ -475,7 +477,18 @@ export class Carrier {
       creep.say("🔬L");
       creep.moveTo(needsEnergyLabs[0]);
       return false;
+    }*/
+   if(creep.store.energy > 0){
+    if (terminal && creep.store[RESOURCE_ENERGY] > 0) {
+      if (creep.transfer(terminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(terminal);
+      }
+      return false;
     }
+
+    //MovementUtils.dropOffInTerminal(creep,terminal)
+
+   }
 
     let counter = 0;
 

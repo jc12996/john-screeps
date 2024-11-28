@@ -566,11 +566,13 @@ export class MovementUtils {
       creep.withdraw(terminal, input2Mineral) == ERR_NOT_IN_RANGE
     ) {
       creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffaa00" } });
-    } else if (droppedMineral && creep.pickup(droppedMineral) == ERR_NOT_IN_RANGE) {
+    }
+    else if (droppedMineral && creep.pickup(droppedMineral) == ERR_NOT_IN_RANGE) {
       creep.moveTo(droppedMineral, { visualizePathStyle: { stroke: "#ffffff" } });
     } else if (target_storage && creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.moveTo(target_storage, { visualizePathStyle: { stroke: "#ffffff" } });
-    } else {
+    }
+    else {
       return true;
     }
 
