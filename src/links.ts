@@ -197,12 +197,12 @@ export function sendEnergyFromOriginSpawn() {
 
         // Make sure Spawn1 has enough energy left to send 20K
         if (terminal.store[RESOURCE_ENERGY] >= amountToSend) {
-          const result = terminal.send(RESOURCE_ENERGY, amountToSend, roomName);
+          const result = terminal.send(RESOURCE_ENERGY, amountToSend, targetTerminal.room.name);
 
           if (result === OK) {
-            console.log(`Sent ${amountToSend} energy from Spawn1 to ${roomName}`);
+            console.log(`Sent ${amountToSend} energy from Spawn1 to ${targetTerminal.room.name}`);
           } else if (result !== ERR_TIRED) {
-            console.log(`Failed to send energy to ${roomName}: ${result}`);
+            console.log(`Failed to send energy to ${targetTerminal.room.name}: ${result}`);
           }
         }
       }
