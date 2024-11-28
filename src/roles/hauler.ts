@@ -115,9 +115,26 @@ export class Hauler {
   }
 
   private static dropOffStuff(creep: Creep, firstRoom: Room) {
-    const spawn = firstRoom.find(FIND_MY_SPAWNS)[0];
+    let spawn = firstRoom.find(FIND_MY_SPAWNS)[0];
 
-    if (creep.room !== firstRoom) {
+    if(firstRoom.storage?.store && firstRoom.storage?.store.getFreeCapacity() <= 2000 && firstRoom.terminal && firstRoom.terminal?.store.getFreeCapacity() <= 24000 && firstRoom.controller?.level === 8) {
+      const firstRoomSpawnNumber = spawn.name.split('Spawn')[1];
+      if(firstRoomSpawnNumber && parseInt(firstRoomSpawnNumber) > 0) {
+        let nextRoomSpawnNumber = parseInt(firstRoomSpawnNumber) + 1;
+        let nextSpawn = Game.spawns['Spawn'+nextRoomSpawnNumber];
+        while(nextSpawn.room === firstRoom) {
+          nextRoomSpawnNumber++;
+          nextSpawn = Game.spawns['Spawn'+nextRoomSpawnNumber];
+        }
+        if(nextSpawn) {
+          console.log('nextSpawn',nextSpawn)
+          spawn = nextSpawn;
+        }
+      }
+
+    }
+
+    if (creep.room !== spawn.room) {
       const sourceKeepers = creep.room.find(FIND_HOSTILE_CREEPS, {
         filter: c => c.owner.username === "Source Keeper"
       });
@@ -144,6 +161,8 @@ export class Hauler {
       creep.moveTo(spawn, moveOpts);
       return;
     }
+
+
 
     creep.say("🚚 C");
     Carrier.run(creep);

@@ -81,7 +81,7 @@ export class Carrier {
       {
         filter: structure => {
           return (
-            ((structure.structureType === STRUCTURE_TERMINAL && structure.store.energy < 50000) || structure.structureType === STRUCTURE_STORAGE) &&
+            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE) &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
             structure.room?.controller?.my
           );
@@ -302,6 +302,31 @@ export class Carrier {
     }
 
     if (!creep.memory.carrying) {
+
+      const droppedSource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {
+        filter: source => source.amount >= 500
+      });
+
+      const tombstone = creep.pos.findClosestByRange(FIND_TOMBSTONES, {
+        filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 500
+      });
+
+      if (droppedSource) {
+        if (creep.pickup(droppedSource) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
+        return;
+      }
+
+
+      if (tombstone) {
+        if (creep.withdraw(tombstone,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
+        return;
+      }
+
+
       if (
         spawn &&
         spawn?.pos &&
@@ -341,6 +366,7 @@ export class Carrier {
           return;
         }
       }
+
 
       MovementUtils.generalGatherMovement(creep);
     } else if (creep.memory.carrying) {

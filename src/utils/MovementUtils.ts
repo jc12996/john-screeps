@@ -342,6 +342,7 @@ export class MovementUtils {
     if (creep.memory.role === "upgrader" || creep.memory.role === "builder") {
       if (
         commandLevel >= 4 &&
+        commandLevel < 8 &&
         creep.memory.role == "upgrader" &&
         creep.room.controller &&
         creep.pos.inRangeTo(creep.room.controller.pos.x, creep.room.controller?.pos.y, 2)

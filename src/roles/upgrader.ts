@@ -171,11 +171,13 @@ export class Upgrader {
                     }
                 }*/
       } else {
+
         if (
           numberOfControllerSlots > 0 &&
           creep.room.controller &&
           creep.room.controller.my &&
           !creep.pos.inRangeTo(creep.room.controller.pos.x, creep.room.controller?.pos.y, 1)
+
         ) {
           creep.moveTo(creep.room.controller);
           return;
