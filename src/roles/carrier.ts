@@ -405,7 +405,8 @@ export class Carrier {
         nearestAvailableWorkingRoleCreep,
         spawn,
         nearestSpawn,
-        nearestStorageOrTerminal
+        nearestStorageOrTerminal,
+        labs
       );
     } else if (
       creep.room.controller &&
@@ -575,7 +576,8 @@ export class Carrier {
     nearestAvailableWorkingRoleCreep: any,
     spawn: any,
     nearestSpawn: any,
-    nearestStorageOrTerminal: any
+    nearestStorageOrTerminal: any,
+    labs: StructureLab[]
   ) {
     if (creep.memory.role === "miner" || creep.memory.hauling) {
       const nearestContainerToController = creep.room.controller
@@ -587,7 +589,12 @@ export class Carrier {
             }
           })
         : null;
-      if (nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      labs = labs.filter(lab => {
+        return lab.store.energy < 2000
+      });
+      if(labs[0] && labs[0].store[RESOURCE_ENERGY] < 1900 && creep.transfer(labs[0], RESOURCE_ENERGY)){
+        creep.moveTo(labs[0])
+      }else if (nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.say("🚚 P");
         creep.moveTo(nearestStorageOrTerminal);
       } else if (!nearestStorageOrTerminal && nearestContainerToController) {
