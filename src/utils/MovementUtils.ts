@@ -275,6 +275,9 @@ export class MovementUtils {
       }
     }) as StructureStorage;
 
+
+
+
     let terminal: StructureTerminal | null =
       creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
@@ -438,6 +441,16 @@ export class MovementUtils {
         }
       })[0] ?? null;
 
+    const extensionLink = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: (struc) => {
+        return struc.structureType === STRUCTURE_LINK && struc.store.energy > 0 && creep.room.find(FIND_MY_CREEPS, {
+          filter: (ccc) => {
+            return ccc.memory.role === 'carrier'
+          }
+        }).length < 4
+      }
+    })as StructureLink ?? null;
+
     if (
       creep.memory.role !== "carrier" &&
       nearestStoreStructure &&
@@ -524,7 +537,13 @@ export class MovementUtils {
       creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
     ) {
       creep.moveTo(target_storage, { visualizePathStyle: { stroke: "#ffffff" } });
-    } else if (roomRallyPointFlag[0]) {
+    } else if (
+        extensionLink &&
+        extensionLink.store[RESOURCE_ENERGY] > 0 &&
+        creep.withdraw(extensionLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+      ) {
+        creep.moveTo(extensionLink);
+    }else if (roomRallyPointFlag[0]) {
       creep.moveTo(roomRallyPointFlag[0]);
     } else {
       creep.move(MovementUtils.randomDirectionSelector());
