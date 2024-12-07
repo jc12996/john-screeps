@@ -44,7 +44,7 @@ export class Harvester {
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("🔄");
             }
-            finalSource = creep.pos.findClosestByPath(FIND_SOURCES, {
+            finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
                 filter:  (source) => {
                    return source.id == creep.memory.targetSource && source.room.controller?.my
                 }

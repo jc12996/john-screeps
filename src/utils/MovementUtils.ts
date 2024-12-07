@@ -709,7 +709,7 @@ export class MovementUtils {
         }
       }) as StructureExtension[];
 
-      creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+
 
       if (
         extensionLink &&
@@ -741,7 +741,11 @@ export class MovementUtils {
         creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });
       } else if (droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+      } else {
+        creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
       }
+
+
       return;
     }
 
@@ -757,7 +761,7 @@ export class MovementUtils {
         }
       }) as StructureExtension[];
 
-      creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+
 
       if (
         extensionLink &&
@@ -789,7 +793,11 @@ export class MovementUtils {
         creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });
       } else if (droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+      } else {
+        creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
       }
+
+
       return;
     }
   }
