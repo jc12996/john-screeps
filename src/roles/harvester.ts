@@ -132,7 +132,11 @@ export class Harvester {
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
                 }
             });
-            if(tower || !container) {
+            if((tower || !container) && creep.pos.findInRange(FIND_STRUCTURES,2,{
+                filter: (struc) => {
+                    return struc.structureType === STRUCTURE_CONTAINER
+                }
+            }).length === 0) {
 
                 ScaffoldingUtils.createContainers(creep);
             }
