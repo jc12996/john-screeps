@@ -730,18 +730,21 @@ export class MovementUtils {
         terminal &&
         extensionsNearMe.length > 0 &&
         creep.room.controller &&
-        creep.room.controller.level >= 7 &&
+        creep.room.controller.level >= 6 &&
         creep.memory.role === "carrier" &&
         terminal.store[RESOURCE_ENERGY] > 0 &&
         creep.withdraw(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
       ) {
         creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
         return;
-      } else if (droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
+      }
+      else if (droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
         creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });
-      } else if (droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      }
+      else if (droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
-      } else {
+      }
+      else {
         creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
       }
 
