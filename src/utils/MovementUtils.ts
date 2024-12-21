@@ -720,9 +720,8 @@ export class MovementUtils {
         return;
       } else if (
         storage &&
-        extensionsNearMe.length > 0 &&
         storage.store[RESOURCE_ENERGY] > 0 &&
-        creep.withdraw(storage, RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE
+        creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
       ) {
         creep.moveTo(storage);
         return;

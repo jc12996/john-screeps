@@ -119,13 +119,13 @@ export function transferEnergyToOriginSpawn(room: Room) {
 
     const mineral = terminal.room.find(FIND_MINERALS)[0];
 
-    // Check if the terminal has more than 50,000 energy
+    // Check if the terminal has more than 10,000 energy
     if (
       targetRoom.terminal &&
-      targetRoom.terminal.store[RESOURCE_ENERGY] < 50000 &&
-      terminal.store[RESOURCE_ENERGY] > 50000 &&
+      targetRoom.terminal.store[RESOURCE_ENERGY] < 10000 &&
+      terminal.store[RESOURCE_ENERGY] > 10000 &&
       terminal.store.getUsedCapacity(RESOURCE_ENERGY) > 2000 &&
-      targetTerminal.store[RESOURCE_ENERGY] < 90000
+      targetTerminal.store[RESOURCE_ENERGY] < 2000
     ) {
       // Calculate the amount of energy to transfer (optional, transfer everything above 2k)
       const transferAmount = 2000;

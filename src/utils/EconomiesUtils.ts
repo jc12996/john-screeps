@@ -4,7 +4,7 @@ export enum LowUpkeep {
   Builder = 2, // Total For Room
   Repairer = 1, // Total for Room
   Upgrader = 3, // Per Source
-  Defender = 0, // Total Per Room
+  Defender = 1, // Total Per Room
   DraftedDefenderTotal = 0,
   Claimers = 1, // Worldwide Count
   Settlers = 8, // Worldwide Count,
