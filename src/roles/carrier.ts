@@ -76,12 +76,12 @@ export class Carrier {
         }
       }) ?? null;
 
-    const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath(
+    const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
       FIND_STRUCTURES,
       {
         filter: structure => {
           return (
-            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && structure.structureType === STRUCTURE_CONTAINER) || (creep.memory.hauling && structure.structureType === STRUCTURE_SPAWN)) &&
+            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
             structure.room?.controller?.my
           );
@@ -636,7 +636,7 @@ export class Carrier {
               creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
             ) {
               creep.say("🚚 P");
-              creep.moveTo(nearestStorageOrTerminal);
+              creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
             } else {
               creep.drop(RESOURCE_ENERGY);
             }
