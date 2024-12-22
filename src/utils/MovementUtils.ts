@@ -709,6 +709,13 @@ export class MovementUtils {
         }
       }) as StructureExtension[];
 
+      const nearestContainer =
+      creep.pos.findInRange(FIND_STRUCTURES, 4, {
+        filter: struc => {
+          return struc.structureType === STRUCTURE_CONTAINER && struc.store && struc.store[RESOURCE_ENERGY] > 0;
+        }
+      })[0] ?? null;
+
 
 
       if (
@@ -720,8 +727,9 @@ export class MovementUtils {
         return;
       } else if (
         storage &&
+        extensionsNearMe.length > 0 &&
         storage.store[RESOURCE_ENERGY] > 0 &&
-        creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+        creep.withdraw(storage, RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE
       ) {
         creep.moveTo(storage);
         return;
@@ -736,6 +744,9 @@ export class MovementUtils {
       ) {
         creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
         return;
+      }
+      else if (nearestContainer && creep.withdraw(nearestContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       else if (droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
         creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });

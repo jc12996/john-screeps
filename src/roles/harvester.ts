@@ -23,9 +23,17 @@ export class Harvester {
             }
         });
 
+
+
         const adjContainer = creep.pos.findInRange(FIND_STRUCTURES,1,{
             filter: (struc) => {
                 return struc.structureType === STRUCTURE_CONTAINER && struc.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            }
+        })[0] ?? null;
+
+        const adjContainerSITE = creep.pos.findInRange(FIND_CONSTRUCTION_SITES,1,{
+            filter: (struc) => {
+                return struc.structureType === STRUCTURE_CONTAINER
             }
         })[0] ?? null;
 
@@ -136,7 +144,7 @@ export class Harvester {
                 filter: (struc) => {
                     return struc.structureType === STRUCTURE_CONTAINER
                 }
-            }).length === 0) {
+            }).length === 0 && !adjContainerSITE) {
 
                 ScaffoldingUtils.createContainers(creep);
             }
