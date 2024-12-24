@@ -154,6 +154,7 @@ export class Upgrader {
         creep.room.controller &&
         creep.room.controller.my &&
         creep.room.controller.level >= 2 &&
+        creep.room.controller?.ticksToDowngrade &&
         creep.room.controller.ticksToDowngrade >= 2000
       ) {
         creep.say("⚡ build");
@@ -210,9 +211,8 @@ export class Upgrader {
           creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE
         ) {
           creep.moveTo(creep.room.controller);
-        } else if (creep.room.controller && creep.room.controller.my && creep.room.controller.level == 2) {
-          Builder.run(creep);
-        } else if (creep.room.controller && creep.room.controller.my && creep.room.controller.level == 1) {
+        }
+        else if (creep.room.controller && creep.room.controller.my && creep.room.controller.level == 1) {
           MovementUtils.generalGatherMovement(creep)
         }
       }
