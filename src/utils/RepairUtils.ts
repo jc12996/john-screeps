@@ -18,6 +18,7 @@ export class RepairUtils {
         if(target.room.controller && target.room.controller.my && target.room.controller.level > 0) {
             switch(target.room.controller.level) {
                 case 4:
+                    maxWallStrength = 10000;
                     maxRoadStrengthRepairer = 2500;
                     maxContainerStrengthRepairer = 10000;
                     break;
