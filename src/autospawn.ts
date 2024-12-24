@@ -516,7 +516,7 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("meatGrinder", spawn, commandLevel);
       options = { memory: { role: "meatGrinder", isArmySquad: true } };
     } else if (
-      repairableStuff.length &&
+      (repairableStuff.length || repairers.length === 0) &&
       numberOfNeededRepairers > 0 &&
       repairers.length < numberOfNeededRepairers &&
       ActiveRoomSources.length > 0

@@ -214,6 +214,10 @@ export class Upgrader {
         }
         else if (creep.room.controller && creep.room.controller.my && creep.room.controller.level == 1) {
           MovementUtils.generalGatherMovement(creep)
+        } else if(creep.room.controller) {
+
+            creep.moveTo(creep.room.controller);
+
         }
       }
     } else {
@@ -233,7 +237,9 @@ export class Upgrader {
         }
       }
 
-      MovementUtils.generalGatherMovement(creep, controllerLink);
+      if (controllerLink) {
+        MovementUtils.generalGatherMovement(creep, controllerLink);
+      }
     }
   }
 }
