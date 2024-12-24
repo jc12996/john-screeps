@@ -452,6 +452,14 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("builder", spawn, commandLevel);
       options = { memory: { role: "builder" } };
     } else if (
+      (repairableStuff.length &&
+      numberOfNeededRepairers > 0 &&
+      repairers.length < numberOfNeededRepairers) || repairers.length === 0 || (repairers.length  > 0 && repairers.length !== builders.length && builders.length > 0)
+    ) {
+      name = "Repairer" + Game.time + 1;
+      bodyParts = SpawnUtils.getBodyPartsForArchetype("repairer", spawn, commandLevel);
+      options = { memory: { role: "repairer" } };
+    } else if (
       hostileCreeps.length == 0 &&
       claimers.length < LowUpkeep.Claimers &&
       harvesters.length >= numberOfNeededHarvesters &&
@@ -515,16 +523,7 @@ export class AutoSpawn {
       name = "MeatGrinder" + Game.time + 1;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("meatGrinder", spawn, commandLevel);
       options = { memory: { role: "meatGrinder", isArmySquad: true } };
-    } else if (
-      (repairableStuff.length || repairers.length === 0) &&
-      numberOfNeededRepairers > 0 &&
-      repairers.length < numberOfNeededRepairers &&
-      ActiveRoomSources.length > 0
-    ) {
-      name = "Repairer" + Game.time + 1;
-      bodyParts = SpawnUtils.getBodyPartsForArchetype("repairer", spawn, commandLevel);
-      options = { memory: { role: "repairer" } };
-    } else if (
+    }  else if (
       spawn.room.energyAvailable > 400 &&
       hostileCreeps.length == 0 &&
       (spawn.room.controller.level < 2 || extensions.length >= 4) &&

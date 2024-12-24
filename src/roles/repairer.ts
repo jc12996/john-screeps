@@ -77,15 +77,15 @@ export class Repairer {
         if (creep.repair(weakestContainer) == ERR_NOT_IN_RANGE) {
           creep.moveTo(weakestContainer, { visualizePathStyle: { stroke: "#ffffff" } });
         }
-      } else if (weakWalls.length > 0 && room.controller?.my && room.controller?.level < 5) {
-        if (creep.repair(weakWalls[0]) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(weakWalls[0], { visualizePathStyle: { stroke: "#ffffff" } });
-        }
       } else if (ramparts.length > 0 && room.controller?.my) {
         if (creep.repair(ramparts[0]) == ERR_NOT_IN_RANGE) {
           creep.moveTo(ramparts[0], { visualizePathStyle: { stroke: "#ffffff" } });
         }
-      } else if (walls.length > 0 && room.controller?.my && room.controller?.level < 5) {
+      } else if (weakWalls.length > 0 && room.controller?.my && room.controller?.level < 5) {
+        if (creep.repair(weakWalls[0]) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(weakWalls[0], { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+      }  else if (walls.length > 0 && room.controller?.my && room.controller?.level < 5) {
         if (creep.repair(walls[0]) == ERR_NOT_IN_RANGE) {
           creep.moveTo(walls[0], { visualizePathStyle: { stroke: "#ffffff" } });
         }
