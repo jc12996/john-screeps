@@ -9,7 +9,7 @@ export class RepairUtils {
         maxRoadStrengthRepairer: number,
         maxContainerStrengthRepairer: number
     } {
-        let maxWallStrength = 10000;
+        let maxWallStrength = 5000;
         let maxContainerStrength = 10000;
         let maxRoadStrength = 1000;
         let maxRoadStrengthRepairer = 1000;
