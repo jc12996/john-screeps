@@ -400,8 +400,8 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("harvester", spawn, commandLevel);
       options = { memory: { role: "harvester" } };
     } else if (
-      carriers.length == 0 ||
-      (carriers.length == 1 && carriers[0].ticksToLive && carriers[0].ticksToLive <= 100)
+      carriers.length <= RoomSources.length ||
+      (carriers.length <= RoomSources.length && carriers[0].ticksToLive && carriers[0].ticksToLive <= 100)
     ) {
       name = "Carrier" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("carrier", spawn, commandLevel);
@@ -422,15 +422,6 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("upgrader", spawn, commandLevel);
       options = { memory: { role: "upgrader" } };
     } else if (
-      spawn.room.energyCapacityAvailable > 250 &&
-      hostileCreeps.length == 0 &&
-      carriers.length >= 2 &&
-      upgraders.length < numberOfNeededUpgraders
-    ) {
-      name = "Upgrader" + Game.time;
-      bodyParts = SpawnUtils.getBodyPartsForArchetype("upgrader", spawn, commandLevel);
-      options = { memory: { role: "upgrader" } };
-    } else if (
       !spawn.spawning &&
       harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts) &&
       numberOfNeededCarriers > 0 &&
@@ -440,6 +431,15 @@ export class AutoSpawn {
       name = "Carrier" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("carrier", spawn, commandLevel);
       options = { memory: { role: "carrier" } };
+    } else if (
+      spawn.room.energyCapacityAvailable > 250 &&
+      hostileCreeps.length == 0 &&
+      carriers.length >= 2 &&
+      upgraders.length < numberOfNeededUpgraders
+    ) {
+      name = "Upgrader" + Game.time;
+      bodyParts = SpawnUtils.getBodyPartsForArchetype("upgrader", spawn, commandLevel);
+      options = { memory: { role: "upgrader" } };
     } else if (
       hostileCreeps.length == 0 &&
       spawn.room.controller.level >= 2 &&

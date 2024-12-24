@@ -153,7 +153,7 @@ export class Upgrader {
         (sites.length > 0 || constructSpawn) &&
         creep.room.controller &&
         creep.room.controller.my &&
-        creep.room.controller.level > 2 &&
+        creep.room.controller.level >= 2 &&
         creep.room.controller.ticksToDowngrade >= 2000
       ) {
         creep.say("⚡ build");
