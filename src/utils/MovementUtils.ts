@@ -626,19 +626,19 @@ export class MovementUtils {
         creep.room.createFlag(hostileCreeps[0].pos, "scoutFlag");
       }
 
-      if (Game.flags.rallyFlag2) {
-        if (!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
-          if (hostileCreeps[0]) {
-            creep.room.createFlag(hostileCreeps[0].pos, "attackFlag");
-          } else if (hostileStructures[0]) {
-            creep.room.createFlag(hostileStructures[0].pos, "attackFlag");
-          }
 
-          if (Game.flags.startScouting) {
-            Game.flags.startScouting.remove();
-          }
+      if (!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
+        if (hostileCreeps[0]) {
+          creep.room.createFlag(hostileCreeps[0].pos, "attackFlag");
+        } else if (hostileStructures[0]) {
+          creep.room.createFlag(hostileStructures[0].pos, "attackFlag");
+        }
+
+        if (Game.flags.startScouting) {
+          Game.flags.startScouting.remove();
         }
       }
+
     }
   }
 

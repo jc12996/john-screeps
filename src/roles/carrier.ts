@@ -225,7 +225,7 @@ export class Carrier {
 
         if (storage && storage.store[RESOURCE_ENERGY] > 10000 && workCreep.memory.extensionFarm === undefined) {
           return (
-            (workCreep.memory.role === "upgrader" || workCreep.memory.role === "builder" || workCreep.memory.role === "repairer" ) &&
+            workCreep.memory.role === "upgrader" &&
             workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
             !creep.memory.hauling &&
             workCreep.memory.upgrading !== true
@@ -240,7 +240,7 @@ export class Carrier {
           workCreep.memory.extensionFarm === undefined
         ) {
           return (
-            (workCreep.memory.role === "upgrader" || workCreep.memory.role === "builder" || workCreep.memory.role === "repairer" ) &&
+            workCreep.memory.role === "upgrader" &&
             workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
             !creep.memory.hauling &&
             workCreep.memory.upgrading !== true
@@ -248,7 +248,7 @@ export class Carrier {
         }
 
         return (
-          (((workCreep.memory.role === "upgrader" || workCreep.memory.role === "builder" || workCreep.memory.role === "repairer" ) && workCreep.memory.upgrading !== true) ||
+          ((workCreep.memory.role === "upgrader" && workCreep.memory.upgrading !== true) ||
             ((workCreep.memory.extensionFarm === 1 || workCreep.memory.extensionFarm === 2) &&
               workCreep.store.getFreeCapacity() > 0 &&
               workCreep.room.energyAvailable <
