@@ -430,7 +430,7 @@ export class SpawnUtils {
                     break;
                 }
                 else if(commandLevel < 5 && energyAvailable >= 450) {
-                     partsPattern = [MOVE, TOUGH, TOUGH, ATTACK, ATTACK, ATTACK, ATTACK ];
+                     partsPattern = [MOVE, MOVE, MOVE, ATTACK, ATTACK, ATTACK ];
                      break;
                 }
                 else {
