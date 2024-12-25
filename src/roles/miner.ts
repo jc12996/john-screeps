@@ -309,7 +309,8 @@ export class Miner {
     if (
       finalSource &&
       nearestContainer &&
-      !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)
+      !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y) &&
+      !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)
     ) {
       creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
       return;
