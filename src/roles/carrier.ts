@@ -592,6 +592,18 @@ export class Carrier {
     nearestStorageOrTerminal: any,
     labs: StructureLab[]
   ) {
+
+    const harvesters = _.filter(
+      Game.creeps,
+      creepTemp => creepTemp.memory.role == "harvester" && creepTemp?.room && spawn?.room && creepTemp?.room?.name == spawn?.room?.name
+    );
+
+    const carriers = _.filter(
+      Game.creeps,
+      creepTemp => creepTemp.memory.role == "carrier" && creepTemp?.room && spawn?.room && creepTemp?.room?.name == spawn?.room?.name
+    );
+
+
     if (creep.memory.role === "miner" || creep.memory.hauling) {
       const nearestContainerToController = creep.room.controller
         ? creep.room.controller.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -682,7 +694,10 @@ export class Carrier {
           })[0] ?? null;
       }
 
-      if (extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      if(harvesters.length >= 2 && carriers.length >= 2 && nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.say("🚚T");
+        creep.moveTo(nearestTower);
+      }else if (extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.say("🚚XE");
         creep.moveTo(extension);
       } else if (nearestTower && !extension && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -820,7 +835,12 @@ export class Carrier {
       }
     });
 
-    if (extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+
+
+    if(harvesters.length >= 2 && carriers.length >= 2 && nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      creep.say("🚚T");
+      creep.moveTo(nearestTower);
+    } else  if (extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.say("🚚E");
       creep.moveTo(extension);
     } else if (!extension && nearestSpawn && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
