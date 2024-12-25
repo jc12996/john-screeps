@@ -81,7 +81,7 @@ export class Carrier {
       {
         filter: structure => {
           return (
-            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && (structure.structureType === STRUCTURE_CONTAINER || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
+            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
             structure.room?.controller?.my
           );

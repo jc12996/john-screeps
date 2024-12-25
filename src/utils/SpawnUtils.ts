@@ -313,7 +313,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(archetype === 'repairer') {
+                else if(archetype === 'repairer' || archetype === 'settler') {
                     if(commandLevel >= 7 && energyAvailable >= 1300) {
                         for (let i = 0; i < 10; i++) {
                             partsPattern.push(MOVE);
