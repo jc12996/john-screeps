@@ -306,14 +306,14 @@ export class Miner {
     })[0] ?? null;
 
 
-    // if (
-    //   finalSource &&
-    //   nearestContainer &&
-    //   !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)
-    // ) {
-    //   creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
-    //   return;
-    // }
+    if (
+      finalSource &&
+      nearestContainer &&
+      !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)
+    ) {
+      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      return;
+    }
 
     const mineCode = creep.harvest(finalSource);
     if (
