@@ -174,8 +174,8 @@ export class Builder {
         this.moveAndBuild(creep, roads);
       } else if (targets.length) {
         this.moveAndBuild(creep, targets[0]);
-      } else if (roomRallyPointFlag[0]) {
-        creep.moveTo(roomRallyPointFlag[0]);
+      } else {
+        Repairer.run(creep);
       }
     } else {
       MovementUtils.generalGatherMovement(creep);

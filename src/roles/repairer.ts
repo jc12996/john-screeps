@@ -2,6 +2,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { Upgrader } from "./upgrader";
 import { MovementUtils } from "utils/MovementUtils";
 import { RepairUtils } from "utils/RepairUtils";
+import { Carrier } from "./carrier";
 export class Repairer {
   public static run(creep: Creep) {
     if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
@@ -92,7 +93,7 @@ export class Repairer {
       } else if (roads.length > 0 && creep.repair(roads[0]) == ERR_NOT_IN_RANGE) {
         creep.moveTo(roads[0], { visualizePathStyle: { stroke: "#ffffff" } });
       } else {
-        Upgrader.run(creep);
+        Carrier.run(creep);
       }
     } else {
       MovementUtils.generalGatherMovement(creep);
