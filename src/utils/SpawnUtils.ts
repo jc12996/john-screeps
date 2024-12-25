@@ -117,11 +117,11 @@ export class SpawnUtils {
                 }
                 else if(!hauling && commandLevel < 6  && lowerMiner && energyAvailable >= 500) {
 
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < 3; i++) {
                         partsPattern.push(MOVE);
                     }
 
-                    for (let i = 0; i < 4; i++) {
+                    for (let i = 0; i < 3; i++) {
                         partsPattern.push(WORK);
                     }
                     for (let i = 0; i < 1; i++) {
@@ -313,6 +313,40 @@ export class SpawnUtils {
                     }
                     break;
                 }
+                else if(archetype === 'repairer') {
+                    if(commandLevel >= 7 && energyAvailable >= 1300) {
+                        for (let i = 0; i < 10; i++) {
+                            partsPattern.push(MOVE);
+                        }
+                        for (let i = 0; i < 6; i++) {
+                            partsPattern.push(WORK);
+                        }
+                        for (let i = 0; i < 4; i++) {
+                            partsPattern.push(CARRY);
+                        }
+                        break;
+                    }
+                    else if(energyAvailable >= 800) {
+                        for (let i = 0; i < 8; i++) {
+                            partsPattern.push(MOVE);
+                        }
+                        for (let i = 0; i < 2; i++) {
+                            partsPattern.push(WORK);
+                        }
+                        for (let i = 0; i < 4; i++) {
+                            partsPattern.push(CARRY);
+                        }
+                        break;
+                    }else if(energyAvailable >= 400) {
+                        partsPattern = [MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,WORK];
+                        break;
+                    } else if(energyAvailable >= 300){
+                        partsPattern = [MOVE,MOVE,MOVE,CARRY,WORK];
+                        break;
+                    } else {
+                        return null;
+                    }
+                }
                 else if(energyAvailable >= 800) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
@@ -324,7 +358,8 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                }  else if(energyAvailable >= 400) {
+                }
+                else if(energyAvailable >= 400) {
                     partsPattern = [MOVE,CARRY,WORK,WORK,WORK];
                     break;
                 } else if(energyAvailable >= 300){
