@@ -56,8 +56,27 @@ export class SpawnUtils {
 
         switch(archetype) {
 
-            case 'attackClaimer':
             case 'claimer':
+                if(energyAvailable >= 800) {
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CLAIM);
+                    }
+                    break;
+                }else if(energyAvailable >= 650) {
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CLAIM);
+                    }
+                    break;
+                } else {
+                    return null;
+                }
+            case 'attackClaimer':
                 if(energyAvailable >= 650) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
