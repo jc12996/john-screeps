@@ -43,7 +43,7 @@ export class AutoSpawn {
       Game.creeps,
       creep => creep.memory.role == "defender" && (Game.flags.draftFlag || creep.room.name == spawn.room.name)
     );
-    const harvesters = _.filter(
+    let harvesters = _.filter(
       Game.creeps,
       creep => creep.memory.role == "harvester" && creep.room.name == spawn.room.name
     );
@@ -74,7 +74,7 @@ export class AutoSpawn {
     }
 
     const dismantlers = _.filter(Game.creeps, creep => creep.memory.role == "dismantler");
-    const carriers = _.filter(
+    let carriers = _.filter(
       Game.creeps,
       creep => creep.memory.role == "carrier" && creep.room.name == spawn.room.name
     );
@@ -281,6 +281,7 @@ export class AutoSpawn {
           numberOfNeededHaulers = numberOfSourcesInMineFlagRoom * 2;
         }
 
+
         // Check if any attackClaimer has 100 ticks or less left to live
         const needsNewAttackClaimer = attackClaimers.some(
           creep => creep.ticksToLive && creep.ticksToLive <= 300 && creep.memory.assignedMineFlag == mineFlag.name
@@ -388,6 +389,48 @@ export class AutoSpawn {
           numberOfNeededCarriers = 8;
         }
     }
+
+
+    if(numberOfNeededUpgraders >= 4) {
+      numberOfNeededUpgraders = 4;
+    }
+      //Suicide scripts
+
+      if(energyCapacityAvailable >= 500 && energyAvailable >= 500) {
+        let suicideOccured = false
+        if( harvesters.length > 0 && numberOfNeededHarvesters > 0 && numberOfNeededHarvesters === harvesters.length && suicideOccured === false) {
+          const lowHarvestor = harvesters.filter(harv => {
+            return harv.getActiveBodyparts(WORK) <= 1
+          })[0] ?? null;
+
+          if(lowHarvestor) {
+            console.log('suicide harvest!')
+            suicideOccured = true;
+            lowHarvestor.suicide();
+            harvesters = _.filter(
+              Game.creeps,
+              creep => creep.memory.role == "harvester" && creep.room.name == spawn.room.name
+            );
+          }
+        }
+
+        if( carriers.length > 0 && numberOfNeededCarriers > 0 && numberOfNeededCarriers === carriers.length && suicideOccured === false) {
+          const lowCarrier = carriers.filter(harv => {
+            return harv.getActiveBodyparts(CARRY) <= 3
+          })[0] ?? null;
+
+          if(lowCarrier) {
+            console.log('suicide carry!')
+            suicideOccured = true;
+            lowCarrier.suicide();
+            carriers = _.filter(
+              Game.creeps,
+              creep => creep.memory.role == "carrier" && creep.room.name == spawn.room.name
+            );
+          }
+        }
+
+      }
 
 
     if (
