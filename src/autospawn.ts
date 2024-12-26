@@ -47,7 +47,7 @@ export class AutoSpawn {
       Game.creeps,
       creep => creep.memory.role == "harvester" && creep.room.name == spawn.room.name
     );
-    const upgraders = _.filter(
+    let upgraders = _.filter(
       Game.creeps,
       creep => creep.memory.role == "upgrader" && creep.room.name == spawn.room.name
     );
@@ -426,6 +426,22 @@ export class AutoSpawn {
             carriers = _.filter(
               Game.creeps,
               creep => creep.memory.role == "carrier" && creep.room.name == spawn.room.name
+            );
+          }
+        }
+
+        if( upgraders.length > 0 && numberOfNeededUpgraders > 0 && numberOfNeededUpgraders === upgraders.length && suicideOccured === false) {
+          const lowUpgrade = upgraders.filter(harv => {
+            return harv.getActiveBodyparts(WORK) <= 2
+          })[0] ?? null;
+
+          if(lowUpgrade) {
+            console.log('suicide upgrade!')
+            suicideOccured = true;
+            lowUpgrade.suicide();
+            upgraders = _.filter(
+              Game.creeps,
+              creep => creep.memory.role == "upgrader" && creep.room.name == spawn.room.name
             );
           }
         }

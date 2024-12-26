@@ -293,8 +293,8 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
                     break;
-                }  else if(energyAvailable >= 400) {
-                    partsPattern = [MOVE,CARRY,WORK,WORK,WORK];
+                }  else if(energyAvailable >= 550) {
+                    partsPattern = [MOVE,CARRY,CARRY,WORK,WORK,WORK,WORK];
                     break;
                 } else if(energyAvailable >= 300){
                     partsPattern = [MOVE,CARRY,WORK,WORK];
