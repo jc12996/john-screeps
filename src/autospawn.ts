@@ -495,9 +495,9 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("builder", spawn, commandLevel);
       options = { memory: { role: "builder" } };
     } else if (
-      (repairableStuff.length &&
+      repairableStuff.length &&
       numberOfNeededRepairers > 0 &&
-      repairers.length < numberOfNeededRepairers) || repairers.length === 0 || (repairers.length  > 0 && repairers.length !== builders.length && builders.length > 0)
+      repairers.length < numberOfNeededRepairers
     ) {
       name = "Repairer" + Game.time + 1;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("repairer", spawn, commandLevel);
