@@ -20,16 +20,23 @@ export class Settler {
             creep.say("🌎");
         }
 
-        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
-        if(!canProceed){
-            return;
+        console.log(creep.memory.settled);
+        if(!creep.memory.settled) {
+            const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+            if(!canProceed){
+                return;
+            }
         }
+
 
 
         var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         var spawns = creep.room.find(FIND_MY_SPAWNS);
 
         if(spawns.length) {
+            if(!creep.memory.settled) {
+                creep.memory.settled = true;
+            }
             let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawns[0].room.name);
 
             const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
@@ -63,20 +70,6 @@ export class Settler {
             creep.memory.delivering = true;
             creep.say('🌎 settle');
         }
-
-        const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-            filter:  (source) => {
-                return (
-                    source.amount > 10 && source.room?.controller?.my
-
-
-                )
-            }
-        });
-
-        const containers = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => { return (structure.structureType == STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 100) && creep.room?.controller?.my; }
-        });
 
 
         if(!creep.memory.delivering) {
@@ -115,6 +108,10 @@ export class Settler {
                 }
             });
 
+            if(!creep.memory.settled) {
+                creep.memory.settled = true;
+            }
+
             if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2) {
                 if(creep.room.controller && creep.room.controller.my &&
                     creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
@@ -127,6 +124,7 @@ export class Settler {
                     Builder.run(creep);
                 }
             } else {
+
                 Builder.run(creep)
             }
 

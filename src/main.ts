@@ -65,6 +65,7 @@ declare global {
     targetContainerPath?: PathStep[];
     targetContainerId?: Id<StructureContainer>;
     targetContainer?: StructureContainer;
+    settled?: boolean;
   }
 
   interface FlagMemory {
