@@ -126,7 +126,7 @@ export class Harvester {
                 }
             } else if(adjLink) {
                 creep.transfer(adjLink, RESOURCE_ENERGY);
-            } else {
+            } else if(creep.memory.role !== 'settler'){
                 creep.drop(RESOURCE_ENERGY, creep.store.energy);
             }
 

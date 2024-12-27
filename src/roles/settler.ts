@@ -16,49 +16,30 @@ export class Settler {
     public static run(creep: Creep): void {
 
 
-        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-            creep.say("🌎");
-        }
+
 
         if(!creep.memory.settled) {
+            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+                creep.say("🌎");
+            }
             const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
             if(!canProceed){
                 return;
             }
         }
 
+        if(!creep.memory.settled) {
+            creep.memory.settled = true;
+        }
 
-
-        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
         var spawns = creep.room.find(FIND_MY_SPAWNS);
-
         if(spawns.length) {
-            if(!creep.memory.settled) {
-                creep.memory.settled = true;
-            }
-            let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room.name == spawns[0].room.name);
-
-            const extensions = creep.room.find(FIND_CONSTRUCTION_SITES, {
-                filter: (site) => {
-                    return (site.structureType == STRUCTURE_EXTENSION)
-                }
-            });
-
-
-            if(extensions.length > 0) {
-                Builder.run(creep);
-            } else if(harvesters.length > 0) {
-                Carrier.run(creep);
-            } else {
-                Upgrader.run(creep);
-            }
-
+            Builder.run(creep);
             return;
         }
 
-        if(creep.room.controller?.my) {
+        if(creep.room.controller?.my && spawns.length === 0) {
             ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
-
         }
 
         if(creep.memory.delivering && creep.store[RESOURCE_ENERGY] == 0) {
@@ -72,62 +53,47 @@ export class Settler {
 
 
         if(!creep.memory.delivering) {
-            let targetSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-                filter:  (source) => {
-                    return (
-                        source.room?.controller?.my
-
-
-                    )
-                }
-            });
-
-            if(!targetSource) {
-                Miner.run(creep)
-                return;
-            }
-
-            let ruinsSource = creep.pos.findClosestByPath(FIND_RUINS, {
-                filter:  (source) => {
-                    return (
-                        source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0
-
-
-                    )
-                }
-            });
-
-            MovementUtils.generalGatherMovement(creep,undefined,targetSource);
-
-        }else {
-
-            var constructSpawn = creep.room.find(FIND_CONSTRUCTION_SITES, {
-                filter: (site) => {
-                    return (site.structureType == STRUCTURE_SPAWN)
-                }
-            });
-
-            if(!creep.memory.settled) {
-                creep.memory.settled = true;
-            }
-
-            if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2) {
-                if(creep.room.controller && creep.room.controller.my &&
-                    creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(creep.room.controller);
-                }
-            } else if(constructSpawn.length) {
-                if(creep.build(constructSpawn[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(constructSpawn[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                } else {
-                    Builder.run(creep);
-                }
+            const harvesters = _.filter(
+                Game.creeps,
+                creep => creep.memory.role == "harvester" && spawns[0] && creep.room.name == spawns[0].room.name
+              );
+            if(harvesters.length >= 3) {
+                MovementUtils.generalGatherMovement(creep);
             } else {
-
-                Builder.run(creep)
+                Harvester.run(creep);
             }
-
+            return;
         }
+
+        creep.memory.targetSource = undefined;
+
+        var constructSpawn = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (site) => {
+                return (site.structureType == STRUCTURE_SPAWN)
+            }
+        });
+
+        if(!creep.memory.settled) {
+            creep.memory.settled = true;
+        }
+
+        if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2) {
+            if(creep.room.controller && creep.room.controller.my &&
+                creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller);
+            }
+        } else if(constructSpawn.length) {
+            if(creep.build(constructSpawn[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(constructSpawn[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            } else {
+                Builder.run(creep);
+            }
+        } else {
+
+            Builder.run(creep)
+        }
+
+
 
 
 
