@@ -20,7 +20,6 @@ export class Settler {
             creep.say("🌎");
         }
 
-        console.log(creep.memory.settled);
         if(!creep.memory.settled) {
             const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
             if(!canProceed){
