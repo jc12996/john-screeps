@@ -818,6 +818,7 @@ export class MovementUtils {
   public static returnHomeCheck(creep: Creep): boolean {
     if (
       creep.memory.role !== "miner" &&
+      creep.memory.role !== "settler" &&
       creep.memory.firstSpawnCoords &&
       creep.room.name !== creep.memory.firstSpawnCoords
     ) {

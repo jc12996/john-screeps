@@ -77,26 +77,13 @@ export class Settler {
             creep.memory.settled = true;
         }
 
-        if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2) {
-            if(creep.room.controller && creep.room.controller.my &&
-                creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
-            }
-        } else if(constructSpawn.length) {
-            if(creep.build(constructSpawn[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(constructSpawn[0], {visualizePathStyle: {stroke: '#ffffff'}});
-            } else {
-                Builder.run(creep);
-            }
+        if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2 && creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(creep.room.controller);
+        } else if(constructSpawn.length > 0 && creep.build(constructSpawn[0]) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(constructSpawn[0], {visualizePathStyle: {stroke: '#ffffff'}});
         } else {
-
             Builder.run(creep)
         }
-
-
-
-
-
     }
 
 }
