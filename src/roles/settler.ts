@@ -18,15 +18,15 @@ export class Settler {
 
 
 
-        if(!creep.memory.settled) {
-            if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-                creep.say("🌎");
-            }
-            const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
-            if(!canProceed){
-                return;
-            }
+
+        if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+            creep.say("🌎");
         }
+        const canProceed = MovementUtils.claimerSettlerMovementSequence(creep);
+        if(!canProceed){
+            return;
+        }
+
 
         if(!creep.memory.settled) {
             creep.memory.settled = true;
@@ -92,7 +92,7 @@ export class Settler {
                 creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
             }
 
-        } else if (room && room.energyAvailable < room.energyCapacityAvailable && room.find(FIND_STRUCTURES, { filter:(struc) => struc.structureType === STRUCTURE_EXTENSION}).length >= 5) {
+        } else if (room && room.energyAvailable < room.energyCapacityAvailable && room.find(FIND_STRUCTURES, { filter:(struc) => struc.structureType === STRUCTURE_EXTENSION}).length >= 4) {
             Carrier.run(creep);
         } else {
             Builder.run(creep)

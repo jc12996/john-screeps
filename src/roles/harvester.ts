@@ -24,26 +24,13 @@ export class Harvester {
         });
 
 
-
-        const adjContainer = creep.pos.findInRange(FIND_STRUCTURES,1,{
-            filter: (struc) => {
-                return struc.structureType === STRUCTURE_CONTAINER && struc.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            }
-        })[0] ?? null;
-
-        const adjContainerSITE = creep.pos.findInRange(FIND_CONSTRUCTION_SITES,1,{
-            filter: (struc) => {
-                return struc.structureType === STRUCTURE_CONTAINER
-            }
-        })[0] ?? null;
-
         const adjLink = creep.pos.findInRange(FIND_STRUCTURES,1,{
             filter: (struc) => {
                 return struc.structureType === STRUCTURE_LINK && struc.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             }
         })[0] ?? null;
 
-        let finalSource:Source | null = Harvester.findTargetSource(creep);
+        let finalSource:Source | null = null;
 
 
 
@@ -52,12 +39,10 @@ export class Harvester {
             if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
                 creep.say("🔄");
             }
-            finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
-                filter:  (source) => {
-                   return source.id == creep.memory.targetSource && source.room.controller?.my
-                }
-            });
+            finalSource = Game.getObjectById(creep.memory.targetSource) as Source;
 
+        } else {
+            finalSource = Harvester.findTargetSource(creep);
         }
 
         //creep.memory.targetSource = undefined
@@ -118,33 +103,18 @@ export class Harvester {
             }
         } else if(finalSource && creep.harvest(finalSource) === OK) {
             creep.memory.targetSource = finalSource.id;
-            if(adjContainer) {
-                if (adjContainer.hits < adjContainer.hitsMax) {
-                    creep.repair(adjContainer);
-                } else {
-                    creep.transfer(adjContainer, RESOURCE_ENERGY);
-                }
-            } else if(adjLink) {
+            if(adjLink) {
                 creep.transfer(adjLink, RESOURCE_ENERGY);
-            } else if(creep.memory.role !== 'settler'){
+            } else if(creep.memory.role !== 'settler' && creep.store.getFreeCapacity() === 0){
                 creep.drop(RESOURCE_ENERGY, creep.store.energy);
+                return;
             }
 
-
-            var tower = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter:  (structure) => {
-                    return (
-                        structure.structureType == STRUCTURE_TOWER
-
-                    ) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
-                }
-            });
-            if((tower || !container) && creep.pos.findInRange(FIND_STRUCTURES,2,{
+            if(creep.pos.findInRange(FIND_STRUCTURES,2,{
                 filter: (struc) => {
                     return struc.structureType === STRUCTURE_CONTAINER
                 }
-            }).length === 0 && !adjContainerSITE) {
+            }).length === 0) {
 
                 ScaffoldingUtils.createContainers(creep);
             }

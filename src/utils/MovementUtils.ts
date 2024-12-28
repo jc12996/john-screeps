@@ -99,7 +99,7 @@ export class MovementUtils {
           }) === ERR_NO_PATH &&
           friendlyRamparts
         ) {
-          creep.moveTo(friendlyRamparts);
+          creep.moveTo(friendlyRamparts, {visualizePathStyle: {stroke: '#ffaa00'}});
         }
 
         if (creepIsNearFlag) {
@@ -109,83 +109,83 @@ export class MovementUtils {
         return;
       }
 
-      if (Game.flags.rallyFlag2?.room && Game.flags.rallyFlag?.room) {
-        new RoomVisual(Game.flags.rallyFlag2.room.name).line(
-          Game.flags.rallyFlag2.pos.x,
-          Game.flags.rallyFlag2.pos.y,
-          Game.flags.rallyFlag2.pos.x - 3,
-          Game.flags.rallyFlag2.pos.y,
-          { color: "red" }
-        );
-        new RoomVisual(Game.flags.rallyFlag2.room.name).line(
-          Game.flags.rallyFlag2.pos.x - 3,
-          Game.flags.rallyFlag2.pos.y,
-          Game.flags.rallyFlag2.pos.x - 2,
-          Game.flags.rallyFlag2.pos.y + 1,
-          { color: "red" }
-        );
-        new RoomVisual(Game.flags.rallyFlag2.room.name).line(
-          Game.flags.rallyFlag2.pos.x - 3,
-          Game.flags.rallyFlag2.pos.y,
-          Game.flags.rallyFlag2.pos.x - 2,
-          Game.flags.rallyFlag2.pos.y - 1,
-          { color: "red" }
-        );
-        new RoomVisual(Game.flags.rallyFlag2.room.name).text(
-          "🚶 Going to " + Game.flags.rallyFlag2.room.name,
-          Game.flags.rallyFlag2.pos.x - 3,
-          Game.flags.rallyFlag2.pos.y,
-          { align: "right", opacity: 0.8 }
-        );
+      // if (Game.flags.rallyFlag2?.room && Game.flags.rallyFlag?.room) {
+      //   new RoomVisual(Game.flags.rallyFlag2.room.name).line(
+      //     Game.flags.rallyFlag2.pos.x,
+      //     Game.flags.rallyFlag2.pos.y,
+      //     Game.flags.rallyFlag2.pos.x - 3,
+      //     Game.flags.rallyFlag2.pos.y,
+      //     { color: "red" }
+      //   );
+      //   new RoomVisual(Game.flags.rallyFlag2.room.name).line(
+      //     Game.flags.rallyFlag2.pos.x - 3,
+      //     Game.flags.rallyFlag2.pos.y,
+      //     Game.flags.rallyFlag2.pos.x - 2,
+      //     Game.flags.rallyFlag2.pos.y + 1,
+      //     { color: "red" }
+      //   );
+      //   new RoomVisual(Game.flags.rallyFlag2.room.name).line(
+      //     Game.flags.rallyFlag2.pos.x - 3,
+      //     Game.flags.rallyFlag2.pos.y,
+      //     Game.flags.rallyFlag2.pos.x - 2,
+      //     Game.flags.rallyFlag2.pos.y - 1,
+      //     { color: "red" }
+      //   );
+      //   new RoomVisual(Game.flags.rallyFlag2.room.name).text(
+      //     "🚶 Going to " + Game.flags.rallyFlag2.room.name,
+      //     Game.flags.rallyFlag2.pos.x - 3,
+      //     Game.flags.rallyFlag2.pos.y,
+      //     { align: "right", opacity: 0.8 }
+      //   );
 
-        new RoomVisual(Game.flags.rallyFlag.room.name).line(
-          Game.flags.rallyFlag.pos.x - 3,
-          Game.flags.rallyFlag.pos.y,
-          Game.flags.rallyFlag.pos.x,
-          Game.flags.rallyFlag.pos.y,
-          { color: "green" }
-        );
-        new RoomVisual(Game.flags.rallyFlag.room.name).line(
-          Game.flags.rallyFlag.pos.x,
-          Game.flags.rallyFlag.pos.y,
-          Game.flags.rallyFlag.pos.x - 1,
-          Game.flags.rallyFlag.pos.y + 1,
-          { color: "green" }
-        );
-        new RoomVisual(Game.flags.rallyFlag.room.name).line(
-          Game.flags.rallyFlag.pos.x,
-          Game.flags.rallyFlag.pos.y,
-          Game.flags.rallyFlag.pos.x - 1,
-          Game.flags.rallyFlag.pos.y - 1,
-          { color: "green" }
-        );
-        new RoomVisual(Game.flags.rallyFlag.room.name).text(
-          "🚶 Arriving from " + Game.flags.rallyFlag.room.name,
-          Game.flags.rallyFlag.pos.x + 8,
-          Game.flags.rallyFlag.pos.y,
-          { align: "right", opacity: 0.8 }
-        );
-      }
+      //   new RoomVisual(Game.flags.rallyFlag.room.name).line(
+      //     Game.flags.rallyFlag.pos.x - 3,
+      //     Game.flags.rallyFlag.pos.y,
+      //     Game.flags.rallyFlag.pos.x,
+      //     Game.flags.rallyFlag.pos.y,
+      //     { color: "green" }
+      //   );
+      //   new RoomVisual(Game.flags.rallyFlag.room.name).line(
+      //     Game.flags.rallyFlag.pos.x,
+      //     Game.flags.rallyFlag.pos.y,
+      //     Game.flags.rallyFlag.pos.x - 1,
+      //     Game.flags.rallyFlag.pos.y + 1,
+      //     { color: "green" }
+      //   );
+      //   new RoomVisual(Game.flags.rallyFlag.room.name).line(
+      //     Game.flags.rallyFlag.pos.x,
+      //     Game.flags.rallyFlag.pos.y,
+      //     Game.flags.rallyFlag.pos.x - 1,
+      //     Game.flags.rallyFlag.pos.y - 1,
+      //     { color: "green" }
+      //   );
+      //   new RoomVisual(Game.flags.rallyFlag.room.name).text(
+      //     "🚶 Arriving from " + Game.flags.rallyFlag.room.name,
+      //     Game.flags.rallyFlag.pos.x + 8,
+      //     Game.flags.rallyFlag.pos.y,
+      //     { align: "right", opacity: 0.8 }
+      //   );
+      // }
 
-      if (flag.name === "rallyFlag" && creepIsNearFlag && isPatrolCreep) {
-        const creepIsInSquad =
-          creep.pos.findInRange(FIND_MY_CREEPS, 3, {
-            filter: myCreep =>
-              myCreep.getActiveBodyparts(ATTACK) > 0 ||
-              myCreep.getActiveBodyparts(RANGED_ATTACK) > 0 ||
-              (myCreep.memory.role === "scout" && !Game.flags.scoutFlag)
-          }).length >= (!Game.flags.scoutFlag && Game.flags.startScouting ? 1 : PeaceTimeEconomy.TOTAL_ATTACKER_SIZE);
-        if (creepIsInSquad) {
-          const tempRallyFlag = flag;
-          Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);
-          Game.flags.rallyFlag2.setPosition(tempRallyFlag.pos);
-          flag = Game.flags.rallyFlag;
-        }
-      }
+      // if (flag.name === "rallyFlag" && creepIsNearFlag && isPatrolCreep) {
+      //   const creepIsInSquad =
+      //     creep.pos.findInRange(FIND_MY_CREEPS, 3, {
+      //       filter: myCreep =>
+      //         myCreep.getActiveBodyparts(ATTACK) > 0 ||
+      //         myCreep.getActiveBodyparts(RANGED_ATTACK) > 0 ||
+      //         (myCreep.memory.role === "scout" && !Game.flags.scoutFlag)
+      //     }).length >= (!Game.flags.scoutFlag && Game.flags.startScouting ? 1 : PeaceTimeEconomy.TOTAL_ATTACKER_SIZE);
+      //   if (creepIsInSquad) {
+      //     const tempRallyFlag = flag;
+      //     Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);
+      //     Game.flags.rallyFlag2.setPosition(tempRallyFlag.pos);
+      //     flag = Game.flags.rallyFlag;
+      //   }
+      // }
 
-      if (!!!Game.flags?.rallyFlag2 && !!!Game.flags?.rallyFlag && isPatrolCreep) {
-        creep.memory.hasJoinedPatrol = undefined;
-      }
+      // if (!!!Game.flags?.rallyFlag2 && !!!Game.flags?.rallyFlag && isPatrolCreep) {
+      //   creep.memory.hasJoinedPatrol = undefined;
+      // }
     }
 
     if (
@@ -205,11 +205,12 @@ export class MovementUtils {
               }
             });
           }
-        }
+        },
+        visualizePathStyle: {stroke: '#ffaa00'}
       }) === ERR_NO_PATH &&
       friendlyRamparts
     ) {
-      creep.moveTo(friendlyRamparts);
+      creep.moveTo(friendlyRamparts, {visualizePathStyle: {stroke: '#ffaa00'}});
     }
   }
 
@@ -643,6 +644,18 @@ export class MovementUtils {
   }
 
   public static claimerSettlerMovementSequence(creep: Creep): boolean {
+
+    if (Game.flags.settlerFlag && creep.memory.role === 'settler') {
+
+      if (Game.flags.settlerFlag.room == creep.room) {
+        return true;
+      }
+
+      MovementUtils.goToFlag(creep, Game.flags.settlerFlag);
+      return false;
+
+    }
+
     if (creep.memory.role !== "settler" && creep.memory.role !== "claimer" && creep.memory.role !== "attackClaimer") {
       return true;
     }
@@ -659,6 +672,8 @@ export class MovementUtils {
 
       return false;
     }
+
+
 
     if (!!!AutoSpawn.nextClaimFlag) {
       return true;

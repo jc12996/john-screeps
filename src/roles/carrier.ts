@@ -7,13 +7,24 @@ import { compoundOutputMap, LabMapper, Labs } from "labs";
 export class Carrier {
   public static run(creep: Creep): void {
     if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-      creep.say("🚚 X");
+      creep.say("🚚");
     }
 
     const canContinue = MovementUtils.returnHomeCheck(creep);
     if (!canContinue) {
       return;
     }
+
+    const commandLevel = creep.room?.controller?.level ?? 1;
+
+    if(commandLevel <= 2) {
+
+
+      this.simpleCarrierSequence(creep);
+      return;
+    }
+
+
 
     if (!creep.memory.isBoosted) {
       const canContinue = Labs.boostCreep(creep);
@@ -52,7 +63,7 @@ export class Carrier {
       Game.creeps,
       creep => creep.memory.role == "carrier" && creep.room.name == spawn?.room.name
     );
-    const commandLevel = creep.room?.controller?.level ?? 1;
+
 
     const storage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: structure => {
@@ -217,52 +228,7 @@ export class Carrier {
     });
 
     // Find the creep with the lowest energy
-    const nearestAvailableWorkingRoleCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-      filter: workCreep => {
-        const storage = creep.room.find(FIND_STRUCTURES, {
-          filter: s => s.structureType === STRUCTURE_STORAGE
-        })[0] as StructureStorage | null;
-
-        if (storage && storage.store[RESOURCE_ENERGY] > 10000 && workCreep.memory.extensionFarm === undefined) {
-          return (
-            workCreep.memory.role === "upgrader" &&
-            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
-            !creep.memory.hauling &&
-            workCreep.memory.upgrading !== true
-          );
-        }
-
-        if (
-          workCreep.room.controller &&
-          workCreep.room.controller.my &&
-          workCreep.room.controller.level <= 3 &&
-          workCreep.room.energyAvailable === workCreep.room.energyCapacityAvailable &&
-          workCreep.memory.extensionFarm === undefined
-        ) {
-          return (
-            workCreep.memory.role === "upgrader" &&
-            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
-            !creep.memory.hauling &&
-            workCreep.memory.upgrading !== true
-          );
-        }
-
-        return (
-          ((workCreep.memory.role === "upgrader" && workCreep.memory.upgrading !== true) ||
-            ((workCreep.memory.extensionFarm === 1 || workCreep.memory.extensionFarm === 2) &&
-              workCreep.store.getFreeCapacity() > 0 &&
-              workCreep.room.energyAvailable <
-                (commandLevel >= 7
-                  ? creep.memory.role === "miner"
-                    ? workCreep.room.energyCapacityAvailable
-                    : 1000
-                  : 800))) &&
-          workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
-          !creep.memory.hauling &&
-          (commandLevel > 4 || creep.room.energyAvailable >= 650)
-        );
-      }
-    });
+    const nearestAvailableWorkingRoleCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
     //, (creep) => creep.store.getUsedCapacity(RESOURCE_ENERGY));
 
     const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
@@ -429,6 +395,55 @@ export class Carrier {
     } else if (roomRallyPointFlag.length) {
       creep.moveTo(roomRallyPointFlag[0]);
     }
+  }
+
+  private static getNearestAvailableWorkingRoleCreep(creep:Creep,commandLevel: number): Creep {
+    return creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+      filter: workCreep => {
+        const storage = creep.room.find(FIND_STRUCTURES, {
+          filter: s => s.structureType === STRUCTURE_STORAGE
+        })[0] as StructureStorage | null;
+
+        if (storage && storage.store[RESOURCE_ENERGY] > 10000 && workCreep.memory.extensionFarm === undefined) {
+          return (
+            workCreep.memory.role === "upgrader" &&
+            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
+            !creep.memory.hauling &&
+            workCreep.memory.upgrading !== true
+          );
+        }
+
+        if (
+          workCreep.room.controller &&
+          workCreep.room.controller.my &&
+          workCreep.room.controller.level <= 3 &&
+          workCreep.room.energyAvailable === workCreep.room.energyCapacityAvailable &&
+          workCreep.memory.extensionFarm === undefined
+        ) {
+          return (
+            workCreep.memory.role === "upgrader" &&
+            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
+            !creep.memory.hauling &&
+            workCreep.memory.upgrading !== true
+          );
+        }
+
+        return (
+          ((workCreep.memory.role === "upgrader" && workCreep.memory.upgrading !== true) ||
+            ((workCreep.memory.extensionFarm === 1 || workCreep.memory.extensionFarm === 2) &&
+              workCreep.store.getFreeCapacity() > 0 &&
+              workCreep.room.energyAvailable <
+                (commandLevel >= 7
+                  ? creep.memory.role === "miner"
+                    ? workCreep.room.energyCapacityAvailable
+                    : 1000
+                  : 800))) &&
+          workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
+          !creep.memory.hauling &&
+          (commandLevel > 4 || creep.room.energyAvailable >= 650)
+        );
+      }
+    }) as Creep;
   }
 
   private static scienceCarrierSequence(creep: Creep, labs: StructureLab[], terminal: StructureTerminal): boolean {
@@ -907,6 +922,102 @@ export class Carrier {
       } else {
         creep.moveTo(roomRallyPointFlag[0]);
       }
+    }
+  }
+
+  private static simpleCarrierSequence(creep: Creep) {
+
+
+
+    if (
+      !creep.memory.carrying &&
+      creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 0
+    ) {
+      creep.memory.carrying = true;
+    }
+
+
+    if (creep.memory.carrying && creep.store[RESOURCE_ENERGY] == 0) {
+      creep.memory.carrying = false;
+    }
+
+    if(creep.memory.carrying) {
+      const spawns = creep.room.find(FIND_MY_SPAWNS, {
+        filter: structure => {
+          return (
+            structure.room?.controller?.my &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+          );
+        }
+      });
+
+      let transferCode = creep.transfer(spawns[0],RESOURCE_ENERGY);
+      if(spawns[0] && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(spawns[0], { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      if(transferCode === OK) {
+        return;
+      }
+
+      let extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: structure => {
+          return (
+            structure.structureType == STRUCTURE_EXTENSION &&
+            structure.room?.controller?.my &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+          );
+        }
+      }) as StructureContainer;
+
+      transferCode = creep.transfer(extension,RESOURCE_ENERGY);
+      if(extension && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(extension, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      if(transferCode === OK) {
+        return;
+      }
+
+
+      const commandLevel = creep.room?.controller?.level ?? 1;
+      const nearestCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
+
+      transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
+      if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      if(transferCode === OK) {
+        return;
+      }
+
+
+      return;
+    }
+
+    const holdingHarvests = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+      filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 10
+    }) as Creep;
+
+    if (holdingHarvests && holdingHarvests.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      creep.moveTo(holdingHarvests, { visualizePathStyle: { stroke: "#ffaa00" } });
+      return;
+    }
+
+    const droppedSource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+      filter: source => source.amount >= 0
+    }) as Resource;
+
+    if (droppedSource && creep.pickup(droppedSource) === ERR_NOT_IN_RANGE) {
+      creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+      return;
+    }
+
+    const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 0
+    });
+
+    if (tombstone && creep.withdraw(tombstone,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+      return;
     }
   }
 }
