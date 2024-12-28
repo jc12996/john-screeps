@@ -1077,6 +1077,15 @@ export class Carrier {
       return;
     }
 
+    const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 0
+    });
+
+    if (tombstone && creep.withdraw(tombstone,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+      return;
+    }
+
     const holdingHarvests = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
       filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 0
     }) as Creep;
@@ -1098,14 +1107,7 @@ export class Carrier {
       return;
     }
 
-    const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 0
-    });
 
-    if (tombstone && creep.withdraw(tombstone,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
-      return;
-    }
   }
 
 
