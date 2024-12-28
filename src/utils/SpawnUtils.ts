@@ -322,34 +322,22 @@ export class SpawnUtils {
                     break;
                 }
                 else if(archetype === 'repairer' || archetype === 'settler') {
-                    if(commandLevel >= 7 && energyAvailable >= 1300) {
-                        for (let i = 0; i < 10; i++) {
-                            partsPattern.push(MOVE);
-                        }
-                        for (let i = 0; i < 6; i++) {
-                            partsPattern.push(WORK);
-                        }
+                    if(energyAvailable >= 800) {
                         for (let i = 0; i < 4; i++) {
-                            partsPattern.push(CARRY);
-                        }
-                        break;
-                    }
-                    else if(energyAvailable >= 800) {
-                        for (let i = 0; i < 8; i++) {
                             partsPattern.push(MOVE);
+                        }
+                        for (let i = 0; i < 5; i++) {
+                            partsPattern.push(WORK);
                         }
                         for (let i = 0; i < 2; i++) {
-                            partsPattern.push(WORK);
-                        }
-                        for (let i = 0; i < 4; i++) {
                             partsPattern.push(CARRY);
                         }
                         break;
                     }else if(energyAvailable >= 400) {
-                        partsPattern = [MOVE,MOVE,MOVE,MOVE,CARRY,CARRY,WORK];
+                        partsPattern = [MOVE,MOVE,MOVE,CARRY,WORK,WORK];
                         break;
                     } else if(energyAvailable >= 300){
-                        partsPattern = [MOVE,MOVE,MOVE,CARRY,WORK];
+                        partsPattern = [MOVE,CARRY,WORK,WORK];
                         break;
                     } else {
                         return null;
