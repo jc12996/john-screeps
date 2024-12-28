@@ -92,7 +92,7 @@ export class Settler {
                 creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
             }
 
-        } else if (room && room.energyAvailable < room.energyCapacityAvailable && room.find(FIND_STRUCTURES, { filter:(struc) => struc.structureType === STRUCTURE_EXTENSION}).length >= 4) {
+        } else if (room && room.energyAvailable < room.energyCapacityAvailable && room.find(FIND_STRUCTURES, { filter:(struc) => struc.structureType === STRUCTURE_EXTENSION}).length >= 5) {
             Carrier.run(creep);
         } else {
             Builder.run(creep)
