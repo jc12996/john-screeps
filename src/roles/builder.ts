@@ -14,7 +14,7 @@ export class Builder {
     }
 
     if (numberOfBuilderSlots > 0 && !creep.pos.inRangeTo(target.pos.x, target?.pos.y, 1)) {
-      creep.moveTo(target);
+      creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
     } else if (target) {
       if (creep.build(target) == ERR_NOT_IN_RANGE) {
         creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
@@ -60,7 +60,7 @@ export class Builder {
           creep.room.controller.my &&
           creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE
         ) {
-          creep.moveTo(creep.room.controller);
+          creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
         }
         return;
       }

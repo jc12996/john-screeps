@@ -66,21 +66,24 @@ export class Settler {
         }
 
         creep.memory.targetSource = undefined;
-
-        var constructSpawn = creep.room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (site) => {
-                return (site.structureType == STRUCTURE_SPAWN)
-            }
-        });
-
         if(!creep.memory.settled) {
             creep.memory.settled = true;
         }
 
-        if(creep.room?.controller && creep.room?.controller.my && creep.room?.controller.level < 2 && creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(creep.room.controller);
-        } else if(constructSpawn.length > 0 && creep.build(constructSpawn[0]) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(constructSpawn[0], {visualizePathStyle: {stroke: '#ffffff'}});
+        if(creep.room?.controller && creep.room?.controller.my && (creep.room?.controller.level < 2 || (creep.room.controller?.ticksToDowngrade && creep.room.controller.ticksToDowngrade < 2000) || creep.memory.upgrading)
+            ) {
+
+            const moveCode = creep.upgradeController(creep.room.controller);
+            creep.say("⚡ upgrade");
+            if((creep.room.controller?.ticksToDowngrade && creep.room.controller.ticksToDowngrade >= 6000) || !creep.room.controller?.ticksToDowngrade) {
+                creep.memory.upgrading = false;
+            } else {
+                creep.memory.upgrading = true;
+            }
+            if(!creep.pos.inRangeTo(creep.room.controller.pos.x, creep.room.controller.pos.y, 3) && moveCode === ERR_NOT_IN_RANGE) {
+                creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
+            }
+
         } else {
             Builder.run(creep)
         }
