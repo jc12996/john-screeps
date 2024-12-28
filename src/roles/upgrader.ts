@@ -239,6 +239,23 @@ export class Upgrader {
 
       if (controllerLink) {
         MovementUtils.generalGatherMovement(creep, controllerLink);
+      } else if(creep.room.controller) {
+        const nearestContainerToController = creep.room.controller.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: structure => {
+              return (
+                structure.structureType == STRUCTURE_CONTAINER && structure.store.energy > 0
+              );
+            }
+          }) as StructureContainer
+          if(nearestContainerToController) {
+              creep.say("⚡C");
+              const transferCode = creep.withdraw(nearestContainerToController,RESOURCE_ENERGY);
+              if(nearestContainerToController && transferCode === ERR_NOT_IN_RANGE) {
+                creep.moveTo(nearestContainerToController, { visualizePathStyle: { stroke: "#ffaa00" } });
+              }
+              return;
+          }
+
       }
     }
   }
