@@ -240,21 +240,41 @@ export class Upgrader {
       if (controllerLink) {
         MovementUtils.generalGatherMovement(creep, controllerLink);
       } else if(creep.room.controller) {
-        const nearestContainerToController = creep.room.controller.pos.findInRange(FIND_STRUCTURES,4, {
-            filter: structure => {
-              return (
-                structure.structureType == STRUCTURE_CONTAINER && structure.store.energy >= creep.store.getCapacity()
-              );
-            }
-          })[0] as StructureContainer
-          if(nearestContainerToController) {
-              creep.say("⚡C");
-              const transferCode = creep.withdraw(nearestContainerToController,RESOURCE_ENERGY);
-              if(nearestContainerToController && transferCode === ERR_NOT_IN_RANGE) {
-                creep.moveTo(nearestContainerToController, { visualizePathStyle: { stroke: "#ffaa00" } });
-              }
-              return;
+
+
+
+        const nearestContainerToController = creep.room.controller.pos.findInRange(FIND_STRUCTURES,15, {
+          filter: structure => {
+            return (
+              structure.structureType == STRUCTURE_CONTAINER && structure.store.energy >= creep.store.getCapacity()
+            );
           }
+        })[0] as StructureContainer
+        if(nearestContainerToController) {
+            creep.say("⚡C");
+            const transferCode = creep.withdraw(nearestContainerToController,RESOURCE_ENERGY);
+            if(nearestContainerToController && transferCode === ERR_NOT_IN_RANGE) {
+              creep.moveTo(nearestContainerToController, { visualizePathStyle: { stroke: "#ffaa00" } });
+            }
+            return;
+        }
+
+        const droppedSources = creep.room.controller.pos.findInRange(FIND_TOMBSTONES,4, {
+          filter: structure => {
+            return (
+               structure.store.energy > 0
+            );
+          }
+        })[0];
+        if(droppedSources) {
+            creep.say("⚡TT");
+            const transferCode = creep.withdraw(droppedSources,RESOURCE_ENERGY);
+            if(droppedSources && transferCode === ERR_NOT_IN_RANGE) {
+              creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });
+            }
+            return;
+        }
+
 
       }
     }

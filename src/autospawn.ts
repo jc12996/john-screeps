@@ -272,7 +272,7 @@ export class AutoSpawn {
 
         // Process each mineFlag as needed
         // Example: Adjust number of needed miners and haulers based on each mineFlag
-        let numberOfNeededMiners = numberOfActiveSourcesInMineFlagRoom;
+        let numberOfNeededMiners = numberOfActiveSourcesInMineFlagRoom >= 2 ? 3 : numberOfActiveSourcesInMineFlagRoom;
         let numberOfNeededHaulers = numberOfSourcesInMineFlagRoom >= 2 ? 3 : 2;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
