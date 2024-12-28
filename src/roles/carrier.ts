@@ -1057,7 +1057,7 @@ export class Carrier {
 
       let transferCode = undefined;
 
-      let extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      let extensions = creep.room.find(FIND_STRUCTURES, {
         filter: structure => {
           return (
             structure.structureType == STRUCTURE_EXTENSION &&
@@ -1065,11 +1065,46 @@ export class Carrier {
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
           );
         }
-      }) as StructureContainer;
+      }) as StructureExtension[];
 
-      transferCode = creep.transfer(extension,RESOURCE_ENERGY);
-      if(extension && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(extension, { visualizePathStyle: { stroke: "#ffaa00" } });
+      transferCode = creep.transfer(extensions[0],RESOURCE_ENERGY);
+      if(extensions[0] && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(extensions[0], { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      if(transferCode === OK) {
+        return;
+      }
+
+      if(extensions.length < 6) {
+        let nearestCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+          filter: workingCreep => {
+            return (
+              (workingCreep.memory.role === 'upgrader' || workingCreep.memory.role === 'builder') &&
+              workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            );
+          }
+        }) as Creep;
+        transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
+        if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
+        if(transferCode === OK) {
+          return;
+        }
+      }
+
+      const spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS, {
+        filter: structure => {
+          return (
+            structure.room?.controller?.my &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+          );
+        }
+      }) as StructureSpawn;
+
+      transferCode = creep.transfer(spawn,RESOURCE_ENERGY);
+      if(spawn && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(spawn, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       if(transferCode === OK) {
         return;
@@ -1092,25 +1127,6 @@ export class Carrier {
       if(transferCode === OK) {
         return;
       }
-
-      const spawns = creep.room.find(FIND_MY_SPAWNS, {
-        filter: structure => {
-          return (
-            structure.room?.controller?.my &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-          );
-        }
-      });
-
-      transferCode = creep.transfer(spawns[0],RESOURCE_ENERGY);
-      if(spawns[0] && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(spawns[0], { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      if(transferCode === OK) {
-        return;
-      }
-
-
 
       return;
     }
