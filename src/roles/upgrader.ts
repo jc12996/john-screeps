@@ -240,13 +240,13 @@ export class Upgrader {
       if (controllerLink) {
         MovementUtils.generalGatherMovement(creep, controllerLink);
       } else if(creep.room.controller) {
-        const nearestContainerToController = creep.room.controller.pos.findClosestByRange(FIND_STRUCTURES, {
+        const nearestContainerToController = creep.room.controller.pos.findInRange(FIND_STRUCTURES,4, {
             filter: structure => {
               return (
-                structure.structureType == STRUCTURE_CONTAINER && structure.store.energy > 0
+                structure.structureType == STRUCTURE_CONTAINER && structure.store.energy >= creep.store.getCapacity()
               );
             }
-          }) as StructureContainer
+          })[0] as StructureContainer
           if(nearestContainerToController) {
               creep.say("⚡C");
               const transferCode = creep.withdraw(nearestContainerToController,RESOURCE_ENERGY);
