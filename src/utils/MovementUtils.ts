@@ -283,12 +283,6 @@ export class MovementUtils {
       }
     );
 
-    const ruinsSource = creep.room.find(FIND_RUINS, {
-      filter: source => {
-        return source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0;
-      }
-    });
-
     const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
       filter: flag => {
         return flag.color == COLOR_BLUE && flag.room?.controller?.my;
@@ -584,21 +578,49 @@ export class MovementUtils {
       target_storage &&
       creep.memory.role === "carrier" &&
       creep.memory.extensionFarm === undefined &&
-      target_storage.store[RESOURCE_ENERGY] > 0 &&
-      creep.withdraw(target_storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+      target_storage.store[RESOURCE_ENERGY] > 0
     ) {
-      creep.moveTo(target_storage, { visualizePathStyle: { stroke: "#ffffff" } });
-    } else if (
+      transferCode = creep.withdraw(target_storage, RESOURCE_ENERGY);
+      if(target_storage && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(target_storage, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+    const ruinsSource = creep.room.find(FIND_RUINS, {
+      filter: source => {
+        return source.room?.controller?.my && source.store[RESOURCE_ENERGY] > 0;
+      }
+    });
+
+    if (
       ruinsSource[0] &&
-      ruinsSource[0].store &&
-      creep.withdraw(ruinsSource[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+      ruinsSource[0].store
     ) {
-      creep.moveTo(ruinsSource[0], { visualizePathStyle: { stroke: "#ffaa00" } });
-    } else if (container && creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(container, { visualizePathStyle: { stroke: "#ffffff" } });
-    } else if (droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });
-    } else if (
+      transferCode = creep.withdraw(ruinsSource[0], RESOURCE_ENERGY);
+      if(ruinsSource[0] && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(ruinsSource[0], { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+    if (container) {
+      transferCode = creep.withdraw(container, RESOURCE_ENERGY);
+      if(container && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(container, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+    if (droppedSources) {
+      transferCode = creep.pickup(droppedSources);
+      if(droppedSources && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+    if (
       terminal &&
       commandLevel >= 7 &&
       creep.memory.role === "carrier" &&
