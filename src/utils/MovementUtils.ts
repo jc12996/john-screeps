@@ -250,11 +250,6 @@ export class MovementUtils {
       }
     }) as StructureContainer;
 
-    let totalSpawnStore = 200;
-    if (creep.room.controller && creep.room.controller.my && creep.room.controller?.level >= 5) {
-      totalSpawnStore = 301;
-    }
-
     let terminal: StructureTerminal | null =
       creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
