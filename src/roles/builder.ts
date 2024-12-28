@@ -53,22 +53,29 @@ export class Builder {
     }
 
     if (creep.memory.building) {
-      if (
-        creep.room.controller &&
-        creep.room.controller.my &&
-        creep.room.controller.level <= 2 &&
-        (creep.memory.upgrading || creep.room.controller.ticksToDowngrade < 2000) &&
-        creep.room.controller.ticksToDowngrade < 6000
+
+
+
+      if(creep.room?.controller && creep.room?.controller.my && (creep.room?.controller.level < 2 || (creep.room.controller?.ticksToDowngrade && creep.room.controller.ticksToDowngrade < 2000) || creep.memory.upgrading)
       ) {
-        if (
-          creep.room.controller &&
-          creep.room.controller.my &&
-          creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE
-        ) {
-          creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
+
+        if((creep.room.controller?.ticksToDowngrade && creep.room.controller.ticksToDowngrade >= 6000) || !creep.room.controller?.ticksToDowngrade) {
+          creep.memory.upgrading = false;
+        } else {
+            creep.memory.upgrading = true;
+        }
+
+        const moveCode = creep.upgradeController(creep.room.controller);
+        creep.say("⚡ upgrade");
+
+        if(!creep.pos.inRangeTo(creep.room.controller.pos.x, creep.room.controller.pos.y, 3) && moveCode === ERR_NOT_IN_RANGE) {
+            creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
         }
         return;
       }
+
+
+
 
       if (
         creep.memory.upgrading &&
