@@ -1040,7 +1040,7 @@ export class Carrier {
       let nearestCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
         filter: workingCreep => {
           return (
-            workingCreep.memory.role === 'upgrader' &&
+            (workingCreep.memory.role === 'upgrader' || workingCreep.memory.role === 'builder') &&
             workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
           );
         }
