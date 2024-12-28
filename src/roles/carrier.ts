@@ -400,6 +400,15 @@ export class Carrier {
   private static getNearestAvailableWorkingRoleCreep(creep:Creep,commandLevel: number): Creep {
     return creep.pos.findClosestByPath(FIND_MY_CREEPS, {
       filter: workCreep => {
+
+        if(commandLevel <= 2) {
+          return (
+            workCreep.memory.role === "upgrader" &&
+            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
+            !creep.memory.hauling &&
+            workCreep.memory.upgrading !== true
+          );
+        }
         const storage = creep.room.find(FIND_STRUCTURES, {
           filter: s => s.structureType === STRUCTURE_STORAGE
         })[0] as StructureStorage | null;
@@ -931,7 +940,7 @@ export class Carrier {
 
     if (
       !creep.memory.carrying &&
-      creep.store.getFreeCapacity() == 0
+      creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 20
     ) {
       creep.memory.carrying = true;
     }
@@ -942,22 +951,8 @@ export class Carrier {
     }
 
     if(creep.memory.carrying) {
-      const spawns = creep.room.find(FIND_MY_SPAWNS, {
-        filter: structure => {
-          return (
-            structure.room?.controller?.my &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-          );
-        }
-      });
 
-      let transferCode = creep.transfer(spawns[0],RESOURCE_ENERGY);
-      if(spawns[0] && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(spawns[0], { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      if(transferCode === OK) {
-        return;
-      }
+      let transferCode = undefined;
 
       let extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
@@ -977,9 +972,15 @@ export class Carrier {
         return;
       }
 
+      let nearestCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+        filter: workingCreep => {
+          return (
+            workingCreep.memory.role === 'upgrader' &&
+            workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+          );
+        }
+      }) as Creep;
 
-      const commandLevel = creep.room?.controller?.level ?? 1;
-      const nearestCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
 
       transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
       if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
@@ -989,16 +990,37 @@ export class Carrier {
         return;
       }
 
+      const spawns = creep.room.find(FIND_MY_SPAWNS, {
+        filter: structure => {
+          return (
+            structure.room?.controller?.my &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+          );
+        }
+      });
+
+      transferCode = creep.transfer(spawns[0],RESOURCE_ENERGY);
+      if(spawns[0] && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(spawns[0], { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      if(transferCode === OK) {
+        return;
+      }
+
+
 
       return;
     }
 
     const holdingHarvests = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-      filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 10
+      filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 0
     }) as Creep;
 
     if (holdingHarvests && holdingHarvests.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(holdingHarvests, { visualizePathStyle: { stroke: "#ffaa00" } });
+      if(!creep.pos.isNearTo(holdingHarvests)) {
+        creep.moveTo(holdingHarvests, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+
       return;
     }
 
