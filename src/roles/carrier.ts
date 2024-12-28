@@ -44,12 +44,6 @@ export class Carrier {
       }
     });
 
-    const links = creep.room.find(FIND_STRUCTURES, {
-      filter: structure => {
-        return structure.structureType === STRUCTURE_LINK;
-      }
-    });
-
     const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
       filter: structure => {
         return structure.structureType === STRUCTURE_LAB;
@@ -87,6 +81,12 @@ export class Carrier {
       }) ?? null;
 
     //console.log(creep.room.name,creep.room.energyCapacityAvailable)
+
+    const links = creep.room.find(FIND_STRUCTURES, {
+      filter: structure => {
+        return structure.structureType === STRUCTURE_LINK;
+      }
+    });
 
     if (
       ((terminal && terminal.store[RESOURCE_ENERGY] > 2000) ||
