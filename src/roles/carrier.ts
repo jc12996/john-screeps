@@ -931,7 +931,7 @@ export class Carrier {
 
     if (
       !creep.memory.carrying &&
-      creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 0
+      creep.store.getFreeCapacity() == 0
     ) {
       creep.memory.carrying = true;
     }
