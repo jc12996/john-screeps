@@ -32,14 +32,19 @@ export class Builder {
       return;
     }
 
-    if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
-      creep.memory.building = false;
-      creep.say("🔄 harvest");
-    }
-    if (!creep.memory.building && creep.store.getFreeCapacity() == 0) {
+    if(creep.memory.role === 'settler') {
       creep.memory.building = true;
-      creep.say("🔨 build");
+    } else {
+      if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
+        creep.memory.building = false;
+        creep.say("🔄 harvest");
+      }
+      if (!creep.memory.building && creep.store.getFreeCapacity() == 0) {
+        creep.memory.building = true;
+        creep.say("🔨 build");
+      }
     }
+
 
     const constructionSites = creep.room.find(FIND_CONSTRUCTION_SITES);
 
@@ -158,11 +163,7 @@ export class Builder {
         this.moveAndBuild(creep, constructSpawn);
       } else if (constructTerminal) {
         this.moveAndBuild(creep, constructTerminal);
-      } else if (walls.length && creep.memory.role !== "upgrader") {
-        this.moveAndBuild(creep, walls[0]);
-      } else if (ramparts.length && creep.memory.role !== "upgrader") {
-        this.moveAndBuild(creep, ramparts[0]);
-      } else if (links.length) {
+      } else  if (links.length) {
         this.moveAndBuild(creep, links[0]);
       } else if (storageSite) {
         this.moveAndBuild(creep, storageSite);
@@ -170,6 +171,10 @@ export class Builder {
         this.moveAndBuild(creep, extensions[0]);
       } else if (container.length && creep.memory.role !== "upgrader") {
         this.moveAndBuild(creep, container[0]);
+      }  else if (walls.length && creep.memory.role !== "upgrader") {
+        this.moveAndBuild(creep, walls[0]);
+      } else if (ramparts.length && creep.memory.role !== "upgrader") {
+        this.moveAndBuild(creep, ramparts[0]);
       } else if (roads && creep.memory.role !== "upgrader") {
         this.moveAndBuild(creep, roads);
       } else if (targets.length) {

@@ -33,10 +33,6 @@ export class Settler {
         }
 
         var spawns = creep.room.find(FIND_MY_SPAWNS);
-        if(spawns.length) {
-            Builder.run(creep);
-            return;
-        }
 
         if(creep.room.controller?.my && spawns.length === 0) {
             ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
@@ -51,17 +47,16 @@ export class Settler {
             creep.say('🌎 settle');
         }
 
-
         if(!creep.memory.delivering) {
-            const harvesters = _.filter(
-                Game.creeps,
-                creep => creep.memory.role == "harvester" && spawns[0] && creep.room.name == spawns[0].room.name
-              );
-            if(harvesters.length >= 3) {
-                MovementUtils.generalGatherMovement(creep);
-            } else {
+            // const harvesters = _.filter(
+            //     Game.creeps,
+            //     creep => creep.memory.role == "harvester" && spawns[0] && creep.room.name == spawns[0].room.name
+            //   );
+            // if(harvesters.length >= 3) {
+            //     MovementUtils.generalGatherMovement(creep);
+            // } else {
                 Harvester.run(creep);
-            }
+            //}
             return;
         }
 
@@ -70,8 +65,21 @@ export class Settler {
             creep.memory.settled = true;
         }
 
+        let mySettleRoom = undefined;
+        if(spawns.length) {
+            mySettleRoom = spawns[0].room;
+        }
+
+        this.settlerSequence(creep, mySettleRoom);
+
+        if(Game.flags.settlerFlag && spawns.length > 0 && mySettleRoom && mySettleRoom.controller && mySettleRoom.controller.level >= 3) {
+            Game.flags.settlerFlag.remove();
+        }
+    }
+
+    private static settlerSequence(creep:Creep, room: Room | undefined = undefined) {
         if(creep.room?.controller && creep.room?.controller.my && (creep.room?.controller.level < 2 || (creep.room.controller?.ticksToDowngrade && creep.room.controller.ticksToDowngrade < 2000) || creep.memory.upgrading)
-            ) {
+        ) {
 
             const moveCode = creep.upgradeController(creep.room.controller);
             creep.say("⚡ upgrade");
@@ -84,6 +92,8 @@ export class Settler {
                 creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
             }
 
+        } else if (room && room.energyAvailable < room.energyCapacityAvailable && room.find(FIND_STRUCTURES, { filter:(struc) => struc.structureType === STRUCTURE_EXTENSION}).length >= 4) {
+            Carrier.run(creep);
         } else {
             Builder.run(creep)
         }
