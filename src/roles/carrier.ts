@@ -1,8 +1,7 @@
 import { SpawnUtils } from "utils/SpawnUtils";
 import { getLinkByTag } from "links";
 import { MovementUtils } from "utils/MovementUtils";
-import { RoomUtils } from "utils/RoomUtils";
-import { compoundOutputMap, LabMapper, Labs } from "labs";
+import { Labs } from "labs";
 
 export class Carrier {
   public static run(creep: Creep): void {
@@ -87,19 +86,6 @@ export class Carrier {
         }
       }) ?? null;
 
-    const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
-      FIND_STRUCTURES,
-      {
-        filter: structure => {
-          return (
-            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-            structure.room?.controller?.my
-          );
-        }
-      }
-    );
-
     //console.log(creep.room.name,creep.room.energyCapacityAvailable)
 
     if (
@@ -160,16 +146,6 @@ export class Carrier {
       }
     }
 
-    let extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: structure => {
-        return (
-          structure.structureType == STRUCTURE_EXTENSION &&
-          structure.room?.controller?.my &&
-          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-        );
-      }
-    });
-
     const playerHostiles = creep.room.find(FIND_HOSTILE_CREEPS, {
       filter: hostileCreep => {
         return (
@@ -194,29 +170,6 @@ export class Carrier {
         }
       }) ?? null;
 
-    var nearestSpawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: structure => {
-        return (
-          structure.structureType == STRUCTURE_SPAWN &&
-          structure.room?.controller?.my &&
-          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-        );
-      }
-    });
-
-    const nearestTower = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: structure => {
-        return (
-          structure.structureType == STRUCTURE_TOWER &&
-          structure.room?.controller?.my &&
-          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-          structure.store[RESOURCE_ENERGY] < 800 &&
-          carriers.length &&
-          ((commandLevel >= 6 && creep.room.energyAvailable > 800) || commandLevel < 6)
-        );
-      }
-    });
-
     var nearestStorage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: structure => {
         return (
@@ -226,10 +179,6 @@ export class Carrier {
         );
       }
     });
-
-    // Find the creep with the lowest energy
-    const nearestAvailableWorkingRoleCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
-    //, (creep) => creep.store.getUsedCapacity(RESOURCE_ENERGY));
 
     const roomRallyPointFlag = creep.room.find(FIND_FLAGS, {
       filter: flag => {
@@ -365,13 +314,8 @@ export class Carrier {
         terminal,
         roomRallyPointFlag,
         nearestStorage,
-        extension,
-        nearestTower,
         storage,
-        nearestAvailableWorkingRoleCreep,
         spawn,
-        nearestSpawn,
-        nearestStorageOrTerminal,
         labs
       );
     } else if (
@@ -379,6 +323,8 @@ export class Carrier {
       creep.room.controller.my &&
       creep.upgradeController(creep.room.controller) == ERR_NO_BODYPART
     ) {
+
+      const nearestAvailableWorkingRoleCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
       if (
         nearestAvailableWorkingRoleCreep &&
         creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
@@ -607,15 +553,13 @@ export class Carrier {
     terminal: any,
     roomRallyPointFlag: any,
     nearestStorage: any,
-    extension: any,
-    nearestTower: any,
     storage: any,
-    nearestAvailableWorkingRoleCreep: any,
     spawn: any,
-    nearestSpawn: any,
-    nearestStorageOrTerminal: any,
     labs: StructureLab[]
   ) {
+
+
+    const commandLevel = creep.room?.controller?.level ?? 1;
 
     const harvesters = _.filter(
       Game.creeps,
@@ -641,6 +585,20 @@ export class Carrier {
       labs = labs.filter(lab => {
         return lab.store.energy < 2000
       });
+
+      const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
+        FIND_STRUCTURES,
+        {
+          filter: structure => {
+            return (
+              ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
+              structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+              structure.room?.controller?.my
+            );
+          }
+        }
+      );
+
       if(labs[0] && labs[0].store[RESOURCE_ENERGY] < 1900 && creep.transfer(labs[0], RESOURCE_ENERGY)){
         creep.moveTo(labs[0])
       }else if (nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
@@ -688,6 +646,30 @@ export class Carrier {
       }
     }) as StructureExtension[];
 
+    let nearestTower = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: structure => {
+        return (
+          structure.structureType == STRUCTURE_TOWER &&
+          structure.room?.controller?.my &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+          structure.store[RESOURCE_ENERGY] < 800 &&
+          carriers.length &&
+          ((commandLevel >= 6 && creep.room.energyAvailable > 800) || commandLevel < 6)
+        );
+      }
+    });
+
+
+    let extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: structure => {
+        return (
+          structure.structureType == STRUCTURE_EXTENSION &&
+          structure.room?.controller?.my &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        );
+      }
+    });
+
     if (creep.memory.extensionFarm === 1) {
       if (creep.room.controller && creep.room.controller.level >= 6) {
         extension =
@@ -728,10 +710,6 @@ export class Carrier {
         creep.say("🚚XT");
         creep.moveTo(nearestTower);
       }
-      // else if(nearestSpawn && nearestSpawn.store.energy < 300 && extensionsNearMe.length === 0 && creep.room.controller && creep.room.controller?.level >= 6  && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      //     creep.say("🚚XW");
-      //     creep.moveTo(nearestSpawn);
-      // }
       else if (
         storage &&
         !extension &&
@@ -747,6 +725,16 @@ export class Carrier {
       }
       return;
     }
+
+    const nearestSpawn = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: structure => {
+        return (
+          structure.structureType == STRUCTURE_SPAWN &&
+          structure.room?.controller?.my &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        );
+      }
+    });
 
     if (creep.memory.extensionFarm === 2) {
       const spawns = creep.room.find(FIND_MY_SPAWNS);
@@ -822,13 +810,7 @@ export class Carrier {
       ) {
         creep.say("🚚X2TR");
         creep.moveTo(terminal);
-      } else if (
-        nearestAvailableWorkingRoleCreep &&
-        creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-      ) {
-        creep.say("🚚C");
-        creep.moveTo(nearestAvailableWorkingRoleCreep);
-      } else if (roomRallyPointFlag.length) {
+      }else if (roomRallyPointFlag.length) {
         creep.moveTo(roomRallyPointFlag[0]);
       }
 
@@ -836,20 +818,120 @@ export class Carrier {
     }
 
     const maxEnergyNeeded = creep.room.controller && creep.room.controller.level >= 7 ? 1000 : 300;
-    if (
-      !creep.memory.hauling &&
+
+    if(!creep.memory.hauling &&
       creep.room.energyAvailable > maxEnergyNeeded &&
       creep.memory.extensionFarm === undefined &&
       creep.room.energyAvailable >= creep.room.energyCapacityAvailable * 0.5 &&
-      nearestAvailableWorkingRoleCreep &&
-      nearestAvailableWorkingRoleCreep.store.getFreeCapacity() > 0 &&
       creep.room.controller &&
-      creep.room.controller?.level < 8 &&
-      nearestAvailableWorkingRoleCreep &&
-      creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+      creep.room.controller?.level < 8) {
+
+      const nearestAvailableWorkingRoleCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
+      if (
+        nearestAvailableWorkingRoleCreep &&
+        nearestAvailableWorkingRoleCreep.store.getFreeCapacity() > 0 &&
+        creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+      ) {
+        creep.say("🚚 C");
+        creep.moveTo(nearestAvailableWorkingRoleCreep);
+        return;
+      }
+    }
+
+
+    let transferCode = undefined;
+
+    if(harvesters.length >= 2 && carriers.length >= 2 && nearestTower) {
+      creep.say("🚚T");
+      transferCode = creep.transfer(nearestTower,RESOURCE_ENERGY);
+      if(nearestTower && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestTower, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    if (extension) {
+      creep.say("🚚E");
+      transferCode = creep.transfer(extension,RESOURCE_ENERGY);
+      if(extension && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(extension, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    if (nearestSpawn) {
+      creep.say("🚚W");
+      transferCode = creep.transfer(nearestSpawn,RESOURCE_ENERGY);
+      if(nearestSpawn && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestSpawn, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    if (
+      creep.store[RESOURCE_ENERGY] > 0 &&
+      storage &&
+      storage.store.energy < 6000
     ) {
+      creep.say("🚚S");
+      transferCode = creep.transfer(storage,RESOURCE_ENERGY);
+      if(storage && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    if (
+      creep.store[RESOURCE_ENERGY] > 0 &&
+      terminal &&
+      terminal.store.energy < 3000
+    ) {
+      creep.say("🚚TR");
+      transferCode = creep.transfer(terminal,RESOURCE_ENERGY);
+      if(terminal && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
+      FIND_STRUCTURES,
+      {
+        filter: structure => {
+          return (
+            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+            structure.room?.controller?.my
+          );
+        }
+      }
+    );
+
+    if (nearestStorageOrTerminal) {
+      creep.say("🚚P");
+      transferCode = creep.transfer(nearestStorageOrTerminal,RESOURCE_ENERGY);
+      if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    if (storage) {
+      creep.say("🚚S");
+      transferCode = creep.transfer(storage,RESOURCE_ENERGY);
+      if(storage && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    const nearestAvailableWorkingRoleCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
+    if (nearestAvailableWorkingRoleCreep) {
       creep.say("🚚 C");
-      creep.moveTo(nearestAvailableWorkingRoleCreep);
+      transferCode = creep.transfer(nearestAvailableWorkingRoleCreep,RESOURCE_ENERGY);
+      if(nearestAvailableWorkingRoleCreep && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestAvailableWorkingRoleCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
       return;
     }
 
@@ -859,128 +941,84 @@ export class Carrier {
       }
     });
 
-
-
-    if(harvesters.length >= 2 && carriers.length >= 2 && nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      creep.say("🚚T");
-      creep.moveTo(nearestTower);
-    } else  if (extension && creep.transfer(extension, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      creep.say("🚚E");
-      creep.moveTo(extension);
-    } else if (!extension && nearestSpawn && creep.transfer(nearestSpawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      creep.say("🚚W");
-      creep.moveTo(nearestSpawn);
-    } else if (
-      !nearestSpawn &&
-      creep.store[RESOURCE_ENERGY] > 0 &&
-      storage &&
-      storage.store.energy < 6000 &&
-      creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-    ) {
-      creep.say("🚚S");
-      creep.moveTo(storage);
-    } else if (
-      !nearestSpawn &&
-      creep.store[RESOURCE_ENERGY] > 0 &&
-      terminal &&
-      terminal.store.energy < 3000 &&
-      creep.transfer(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-    ) {
-      creep.say("🚚TR");
-      creep.moveTo(terminal);
-    } else if (
-      !extension &&
-      !nearestSpawn &&
-      nearestStorageOrTerminal &&
-      creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-    ) {
-      creep.say("🚚P");
-      creep.moveTo(nearestStorageOrTerminal);
-    } else if (
-      !extension &&
-      !nearestSpawn &&
-      !nearestStorageOrTerminal &&
-      storage &&
-      creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-    ) {
-      creep.say("🚚S");
-      creep.moveTo(storage);
-    } else if (
-      nearestAvailableWorkingRoleCreep &&
-      creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-    ) {
-      creep.say("🚚 C");
-      creep.moveTo(nearestAvailableWorkingRoleCreep);
-    } else if (
-      controllerAdjContainer?.length &&
-      creep.transfer(controllerAdjContainer[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-    ) {
+    if (controllerAdjContainer?.length) {
       creep.say("🚚CC");
-      creep.moveTo(controllerAdjContainer[0]);
-    } else if (roomRallyPointFlag.length) {
-      const droppedTombstone =
+      transferCode = creep.transfer(controllerAdjContainer[0],RESOURCE_ENERGY);
+      if(controllerAdjContainer[0] && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(controllerAdjContainer[0], { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    const droppedTombstone =
         creep.pos.findInRange(FIND_TOMBSTONES, 4, {
           filter: tomb => {
             return tomb.store && tomb.store[RESOURCE_ENERGY] > 0;
           }
         })[0] ?? null;
 
-      if (droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.say("🚚TT");
-        creep.moveTo(droppedTombstone);
-      } else {
-        creep.moveTo(roomRallyPointFlag[0]);
+    if (droppedTombstone) {
+      creep.say("🚚TT");
+      transferCode = creep.withdraw(droppedTombstone,RESOURCE_ENERGY);
+      if(droppedTombstone && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
+      return;
+    }
+
+    if (roomRallyPointFlag.length) {
+      creep.moveTo(roomRallyPointFlag[0]);
+      return;
     }
   }
 
-  private static runSequence(creep:Creep, structureConstants:Array<StructureConstant | FindConstant>) {
+  // private static runSequence(creep:Creep, structureConstants:Array<StructureConstant | FindConstant>) {
 
-    let transferCode = undefined;
-    for(const structureConst of structureConstants) {
+  //   let transferCode = undefined;
+  //   for(const structureConst of structureConstants) {
 
-      if(structureConst === FIND_MY_CREEPS) {
-        let nearestCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-          filter: workingCreep => {
-            return (
-              workingCreep.memory.role === 'upgrader' &&
-              workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            );
-          }
-        }) as Creep;
+  //     if(structureConst === FIND_MY_CREEPS) {
+  //       let nearestCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+  //         filter: workingCreep => {
+  //           return (
+  //             workingCreep.memory.role === 'upgrader' &&
+  //             workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+  //           );
+  //         }
+  //       }) as Creep;
 
-        if(nearestCreep.store.getFreeCapacity() !== 0) {
-          transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
-          if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
-            creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
-          }
-          if(transferCode === OK) {
-            return;
-          }
-        }
+  //       if(nearestCreep.store.getFreeCapacity() !== 0) {
+  //         transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
+  //         if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
+  //           creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
+  //         }
+  //         if(transferCode === OK) {
+  //           return;
+  //         }
+  //       }
 
-      }
-      let storeStructures = creep.room.find(FIND_STRUCTURES, {
-        filter:(s) => {
-          s.structureType === structureConst
-        }
-      }) as AnyStoreStructure[]
+  //     }
+  //     let storeStructures = creep.room.find(FIND_STRUCTURES, {
+  //       filter:(s) => {
+  //         s.structureType === structureConst
+  //       }
+  //     }) as AnyStoreStructure[]
 
-      for(const storeStructure of storeStructures) {
-        if(storeStructure.store.getFreeCapacity() !== 0) {
-          transferCode = creep.transfer(storeStructure,RESOURCE_ENERGY);
-          if(storeStructure && transferCode === ERR_NOT_IN_RANGE) {
-            creep.moveTo(storeStructure, { visualizePathStyle: { stroke: "#ffaa00" } });
-          }
-          if(transferCode === OK) {
-            return;
-          }
-        }
-      }
+  //     for(const storeStructure of storeStructures) {
+  //       if(storeStructure.store.getFreeCapacity() !== 0) {
+  //         transferCode = creep.transfer(storeStructure,RESOURCE_ENERGY);
+  //         if(storeStructure && transferCode === ERR_NOT_IN_RANGE) {
+  //           creep.moveTo(storeStructure, { visualizePathStyle: { stroke: "#ffaa00" } });
+  //         }
+  //         if(transferCode === OK) {
+  //           return;
+  //         }
+  //       }
+  //     }
 
 
-    }
-  }
+  //   }
+  // }
 
   private static simpleCarrierSequence(creep: Creep) {
 
