@@ -14,12 +14,20 @@ export class Carrier {
       return;
     }
 
+    let extensions = creep.room.find(FIND_STRUCTURES, {
+      filter: structure => {
+        return (
+          structure.structureType == STRUCTURE_EXTENSION &&
+          structure.room?.controller?.my &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        );
+      }
+    }) as StructureExtension[];
+
     const commandLevel = creep.room?.controller?.level ?? 1;
 
-    if(commandLevel <= 2) {
-
-
-      this.simpleCarrierSequence(creep);
+    if(commandLevel <= 2 && extensions.length < 6) {
+      this.simpleCarrierSequence(creep,extensions);
       return;
     }
 
@@ -44,18 +52,7 @@ export class Carrier {
       }
     });
 
-    const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
-      filter: structure => {
-        return structure.structureType === STRUCTURE_LAB;
-      }
-    });
-
     // console.log(labs[LabMapper.H]?.id)
-
-    let carriers = _.filter(
-      Game.creeps,
-      creep => creep.memory.role == "carrier" && creep.room.name == spawn?.room.name
-    );
 
 
     const storage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -87,6 +84,18 @@ export class Carrier {
         return structure.structureType === STRUCTURE_LINK;
       }
     });
+
+    let carriers = _.filter(
+      Game.creeps,
+      creep => creep.memory.role == "carrier" && creep.room.name == spawn?.room.name
+    );
+
+    const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
+      filter: structure => {
+        return structure.structureType === STRUCTURE_LAB;
+      }
+    });
+
 
     if (
       ((terminal && terminal.store[RESOURCE_ENERGY] > 2000) ||
@@ -222,10 +231,6 @@ export class Carrier {
         filter: source => source.amount >= 500
       });
 
-      const tombstone = creep.pos.findClosestByRange(FIND_TOMBSTONES, {
-        filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 500
-      });
-
       if (droppedSource) {
         if (creep.pickup(droppedSource) === ERR_NOT_IN_RANGE) {
           creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
@@ -233,6 +238,9 @@ export class Carrier {
         return;
       }
 
+      const tombstone = creep.pos.findClosestByRange(FIND_TOMBSTONES, {
+        filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 500
+      });
 
       if (tombstone) {
         if (creep.withdraw(tombstone,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
@@ -285,15 +293,6 @@ export class Carrier {
 
       MovementUtils.generalGatherMovement(creep);
     } else if (creep.memory.carrying) {
-      const largeStorage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: structure => {
-          return (
-            structure.structureType == STRUCTURE_STORAGE &&
-            structure.room?.controller?.my &&
-            structure.store[RESOURCE_ENERGY] > 200000
-          );
-        }
-      });
 
       if (creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
         const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
@@ -817,7 +816,7 @@ export class Carrier {
       return;
     }
 
-    const maxEnergyNeeded = creep.room.controller && creep.room.controller.level >= 7 ? 1000 : 300;
+    const maxEnergyNeeded = creep.room.controller && creep.room.controller.level >= 7 ? 1000 : 500;
 
     if(!creep.memory.hauling &&
       creep.room.energyAvailable > maxEnergyNeeded &&
@@ -972,61 +971,8 @@ export class Carrier {
     }
   }
 
-  // private static runSequence(creep:Creep, structureConstants:Array<StructureConstant | FindConstant>) {
 
-  //   let transferCode = undefined;
-  //   for(const structureConst of structureConstants) {
-
-  //     if(structureConst === FIND_MY_CREEPS) {
-  //       let nearestCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-  //         filter: workingCreep => {
-  //           return (
-  //             workingCreep.memory.role === 'upgrader' &&
-  //             workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-  //           );
-  //         }
-  //       }) as Creep;
-
-  //       if(nearestCreep.store.getFreeCapacity() !== 0) {
-  //         transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
-  //         if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
-  //           creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
-  //         }
-  //         if(transferCode === OK) {
-  //           return;
-  //         }
-  //       }
-
-  //     }
-  //     let storeStructures = creep.room.find(FIND_STRUCTURES, {
-  //       filter:(s) => {
-  //         s.structureType === structureConst
-  //       }
-  //     }) as AnyStoreStructure[]
-
-  //     for(const storeStructure of storeStructures) {
-  //       if(storeStructure.store.getFreeCapacity() !== 0) {
-  //         transferCode = creep.transfer(storeStructure,RESOURCE_ENERGY);
-  //         if(storeStructure && transferCode === ERR_NOT_IN_RANGE) {
-  //           creep.moveTo(storeStructure, { visualizePathStyle: { stroke: "#ffaa00" } });
-  //         }
-  //         if(transferCode === OK) {
-  //           return;
-  //         }
-  //       }
-  //     }
-
-
-  //   }
-  // }
-
-  private static simpleCarrierSequence(creep: Creep) {
-
-
-    const CarrierBuildingSequence: Array<StructureConstant> = [
-      STRUCTURE_EXTENSION,
-      STRUCTURE_SPAWN,
-    ];
+  private static simpleCarrierSequence(creep: Creep,extensions:StructureExtension[]) {
 
     if (
       !creep.memory.carrying &&
@@ -1040,57 +986,26 @@ export class Carrier {
       creep.memory.carrying = false;
     }
 
+    let transferCode = undefined;
+
     if(creep.memory.carrying) {
 
-      //TODO
-      // if(creep.memory.carrying) {
-      //   const CarrierBuildingSequence = [
-      //     STRUCTURE_EXTENSION,
-      //     FIND_MY_CREEPS,//worker creep
-      //     STRUCTURE_SPAWN,
-      //   ];
-
-      //   this.runSequence(creep,CarrierBuildingSequence)
-      //   return;
-      // }
-
-
-      let transferCode = undefined;
-
-      let extensions = creep.room.find(FIND_STRUCTURES, {
+      const extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
           return (
-            structure.structureType == STRUCTURE_EXTENSION &&
-            structure.room?.controller?.my &&
+            structure.structureType === STRUCTURE_EXTENSION &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
           );
         }
-      }) as StructureExtension[];
+      }) as StructureSpawn;
 
-      transferCode = creep.transfer(extensions[0],RESOURCE_ENERGY);
-      if(extensions[0] && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(extensions[0], { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      if(transferCode === OK) {
+      if (extensions.length > 0 && extension) {
+        creep.say("🚚E");
+        transferCode = creep.transfer(extension,RESOURCE_ENERGY);
+        if(extension && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(extension, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
         return;
-      }
-
-      if(extensions.length < 6) {
-        let nearestCreep = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-          filter: workingCreep => {
-            return (
-              (workingCreep.memory.role === 'upgrader' || workingCreep.memory.role === 'builder') &&
-              workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            );
-          }
-        }) as Creep;
-        transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
-        if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
-          creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
-        }
-        if(transferCode === OK) {
-          return;
-        }
       }
 
       const spawn = creep.pos.findClosestByPath(FIND_MY_SPAWNS, {
@@ -1102,11 +1017,12 @@ export class Carrier {
         }
       }) as StructureSpawn;
 
-      transferCode = creep.transfer(spawn,RESOURCE_ENERGY);
-      if(spawn && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(spawn, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      if(transferCode === OK) {
+      if(spawn) {
+        creep.say("🚚W");
+        transferCode = creep.transfer(spawn,RESOURCE_ENERGY);
+        if(spawn && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(spawn, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
         return;
       }
 
@@ -1119,24 +1035,41 @@ export class Carrier {
         }
       }) as Creep;
 
-
-      transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
-      if(nearestCreep && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      if(transferCode === OK) {
+      if(nearestCreep) {
+        creep.say("🚚C");
+        transferCode = creep.transfer(nearestCreep,RESOURCE_ENERGY);
+        if(transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(nearestCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
         return;
       }
-
-      return;
     }
+
+
 
     const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
       filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 0
     });
 
-    if (tombstone && creep.withdraw(tombstone,RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+    if (tombstone) {
+      creep.say('🔄TT');
+      transferCode = creep.withdraw(tombstone,RESOURCE_ENERGY);
+      if(tombstone && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= 50
+    });
+
+    if (container) {
+      creep.say('🔄C');
+      transferCode = creep.withdraw(container,RESOURCE_ENERGY);
+      if(container && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(container, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
       return;
     }
 
@@ -1144,11 +1077,12 @@ export class Carrier {
       filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 0
     }) as Creep;
 
-    if (holdingHarvests && holdingHarvests.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-      if(!creep.pos.isNearTo(holdingHarvests)) {
+    if (holdingHarvests) {
+      creep.say('🔄H');
+      transferCode = holdingHarvests.transfer(creep, RESOURCE_ENERGY);
+      if(!creep.pos.isNearTo(holdingHarvests) && holdingHarvests && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(holdingHarvests, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
-
       return;
     }
 
@@ -1156,8 +1090,12 @@ export class Carrier {
       filter: source => source.amount >= 0
     }) as Resource;
 
-    if (droppedSource && creep.pickup(droppedSource) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+    if (droppedSource) {
+      creep.say('🔄D');
+      transferCode = creep.pickup(droppedSource);
+      if(droppedSource && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
       return;
     }
 
