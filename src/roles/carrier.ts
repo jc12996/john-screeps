@@ -840,6 +840,30 @@ export class Carrier {
 
     let transferCode = undefined;
 
+    if(creep.memory.hauling) {
+      const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
+        FIND_STRUCTURES,
+        {
+          filter: structure => {
+            return (
+              ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
+              structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+              structure.room?.controller?.my
+            );
+          }
+        }
+      );
+
+      if (nearestStorageOrTerminal) {
+        creep.say("🚚P");
+        transferCode = creep.transfer(nearestStorageOrTerminal,RESOURCE_ENERGY);
+        if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+        }
+        return;
+      }
+    }
+
     if(harvesters.length >= 2 && carriers.length >= 2 && nearestTower) {
       creep.say("🚚T");
       transferCode = creep.transfer(nearestTower,RESOURCE_ENERGY);
@@ -989,6 +1013,30 @@ export class Carrier {
     let transferCode = undefined;
 
     if(creep.memory.carrying) {
+
+      if(creep.memory.hauling) {
+        const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
+          FIND_STRUCTURES,
+          {
+            filter: structure => {
+              return (
+                ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
+                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+                structure.room?.controller?.my
+              );
+            }
+          }
+        );
+
+        if (nearestStorageOrTerminal) {
+          creep.say("🚚P");
+          transferCode = creep.transfer(nearestStorageOrTerminal,RESOURCE_ENERGY);
+          if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
+            creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+          }
+          return;
+        }
+      }
 
       const extension = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
