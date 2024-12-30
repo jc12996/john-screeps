@@ -55,7 +55,7 @@ export class Claimer {
         if (validFlags.length === 0) {
             const mineFlags = _.filter(Game.flags, flag => flag.name.includes('MineFlag'));
             if (mineFlags.length === 0) return null;
-            
+
             return mineFlags.reduce((closest, flag) => {
                 const rangeToFlag = creep.pos.getRangeTo(flag.pos);
                 return !closest || rangeToFlag < creep.pos.getRangeTo(closest.pos) ? flag : closest;
@@ -94,9 +94,9 @@ export class Claimer {
             if(!creep.memory.assignedMineFlag) {
                 return;
             }
-    
+
             const chosenDestinationFlag = Game.flags[creep.memory.assignedMineFlag] as Flag;
-    
+
             if(!!!chosenDestinationFlag) {
                 return;
             }
@@ -104,14 +104,16 @@ export class Claimer {
             if(chosenDestinationFlag) {
                 const mineRoom = chosenDestinationFlag.room;
                 if(mineRoom?.controller) {
+                    if((!mineRoom.controller.sign?.username || (mineRoom.controller.sign?.username && mineRoom.controller.sign?.username !== 'Xarroc')) && creep.signController(mineRoom.controller, "Mine mine mine!") == ERR_NOT_IN_RANGE) {
+                        creep.say('🚩'+mineRoom.name)
+                        creep.moveTo(mineRoom.controller);
+                        return;
+                    }
+
                     const reservationCode = creep.reserveController(mineRoom?.controller);
                     if(reservationCode == OK) {
                         creep.say('🚩'+mineRoom.name)
                         creep.memory.building = true;
-                    }
-                    if(creep.signController(mineRoom.controller, "Mine mine mine!") == ERR_NOT_IN_RANGE) {
-                        creep.say('🚩'+mineRoom.name)
-                        creep.moveTo(mineRoom.controller);
                     }else if(reservationCode == ERR_NOT_IN_RANGE){
                         creep.say('🚩'+mineRoom.name)
                         creep.moveTo(mineRoom.controller);
