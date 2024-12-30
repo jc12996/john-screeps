@@ -109,83 +109,83 @@ export class MovementUtils {
         return;
       }
 
-      // if (Game.flags.rallyFlag2?.room && Game.flags.rallyFlag?.room) {
-      //   new RoomVisual(Game.flags.rallyFlag2.room.name).line(
-      //     Game.flags.rallyFlag2.pos.x,
-      //     Game.flags.rallyFlag2.pos.y,
-      //     Game.flags.rallyFlag2.pos.x - 3,
-      //     Game.flags.rallyFlag2.pos.y,
-      //     { color: "red" }
-      //   );
-      //   new RoomVisual(Game.flags.rallyFlag2.room.name).line(
-      //     Game.flags.rallyFlag2.pos.x - 3,
-      //     Game.flags.rallyFlag2.pos.y,
-      //     Game.flags.rallyFlag2.pos.x - 2,
-      //     Game.flags.rallyFlag2.pos.y + 1,
-      //     { color: "red" }
-      //   );
-      //   new RoomVisual(Game.flags.rallyFlag2.room.name).line(
-      //     Game.flags.rallyFlag2.pos.x - 3,
-      //     Game.flags.rallyFlag2.pos.y,
-      //     Game.flags.rallyFlag2.pos.x - 2,
-      //     Game.flags.rallyFlag2.pos.y - 1,
-      //     { color: "red" }
-      //   );
-      //   new RoomVisual(Game.flags.rallyFlag2.room.name).text(
-      //     "🚶 Going to " + Game.flags.rallyFlag2.room.name,
-      //     Game.flags.rallyFlag2.pos.x - 3,
-      //     Game.flags.rallyFlag2.pos.y,
-      //     { align: "right", opacity: 0.8 }
-      //   );
+      if (Game.flags.rallyFlag2?.room && Game.flags.rallyFlag?.room) {
+        new RoomVisual(Game.flags.rallyFlag2.room.name).line(
+          Game.flags.rallyFlag2.pos.x,
+          Game.flags.rallyFlag2.pos.y,
+          Game.flags.rallyFlag2.pos.x - 3,
+          Game.flags.rallyFlag2.pos.y,
+          { color: "red" }
+        );
+        new RoomVisual(Game.flags.rallyFlag2.room.name).line(
+          Game.flags.rallyFlag2.pos.x - 3,
+          Game.flags.rallyFlag2.pos.y,
+          Game.flags.rallyFlag2.pos.x - 2,
+          Game.flags.rallyFlag2.pos.y + 1,
+          { color: "red" }
+        );
+        new RoomVisual(Game.flags.rallyFlag2.room.name).line(
+          Game.flags.rallyFlag2.pos.x - 3,
+          Game.flags.rallyFlag2.pos.y,
+          Game.flags.rallyFlag2.pos.x - 2,
+          Game.flags.rallyFlag2.pos.y - 1,
+          { color: "red" }
+        );
+        new RoomVisual(Game.flags.rallyFlag2.room.name).text(
+          "🚶 Going to " + Game.flags.rallyFlag2.room.name,
+          Game.flags.rallyFlag2.pos.x - 3,
+          Game.flags.rallyFlag2.pos.y,
+          { align: "right", opacity: 0.8 }
+        );
 
-      //   new RoomVisual(Game.flags.rallyFlag.room.name).line(
-      //     Game.flags.rallyFlag.pos.x - 3,
-      //     Game.flags.rallyFlag.pos.y,
-      //     Game.flags.rallyFlag.pos.x,
-      //     Game.flags.rallyFlag.pos.y,
-      //     { color: "green" }
-      //   );
-      //   new RoomVisual(Game.flags.rallyFlag.room.name).line(
-      //     Game.flags.rallyFlag.pos.x,
-      //     Game.flags.rallyFlag.pos.y,
-      //     Game.flags.rallyFlag.pos.x - 1,
-      //     Game.flags.rallyFlag.pos.y + 1,
-      //     { color: "green" }
-      //   );
-      //   new RoomVisual(Game.flags.rallyFlag.room.name).line(
-      //     Game.flags.rallyFlag.pos.x,
-      //     Game.flags.rallyFlag.pos.y,
-      //     Game.flags.rallyFlag.pos.x - 1,
-      //     Game.flags.rallyFlag.pos.y - 1,
-      //     { color: "green" }
-      //   );
-      //   new RoomVisual(Game.flags.rallyFlag.room.name).text(
-      //     "🚶 Arriving from " + Game.flags.rallyFlag.room.name,
-      //     Game.flags.rallyFlag.pos.x + 8,
-      //     Game.flags.rallyFlag.pos.y,
-      //     { align: "right", opacity: 0.8 }
-      //   );
-      // }
+        new RoomVisual(Game.flags.rallyFlag.room.name).line(
+          Game.flags.rallyFlag.pos.x - 3,
+          Game.flags.rallyFlag.pos.y,
+          Game.flags.rallyFlag.pos.x,
+          Game.flags.rallyFlag.pos.y,
+          { color: "green" }
+        );
+        new RoomVisual(Game.flags.rallyFlag.room.name).line(
+          Game.flags.rallyFlag.pos.x,
+          Game.flags.rallyFlag.pos.y,
+          Game.flags.rallyFlag.pos.x - 1,
+          Game.flags.rallyFlag.pos.y + 1,
+          { color: "green" }
+        );
+        new RoomVisual(Game.flags.rallyFlag.room.name).line(
+          Game.flags.rallyFlag.pos.x,
+          Game.flags.rallyFlag.pos.y,
+          Game.flags.rallyFlag.pos.x - 1,
+          Game.flags.rallyFlag.pos.y - 1,
+          { color: "green" }
+        );
+        new RoomVisual(Game.flags.rallyFlag.room.name).text(
+          "🚶 Arriving from " + Game.flags.rallyFlag.room.name,
+          Game.flags.rallyFlag.pos.x + 8,
+          Game.flags.rallyFlag.pos.y,
+          { align: "right", opacity: 0.8 }
+        );
+      }
 
-      // if (flag.name === "rallyFlag" && creepIsNearFlag && isPatrolCreep) {
-      //   const creepIsInSquad =
-      //     creep.pos.findInRange(FIND_MY_CREEPS, 3, {
-      //       filter: myCreep =>
-      //         myCreep.getActiveBodyparts(ATTACK) > 0 ||
-      //         myCreep.getActiveBodyparts(RANGED_ATTACK) > 0 ||
-      //         (myCreep.memory.role === "scout" && !Game.flags.scoutFlag)
-      //     }).length >= (!Game.flags.scoutFlag && Game.flags.startScouting ? 1 : PeaceTimeEconomy.TOTAL_ATTACKER_SIZE);
-      //   if (creepIsInSquad) {
-      //     const tempRallyFlag = flag;
-      //     Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);
-      //     Game.flags.rallyFlag2.setPosition(tempRallyFlag.pos);
-      //     flag = Game.flags.rallyFlag;
-      //   }
-      // }
+      if (flag.name === "rallyFlag" && creepIsNearFlag && isPatrolCreep) {
+        const creepIsInSquad =
+          creep.pos.findInRange(FIND_MY_CREEPS, 3, {
+            filter: myCreep =>
+              myCreep.getActiveBodyparts(ATTACK) > 0 ||
+              myCreep.getActiveBodyparts(RANGED_ATTACK) > 0 ||
+              (myCreep.memory.role === "scout" && !Game.flags.scoutFlag)
+          }).length >= (!Game.flags.scoutFlag && Game.flags.startScouting ? 1 : PeaceTimeEconomy.TOTAL_ATTACKER_SIZE);
+        if (creepIsInSquad) {
+          const tempRallyFlag = flag;
+          Game.flags.rallyFlag.setPosition(Game.flags.rallyFlag2.pos);
+          Game.flags.rallyFlag2.setPosition(tempRallyFlag.pos);
+          flag = Game.flags.rallyFlag;
+        }
+      }
 
-      // if (!!!Game.flags?.rallyFlag2 && !!!Game.flags?.rallyFlag && isPatrolCreep) {
-      //   creep.memory.hasJoinedPatrol = undefined;
-      // }
+      if (!!!Game.flags?.rallyFlag2 && !!!Game.flags?.rallyFlag && isPatrolCreep) {
+        creep.memory.hasJoinedPatrol = undefined;
+      }
     }
 
     if (
@@ -812,23 +812,22 @@ export class MovementUtils {
     storage: any,
     terminal: StructureTerminal | null
   ) {
-    const droppedSources =
-      creep.pos.findInRange(FIND_DROPPED_RESOURCES, 4, {
-        filter: source => {
-          return source.amount >= 0 && source.room?.controller?.my && source.resourceType === RESOURCE_ENERGY;
-        }
-      })[0] ?? null;
 
-    const droppedTombstone =
-      creep.pos.findInRange(FIND_TOMBSTONES, 4, {
-        filter: tomb => {
-          return tomb.store && tomb.store[RESOURCE_ENERGY] > 0;
-        }
-      })[0] ?? null;
+
+
 
     if (creep.memory.extensionFarm === 1) {
       const canContinue = this.dropOffInTerminal(creep, terminal);
       if (!canContinue) {
+        return;
+      }
+
+      let transferCode = undefined;
+      if (extensionLink) {
+        transferCode = creep.withdraw(extensionLink, RESOURCE_ENERGY);
+        if(extensionLink && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(extensionLink, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
         return;
       }
 
@@ -838,6 +837,30 @@ export class MovementUtils {
         }
       }) as StructureExtension[];
 
+      if (storage &&
+        extensionsNearMe.length > 0 &&
+        storage.store[RESOURCE_ENERGY] > 0) {
+        transferCode = creep.withdraw(storage, RESOURCE_ENERGY);
+        if(storage && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+        return;
+      }
+
+      if (terminal &&
+        extensionsNearMe.length > 0 &&
+        creep.room.controller &&
+        creep.room.controller.level >= 6 &&
+        creep.memory.role === "carrier" &&
+        terminal &&
+        terminal.store[RESOURCE_ENERGY] > 0) {
+        transferCode = creep.withdraw(terminal, RESOURCE_ENERGY);
+        if(transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+        return;
+      }
+
       const nearestContainer =
       creep.pos.findInRange(FIND_STRUCTURES, 4, {
         filter: struc => {
@@ -845,48 +868,45 @@ export class MovementUtils {
         }
       })[0] ?? null;
 
-
-
-      if (
-        extensionLink &&
-        extensionLink.store[RESOURCE_ENERGY] > 0 &&
-        creep.withdraw(extensionLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-      ) {
-        creep.moveTo(extensionLink);
-        return;
-      } else if (
-        storage &&
-        extensionsNearMe.length > 0 &&
-        storage.store[RESOURCE_ENERGY] > 0 &&
-        creep.withdraw(storage, RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE
-      ) {
-        creep.moveTo(storage);
-        return;
-      } else if (
-        terminal &&
-        extensionsNearMe.length > 0 &&
-        creep.room.controller &&
-        creep.room.controller.level >= 6 &&
-        creep.memory.role === "carrier" &&
-        terminal.store[RESOURCE_ENERGY] > 0 &&
-        creep.withdraw(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-      ) {
-        creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
+      if (nearestContainer) {
+        transferCode = creep.withdraw(nearestContainer, RESOURCE_ENERGY);
+        if(nearestContainer && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
         return;
       }
-      else if (nearestContainer && creep.withdraw(nearestContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      else if (droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      else if (droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      else {
-        creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+
+      const droppedSources =
+      creep.pos.findInRange(FIND_DROPPED_RESOURCES, 4, {
+        filter: source => {
+          return source.amount >= 0 && source.room?.controller?.my && source.resourceType === RESOURCE_ENERGY;
+        }
+      })[0] ?? null;
+
+      if (droppedSources) {
+        transferCode = creep.pickup(droppedSources);
+        if(droppedSources && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+        return;
       }
 
+      const droppedTombstone =
+      creep.pos.findInRange(FIND_TOMBSTONES, 4, {
+        filter: tomb => {
+          return tomb.store && tomb.store[RESOURCE_ENERGY] > 0;
+        }
+      })[0] ?? null;
+
+      if (droppedTombstone) {
+        transferCode = creep.withdraw(droppedTombstone, RESOURCE_ENERGY);
+        if(droppedTombstone && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+        return;
+      }
+
+      creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
 
       return;
     }
@@ -904,6 +924,21 @@ export class MovementUtils {
       }) as StructureExtension[];
 
 
+
+
+      const droppedTombstone =
+      creep.pos.findInRange(FIND_TOMBSTONES, 4, {
+        filter: tomb => {
+          return tomb.store && tomb.store[RESOURCE_ENERGY] > 0;
+        }
+      })[0] ?? null;
+
+      const droppedSources =
+      creep.pos.findInRange(FIND_DROPPED_RESOURCES, 4, {
+        filter: source => {
+          return source.amount >= 0 && source.room?.controller?.my && source.resourceType === RESOURCE_ENERGY;
+        }
+      })[0] ?? null;
 
       if (
         extensionLink &&

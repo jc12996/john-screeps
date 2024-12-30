@@ -272,7 +272,7 @@ export class AutoSpawn {
 
         // Process each mineFlag as needed
         // Example: Adjust number of needed miners and haulers based on each mineFlag
-        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom >= 2 ? 3 : 1;
+        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom >= 2 ? 3 : 2;
         let numberOfNeededHaulers = numberOfSourcesInMineFlagRoom >= 2 ? 4 : 2;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
@@ -555,7 +555,7 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("scout", spawn, commandLevel);
       options = { memory: { role: "scout", isArmySquad: true } };
     } else if (
-      !Game.flags.SquadFlag &&
+      !Game.flags.SquadFlag && (hostileCreeps.length > 0 || commandLevel < 5) &&
       (defenders.length < numberOfNeededDefenders || (Game.flags.draftFlag && defenders.length < LowUpkeep.TOTALDRAFT))
     ) {
       name = "Defender" + Game.time;
