@@ -149,20 +149,20 @@ export class SpawnUtils {
                 }
                 else if(hauling && commandLevel >= 6 && energyAvailable >= 1100) {
 
-                    for (let i = 0; i < 15; i++) {
+                    for (let i = 0; i < 12; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 7; i++) {
+                    for (let i = 0; i < 10; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
                 }
                 else if(hauling && commandLevel < 6 && energyAvailable >= 650) {
 
-                    for (let i = 0; i < 7; i++) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
