@@ -211,39 +211,50 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
     if (creep.memory.role == "harvester") {
       Harvester.run(creep);
+      continue;
     }
     if (creep.memory.role == "carrier") {
       Carrier.run(creep);
+      continue;
     }
     if (creep.memory.role == "upgrader") {
       Upgrader.run(creep);
+      continue;
     }
     if (creep.memory.role == "builder") {
       Builder.run(creep);
+      continue;
     }
     if (creep.memory.role == "defender") {
       Defender.run(creep);
+      continue;
     }
     if (creep.memory.role == "repairer") {
       Repairer.run(creep);
+      continue;
     }
 
     if (creep.memory.role == "settler") {
       Settler.run(creep);
+      continue;
     }
     if (creep.memory.role == "scout") {
       MovementUtils.callForHelp(creep);
       Scout.run(creep);
+      continue;
     }
     if (creep.memory.role == "claimer" || creep.memory.role === "attackClaimer") {
       Claimer.run(creep);
+      continue;
     }
 
     if (creep.memory.role == "dismantler") {
       Dismantler.run(creep);
+      continue;
     }
     if (creep.memory.role == "meatGrinder") {
       MeatGrinder.run(creep);
+      continue;
     }
     if (creep.memory.role == "miner") {
       MovementUtils.callForHelp(creep);
@@ -254,10 +265,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
       if (creep.getActiveBodyparts(WORK) === 0) {
         Hauler.run(creep);
+        continue;
       }
 
       if (creep.getActiveBodyparts(WORK) > 0) {
         Miner.run(creep);
+        continue;
       }
     }
 
@@ -266,11 +279,13 @@ export const loop = ErrorMapper.wrapLoop(() => {
     if (!flag) {
       if (creep.memory.role == "healer") {
         Healer.run(creep);
+        continue;
       }
 
       if (creep.memory.role == "attacker") {
         MovementUtils.callForHelp(creep);
         Attacker.run(creep);
+        continue;
       }
     } else if (flag && (creep.memory.role == "attacker" || creep.memory.role == "healer")) {
       // Find the lead healer
