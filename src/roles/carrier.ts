@@ -821,14 +821,6 @@ export class Carrier {
       return;
     }
 
-    if (nearestSpawn) {
-      creep.say("🚚W");
-      transferCode = creep.transfer(nearestSpawn,RESOURCE_ENERGY);
-      if(nearestSpawn && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(nearestSpawn, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      return;
-    }
 
     if (extension) {
       creep.say("🚚E");
@@ -839,7 +831,14 @@ export class Carrier {
       return;
     }
 
-
+    if (nearestSpawn) {
+      creep.say("🚚W");
+      transferCode = creep.transfer(nearestSpawn,RESOURCE_ENERGY);
+      if(nearestSpawn && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestSpawn, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
 
     if (
       creep.store[RESOURCE_ENERGY] > 0 &&

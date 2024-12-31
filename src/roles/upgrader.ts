@@ -91,7 +91,6 @@ export class Upgrader {
         return (
           site.structureType !== STRUCTURE_ROAD &&
           site.structureType !== STRUCTURE_RAMPART &&
-          site.structureType !== STRUCTURE_CONTAINER &&
           site.structureType !== STRUCTURE_WALL
         );
       }
