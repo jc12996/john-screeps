@@ -526,6 +526,7 @@ export class AutoSpawn {
       claimers.length < LowUpkeep.Claimers &&
       harvesters.length >= numberOfNeededHarvesters &&
       carriers.length >= numberOfNeededCarriers &&
+      (!Game.flags.claimFromFlag || (Game.flags.claimFromFlag && Game.flags.claimFromFlag.room?.name === spawn.room.name)) &&
       harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts) &&
       !!this.nextClaimFlag &&
       totalNumberOfControlledRooms < Game.gcl.level &&
