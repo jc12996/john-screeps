@@ -49,7 +49,7 @@ export class Upgrader {
       filter: structure => {
         return structure.structureType == STRUCTURE_SPAWN && structure.room?.controller?.my;
       }
-    });
+    }) as StructureSpawn;
 
     const droppedSources =
       creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1, {
