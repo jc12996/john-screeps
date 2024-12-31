@@ -5,9 +5,7 @@ import {
   HighUpkeep,
   LowUpkeep,
   MediumUpkeep,
-  PeaceTimeEconomy,
-  SeigeEconomy,
-  WarTimeEconomy
+  PeaceTimeEconomy
 } from "utils/EconomiesUtils";
 import { operateLinks } from "links";
 import { getNextClaimFlag } from "claims";
@@ -39,25 +37,30 @@ export class AutoSpawn {
     let name = null;
     let options = undefined;
 
+    const roomCreeps = _.filter(
+      Game.creeps,
+      creep => creep.room.name == spawn.room.name
+    );
+
     const defenders = _.filter(
       Game.creeps,
       creep => creep.memory.role == "defender" && (Game.flags.draftFlag || creep.room.name == spawn.room.name)
     );
     let harvesters = _.filter(
-      Game.creeps,
-      creep => creep.memory.role == "harvester" && creep.room.name == spawn.room.name
+      roomCreeps,
+      creep => creep.memory.role == "harvester"
     );
     let upgraders = _.filter(
-      Game.creeps,
-      creep => creep.memory.role == "upgrader" && creep.room.name == spawn.room.name
+      roomCreeps,
+      creep => creep.memory.role == "upgrader"
     );
     const builders = _.filter(
-      Game.creeps,
-      creep => creep.memory.role == "builder" && creep.room.name == spawn.room.name
+      roomCreeps,
+      creep => creep.memory.role == "builder"
     );
     const repairers = _.filter(
-      Game.creeps,
-      creep => creep.memory.role == "repairer" && creep.room.name == spawn.room.name
+      roomCreeps,
+      creep => creep.memory.role == "repairer"
     );
     const attackers = _.filter(Game.creeps, creep => creep.memory.role == "attacker");
     const scouts = _.filter(Game.creeps, creep => creep.memory.role == "scout");
@@ -75,8 +78,8 @@ export class AutoSpawn {
 
     const dismantlers = _.filter(Game.creeps, creep => creep.memory.role == "dismantler");
     let carriers = _.filter(
-      Game.creeps,
-      creep => creep.memory.role == "carrier" && creep.room.name == spawn.room.name
+      roomCreeps,
+      creep => creep.memory.role == "carrier"
     );
     const repairableStuff = spawn.room.find(FIND_STRUCTURES, {
       filter: (site: { structureType: string; store: { [x: string]: number } }) => {
@@ -246,25 +249,25 @@ export class AutoSpawn {
     let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
 
-        if(harvesters.length >= 2 && carriers.length >= 3 && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
-            mineFlags.forEach(mineFlag => {
-                const assignedCreeps = _.filter(Game.creeps, (creep) => {
-                    if (!mineFlag) {
-                        return false;
-                    }
-                    const mineFlagRoom = mineFlag.room;
-                    return (
-                        creep.memory.assignedMineFlag == mineFlag.name
-                        &&
-                        (
-                            creep.room.name == spawn.room.name ||
-                            (
-                                mineFlagRoom &&
-                                creep.room.name == mineFlagRoom.name
-                            )
-                        )
-                    );
-                });
+    if(harvesters.length >= 2 && carriers.length >= 3 && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
+      mineFlags.forEach(mineFlag => {
+        const assignedCreeps = _.filter(Game.creeps, (creep) => {
+            if (!mineFlag) {
+                return false;
+            }
+            const mineFlagRoom = mineFlag.room;
+            return (
+                creep.memory.assignedMineFlag == mineFlag.name
+                &&
+                (
+                    creep.room.name == spawn.room.name ||
+                    (
+                        mineFlagRoom &&
+                        creep.room.name == mineFlagRoom.name
+                    )
+                )
+            );
+        });
 
         const attackClaimers = assignedCreeps.filter(creep => creep.memory.role == "attackClaimer");
         const numberOfActiveSourcesInMineFlagRoom = mineFlag.room?.find(FIND_SOURCES_ACTIVE).length ?? 1;
@@ -555,7 +558,7 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("scout", spawn, commandLevel);
       options = { memory: { role: "scout", isArmySquad: true } };
     } else if (
-      !Game.flags.SquadFlag && (hostileCreeps.length > 0 || commandLevel < 5) &&
+      !Game.flags.SquadFlag && (hostileCreeps.length > 0) &&
       (defenders.length < numberOfNeededDefenders || (Game.flags.draftFlag && defenders.length < LowUpkeep.TOTALDRAFT))
     ) {
       name = "Defender" + Game.time;

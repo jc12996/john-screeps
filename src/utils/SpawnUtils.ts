@@ -16,15 +16,15 @@ export enum PartCosts {
 
 
 const myFriends = [
-    'gnat',
+    // 'gnat',
     'Xarroc',
-    'legendeck',
-    'Matticus',
-    'dreamlane',
-    'legendeck',
-    'kailin-limble',
-    'Redfro',
-    'Matticus',
+    // 'legendeck',
+    // 'Matticus',
+    // 'dreamlane',
+    // 'legendeck',
+    // 'kailin-limble',
+    // 'Redfro',
+    // 'Matticus',
     'Source Keeper'
 ];
 // Starter Base for Bot Season 10/2024 - W7S4
@@ -58,7 +58,24 @@ export class SpawnUtils {
 
             case 'attackClaimer':
             case 'claimer':
-                if(energyAvailable >= 800) {
+                if(commandLevel >= 5 && energyAvailable >= 1600 && archetype === 'claimer') {
+                    for (let i = 0; i < 20; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CLAIM);
+                    }
+                    break;
+                }else if(commandLevel >= 5 && energyAvailable >= 1100) {
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CLAIM);
+                    }
+                    break;
+                }
+                else if(commandLevel < 5 && energyAvailable >= 800) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -66,7 +83,8 @@ export class SpawnUtils {
                         partsPattern.push(CLAIM);
                     }
                     break;
-                }else if(energyAvailable >= 650) {
+                }
+                else if(commandLevel < 5 && energyAvailable >= 650) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }

@@ -165,6 +165,13 @@ export function sendEnergyFromOriginSpawn() {
   const spawn1Room = Game.spawns["Spawn1"].room;
   const terminal = spawn1Room.terminal;
 
+
+  // Check if terminal in the spawn1 room has more than 40K energy
+  if (!terminal || terminal.store[RESOURCE_ENERGY] < 40000) {
+    //console.log('Not enough energy in Spawn1 terminal.');
+    return;
+  }
+
   const mainTermainalStuff = [
     RESOURCE_GHODIUM,
     RESOURCE_HYDROGEN,
@@ -177,11 +184,6 @@ export function sendEnergyFromOriginSpawn() {
     RESOURCE_ENERGY
   ];
 
-  // Check if terminal in the spawn1 room has more than 40K energy
-  if (!terminal || terminal.store[RESOURCE_ENERGY] < 40000) {
-    //console.log('Not enough energy in Spawn1 terminal.');
-    return;
-  }
 
   // Loop through all rooms to find terminals in rooms with RCL 7 or above
   for (const roomName in Game.rooms) {
