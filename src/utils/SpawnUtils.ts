@@ -66,7 +66,7 @@ export class SpawnUtils {
                         partsPattern.push(CLAIM);
                     }
                     break;
-                }else if(commandLevel >= 5 && energyAvailable >= 1100) {
+                }else if(commandLevel >= 5 && energyAvailable >= 1100 && archetype === 'claimer') {
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -75,7 +75,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(commandLevel < 5 && energyAvailable >= 800) {
+                else if(energyAvailable >= 800) {
                     for (let i = 0; i < 4; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -84,7 +84,7 @@ export class SpawnUtils {
                     }
                     break;
                 }
-                else if(commandLevel < 5 && energyAvailable >= 650) {
+                else if(energyAvailable >= 650) {
                     for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
