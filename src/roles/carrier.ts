@@ -765,7 +765,7 @@ export class Carrier {
     }
 
     const maxEnergyNeeded = creep.room.controller && creep.room.controller.level >= 7 ? 1000 : 500;
- 
+
     if (!creep.memory.hauling &&
       creep.room.energyAvailable > maxEnergyNeeded &&
       creep.memory.extensionFarm === undefined &&
@@ -821,6 +821,15 @@ export class Carrier {
       return;
     }
 
+    if (nearestSpawn) {
+      creep.say("🚚W");
+      transferCode = creep.transfer(nearestSpawn,RESOURCE_ENERGY);
+      if(nearestSpawn && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestSpawn, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
     if (extension) {
       creep.say("🚚E");
       transferCode = creep.transfer(extension,RESOURCE_ENERGY);
@@ -830,14 +839,7 @@ export class Carrier {
       return;
     }
 
-    if (nearestSpawn) {
-      creep.say("🚚W");
-      transferCode = creep.transfer(nearestSpawn,RESOURCE_ENERGY);
-      if(nearestSpawn && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(nearestSpawn, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      return;
-    }
+
 
     if (
       creep.store[RESOURCE_ENERGY] > 0 &&
