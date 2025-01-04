@@ -452,6 +452,16 @@ export class SpawnUtils {
                         partsPattern.push(HEAL);
                     }
                     break;
+                } else if(commandLevel < 7 && energyAvailable >= 1000) {
+
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 2; i++) {
+                        partsPattern.push(HEAL);
+                    }
+
+                    break;
                 } else {
                     return null;
                 }

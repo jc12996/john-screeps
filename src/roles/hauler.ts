@@ -95,7 +95,7 @@ export class Hauler {
 
     if (container && creep.room === mineFlag.room) {
       creep.memory.targetContainerId = container.id;
-
+      // Check for dropped resources
       if (creep.withdraw(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         creep.moveTo(container, { visualizePathStyle: { stroke: "#ffffff" } });
       }
