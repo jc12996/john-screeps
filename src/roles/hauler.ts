@@ -3,6 +3,7 @@ import { MovementUtils } from "utils/MovementUtils";
 import { SpawnUtils } from "utils/SpawnUtils";
 import { Miner } from "./miner";
 import { Carrier } from "./carrier";
+import { min } from "lodash";
 
 export class Hauler {
   public static run(creep: Creep): void {
@@ -100,6 +101,12 @@ export class Hauler {
       }
       return;
     } else if (creep.room !== mineFlag.room) {
+
+      if(creep.room !== mineFlag.room && creep.room.name !== creep.memory.firstSpawnCoords && creep.room.find(FIND_STRUCTURES, {
+        filter: (struc) => struc.structureType === STRUCTURE_INVADER_CORE
+      }).length > 0) {
+        mineFlag.remove();
+      }
       MovementUtils.goToFlag(creep, mineFlag);
       return;
     }
