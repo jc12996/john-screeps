@@ -62,47 +62,6 @@ export class Attacker {
             return;
         }
 
-        var structures = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_ROAD && structure.structureType != STRUCTURE_CONTROLLER);
-            }
-        });
-        var badStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType != STRUCTURE_CONTROLLER
-            }
-        });
-
-        var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
-            {
-                filter: hostileCreep => {
-                    return ((hostileCreep.owner &&
-                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
-                  }
-            }
-        );
-
-
-
-
-        const hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
-            }
-        });
-
-        const hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_RAMPART && creep.structureType !== STRUCTURE_CONTROLLER
-            }
-        });
-
-        const nearestHostileTower = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-            filter:  (creep) => {
-                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType == STRUCTURE_TOWER
-            }
-        });
-
         const walls = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter:  (creep) => {
                 return  creep.structureType == STRUCTURE_WALL
@@ -131,6 +90,11 @@ export class Attacker {
         });
 
 
+        const nearestHostileTower = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType == STRUCTURE_TOWER
+            }
+        });
 
         if(nearestHostileTower) {
             creep.say('⚔ T');
@@ -140,11 +104,33 @@ export class Attacker {
 
 
 
+        var hostileCreeps = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,
+            {
+                filter: hostileCreep => {
+                    return ((hostileCreep.owner &&
+                     !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) || hostileCreep?.owner?.username === 'Invader')
+                  }
+            }
+        );
+
         if (!isSafeRoom && hostileCreeps) {
             creep.say('⚔ ⚔');
             Attacker.attackTarget(creep,hostileCreeps);
             return;
         }
+
+
+        var badStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType != STRUCTURE_CONTROLLER
+            }
+        });
+
+        var structures = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_ROAD && structure.structureType != STRUCTURE_CONTROLLER);
+            }
+        });
 
         if(!isSafeRoom && structures.length > 0 && badStructures && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
@@ -152,11 +138,24 @@ export class Attacker {
             return;
         }
 
-        if (!isSafeRoom && hostileStructures.length > 0 && Game.flags?.attackFlag) {
+
+        const hostileStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) && creep.structureType !== STRUCTURE_RAMPART && creep.structureType !== STRUCTURE_CONTROLLER
+            }
+        });
+
+        if (!isSafeRoom && hostileStructures && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
-            Attacker.attackTarget(creep,hostileStructures[0])
+            Attacker.attackTarget(creep,hostileStructures)
             return;
         }
+
+        const hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+            }
+        });
 
         if (!isSafeRoom && hostileSites.length > 0 && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
@@ -181,7 +180,7 @@ export class Attacker {
                 }
 
             }
-            if(creep.room === Game.flags.attackFlag?.room && hostileStructures.length === 0 && !hostileCreeps) {
+            if(creep.room === Game.flags.attackFlag?.room && !hostileStructures && !hostileCreeps) {
                 Game.flags.attackFlag.remove();
                 if(Game.flags.scoutFlag) {
                     Game.flags.scoutFlag.remove();

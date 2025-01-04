@@ -466,6 +466,16 @@ export class SpawnUtils {
                     }
 
                     break;
+                }else if(commandLevel < 7 && energyAvailable >= 1140) {
+
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        partsPattern.push(ATTACK);
+                    }
+
+                    break;
                 }
                 else {
                    return null;

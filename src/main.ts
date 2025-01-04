@@ -158,55 +158,66 @@ export const loop = ErrorMapper.wrapLoop(() => {
     //   return;
     // }
 
-    if (
-      creep.memory?.isArmySquad &&
-      Memory?.economyType &&
-      Game.flags.rallyFlag?.pos &&
-      creep?.pos &&
-      Game.flags.stagingFlag &&
-      !creep.pos.inRangeTo(Game.flags.stagingFlag.pos.x, Game.flags.stagingFlag.pos.y, 6)
-    ) {
-      const totalArmySize = _.filter(Game.creeps, creep => creep.memory.isArmySquad)?.length ?? 0;
+    // if (
+    //   creep.memory?.isArmySquad &&
+    //   Memory?.economyType &&
+    //   Game.flags.rallyFlag?.pos &&
+    //   creep?.pos &&
+    //   Game.flags.stagingFlag &&
+    //   !creep.pos.inRangeTo(Game.flags.stagingFlag.pos.x, Game.flags.stagingFlag.pos.y, 6)
+    // ) {
+    //   const totalArmySize = _.filter(Game.creeps, creep => creep.memory.isArmySquad)?.length ?? 0;
 
-      let economyArmySize = 0;
-      if (Memory.economyType == "peace") {
-        economyArmySize =
-          PeaceTimeEconomy.TOTAL_ATTACKER_SIZE +
-          PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE +
-          PeaceTimeEconomy.TOTAL_HEALER_SIZE +
-          PeaceTimeEconomy.TOTAL_MEAT_GRINDERS;
-      }
-      if (Memory.economyType == "war") {
-        economyArmySize =
-          WarTimeEconomy.TOTAL_ATTACKER_SIZE +
-          WarTimeEconomy.TOTAL_DISMANTLER_SIZE +
-          WarTimeEconomy.TOTAL_HEALER_SIZE +
-          WarTimeEconomy.TOTAL_MEAT_GRINDERS;
-      }
-      if (Memory.economyType == "seige") {
-        economyArmySize =
-          SeigeEconomy.TOTAL_ATTACKER_SIZE +
-          SeigeEconomy.TOTAL_DISMANTLER_SIZE +
-          SeigeEconomy.TOTAL_HEALER_SIZE +
-          SeigeEconomy.TOTAL_MEAT_GRINDERS;
-      }
-      //console.log(totalArmySize,economyArmySize,Memory.economyType)
-      if (totalArmySize < economyArmySize) {
-        var hostileCreepsL = creep.room.find(FIND_HOSTILE_CREEPS, {
-          filter: creep => {
-            return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner);
-          }
-        });
-        if (Game.flags.stagingFlag && !hostileCreepsL.length) {
-          //console.log(Memory.economyType + 'time!')
-          creep.moveTo(Game.flags.stagingFlag);
-          return;
-        }
-      }
-    }
+    //   let economyArmySize = 0;
+    //   if (Memory.economyType == "peace") {
+    //     economyArmySize =
+    //       PeaceTimeEconomy.TOTAL_ATTACKER_SIZE +
+    //       PeaceTimeEconomy.TOTAL_DISMANTLER_SIZE +
+    //       PeaceTimeEconomy.TOTAL_HEALER_SIZE +
+    //       PeaceTimeEconomy.TOTAL_MEAT_GRINDERS;
+    //   }
+    //   if (Memory.economyType == "war") {
+    //     economyArmySize =
+    //       WarTimeEconomy.TOTAL_ATTACKER_SIZE +
+    //       WarTimeEconomy.TOTAL_DISMANTLER_SIZE +
+    //       WarTimeEconomy.TOTAL_HEALER_SIZE +
+    //       WarTimeEconomy.TOTAL_MEAT_GRINDERS;
+    //   }
+    //   if (Memory.economyType == "seige") {
+    //     economyArmySize =
+    //       SeigeEconomy.TOTAL_ATTACKER_SIZE +
+    //       SeigeEconomy.TOTAL_DISMANTLER_SIZE +
+    //       SeigeEconomy.TOTAL_HEALER_SIZE +
+    //       SeigeEconomy.TOTAL_MEAT_GRINDERS;
+    //   }
+    //   //console.log(totalArmySize,economyArmySize,Memory.economyType)
+    //   if (totalArmySize < economyArmySize) {
+    //     var hostileCreepsL = creep.room.find(FIND_HOSTILE_CREEPS, {
+    //       filter: creep => {
+    //         return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner);
+    //       }
+    //     });
+    //     if (Game.flags.stagingFlag && !hostileCreepsL.length) {
+    //       //console.log(Memory.economyType + 'time!')
+    //       creep.moveTo(Game.flags.stagingFlag);
+    //       return;
+    //     }
+    //   }
+    // }
 
     if (!creep.memory.firstSpawnCoords) {
       creep.memory.firstSpawnCoords = creep.room.name;
+    }
+
+    if (creep.memory.role == "healer") {
+      Healer.run(creep);
+      continue;
+    }
+
+    if (creep.memory.role == "attacker") {
+      MovementUtils.callForHelp(creep);
+      Attacker.run(creep);
+      continue;
     }
 
     if (creep.memory.role == "harvester") {
@@ -256,6 +267,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
       MeatGrinder.run(creep);
       continue;
     }
+
+
+
     if (creep.memory.role == "miner") {
       MovementUtils.callForHelp(creep);
 
@@ -274,57 +288,57 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
     }
 
-    // Find the flag and the squad
-    const flag = Game.flags["SquadFlag"];
-    if (!flag) {
-      if (creep.memory.role == "healer") {
-        Healer.run(creep);
-        continue;
-      }
+    // // Find the flag and the squad
+    // const flag = Game.flags["SquadFlag"];
+    // if (!flag) {
+    //   if (creep.memory.role == "healer") {
+    //     Healer.run(creep);
+    //     continue;
+    //   }
 
-      if (creep.memory.role == "attacker") {
-        MovementUtils.callForHelp(creep);
-        Attacker.run(creep);
-        continue;
-      }
-    } else if (flag && (creep.memory.role == "attacker" || creep.memory.role == "healer")) {
-      // Find the lead healer
-      let healers = _.filter(Game.creeps, creep => creep.memory.role == "healer");
-      let leadHealers = healers.filter(leadHealer => leadHealer.memory.leadHealer);
-      if (leadHealers.length === 0 && healers[0]) {
-        healers[0].memory.leadHealer = true;
-        healers = _.filter(Game.creeps, creep => creep.memory.role == "healer");
-        leadHealers = healers.filter(leadHealer => leadHealer.memory.leadHealer);
-      }
-      const leadHealer = leadHealers[0] ?? healers[0];
-      const squad: Creep[] = [];
+    //   if (creep.memory.role == "attacker") {
+    //     MovementUtils.callForHelp(creep);
+    //     Attacker.run(creep);
+    //     continue;
+    //   }
+    // } else if (flag && (creep.memory.role == "attacker" || creep.memory.role == "healer")) {
+    //   // Find the lead healer
+    //   let healers = _.filter(Game.creeps, creep => creep.memory.role == "healer");
+    //   let leadHealers = healers.filter(leadHealer => leadHealer.memory.leadHealer);
+    //   if (leadHealers.length === 0 && healers[0]) {
+    //     healers[0].memory.leadHealer = true;
+    //     healers = _.filter(Game.creeps, creep => creep.memory.role == "healer");
+    //     leadHealers = healers.filter(leadHealer => leadHealer.memory.leadHealer);
+    //   }
+    //   const leadHealer = leadHealers[0] ?? healers[0];
+    //   const squad: Creep[] = [];
 
-      // Get attackers and healers
-      for (let name in Game.creeps) {
-        const creep = Game.creeps[name];
-        if (creep.memory.role === "attacker" || creep.memory.role === "healer") {
-          squad.push(creep);
-        }
-      }
+    //   // Get attackers and healers
+    //   for (let name in Game.creeps) {
+    //     const creep = Game.creeps[name];
+    //     if (creep.memory.role === "attacker" || creep.memory.role === "healer") {
+    //       squad.push(creep);
+    //     }
+    //   }
 
-      if (creep === leadHealer) {
-        creep.say("❤", false);
-      } else if (creep.memory.role === "attacker") {
-        creep.say("⚔");
-      } else if (creep.memory.role === "healer") {
-        creep.say("🏥", false);
-      }
+    //   if (creep === leadHealer) {
+    //     creep.say("❤", false);
+    //   } else if (creep.memory.role === "attacker") {
+    //     creep.say("⚔");
+    //   } else if (creep.memory.role === "healer") {
+    //     creep.say("🏥", false);
+    //   }
 
-      // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
-      if (!leadHealer || squad.length < SquadUtils.squadSize) {
-        creep.moveTo(Game.flags.SquadFlag);
-        if (creep === leadHealer) {
-          console.log("Forming squad " + squad.length + "/" + SquadUtils.squadSize);
-        }
-      } else {
-        // Assign the squad to combat, handle breaching or post-breach actions
-        SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
-      }
-    }
+    //   // Ensure we have exactly 9 creeps (1 lead healer, 4 attackers, 4 healers)
+    //   if (!leadHealer || squad.length < SquadUtils.squadSize) {
+    //     creep.moveTo(Game.flags.SquadFlag);
+    //     if (creep === leadHealer) {
+    //       console.log("Forming squad " + squad.length + "/" + SquadUtils.squadSize);
+    //     }
+    //   } else {
+    //     // Assign the squad to combat, handle breaching or post-breach actions
+    //     SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
+    //   }
+    // }
   }
 });

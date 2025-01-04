@@ -246,7 +246,7 @@ export class AutoSpawn {
 
 
 
-    let isSquadPatrol = (commandLevel >= 7 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
+    let isSquadPatrol = (commandLevel >= 5 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
 
     if(harvesters.length >= 2 && carriers.length >= 3 && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
