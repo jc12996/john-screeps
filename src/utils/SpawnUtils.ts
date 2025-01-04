@@ -17,6 +17,7 @@ export enum PartCosts {
 
 const myFriends = [
     // 'gnat',
+    'ZeNeR',
     'Xarroc',
     // 'legendeck',
     // 'Matticus',
@@ -494,6 +495,13 @@ export class SpawnUtils {
                 if(energyAvailable >= 2500) {
 
                     for (let i = 0; i < 50; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    break;
+                } else if(energyAvailable >= 1000) {
+
+                    for (let i = 0; i < 10; i++) {
                         partsPattern.push(MOVE);
                     }
 

@@ -52,13 +52,13 @@ export class Tower {
 
         const ramparts = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_RAMPART && structure.hits < 5000 && room.find(FIND_HOSTILE_CREEPS).length === 0
+                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength) && room.find(FIND_HOSTILE_CREEPS).length === 0
             }
         });
 
         const weakWalls = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_WALL && structure.hits < 5000 && room.find(FIND_HOSTILE_CREEPS).length === 0
+                return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength) && room.find(FIND_HOSTILE_CREEPS).length === 0
             }
         });
 
