@@ -49,6 +49,7 @@ export class Builder {
     const constructionSites = creep.room.find(FIND_CONSTRUCTION_SITES);
 
     if (!constructionSites.length) {
+      Repairer.run(creep);
       return;
     }
 
