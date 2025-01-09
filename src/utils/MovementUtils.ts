@@ -831,7 +831,7 @@ export class MovementUtils {
         return;
       }
 
-      const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES, 4, {
+      const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES, 7, {
         filter: struc => {
           return struc.structureType === STRUCTURE_EXTENSION && struc.store[RESOURCE_ENERGY] == 0;
         }
