@@ -917,21 +917,34 @@ export class MovementUtils {
         return;
       }
 
-      const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES, 5, {
-        filter: struc => {
-          return struc.structureType === STRUCTURE_EXTENSION && struc.store[RESOURCE_ENERGY] == 0;
+      let transferCode = null;
+
+
+       if (extensionLink) {
+        transferCode = creep.withdraw(extensionLink, RESOURCE_ENERGY);
+        if(extensionLink && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(extensionLink, { visualizePathStyle: { stroke: "#ffffff" } });
         }
-      }) as StructureExtension[];
+        return;
+      }
 
-
-
-
-      const droppedTombstone =
-      creep.pos.findInRange(FIND_TOMBSTONES, 4, {
-        filter: tomb => {
-          return tomb.store && tomb.store[RESOURCE_ENERGY] > 0;
+      if (terminal && terminal.store[RESOURCE_ENERGY] > 0) {
+        transferCode = creep.withdraw(terminal, RESOURCE_ENERGY);
+        if(terminal && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
         }
-      })[0] ?? null;
+        return;
+      }
+
+      if (storage && storage.store[RESOURCE_ENERGY] > 0 && creep.room.controller && creep.room.controller.level >= 7 &&   creep.memory.role === "carrier" &&
+        storage.store[RESOURCE_ENERGY] > 0) {
+        transferCode = creep.withdraw(storage, RESOURCE_ENERGY);
+        if(storage && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+        return;
+      }
+
 
       const droppedSources =
       creep.pos.findInRange(FIND_DROPPED_RESOURCES, 4, {
@@ -940,39 +953,32 @@ export class MovementUtils {
         }
       })[0] ?? null;
 
-      if (
-        extensionLink &&
-        extensionLink.store[RESOURCE_ENERGY] > 0 &&
-        creep.withdraw(extensionLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-      ) {
-        creep.moveTo(extensionLink);
+      if (droppedSources) {
+        transferCode = creep.pickup(droppedSources);
+        if(droppedSources && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
         return;
-      } else if (
-        terminal &&
-        extensionsNearMe.length > 0 &&
-        terminal.store[RESOURCE_ENERGY] > 0 &&
-        creep.room.energyAvailable !== creep.room.energyCapacityAvailable &&
-        creep.withdraw(terminal, RESOURCE_ENERGY, creep.store.getFreeCapacity()) == ERR_NOT_IN_RANGE
-      ) {
-        creep.moveTo(terminal);
-        return;
-      } else if (
-        storage &&
-        creep.room.controller &&
-        creep.room.controller.level >= 7 &&
-        creep.memory.role === "carrier" &&
-        storage.store[RESOURCE_ENERGY] > 0 &&
-        creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
-      ) {
-        creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffffff" } });
-        return;
-      } else if (droppedSources && creep.pickup(droppedSources) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(droppedSources, { visualizePathStyle: { stroke: "#ffaa00" } });
-      } else if (droppedTombstone && creep.withdraw(droppedTombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
-      } else {
-        creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
       }
+
+      const droppedTombstone =
+      creep.pos.findInRange(FIND_TOMBSTONES, 4, {
+        filter: tomb => {
+          return tomb.store && tomb.store[RESOURCE_ENERGY] > 0;
+        }
+      })[0] ?? null;
+
+      if (droppedTombstone) {
+        transferCode = creep.withdraw(droppedTombstone, RESOURCE_ENERGY);
+        if(droppedTombstone && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(droppedTombstone, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+        return;
+      }
+
+
+      creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+
 
 
       return;
