@@ -69,11 +69,7 @@ export class AutoSpawn {
     const claimers = _.filter(Game.creeps, creep => creep.memory.role == "claimer");
     const healers = _.filter(Game.creeps, creep => creep.memory.role == "healer");
 
-    const mineFlags = _.filter(Game.flags, flag => {
-        return flag.name.startsWith(spawn.room.name + "MineFlag") &&
-        flag.room?.controller?.reservation?.username !== 'Invader'
-      }
-    );
+    const mineFlags = _.filter(Game.flags, flag => flag.name.startsWith(spawn.room.name + "MineFlag"));
     // console.log(mineFlags);
 
     if (!spawn.memory.firstSpawnCoords) {
