@@ -39,77 +39,6 @@ export class ScaffoldingUtils {
         }
     }
 
-    public static createLabFarm(creepOrSpawn: Creep | StructureSpawn, flag: Flag) {
-        // 4 by 4 lab square
-        const pos =  flag.pos;
-
-        var spawnsAmount = creepOrSpawn.room.find(FIND_MY_SPAWNS);
-
-        if(!spawnsAmount.length || !flag) {
-            return;
-        }
-
-
-        const hasRoads = creepOrSpawn.room.find(FIND_STRUCTURES, {
-            filter: (extension) => {
-                extension.structureType === STRUCTURE_ROAD && extension.pos.x == pos.x && extension.pos.y == pos.y+1
-            }
-        }).length > 0;
-
-
-        if(!hasRoads) {
-            creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+1,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 1,pos.y+2,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x + 1,pos.y,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x + 2,pos.y-1,STRUCTURE_ROAD);
-        }
-
-        if(creepOrSpawn.room.controller && creepOrSpawn.room.controller.my && spawnsAmount.length >= 1) {
-            if (creepOrSpawn.room.controller.level >= 6 ) {
-                const hasLevelLabs = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                    filter: (lab) => {
-                        lab.structureType === STRUCTURE_LAB && lab.pos.x == pos.x && lab.pos.y == pos.y
-                    }
-                }).length > 0;
-
-                if(!hasLevelLabs) {
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y,STRUCTURE_LAB);//Input Lab
-                    creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+1,STRUCTURE_LAB);// Input Lab
-                    creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y-1,STRUCTURE_LAB);// Output Lab
-                }
-            }
-
-            if (creepOrSpawn.room.controller.level >= 7 ) {
-                const hasLevelLabs = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                    filter: (lab) => {
-                        lab.structureType === STRUCTURE_LAB && lab.pos.x == pos.x && lab.pos.y == pos.y-1
-                    }
-                }).length > 0;
-
-                if(!hasLevelLabs) {
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y-1,STRUCTURE_LAB);// Output Lab
-                    creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y,STRUCTURE_LAB);// Output Lab
-                    creepOrSpawn.room?.createConstructionSite(pos.x-1,pos.y+1,STRUCTURE_LAB);// Output Lab
-
-                }
-            }
-
-            if (creepOrSpawn.room.controller.level >= 8 ) {
-                const hasLevelLabs = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                    filter: (lab) => {
-                        lab.structureType === STRUCTURE_LAB && lab.pos.x == pos.x+2 && lab.pos.y == pos.y
-                    }
-                }).length > 0;
-
-                if(!hasLevelLabs) {
-                    creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_LAB);// Output Lab
-                    creepOrSpawn.room?.createConstructionSite(pos.x+1,pos.y+2,STRUCTURE_LAB);// Output Lab
-                    creepOrSpawn.room?.createConstructionSite(pos.x+2,pos.y+1,STRUCTURE_LAB);// Output Lab
-                    creepOrSpawn.room?.createConstructionSite(pos.x+2,pos.y,STRUCTURE_LAB);// Output Lab
-                }
-            }
-        }
-    }
 
     public static createExtensionFarm2(creepOrSpawn: Creep | StructureSpawn, flag: Flag): void {
 
@@ -142,45 +71,45 @@ export class ScaffoldingUtils {
 
 
 
-                const hasControllerLinkFlag = creepOrSpawn.room.find(FIND_FLAGS, {
-                    filter: (flag) => {
-                        flag.name === creepOrSpawn.room.name+'ControllerLink1';
-                    }
-                });
+                // const hasControllerLinkFlag = creepOrSpawn.room.find(FIND_FLAGS, {
+                //     filter: (flag) => {
+                //         flag.name === creepOrSpawn.room.name+'ControllerLink1';
+                //     }
+                // });
 
-                const hasControllerLinkSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                    filter: (struc) => {
-                        hasControllerLinkFlag[0] && struc.structureType === STRUCTURE_LINK && struc.pos.x === hasControllerLinkFlag[0].pos.x && struc.pos.y === hasControllerLinkFlag[0].pos.y;
-                    }
-                }).length > 0;
+                // const hasControllerLinkSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
+                //     filter: (struc) => {
+                //         hasControllerLinkFlag[0] && struc.structureType === STRUCTURE_LINK && struc.pos.x === hasControllerLinkFlag[0].pos.x && struc.pos.y === hasControllerLinkFlag[0].pos.y;
+                //     }
+                // }).length > 0;
 
-                const hasControllerLink = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                    filter: (struc) => {
-                        hasControllerLinkFlag[0] && struc.structureType === STRUCTURE_LINK && struc.pos.x === hasControllerLinkFlag[0].pos.x && struc.pos.y === hasControllerLinkFlag[0].pos.y;
-                    }
-                }).length > 0;
+                // const hasControllerLink = creepOrSpawn.room.find(FIND_STRUCTURES, {
+                //     filter: (struc) => {
+                //         hasControllerLinkFlag[0] && struc.structureType === STRUCTURE_LINK && struc.pos.x === hasControllerLinkFlag[0].pos.x && struc.pos.y === hasControllerLinkFlag[0].pos.y;
+                //     }
+                // }).length > 0;
 
 
-                if(!hasControllerLinkSite && !hasControllerLink&& !hasControllerLinkFlag) {
-                    if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
-                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
-                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y +1,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y +1,creepOrSpawn.room.name+'ControllerLink1');
-                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y -1,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y -1,creepOrSpawn.room.name+'ControllerLink1');
-                    }  else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y -1,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y -1,creepOrSpawn.room.name+'ControllerLink1');
-                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y +1,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y +1,creepOrSpawn.room.name+'ControllerLink1');
-                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y -1,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y -1,creepOrSpawn.room.name+'ControllerLink1');
-                    } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y +1,STRUCTURE_LINK) == OK){
-                        creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y +1,creepOrSpawn.room.name+'ControllerLink1');
-                    }
+                // if(!hasControllerLinkSite && !hasControllerLink&& !hasControllerLinkFlag) {
+                //     if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x -1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
+                //     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x +1,creepOrSpawn?.room?.controller.pos.y,creepOrSpawn.room.name+'ControllerLink1');
+                //     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y +1,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y +1,creepOrSpawn.room.name+'ControllerLink1');
+                //     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y -1,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x,creepOrSpawn?.room?.controller.pos.y -1,creepOrSpawn.room.name+'ControllerLink1');
+                //     }  else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y -1,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y -1,creepOrSpawn.room.name+'ControllerLink1');
+                //     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y +1,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x+1,creepOrSpawn?.room?.controller.pos.y +1,creepOrSpawn.room.name+'ControllerLink1');
+                //     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y -1,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y -1,creepOrSpawn.room.name+'ControllerLink1');
+                //     } else if(creepOrSpawn.room?.createConstructionSite(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y +1,STRUCTURE_LINK) == OK){
+                //         creepOrSpawn.room.createFlag(creepOrSpawn?.room?.controller.pos.x-1,creepOrSpawn?.room?.controller.pos.y +1,creepOrSpawn.room.name+'ControllerLink1');
+                //     }
 
-                }
+                // }
 
 
 
@@ -367,8 +296,14 @@ QERTRE
 FREEER
 `;
         }
-        if(flag.name.includes('LabFarm')) {
+        if(flag.color === COLOR_BROWN) {
             farmNumber = 3;
+            layout = `
+-RBB-
+-BRBB
+-BBRB
+--BBR
+`;
         }
         const extensionPositions = this.getExtensionPositionsFromLayout(roomPosition, layout,farmNumber);
 
@@ -438,6 +373,9 @@ FREEER
             if(pos.type === 'N') {
                 buildingAbb = 'Nu';
             }
+            if(pos.type === 'B') {
+                buildingAbb = 'La';
+            }
             room.visual.text(buildingAbb,pos.position, {
                 font:0.4,
                 opacity: 0.8
@@ -481,16 +419,29 @@ FREEER
                 pos.position.createConstructionSite(STRUCTURE_SPAWN)
                 break;
             case 'F':
-                pos.position.createConstructionSite(STRUCTURE_FACTORY)
+                if(roomLevel === 8) {
+                    pos.position.createConstructionSite(STRUCTURE_FACTORY)
+                }
                 break;
             case 'O':
-                pos.position.createConstructionSite(STRUCTURE_OBSERVER)
+                if(roomLevel === 8) {
+                    pos.position.createConstructionSite(STRUCTURE_OBSERVER)
+                }
                 break;
             case 'N':
-                pos.position.createConstructionSite(STRUCTURE_NUKER)
+                if(roomLevel === 8) {
+                    pos.position.createConstructionSite(STRUCTURE_POWER_SPAWN)
+                }
                 break;
             case 'X':
-                pos.position.createConstructionSite(STRUCTURE_POWER_SPAWN)
+                if(roomLevel === 8) {
+                    pos.position.createConstructionSite(STRUCTURE_POWER_SPAWN)
+                }
+                break;
+            case 'B':
+                if(roomLevel >= 6) {
+                    pos.position.createConstructionSite(STRUCTURE_LAB)
+                }
                 break;
             default:
                 break;
