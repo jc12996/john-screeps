@@ -702,7 +702,7 @@ export class ScaffoldingUtils {
         }
         // Parse the layout into positions for the extensions
         let farmNumber = 1;
-        if(flag.name.includes('ExtensionFarm2')) {
+        if(flag.color === COLOR_PURPLE) {
             farmNumber = 2;
             layout = `
 -REEER

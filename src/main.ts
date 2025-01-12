@@ -106,7 +106,9 @@ export const loop = ErrorMapper.wrapLoop(() => {
         const claimFlag = Game.flags[flag];
         if(claimFlag && claimFlag.room) {
           if (claimFlag.room.controller && claimFlag.room.controller.my && !!claimFlag) {
-            const extensionFarm2Flag = Game.flags[claimFlag.room.name + "ExtensionFarm2"];
+            // const extensionFarm2Flag = claimFlag.room.find(FIND_FLAGS,{
+            //   filter: (fff:any) => fff.color === COLOR_PURPLE
+            // })[0]?? null
             const labFarmFlag = Game.flags[claimFlag.room.name + "LabFarm"];
             const room = Game.rooms[claimFlag.room.name];
             const mySpawn = room.find(FIND_MY_SPAWNS)[0] ?? null;
@@ -119,6 +121,15 @@ export const loop = ErrorMapper.wrapLoop(() => {
               if (claimFlag.room.controller.level >= 6 && !!labFarmFlag) {
                 ScaffoldingUtils.createLabFarm(mySpawn, labFarmFlag);
               }
+
+              const extensionFarm2Flag = claimFlag.room.find(FIND_FLAGS,{
+              filter: (fff:any) => fff.color === COLOR_PURPLE
+            })[0]?? null
+              if(extensionFarm2Flag){
+
+               ScaffoldingUtils.visualizeExtensionPlacement(extensionFarm2Flag); // Visualize where extensions will be placed
+
+             }
             }
 
           }
@@ -127,10 +138,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
         }
       }
 
-      if(flag.includes('ExtensionFarm2')){
-        ScaffoldingUtils.visualizeExtensionPlacement(Game.flags[flag]); // Visualize where extensions will be placed
 
-      }
     }
   }
 
