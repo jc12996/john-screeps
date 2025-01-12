@@ -16,20 +16,12 @@ export class AutoSpawn {
   public static totalSpawns: number;
 
   public static run(): void {
-    const roomsWithSpawns = _.filter(Game.rooms, room => {
-      return room.find(FIND_MY_SPAWNS)?.length > 0;
-    });
 
-    this.totalSpawns = 0;
-    roomsWithSpawns.forEach(roomWithSpawn => {
-      const spawnsInRoom = roomWithSpawn.find(FIND_MY_SPAWNS);
-      if (spawnsInRoom.length > 0) {
-        for (const spawn of spawnsInRoom) {
-          this.totalSpawns++;
-          this.spawnSequence(spawn);
-        }
-      }
-    });
+    const spawns = Game.spawns;
+    for (const spawn in spawns) {
+      this.totalSpawns++;
+      this.spawnSequence(Game.spawns[spawn]);
+    }
   }
 
   private static spawnSequence(spawn: any): void {
@@ -618,17 +610,6 @@ export class AutoSpawn {
         align: "left",
         opacity: 0.8
       });
-
-      if (spawn.room.controller && spawn.room.controller.my && !!spawn) {
-        ScaffoldingUtils.createExtensionFarm1(spawn);
-        if (spawn.room.controller.level >= 5 && !!extensionFarm2Flag) {
-          ScaffoldingUtils.createExtensionFarm2(spawn, extensionFarm2Flag);
-        }
-
-        if (spawn.room.controller.level >= 6 && !!labFarmFlag) {
-          ScaffoldingUtils.createLabFarm(spawn, labFarmFlag);
-        }
-      }
     } else if (bodyParts != null && name != null) {
       let spawnResult = spawn.spawnCreep(bodyParts, name, options);
 

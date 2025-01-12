@@ -1,5 +1,6 @@
 import { AutoSpawn } from "autospawn";
 import { spawn } from "child_process";
+import { Position } from "source-map";
 
 
 export class ScaffoldingUtils {
@@ -664,6 +665,134 @@ export class ScaffoldingUtils {
             }
 
         }
+    }
+
+    // Function to visualize the extension placements based on the provided string layout
+    public static visualizeExtensionPlacement(flag:Flag) {
+
+        const flagPos = flag.pos;
+
+        if(!!!flag) {
+            return;
+        }
+
+        // Define the string layout
+        const layout = `
+-REEER
+-ERTRE
+-ELREE
+-ERTRE
+-REEER
+`;
+        if(!flag.room) {
+            return;
+        }
+        const room = Game.rooms[flag.room.name]
+        if(!flagPos) {
+            return;
+        }
+        const roomPosition: RoomPosition | null = room.getPositionAt(flagPos.x,flagPos.y);
+        if(!roomPosition) {
+            return;
+        }
+
+        let roomLevel = 1;
+        if(room.controller && room.controller.my) {
+            roomLevel = room.controller.level;
+        }
+        // Parse the layout into positions for the extensions
+        const extensionPositions = this.getExtensionPositionsFromLayout(roomPosition, layout);
+
+        // Draw circles at each extension position
+        extensionPositions.reverse().forEach(pos => {
+
+
+
+            let strokeColor = 'green';
+            if(pos.position.lookFor(LOOK_CONSTRUCTION_SITES).length === 0 && pos.position.lookFor(LOOK_STRUCTURES).length === 0) {
+
+
+                if (roomLevel >= 5 && flag.name.includes('ExtensionFarm2')) {
+                    this.createConstructionSites(pos)
+                }
+                if(flag.name.includes('claimFlag')) {
+                    this.createConstructionSites(pos)
+                }
+                strokeColor = 'red';
+
+                if(pos.type !== '-') {
+                    room.visual.text(pos.type,pos.position, {
+                        font:0.5,
+                        opacity: 0.8
+                      });
+                }
+
+
+            }
+            if(pos.type !== 'R') {
+                room.visual.circle(pos.position, {
+                    fill: 'transparent',
+                    stroke: strokeColor,
+                    radius: 0.5
+                });
+            }
+
+        });
+    }
+
+    private static createConstructionSites(pos: {
+        position: RoomPosition,
+        type:string
+    }) {
+        switch(pos.type) {
+            case 'E':
+                pos.position.createConstructionSite(STRUCTURE_EXTENSION)
+                break;
+            case 'T':
+                pos.position.createConstructionSite(STRUCTURE_TOWER)
+                break;
+            case 'L':
+                pos.position.createConstructionSite(STRUCTURE_LINK)
+                break;
+            case 'R':
+                pos.position.createConstructionSite(STRUCTURE_ROAD)
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Function to parse the layout string and return positions of extensions
+    public static getExtensionPositionsFromLayout(flagPos: RoomPosition, layout: string) {
+        const positions: Array<{position:RoomPosition,type:string}> = [];
+        const rows = layout.split('\n');  // Split layout by line breaks
+
+        rows.forEach((row, yOffset) => {
+            let xOffset = 0;  // Reset xOffset for each row
+
+            // Iterate over the row to calculate positions
+            for (let i = 0; i < row.length; i++) {
+                const col = row[i];
+
+                if (col && col !== '-' && col !== ' ') {
+                    // Calculate the position of the extension based on the flag position and offsets
+                    const x = flagPos.x - xOffset; // The x-coordinate decreases (moving left)
+                    const y = flagPos.y + yOffset; // The y-coordinate increases (moving down)
+                    const pos = new RoomPosition(x, y, flagPos.roomName);
+
+                    // Check if the position is valid (not blocked by walls)
+                    if (pos.lookFor(LOOK_TERRAIN)[0] !== 'wall') {
+                        positions.push({
+                            position: pos,
+                            type: col
+                        });
+                    }
+                }
+                xOffset++;  // Each space increments the x offset
+            }
+        });
+
+        return positions;
     }
 
 

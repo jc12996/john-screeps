@@ -1,8 +1,11 @@
+import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
+
 export function getNextClaimFlag(room:Room,extensionFarm2Flag:Flag): Flag | undefined {
     for (let i = 0; i < 10; i++) {
         const claimFlag = Game.flags['claimFlag'+i];
         if (claimFlag){
             const claimRoom = claimFlag.room;
+
 
             if(room === claimRoom && claimRoom?.name){
                 new RoomVisual(claimRoom.name).line(claimFlag.pos.x,claimFlag.pos.y,claimFlag.pos.x-6,claimFlag.pos.y);
@@ -23,6 +26,7 @@ export function getNextClaimFlag(room:Room,extensionFarm2Flag:Flag): Flag | unde
             if(roomSpawn?.length && claimRoom?.controller && claimRoom?.controller.owner) {
                 continue;
             }
+
             return claimFlag;
         }
     }

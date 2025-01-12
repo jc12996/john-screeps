@@ -24,6 +24,7 @@ import { MovementUtils } from "utils/MovementUtils";
 import { Nukers } from "nukers";
 import { Labs } from "labs";
 import { Hauler } from "roles/hauler";
+import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 
 declare global {
   /*
@@ -98,6 +99,42 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
   AutoSpawn.run();
 
+  // Visual claim stuff
+  if(Game.time % 10) {
+    for (var flag in Game.flags) {
+      if(flag.startsWith('claimFlag')) {
+        const claimFlag = Game.flags[flag];
+        if(claimFlag && claimFlag.room) {
+          if (claimFlag.room.controller && claimFlag.room.controller.my && !!claimFlag) {
+            const extensionFarm2Flag = Game.flags[claimFlag.room.name + "ExtensionFarm2"];
+            const labFarmFlag = Game.flags[claimFlag.room.name + "LabFarm"];
+            const room = Game.rooms[claimFlag.room.name];
+            const mySpawn = room.find(FIND_MY_SPAWNS)[0] ?? null;
+            if(mySpawn) {
+              // ScaffoldingUtils.createExtensionFarm1(mySpawn);
+              // if (claimFlag.room.controller.level >= 5 && !!extensionFarm2Flag) {
+              //   ScaffoldingUtils.createExtensionFarm2(mySpawn, extensionFarm2Flag);
+              // }
+
+              if (claimFlag.room.controller.level >= 6 && !!labFarmFlag) {
+                ScaffoldingUtils.createLabFarm(mySpawn, labFarmFlag);
+              }
+            }
+
+          }
+          ScaffoldingUtils.visualizeExtensionPlacement(claimFlag); // Visualize where extensions will be placed
+
+        }
+      }
+
+      if(flag.includes('ExtensionFarm2')){
+        ScaffoldingUtils.visualizeExtensionPlacement(Game.flags[flag]); // Visualize where extensions will be placed
+
+      }
+    }
+  }
+
+
   for (var room_it in Game.rooms) {
     const room: Room = Game.rooms[room_it];
     var spawn = room.find(FIND_MY_SPAWNS)[0];
@@ -147,7 +184,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
-  // Creep behavior loop.
+
   for (var name in Game.creeps) {
     var creep = Game.creeps[name];
 
