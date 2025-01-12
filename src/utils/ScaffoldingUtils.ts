@@ -1,8 +1,3 @@
-import { AutoSpawn } from "autospawn";
-import { spawn } from "child_process";
-import { Position } from "source-map";
-
-
 export class ScaffoldingUtils {
 
     public static createSpawn(creep: Creep | StructureSpawn,nextClaimFlag:Flag,totalSpawns:number): void {
@@ -19,54 +14,12 @@ export class ScaffoldingUtils {
         }
     }
 
-
-    public static createRoadX(creepOrSpawn: Creep | StructureSpawn, flag: Flag | undefined = undefined, roomPos?:RoomPosition): void {
-        var spawnsAmount = creepOrSpawn.room.find(FIND_MY_SPAWNS);
-
-
-
-        let pos = spawnsAmount[0].pos;
-        if(flag) {
-            pos = flag.pos;
-        }
-        if(roomPos) {
-            pos = roomPos;
-        }
-        if(!pos || !creepOrSpawn.room?.controller?.my) {
-            return;
-        }
-
-        const hasRoads = creepOrSpawn.room.find(FIND_STRUCTURES, {
-            filter: (extension) => {
-                extension.structureType === STRUCTURE_ROAD && extension.pos.x == pos.x-3 && extension.pos.y == pos.y+3
-            }
-        }).length > 0;
-
-
-        if(!hasRoads) {
-            creepOrSpawn.room?.createConstructionSite(pos.x - 1,pos.y+1,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 2,pos.y+2,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 3,pos.y+3,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y+4,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 5,pos.y+5,STRUCTURE_ROAD);
-
-            creepOrSpawn.room?.createConstructionSite(pos.x - 5,pos.y+1,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 4,pos.y+2,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 2,pos.y+4,STRUCTURE_ROAD);
-            creepOrSpawn.room?.createConstructionSite(pos.x - 1,pos.y+5,STRUCTURE_ROAD);
-        }
-
-
-    }
-
     public static createExtensionFarm1(creepOrSpawn: Creep | StructureSpawn): void {
         var spawnsAmount = creepOrSpawn.room.find(FIND_MY_SPAWNS);
 
         if(!spawnsAmount.length) {
             return;
         }
-
-        let pos = spawnsAmount[0].pos;
 
         if(creepOrSpawn.room.controller && creepOrSpawn.room.controller.my && spawnsAmount.length >= 1) {
 
@@ -75,45 +28,6 @@ export class ScaffoldingUtils {
                 ScaffoldingUtils.createBaseWallsAndRamparts(creepOrSpawn);
             }
 
-            if(creepOrSpawn.room?.controller?.my && creepOrSpawn.room.controller?.level) {
-
-                if(creepOrSpawn.room.controller.level === 8) {
-                    var hasPowerSpawnSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                        filter: (structure) => {
-                            return (structure.structureType == STRUCTURE_POWER_SPAWN)
-                        }
-                    }).length == 1;
-
-                    var hasPowerSpawn = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                        filter: (structure) => {
-                            return (structure.structureType == STRUCTURE_POWER_SPAWN)
-                        }
-                    }).length == 1;
-
-                    if(!hasPowerSpawn && !hasPowerSpawnSite) {
-                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+3,STRUCTURE_POWER_SPAWN);
-                    }
-
-
-                    const hasLevelTower = creepOrSpawn.room.find(FIND_STRUCTURES, {
-                        filter: (extension) => {
-                            extension.structureType === STRUCTURE_TOWER && extension.pos.x == pos.x-2 && extension.pos.y == pos.y+3
-                        }
-                    }).length > 0;
-                    const hasLevelTowerSite = creepOrSpawn.room.find(FIND_CONSTRUCTION_SITES, {
-                        filter: (extension) => {
-                            extension.structureType === STRUCTURE_TOWER && extension.pos.x == pos.x-2 && extension.pos.y == pos.y+3
-                        }
-                    }).length > 0;
-                    if(!hasLevelTower && !hasLevelTowerSite) {
-                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+2,STRUCTURE_TOWER);
-                        creepOrSpawn.room?.createConstructionSite(pos.x,pos.y+7,STRUCTURE_TOWER);
-                        creepOrSpawn.room?.createConstructionSite(pos.x-2,pos.y+3,STRUCTURE_TOWER);
-                    }
-                }
-
-
-            }
         }
     }
 
@@ -411,11 +325,11 @@ export class ScaffoldingUtils {
 
         // Define the string layout
         let layout = `
--REEERW
+-REEER
 -ERTRE
--ELRSE
+OELRSE
 QERTRE
-OREEERX
+XREEER
 `;
         if(!flag.room) {
             return;
@@ -438,11 +352,11 @@ OREEERX
         if(flag.color === COLOR_PURPLE) {
             farmNumber = 2;
             layout = `
--REEERW
+-REEER
 -ERTRE
--ELRPE
+NELRPE
 QERTRE
-FREEERN
+FREEER
 `;
         }
         if(flag.name.includes('LabFarm')) {
@@ -497,7 +411,7 @@ FREEERN
                         buildingAbb = 'Nu';
                     }
                     room.visual.text(buildingAbb,pos.position, {
-                        font:0.5,
+                        font:0.4,
                         opacity: 0.8
                       });
                 }

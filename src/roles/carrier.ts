@@ -1053,7 +1053,7 @@ export class Carrier {
     });
 
     if (tombstone) {
-      creep.say('🔄TT');
+      creep.say('🚚TT');
       transferCode = creep.withdraw(tombstone,RESOURCE_ENERGY);
       if(tombstone && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(tombstone, { visualizePathStyle: { stroke: "#ffaa00" } });
@@ -1066,7 +1066,7 @@ export class Carrier {
     });
 
     if (container) {
-      creep.say('🔄C');
+      creep.say('🚚C');
       transferCode = creep.withdraw(container,RESOURCE_ENERGY);
       if(container && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(container, { visualizePathStyle: { stroke: "#ffaa00" } });
@@ -1092,7 +1092,7 @@ export class Carrier {
     }) as Resource;
 
     if (droppedSource) {
-      creep.say('🔄D');
+      creep.say('🚚D');
       transferCode = creep.pickup(droppedSource);
       if(droppedSource && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
