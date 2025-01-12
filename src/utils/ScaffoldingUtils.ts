@@ -1,3 +1,11 @@
+export type ScaffoldPosition = {
+    position: RoomPosition,
+    type:string,
+    farmNumber: number,
+
+};
+
+
 export class ScaffoldingUtils {
 
     public static createSpawn(creep: Creep | StructureSpawn,nextClaimFlag:Flag,totalSpawns:number): void {
@@ -384,44 +392,12 @@ FREEER
 
                 strokeColor = 'red';
 
-                if(pos.type !== '-') {
-                    let buildingAbb = pos.type;
-                    if(pos.type === 'Q'|| pos.type === 'T') {
-                        buildingAbb = 'To';
-                    }
-                    if(pos.type === 'P') {
-                        buildingAbb = 'Te';
-                    }
-                    if(pos.type === 'W') {
-                        buildingAbb = 'Sp';
-                    }
-                    if(pos.type === 'X') {
-                        buildingAbb = 'Pow';
-                    }
-                    if(pos.type === 'L') {
-                        buildingAbb = 'Li';
-                    }
-                    if(pos.type === 'O') {
-                        buildingAbb = 'Ob';
-                    }
-                    if(pos.type === 'L') {
-                        buildingAbb = 'Li';
-                    }
-                    if(pos.type === 'F') {
-                        buildingAbb = 'Fa';
-                    }
-                    if(pos.type === 'N') {
-                        buildingAbb = 'Nu';
-                    }
-                    room.visual.text(buildingAbb,pos.position, {
-                        font:0.4,
-                        opacity: 0.8
-                      });
-                }
+
 
 
             }
-            if(pos.type !== 'R') {
+            if(pos.type !== 'R' && pos.position.lookFor(LOOK_STRUCTURES).length === 0) {
+                this.showBuildingAbbreviations(room,pos);
                 room.visual.circle(pos.position, {
                     fill: 'transparent',
                     stroke: strokeColor,
@@ -432,12 +408,45 @@ FREEER
         });
     }
 
-    private static createConstructionSites(pos: {
-        position: RoomPosition,
-        type:string,
-        farmNumber: number,
+    private static showBuildingAbbreviations(room:Room,pos:ScaffoldPosition) {
+        if(pos.type !== '-') {
+            let buildingAbb = pos.type;
+            if(pos.type === 'Q'|| pos.type === 'T') {
+                buildingAbb = 'To';
+            }
+            if(pos.type === 'P') {
+                buildingAbb = 'Te';
+            }
+            if(pos.type === 'W') {
+                buildingAbb = 'Sp';
+            }
+            if(pos.type === 'X') {
+                buildingAbb = 'Pow';
+            }
+            if(pos.type === 'L') {
+                buildingAbb = 'Li';
+            }
+            if(pos.type === 'O') {
+                buildingAbb = 'Ob';
+            }
+            if(pos.type === 'L') {
+                buildingAbb = 'Li';
+            }
+            if(pos.type === 'F') {
+                buildingAbb = 'Fa';
+            }
+            if(pos.type === 'N') {
+                buildingAbb = 'Nu';
+            }
+            room.visual.text(buildingAbb,pos.position, {
+                font:0.4,
+                opacity: 0.8
+              });
+        }
+    }
 
-    },roomLevel: number) {
+
+    private static createConstructionSites(pos: ScaffoldPosition,roomLevel: number) {
         switch(pos.type) {
             case 'E':
                 pos.position.createConstructionSite(STRUCTURE_EXTENSION)

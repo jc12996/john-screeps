@@ -605,7 +605,7 @@ export class AutoSpawn {
   ) {
     if (spawn && spawn.spawning) {
       var spawningCreep = Game.creeps[spawn.spawning.name];
-      if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
+      if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS && Game.time % 7) {
         console.log(spawn.name + " spawning new creep: " + spawningCreep.name);
       }
       spawn.room.visual.text("🛠️" + spawningCreep.memory.role, spawn.pos.x + 1, spawn.pos.y, {
