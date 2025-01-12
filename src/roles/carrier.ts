@@ -1075,7 +1075,7 @@ export class Carrier {
     }) as Creep;
 
     if (holdingHarvests) {
-      creep.say('🔄H');
+      creep.say('🚚H');
       transferCode = holdingHarvests.transfer(creep, RESOURCE_ENERGY);
       if(!creep.pos.isNearTo(holdingHarvests) && holdingHarvests && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(holdingHarvests, { visualizePathStyle: { stroke: "#ffaa00" } });

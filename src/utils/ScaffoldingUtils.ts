@@ -677,10 +677,10 @@ export class ScaffoldingUtils {
         }
 
         // Define the string layout
-        const layout = `
+        let layout = `
 -REEER
 -ERTRE
--ELREE
+-ELRSE
 -ERTRE
 -REEER
 `;
@@ -701,7 +701,21 @@ export class ScaffoldingUtils {
             roomLevel = room.controller.level;
         }
         // Parse the layout into positions for the extensions
-        const extensionPositions = this.getExtensionPositionsFromLayout(roomPosition, layout);
+        let farmNumber = 1;
+        if(flag.name.includes('ExtensionFarm2')) {
+            farmNumber = 2;
+            layout = `
+-REEER
+-ERTRE
+-ELRPE
+-ERTRE
+-REEER
+`;
+        }
+        if(flag.name.includes('LabFarm')) {
+            farmNumber = 3;
+        }
+        const extensionPositions = this.getExtensionPositionsFromLayout(roomPosition, layout,farmNumber);
 
         // Draw circles at each extension position
         extensionPositions.reverse().forEach(pos => {
@@ -713,10 +727,10 @@ export class ScaffoldingUtils {
 
 
                 if (roomLevel >= 5 && flag.name.includes('ExtensionFarm2')) {
-                    this.createConstructionSites(pos)
+                    this.createConstructionSites(pos,roomLevel)
                 }
                 if(flag.name.includes('claimFlag')) {
-                    this.createConstructionSites(pos)
+                    this.createConstructionSites(pos,roomLevel)
                 }
                 strokeColor = 'red';
 
@@ -742,8 +756,10 @@ export class ScaffoldingUtils {
 
     private static createConstructionSites(pos: {
         position: RoomPosition,
-        type:string
-    }) {
+        type:string,
+        farmNumber: number,
+
+    },roomLevel: number) {
         switch(pos.type) {
             case 'E':
                 pos.position.createConstructionSite(STRUCTURE_EXTENSION)
@@ -752,10 +768,22 @@ export class ScaffoldingUtils {
                 pos.position.createConstructionSite(STRUCTURE_TOWER)
                 break;
             case 'L':
+                if(pos.farmNumber == 1 && !Game.flags[pos.position.roomName+'ExtensionLink'] && roomLevel >= 5) {
+                    pos.position.createFlag(pos.position.roomName+'ExtensionLink');
+                }
+                if(pos.farmNumber == 2 && !Game.flags[pos.position.roomName+'ExtensionLink2'] && roomLevel >= 6) {
+                    pos.position.createFlag(pos.position.roomName+'ExtensionLink2');
+                }
                 pos.position.createConstructionSite(STRUCTURE_LINK)
                 break;
             case 'R':
                 pos.position.createConstructionSite(STRUCTURE_ROAD)
+                break;
+            case 'P':
+                pos.position.createConstructionSite(STRUCTURE_TERMINAL)
+                break;
+            case 'S':
+                pos.position.createConstructionSite(STRUCTURE_STORAGE)
                 break;
             default:
                 break;
@@ -763,8 +791,8 @@ export class ScaffoldingUtils {
     }
 
     // Function to parse the layout string and return positions of extensions
-    public static getExtensionPositionsFromLayout(flagPos: RoomPosition, layout: string) {
-        const positions: Array<{position:RoomPosition,type:string}> = [];
+    public static getExtensionPositionsFromLayout(flagPos: RoomPosition, layout: string, farmNumber: number) {
+        const positions: Array<{position:RoomPosition,type:string,farmNumber:number}> = [];
         const rows = layout.split('\n');  // Split layout by line breaks
 
         rows.forEach((row, yOffset) => {
@@ -784,7 +812,8 @@ export class ScaffoldingUtils {
                     if (pos.lookFor(LOOK_TERRAIN)[0] !== 'wall') {
                         positions.push({
                             position: pos,
-                            type: col
+                            type: col,
+                            farmNumber
                         });
                     }
                 }
