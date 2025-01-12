@@ -411,11 +411,11 @@ export class ScaffoldingUtils {
 
         // Define the string layout
         let layout = `
--REEER
-WERTRE
-OELRSE
-XERTRE
--REEER
+-REEERW
+-ERTRE
+-ELRSE
+QERTRE
+OREEERX
 `;
         if(!flag.room) {
             return;
@@ -438,11 +438,11 @@ XERTRE
         if(flag.color === COLOR_PURPLE) {
             farmNumber = 2;
             layout = `
--REEER
-WERTRE
-FELRPE
-NERTRE
--REEER
+-REEERW
+-ERTRE
+-ELRPE
+QERTRE
+FREEERN
 `;
         }
         if(flag.name.includes('LabFarm')) {
@@ -468,7 +468,35 @@ NERTRE
                 strokeColor = 'red';
 
                 if(pos.type !== '-') {
-                    room.visual.text(pos.type,pos.position, {
+                    let buildingAbb = pos.type;
+                    if(pos.type === 'Q'|| pos.type === 'T') {
+                        buildingAbb = 'To';
+                    }
+                    if(pos.type === 'P') {
+                        buildingAbb = 'Te';
+                    }
+                    if(pos.type === 'W') {
+                        buildingAbb = 'Sp';
+                    }
+                    if(pos.type === 'X') {
+                        buildingAbb = 'Pow';
+                    }
+                    if(pos.type === 'L') {
+                        buildingAbb = 'Li';
+                    }
+                    if(pos.type === 'O') {
+                        buildingAbb = 'Ob';
+                    }
+                    if(pos.type === 'L') {
+                        buildingAbb = 'Li';
+                    }
+                    if(pos.type === 'F') {
+                        buildingAbb = 'Fa';
+                    }
+                    if(pos.type === 'N') {
+                        buildingAbb = 'Nu';
+                    }
+                    room.visual.text(buildingAbb,pos.position, {
                         font:0.5,
                         opacity: 0.8
                       });
@@ -496,6 +524,11 @@ NERTRE
         switch(pos.type) {
             case 'E':
                 pos.position.createConstructionSite(STRUCTURE_EXTENSION)
+                break;
+            case 'Q':
+                if(roomLevel === 8 && pos.type === 'Q') {
+                    pos.position.createConstructionSite(STRUCTURE_TOWER)
+                }
                 break;
             case 'T':
                 pos.position.createConstructionSite(STRUCTURE_TOWER)
