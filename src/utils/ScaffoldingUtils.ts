@@ -373,12 +373,15 @@ FREEER
             if(pos.position.lookFor(LOOK_CONSTRUCTION_SITES).length === 0 && pos.position.lookFor(LOOK_STRUCTURES).length === 0) {
 
 
-                if (roomLevel >= 5 && flag.color === COLOR_PURPLE) {
-                    this.createConstructionSites(pos,roomLevel)
+                if(Game.time % 7) {
+                    if (roomLevel >= 5 && flag.color === COLOR_PURPLE) {
+                        this.createConstructionSites(pos,roomLevel)
+                    }
+                    if(flag.name.includes('claimFlag')) {
+                        this.createConstructionSites(pos,roomLevel)
+                    }
                 }
-                if(flag.name.includes('claimFlag')) {
-                    this.createConstructionSites(pos,roomLevel)
-                }
+
                 strokeColor = 'red';
 
                 if(pos.type !== '-') {
