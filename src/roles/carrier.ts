@@ -926,6 +926,34 @@ export class Carrier {
       return;
     }
 
+    const droppedSource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+      filter: source => source.amount >= creep.store.getCapacity()
+    }) as Resource;
+
+    if (droppedSource) {
+      creep.say('🚚D');
+      transferCode = creep.pickup(droppedSource);
+      if(droppedSource && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+
+    const holdingHarvests = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+      filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 0
+    }) as Creep;
+
+    if (holdingHarvests) {
+      creep.say('🚚H');
+      transferCode = holdingHarvests.transfer(creep, RESOURCE_ENERGY);
+      if(!creep.pos.isNearTo(holdingHarvests) && holdingHarvests && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(holdingHarvests, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+
     const droppedTombstone =
         creep.pos.findInRange(FIND_TOMBSTONES, 4, {
           filter: tomb => {
@@ -942,6 +970,20 @@ export class Carrier {
       return;
     }
 
+    const droppedSource2 = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+      filter: source => source.amount > 0
+    }) as Resource;
+
+    if (droppedSource2) {
+      creep.say('🚚D');
+      transferCode = creep.pickup(droppedSource2);
+      if(droppedSource2 && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedSource2, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+
     if (roomRallyPointFlag.length) {
       creep.moveTo(roomRallyPointFlag[0]);
       return;
@@ -953,7 +995,7 @@ export class Carrier {
 
     if (
       !creep.memory.carrying &&
-      creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > (20 * creep.getActiveBodyparts(CARRY))
+      creep.store.getFreeCapacity() == 0
     ) {
       creep.memory.carrying = true;
     }
@@ -1049,7 +1091,7 @@ export class Carrier {
 
 
     const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] >= 0
+      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] > 0
     });
 
     if (tombstone) {
@@ -1074,7 +1116,23 @@ export class Carrier {
       return;
     }
 
-    const closeDroppedSource = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1, {
+
+    const droppedSource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+      filter: source => source.amount >= creep.store.getCapacity()
+    }) as Resource;
+
+    if (droppedSource) {
+      creep.say('🚚D');
+      transferCode = creep.pickup(droppedSource);
+      if(droppedSource && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+
+
+    const closeDroppedSource = creep.pos.findInRange(FIND_DROPPED_RESOURCES,3, {
       filter: source => source.amount >= 0
     })[0]?? null;
 
@@ -1088,7 +1146,7 @@ export class Carrier {
     }
 
     const holdingHarvests = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
-      filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 0
+      filter: harvestCreep => harvestCreep.memory.role === 'harvester' && harvestCreep.store.energy > 20
     }) as Creep;
 
     if (holdingHarvests) {
@@ -1100,18 +1158,20 @@ export class Carrier {
       return;
     }
 
-    const droppedSource = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
-      filter: source => source.amount >= 0
+
+    const droppedSource2 = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+      filter: source => source.amount > 0
     }) as Resource;
 
-    if (droppedSource) {
+    if (droppedSource2) {
       creep.say('🚚D');
-      transferCode = creep.pickup(droppedSource);
-      if(droppedSource && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(droppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
+      transferCode = creep.pickup(droppedSource2);
+      if(droppedSource2 && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedSource2, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       return;
     }
+
 
 
   }
