@@ -953,7 +953,7 @@ export class Carrier {
 
     if (
       !creep.memory.carrying &&
-      creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 20
+      creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > (20 * creep.getActiveBodyparts(CARRY))
     ) {
       creep.memory.carrying = true;
     }
@@ -1070,6 +1070,19 @@ export class Carrier {
       transferCode = creep.withdraw(container,RESOURCE_ENERGY);
       if(container && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(container, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+    const closeDroppedSource = creep.pos.findInRange(FIND_DROPPED_RESOURCES,1, {
+      filter: source => source.amount >= 0
+    })[0]?? null;
+
+    if (closeDroppedSource) {
+      creep.say('🚚D');
+      transferCode = creep.pickup(closeDroppedSource);
+      if(closeDroppedSource && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(closeDroppedSource, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       return;
     }

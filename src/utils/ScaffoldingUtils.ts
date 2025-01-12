@@ -263,10 +263,10 @@ export class ScaffoldingUtils {
         // Define the string layout
         let layout = `
 -REEER
--ERTRE
+XERTRE
 OELRSE
 QERTRE
-XREEER
+-REEER
 `;
         if(!flag.room) {
             return;
@@ -290,10 +290,10 @@ XREEER
             farmNumber = 2;
             layout = `
 -REEER
--ERTRE
-NELRPE
+NERTRE
+FELRPE
 QERTRE
-FREEER
+-REEER
 `;
         }
         if(flag.color === COLOR_BROWN) {
@@ -309,13 +309,8 @@ FREEER
 
         // Draw circles at each extension position
         extensionPositions.reverse().forEach(pos => {
-
-
-
             let strokeColor = 'green';
             if(pos.position.lookFor(LOOK_CONSTRUCTION_SITES).length === 0 && pos.position.lookFor(LOOK_STRUCTURES).length === 0) {
-
-
                 if(Game.time % 7) {
                     if (roomLevel >= 5 && flag.color === COLOR_PURPLE) {
                         this.createConstructionSites(pos,roomLevel)
@@ -324,14 +319,12 @@ FREEER
                         this.createConstructionSites(pos,roomLevel)
                     }
                 }
-
                 strokeColor = 'red';
-
-
-
-
             }
-            if(pos.type !== 'R' && pos.position.lookFor(LOOK_STRUCTURES).length === 0) {
+            if(pos.position.lookFor(LOOK_STRUCTURES).length === 0) {
+                if(pos.type === 'R'){
+                    strokeColor = 'yellow';
+                }
                 this.showBuildingAbbreviations(room,pos);
                 room.visual.circle(pos.position, {
                     fill: 'transparent',
@@ -339,7 +332,6 @@ FREEER
                     radius: 0.5
                 });
             }
-
         });
     }
 
@@ -449,7 +441,7 @@ FREEER
     }
 
     // Function to parse the layout string and return positions of extensions
-    public static getExtensionPositionsFromLayout(flagPos: RoomPosition, layout: string, farmNumber: number) {
+    private static getExtensionPositionsFromLayout(flagPos: RoomPosition, layout: string, farmNumber: number) {
         const positions: Array<{position:RoomPosition,type:string,farmNumber:number}> = [];
         const rows = layout.split('\n');  // Split layout by line breaks
 
