@@ -114,6 +114,10 @@ export class Harvester {
                 filter: (struc) => {
                     return struc.structureType === STRUCTURE_CONTAINER
                 }
+            }).length === 0 && creep.pos.findInRange(FIND_CONSTRUCTION_SITES,2,{
+                filter: (struc) => {
+                    return struc.structureType === STRUCTURE_CONTAINER
+                }
             }).length === 0) {
 
                 ScaffoldingUtils.createContainers(creep);

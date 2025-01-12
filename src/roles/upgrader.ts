@@ -91,7 +91,8 @@ export class Upgrader {
         return (
           site.structureType !== STRUCTURE_ROAD &&
           site.structureType !== STRUCTURE_RAMPART &&
-          site.structureType !== STRUCTURE_WALL
+          site.structureType !== STRUCTURE_WALL &&
+          site.structureType !== STRUCTURE_CONTAINER
         );
       }
     });
@@ -231,7 +232,7 @@ export class Upgrader {
 
 
 
-        const nearestContainerToController = creep.room.controller.pos.findInRange(FIND_STRUCTURES,15, {
+        const nearestContainerToController = creep.room.controller.pos.findInRange(FIND_STRUCTURES,4, {
           filter: structure => {
             return (
               structure.structureType == STRUCTURE_CONTAINER && structure.store.energy >= creep.store.getCapacity()
