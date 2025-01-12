@@ -248,7 +248,9 @@ export class Carrier {
         creep.room?.controller.my
       ) {
         if (creep.memory.extensionFarm === 2) {
-          const extensionFarm2Flag = Game.flags[spawn.room.name + "ExtensionFarm2"];
+          const extensionFarm2Flag = spawn.room.find(FIND_FLAGS,{
+            filter: (fff:any) => fff.color === COLOR_PURPLE
+          })[0]?? null
           const extensionLink = getLinkByTag(creep, "ExtensionLink2");
           if (
             creep.memory.role === "carrier" &&
@@ -736,7 +738,9 @@ export class Carrier {
         creep.say("🚚TR");
         creep.moveTo(terminal);
       } else {
-        const extensionFarm2Flag = Game.flags[spawn.room.name + "ExtensionFarm2"];
+        const extensionFarm2Flag = spawn.room.find(FIND_FLAGS,{
+          filter: (fff:any) => fff.color === COLOR_PURPLE
+        })[0]?? null
         creep.moveTo(extensionFarm2Flag.pos.x - 3, extensionFarm2Flag.pos.y + 3);
       }
       return;

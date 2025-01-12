@@ -112,7 +112,9 @@ export class AutoSpawn {
       spawn.room.find(FIND_STRUCTURES, {
         filter: { structureType: STRUCTURE_STORAGE }
       })[0] ?? undefined;
-    const extensionFarm2Flag = Game.flags[spawn.room.name + "ExtensionFarm2"];
+    const extensionFarm2Flag = spawn.room.find(FIND_FLAGS,{
+      filter: (fff:any) => fff.color === COLOR_PURPLE
+    })[0]?? null
     const labFarmFlag = Game.flags[spawn.room.name + "LabFarm"];
 
     var constructionSites = spawn.room.find(FIND_CONSTRUCTION_SITES);
