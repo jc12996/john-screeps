@@ -46,7 +46,7 @@ export class AutoSpawn {
       roomCreeps,
       creep => creep.memory.role == "upgrader"
     );
-    const builders = _.filter(
+    let builders = _.filter(
       roomCreeps,
       creep => creep.memory.role == "builder"
     );
@@ -177,17 +177,17 @@ export class AutoSpawn {
       }
     }
 
-    if (commandLevel >= 6) {
+    if (commandLevel >= 3) {
       if (energyCapacityAvailable >= 2000 && numberOfNeededUpgraders > 6) {
         numberOfNeededUpgraders = 6;
-      } else if (energyCapacityAvailable >= 800 && numberOfNeededUpgraders > 4) {
-        numberOfNeededUpgraders = 4;
+      } else if (energyCapacityAvailable >= 550 && numberOfNeededUpgraders >= 4) {
+        numberOfNeededUpgraders = 8;
       }
     }
 
-    if (harvesters.length < upgraders.length) {
-      numberOfNeededUpgraders = 2;
-    }
+    // if (harvesters.length < upgraders.length) {
+    //   numberOfNeededUpgraders = 2;
+    // }
 
     if (harvesters.length <= builders.length) {
       numberOfNeededBuilders = 0;
@@ -269,7 +269,7 @@ export class AutoSpawn {
 
         // Process each mineFlag as needed
         // Example: Adjust number of needed miners and haulers based on each mineFlag
-        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom >= 2 && mineFlag.room?.find(FIND_FLAGS).length === 1 ? 3 : 1;
+        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom >= 2 ? 3 : 1;
         let numberOfNeededHaulers = numberOfSourcesInMineFlagRoom >= 2 ? 4 : 2;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
@@ -388,9 +388,19 @@ export class AutoSpawn {
     }
 
 
-    if(numberOfNeededUpgraders >= 4) {
-      numberOfNeededUpgraders = 4;
+    if(numberOfNeededUpgraders >= 8) {
+      numberOfNeededUpgraders = 8;
     }
+
+    if(numberOfNeededHarvesters >= 8) {
+      numberOfNeededHarvesters = 8;
+    }
+
+
+    if(numberOfNeededCarriers >= 8) {
+      numberOfNeededCarriers = 8;
+    }
+
       //Suicide scripts
 
       if(energyCapacityAvailable >= 500 && energyAvailable >= 500) {
@@ -442,6 +452,23 @@ export class AutoSpawn {
             );
           }
         }
+
+        if( builders.length > 0 && numberOfNeededBuilders > 0 && numberOfNeededBuilders === builders.length && suicideOccured === false) {
+          const lowUpgrade = builders.filter(harv => {
+            return harv.getActiveBodyparts(WORK) <= 2
+          })[0] ?? null;
+
+          if(lowUpgrade) {
+            console.log('suicide builder!')
+            suicideOccured = true;
+            lowUpgrade.suicide();
+            builders = _.filter(
+              Game.creeps,
+              creep => creep.memory.role == "builder" && creep.room.name == spawn.room.name
+            );
+          }
+        }
+
 
       }
 

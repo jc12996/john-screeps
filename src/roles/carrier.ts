@@ -337,9 +337,8 @@ export class Carrier {
         if (commandLevel <= 2) {
           return (
             workCreep.memory.role === "upgrader" &&
-            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
-            !creep.memory.hauling &&
-            workCreep.memory.upgrading !== true
+            workCreep.store[RESOURCE_ENERGY] < 40 &&
+            !creep.memory.hauling
           );
         }
         const storage = creep.room.find(FIND_STRUCTURES, {
@@ -349,9 +348,8 @@ export class Carrier {
         if (storage && storage.store[RESOURCE_ENERGY] > 10000 && workCreep.memory.extensionFarm === undefined) {
           return (
             workCreep.memory.role === "upgrader" &&
-            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
-            !creep.memory.hauling &&
-            workCreep.memory.upgrading !== true
+            workCreep.store[RESOURCE_ENERGY] < 40 &&
+            !creep.memory.hauling
           );
         }
 
@@ -364,9 +362,8 @@ export class Carrier {
         ) {
           return (
             workCreep.memory.role === "upgrader" &&
-            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
-            !creep.memory.hauling &&
-            workCreep.memory.upgrading !== true
+            workCreep.store[RESOURCE_ENERGY] < 40 &&
+            !creep.memory.hauling
           );
         }
 
@@ -380,7 +377,7 @@ export class Carrier {
                     ? workCreep.room.energyCapacityAvailable
                     : 1000
                   : 800))) &&
-          workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity() &&
+          workCreep.store[RESOURCE_ENERGY] < 40 &&
           !creep.memory.hauling &&
           (commandLevel > 4 || creep.room.energyAvailable >= 650)
         );
@@ -1073,7 +1070,7 @@ export class Carrier {
         filter: workingCreep => {
           return (
             (workingCreep.memory.role === 'upgrader' || workingCreep.memory.role === 'builder') &&
-            workingCreep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            workingCreep.store.energy < 40
           );
         }
       }) as Creep;
@@ -1090,9 +1087,9 @@ export class Carrier {
 
 
 
-    const tombstone = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
-      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] > 0
-    });
+    const tombstone = creep.pos.findInRange(FIND_TOMBSTONES,4, {
+      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] > 20
+    })[0];
 
     if (tombstone) {
       creep.say('🚚TT');
@@ -1103,12 +1100,12 @@ export class Carrier {
       return;
     }
 
-    const container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= 50
-    });
+    const container = creep.pos.findInRange(FIND_STRUCTURES,4, {
+      filter: structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
+    })[0];
 
     if (container) {
-      creep.say('🚚C');
+      creep.say('🚚CC');
       transferCode = creep.withdraw(container,RESOURCE_ENERGY);
       if(container && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(container, { visualizePathStyle: { stroke: "#ffaa00" } });
@@ -1173,6 +1170,27 @@ export class Carrier {
     }
 
 
+    const tombstone2 = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
+      filter: tomb => tomb.store && tomb.store[RESOURCE_ENERGY] > 20
+    });
+
+    if (tombstone2) {
+      creep.say('🚚TT');
+      transferCode = creep.withdraw(tombstone2,RESOURCE_ENERGY);
+      if(tombstone2 && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(tombstone2, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
+
+
+    const rallyFlag = creep.pos.findClosestByPath(FIND_FLAGS, {
+      filter:(fff) => fff.color === COLOR_BLUE
+    });
+    if(!rallyFlag){
+      return
+    }
+    creep.moveTo(rallyFlag.pos)
 
   }
 
