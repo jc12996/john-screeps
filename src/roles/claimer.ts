@@ -104,7 +104,7 @@ export class Claimer {
             if(chosenDestinationFlag) {
                 const mineRoom = chosenDestinationFlag.room;
                 if(mineRoom?.controller) {
-                    if((!mineRoom.controller.sign?.username || (mineRoom.controller.sign?.username && mineRoom.controller.sign?.username !== 'Xarroc')) && creep.signController(mineRoom.controller, "Mine mine mine!") == ERR_NOT_IN_RANGE) {
+                    if((!mineRoom.controller.sign?.username || (mineRoom.controller.sign?.username && mineRoom.controller.sign?.username !== 'Xarroc')) && creep.signController(mineRoom.controller, "X!") == ERR_NOT_IN_RANGE) {
                         creep.say('🚩'+mineRoom.name)
                         creep.moveTo(mineRoom.controller);
                         return;

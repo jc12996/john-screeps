@@ -18,7 +18,16 @@ export class RoomUtils {
                 continue;
             }
 
-            this.removeWallSites(room);
+            if(Game.flags.removeWallSites) {
+                this.removeSites(room,STRUCTURE_WALL);
+                Game.flags.removeWallSites.remove();
+            }
+
+            if(Game.flags.removeRoadSites) {
+                this.removeSites(room,STRUCTURE_ROAD);
+                Game.flags.removeRoadSites.remove();
+            }
+
             handleRamparts({ room: room });
             transferEnergyToOriginSpawn(room);
 
@@ -62,18 +71,18 @@ export class RoomUtils {
             }
     }
 
-    private static removeWallSites(room:Room):void {
-        if(Game.flags.removeWalls) {
-            const wallSites = room.find(FIND_CONSTRUCTION_SITES,{
-                filter:(site) => {
-                    return site.structureType === STRUCTURE_WALL
-                }
-            });
-            for(const wallSite of wallSites) {
-                wallSite.remove();
+    private static removeSites(room:Room, structureTypeConstant:StructureConstant):void {
+
+        const wallSites = room.find(FIND_CONSTRUCTION_SITES,{
+            filter:(site) => {
+                return site.structureType === structureTypeConstant
             }
-            Game.flags.removeWalls.remove();
+        });
+        for(const wallSite of wallSites) {
+            wallSite.remove();
         }
+
+
     }
 
     public static getCreepProspectingSlots(target: Source | StructureController): Array<{
