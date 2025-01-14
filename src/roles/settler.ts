@@ -48,20 +48,6 @@ export class Settler {
         }
 
         if(!creep.memory.delivering) {
-            const containers = creep.room.find(FIND_STRUCTURES,{
-                filter:(struc) => {
-                    return struc.structureType === STRUCTURE_CONTAINER && struc.store.energy > 0
-                }
-            })
-            if(containers.length > 0) {
-                MovementUtils.generalGatherMovement(creep);
-                return;
-            }
-            const droppedSources = creep.room.find(FIND_DROPPED_RESOURCES)
-            if(droppedSources.length > 0) {
-                MovementUtils.generalGatherMovement(creep);
-                return;
-            }
             Harvester.run(creep);
             return;
         }
