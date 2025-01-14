@@ -48,15 +48,21 @@ export class Settler {
         }
 
         if(!creep.memory.delivering) {
-            // const harvesters = _.filter(
-            //     Game.creeps,
-            //     creep => creep.memory.role == "harvester" && spawns[0] && creep.room.name == spawns[0].room.name
-            //   );
-            // if(harvesters.length >= 3) {
-            //     MovementUtils.generalGatherMovement(creep);
-            // } else {
-                Harvester.run(creep);
-            //}
+            const containers = creep.room.find(FIND_STRUCTURES,{
+                filter:(struc) => {
+                    return struc.structureType === STRUCTURE_CONTAINER && struc.store.energy > 0
+                }
+            })
+            if(containers.length > 0) {
+                MovementUtils.generalGatherMovement(creep);
+                return;
+            }
+            const droppedSources = creep.room.find(FIND_DROPPED_RESOURCES)
+            if(droppedSources.length > 0) {
+                MovementUtils.generalGatherMovement(creep);
+                return;
+            }
+            Harvester.run(creep);
             return;
         }
 
