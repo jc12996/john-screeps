@@ -348,11 +348,6 @@ export class Miner {
       return;
     }
 
-    if(smallerControlledRoom && creep.room.find(FIND_MY_SPAWNS).length === 0) {
-      Builder.run(creep);
-      return;
-    }
-
     if (repairContainers && creep.store.energy > 0) {
       creep.repair(repairContainers);
     } else if (constructionContainers && creep.store.energy > 0) {
