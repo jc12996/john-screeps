@@ -13,13 +13,11 @@ import { getNextClaimFlag } from "claims";
 export class AutoSpawn {
   public static nextClaimFlag: any;
   public static nextSpawnFlag: any;
-  public static totalSpawns: number;
 
   public static run(): void {
 
     const spawns = Game.spawns;
     for (const spawn in spawns) {
-      this.totalSpawns++;
       this.spawnSequence(Game.spawns[spawn]);
     }
   }
