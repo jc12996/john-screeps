@@ -8,14 +8,17 @@ export type ScaffoldPosition = {
 
 export class ScaffoldingUtils {
 
-    public static createSpawn(creep: Creep | StructureSpawn,nextClaimFlag:Flag,totalSpawns:number): void {
+    public static createSpawn(creep: Creep | StructureSpawn,nextClaimFlag:Flag): void {
         var spawnConstructionSites = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (rampart) => {
                 return (rampart.structureType == STRUCTURE_SPAWN)
             }
         });
 
-
+        let totalSpawns = 0;
+        for(const spawn in Game.spawns) {
+            totalSpawns++;
+        }
         if(spawnConstructionSites.length == 0 && creep.room?.controller?.my && !!nextClaimFlag?.name) {
             creep.room?.createConstructionSite(nextClaimFlag.pos.x,nextClaimFlag.pos.y,STRUCTURE_SPAWN, 'Spawn'+(totalSpawns + 1));
             console.log('Creating '+ 'Spawn'+(totalSpawns + 1))

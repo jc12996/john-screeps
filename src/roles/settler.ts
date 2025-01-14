@@ -35,7 +35,7 @@ export class Settler {
         var spawns = creep.room.find(FIND_MY_SPAWNS);
 
         if(creep.room.controller?.my && spawns.length === 0) {
-            ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag,AutoSpawn.totalSpawns);
+            ScaffoldingUtils.createSpawn(creep,AutoSpawn.nextClaimFlag);
         }
 
         if(creep.memory.delivering && creep.store[RESOURCE_ENERGY] == 0) {
