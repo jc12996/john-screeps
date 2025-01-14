@@ -145,7 +145,7 @@ export class Claimer {
 
             if(!creep.pos.inRangeTo(creep.room.controller.pos.x,creep.room.controller.pos.y,1)) {
                 if(creep.room.controller) {
-                    if(creep.signController(creep.room.controller, "Mine mine mine! -- X") == ERR_NOT_IN_RANGE) {
+                    if(creep.signController(creep.room.controller, "X!") == ERR_NOT_IN_RANGE) {
                         creep.moveTo(creep.room.controller);
                     }
                 } else {

@@ -111,7 +111,7 @@ export class Upgrader {
       if (
         creep.room.controller &&
         creep.room.controller.my &&
-        creep.signController(creep.room.controller, "This is mine") == ERR_NOT_IN_RANGE
+        creep.signController(creep.room.controller, "X!") == ERR_NOT_IN_RANGE
       ) {
         creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#FF0000" } });
       }
@@ -191,7 +191,7 @@ export class Upgrader {
         creep.room.controller &&
         creep.room.controller.my &&
         !creep.room.controller.sign &&
-        creep.signController(creep.room.controller, "X") == ERR_NOT_IN_RANGE
+        creep.signController(creep.room.controller, "X!") == ERR_NOT_IN_RANGE
       ) {
         creep.moveTo(creep.room.controller);
       } else if (
