@@ -5,6 +5,8 @@ import { Harvester } from "./harvester";
 import { Labs } from "labs";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { Dismantler } from "./dismantler";
+import { Upgrader } from "./upgrader";
+import { Builder } from "./builder";
 
 export class Miner {
   public static run(creep: Creep): void {
@@ -338,6 +340,17 @@ export class Miner {
       }).length
     ) {
       ScaffoldingUtils.createContainers(creep);
+    }
+
+    const smallerControlledRoom = creep.room.controller && creep.room.controller.my && creep.room.controller?.level <= 2;
+    if(smallerControlledRoom && creep.room.controller && creep.room.controller.ticksToDowngrade > 0 && creep.room.controller.ticksToDowngrade < 2000) {
+      Upgrader.run(creep);
+      return;
+    }
+
+    if(smallerControlledRoom && creep.room.find(FIND_MY_SPAWNS).length === 0) {
+      Builder.run(creep);
+      return;
     }
 
     if (repairContainers && creep.store.energy > 0) {

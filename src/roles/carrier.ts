@@ -1184,13 +1184,8 @@ export class Carrier {
     }
 
 
-    const rallyFlag = creep.pos.findClosestByPath(FIND_FLAGS, {
-      filter:(fff) => fff.color === COLOR_BLUE
-    });
-    if(!rallyFlag){
-      return
-    }
-    creep.moveTo(rallyFlag.pos)
+
+    MovementUtils.generalGatherMovement(creep);
 
   }
 
