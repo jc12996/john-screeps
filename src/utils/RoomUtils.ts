@@ -17,6 +17,8 @@ export class RoomUtils {
             if (!spawn) {
                 continue;
             }
+
+            this.removeWallSites(room);
             handleRamparts({ room: room });
             transferEnergyToOriginSpawn(room);
 
@@ -58,6 +60,20 @@ export class RoomUtils {
                     Memory.economyType = "peace";
                 }
             }
+    }
+
+    private static removeWallSites(room:Room):void {
+        if(Game.flags.removeWalls) {
+            const wallSites = room.find(FIND_CONSTRUCTION_SITES,{
+                filter:(site) => {
+                    return site.structureType === STRUCTURE_WALL
+                }
+            });
+            for(const wallSite of wallSites) {
+                wallSite.remove();
+            }
+            Game.flags.removeWalls.remove();
+        }
     }
 
     public static getCreepProspectingSlots(target: Source | StructureController): Array<{
