@@ -306,7 +306,7 @@ export class AutoSpawn {
           };
 
           const numberOfContainers =
-            mineFlag.room?.find(FIND_STRUCTURES).filter(structure => structure.structureType === STRUCTURE_CONTAINER)
+            mineFlag.room?.find(FIND_STRUCTURES).filter(structure => structure.structureType === STRUCTURE_CONTAINER && structure.store.energy > 0)
               ?.length ?? 0;
 
           if (
