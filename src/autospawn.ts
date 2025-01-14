@@ -269,7 +269,9 @@ export class AutoSpawn {
 
         // Process each mineFlag as needed
         // Example: Adjust number of needed miners and haulers based on each mineFlag
-        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom >= 2 ? 3 : 1;
+        let numberOfNeededMiners = numberOfSourcesInMineFlagRoom >= 2 ? 2 : 1;
+        //let numberOfNeededMiners = numberOfSourcesInMineFlagRoom >= 2 && mineFlag.room?.find(FIND_FLAGS).length === 1 ? 3 : 1;
+
         let numberOfNeededHaulers = numberOfSourcesInMineFlagRoom >= 2 ? 4 : 2;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
 
@@ -313,7 +315,8 @@ export class AutoSpawn {
             commandLevel >= 3 &&
             energyAvailable >= 650 &&
             currentRoomCreepCounts.miners > 0 &&
-            currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers
+            currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers &&
+            !mineFlag.room.controller.my
           ) {
             name = "AttackClaimer" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("attackClaimer", spawn, commandLevel);
@@ -325,6 +328,7 @@ export class AutoSpawn {
             commandLevel >= 3 &&
             energyAvailable >= 650 &&
             currentRoomCreepCounts.miners > 0 &&
+            !mineFlag.room?.controller.my &&
             ((needsNewAttackClaimer && currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers + 1) ||
               currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers)
           ) {

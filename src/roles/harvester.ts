@@ -19,7 +19,7 @@ export class Harvester {
                     structure.structureType == STRUCTURE_CONTAINER
 
                 ) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && creep.memory.role !== 'settler';
             }
         });
 

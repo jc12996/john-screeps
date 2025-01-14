@@ -4,6 +4,7 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { Harvester } from "./harvester";
 import { Labs } from "labs";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
+import { Dismantler } from "./dismantler";
 
 export class Miner {
   public static run(creep: Creep): void {
@@ -274,7 +275,10 @@ export class Miner {
     //   creep.moveTo(nearestContainerSite, { visualizePathStyle: { stroke: "#FFFFFF" } });
     //   return;
     // }
-
+    if(Game.flags.dismantleHere && Game.flags.dismantleHere.room === creep.room) {
+      Dismantler.run(creep);
+      return;
+    }
 
 
     const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
