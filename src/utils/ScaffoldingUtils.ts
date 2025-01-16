@@ -395,11 +395,12 @@ EREEER
             case 'L':
                 if(pos.farmNumber == 1 && !Game.flags[pos.position.roomName+'ExtensionLink'] && roomLevel >= 5) {
                     pos.position.createFlag(pos.position.roomName+'ExtensionLink');
+                    pos.position.createConstructionSite(STRUCTURE_LINK)
                 }
                 if(pos.farmNumber == 2 && !Game.flags[pos.position.roomName+'ExtensionLink2'] && roomLevel >= 6) {
                     pos.position.createFlag(pos.position.roomName+'ExtensionLink2');
+                    pos.position.createConstructionSite(STRUCTURE_LINK)
                 }
-                pos.position.createConstructionSite(STRUCTURE_LINK)
                 break;
             case 'R':
                 pos.position.createConstructionSite(STRUCTURE_ROAD)

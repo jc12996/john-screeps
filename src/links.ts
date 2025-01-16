@@ -1,9 +1,4 @@
 export function placeSourceLinks(creep: Creep) {
-  const totalNumberOfLinkSites = creep.room.find(FIND_CONSTRUCTION_SITES, {
-    filter: (struc: { structureType: string }) => {
-      return struc.structureType === STRUCTURE_LINK;
-    }
-  });
 
   const sourceLink1FlagTemp = creep.room.find(FIND_FLAGS, {
     filter: site => {
@@ -14,7 +9,6 @@ export function placeSourceLinks(creep: Creep) {
   if (
     creep?.room?.controller?.level &&
     creep?.room?.controller?.level == 5 &&
-    totalNumberOfLinkSites.length == 1 &&
     !sourceLink1FlagTemp[0]
   ) {
     if (creep.room?.createConstructionSite(creep.pos.x - 1, creep.pos.y, STRUCTURE_LINK) == OK) {

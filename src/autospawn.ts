@@ -220,8 +220,8 @@ export class AutoSpawn {
       numberOfNeededCarriers = 3;
     }
 
-    if (commandLevel >= 6 && numberOfNeededUpgraders >= 8) {
-      numberOfNeededUpgraders = 8;
+    if (commandLevel >= 4 && numberOfNeededUpgraders >= 6) {
+      numberOfNeededUpgraders = 6;
     }
 
     if (commandLevel >= 8) {
@@ -241,7 +241,7 @@ export class AutoSpawn {
     let isSquadPatrol = (commandLevel >= 5 && Game.flags.rallyFlag) || Game.flags.SquadFlag;
 
 
-    if(harvesters.length >= 2 && carriers.length >= 3 && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
+    if(harvesters.length >= 2 && carriers.length >= 2 && harvesters.some(harvester => harvester.getActiveBodyparts(WORK) >= maxNeededWorkParts)){
       mineFlags.forEach(mineFlag => {
         const assignedCreeps = _.filter(Game.creeps, (creep) => {
             if (!mineFlag) {
@@ -260,6 +260,7 @@ export class AutoSpawn {
                 )
             );
         });
+
 
         const attackClaimers = assignedCreeps.filter(creep => creep.memory.role == "attackClaimer");
         const numberOfActiveSourcesInMineFlagRoom = mineFlag.room?.find(FIND_SOURCES_ACTIVE).length ?? 1;
