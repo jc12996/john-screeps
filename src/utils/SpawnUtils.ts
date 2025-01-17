@@ -279,13 +279,13 @@ export class SpawnUtils {
             case 'upgrader':
 
                 if(commandLevel == 7 && energyAvailable >= 1300) {
-                    for (let i = 0; i < 4; i++) {
+                    for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 9; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 4; i++) {
+                    for (let i = 0; i < 8; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
@@ -294,10 +294,10 @@ export class SpawnUtils {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 6; i++) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(WORK);
                     }
-                    for (let i = 0; i < 2; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;

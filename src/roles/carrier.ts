@@ -147,30 +147,6 @@ export class Carrier {
       }
     }
 
-    const playerHostiles = creep.room.find(FIND_HOSTILE_CREEPS, {
-      filter: hostileCreep => {
-        return (
-          hostileCreep.owner &&
-          !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) &&
-          hostileCreep.getActiveBodyparts(ATTACK) > 0
-        );
-      }
-    });
-    if (commandLevel <= 6 && playerHostiles.length > 0 && creep.room.controller?.my) {
-      creep.room.controller.activateSafeMode();
-    }
-
-    const spawns =
-      creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: structure => {
-          return (
-            structure.structureType == STRUCTURE_SPAWN &&
-            structure.room?.controller?.my &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-          );
-        }
-      }) ?? null;
-
     const nearestStorage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: structure => {
         return (
@@ -822,8 +798,11 @@ export class Carrier {
       return;
     }
 
-
-    if (extension) {
+    const extensionCarriers = _.filter(
+      Game.creeps,
+      extensionCreep => extensionCreep.memory.role == "carrier" && extensionCreep.room.name == spawn?.room.name && extensionCreep.memory.extensionFarm === 1
+    );
+    if (extension && extensionCarriers.length === 0) {
       creep.say("🚚E");
       transferCode = creep.transfer(extension,RESOURCE_ENERGY);
       if(extension && transferCode === ERR_NOT_IN_RANGE) {
@@ -1039,7 +1018,11 @@ export class Carrier {
         }
       }) as StructureSpawn;
 
-      if (extensions.length > 0 && extension) {
+      const extensionCarriers = _.filter(
+        Game.creeps,
+        extensionCreep => extensionCreep.memory.role == "carrier" && extensionCreep.room.name == spawn?.room.name && extensionCreep.memory.extensionFarm === 1
+      );
+      if (extensions.length > 0 && extension && extensionCarriers.length === 0) {
         creep.say("🚚E");
         transferCode = creep.transfer(extension,RESOURCE_ENERGY);
         if(extension && transferCode === ERR_NOT_IN_RANGE) {

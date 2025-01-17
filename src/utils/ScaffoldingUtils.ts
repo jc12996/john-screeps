@@ -265,11 +265,11 @@ export class ScaffoldingUtils {
 
         // Define the string layout
         let layout = `
--REEER
+-REEEE
 QERTRE
 OELRSE
 XERTRE
-EREEER
+EREEEE
 `;
         if(!flag.room) {
             return;
@@ -292,11 +292,11 @@ EREEER
         if(flag.color === COLOR_PURPLE) {
             farmNumber = 2;
             layout = `
--REEER
+-REEEE
 QERTRE
 FELRPE
 NERTRE
-EREEER
+EREEEE
 `;
         }
         if(flag.color === COLOR_BROWN) {

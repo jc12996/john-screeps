@@ -30,6 +30,7 @@ export class RoomUtils {
 
             handleRamparts({ room: room });
             transferEnergyToOriginSpawn(room);
+            this.safeModeProtections(room);
 
             Tower.defendMyRoom(room);
 
@@ -69,6 +70,54 @@ export class RoomUtils {
                     Memory.economyType = "peace";
                 }
             }
+    }
+
+    private static safeModeProtections(room: Room):void {
+
+        if (room.controller && room.controller.safeModeAvailable === 0) {
+            return;
+        }
+
+        const playerHostiles = room.find(FIND_HOSTILE_CREEPS, {
+            filter: hostileCreep => {
+            return (
+                hostileCreep.owner &&
+                !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner) &&
+                hostileCreep.getActiveBodyparts(ATTACK) > 0
+            );
+            }
+        });
+
+        const commandLevel = room.controller?.level ?? 1;
+        if (commandLevel <= 6 && playerHostiles.length > 0 && room.controller?.my) {
+
+        let safeTower = room.find(FIND_STRUCTURES, {
+          filter: structure => {
+            return (
+              structure.structureType == STRUCTURE_TOWER &&
+              structure.room?.controller?.my &&
+              structure.store[RESOURCE_ENERGY] > 0
+            );
+          }
+        })[0] ?? null;
+
+        if(!safeTower) {
+          room.controller.activateSafeMode();
+        }
+        let nukes = room.find(FIND_NUKES);
+        for (let nuke of nukes) {
+            // Check if the nuke is within 1000 ticks of landing
+            let nukeImpactTime = nuke.timeToLand; // ticks until nuke hits
+            if (nukeImpactTime <= 1000) {
+                // Check if it's safe to activate Safe Mode
+                if (room.controller.safeModeAvailable > 0 && !room.controller.safeMode) {
+                    console.log(`Activating safe mode in room ${room.name} due to nuke impact.`);
+                    room.controller.activateSafeMode();
+                }
+            }
+        }
+
+      }
     }
 
     private static removeSites(room:Room, structureTypeConstant:StructureConstant):void {
