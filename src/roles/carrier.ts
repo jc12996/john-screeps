@@ -510,25 +510,14 @@ export class Carrier {
         return lab.store.energy < 2000
       });
 
-      const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
-        FIND_STRUCTURES,
-        {
-          filter: structure => {
-            return (
-              ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
-              structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-              structure.room?.controller?.my
-            );
-          }
-        }
-      );
+      const nearestStoreUnit = this.getNearestStoreUnit(creep);
 
       if (labs[0] && labs[0].store[RESOURCE_ENERGY] < 1900 && creep.transfer(labs[0], RESOURCE_ENERGY)) {
         creep.moveTo(labs[0])
-      } else if (nearestStorageOrTerminal && creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      } else if (nearestStoreUnit && creep.transfer(nearestStoreUnit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.say("🚚 P");
-        creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
-      } else if (!nearestStorageOrTerminal && nearestContainerToController) {
+        creep.moveTo(nearestStoreUnit, { visualizePathStyle: { stroke: "#ffaa00" } });
+      } else if (!nearestStoreUnit && nearestContainerToController) {
         if (
           nearestContainerToController &&
           creep.transfer(nearestContainerToController, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
@@ -550,11 +539,11 @@ export class Carrier {
             creep.moveTo(nearestUpgrader);
           } else if (!nearestUpgrader) {
             if (
-              nearestStorageOrTerminal &&
-              creep.transfer(nearestStorageOrTerminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+              nearestStoreUnit &&
+              creep.transfer(nearestStoreUnit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
             ) {
               creep.say("🚚 P");
-              creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+              creep.moveTo(nearestStoreUnit, { visualizePathStyle: { stroke: "#ffaa00" } });
             } else {
               creep.drop(RESOURCE_ENERGY);
             }
@@ -767,24 +756,13 @@ export class Carrier {
     let transferCode = undefined;
 
     if(creep.memory.hauling) {
-      const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
-        FIND_STRUCTURES,
-        {
-          filter: structure => {
-            return (
-              ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
-              structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-              structure.room?.controller?.my
-            );
-          }
-        }
-      );
+      const nearestStoreUnit = this.getNearestStoreUnit(creep);
 
-      if (nearestStorageOrTerminal) {
+      if (nearestStoreUnit) {
         creep.say("🚚P");
-        transferCode = creep.transfer(nearestStorageOrTerminal,RESOURCE_ENERGY);
-        if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
-          creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+        transferCode = creep.transfer(nearestStoreUnit,RESOURCE_ENERGY);
+        if(nearestStoreUnit && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(nearestStoreUnit, { visualizePathStyle: { stroke: "#ffaa00" } });
         }
         return;
       }
@@ -847,24 +825,13 @@ export class Carrier {
       return;
     }
 
-    const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
-      FIND_STRUCTURES,
-      {
-        filter: structure => {
-          return (
-            ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-            structure.room?.controller?.my
-          );
-        }
-      }
-    );
+    const nearestStoreUnit = this.getNearestStoreUnit(creep);
 
-    if (nearestStorageOrTerminal) {
+    if (nearestStoreUnit) {
       creep.say("🚚P");
-      transferCode = creep.transfer(nearestStorageOrTerminal,RESOURCE_ENERGY);
-      if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+      transferCode = creep.transfer(nearestStoreUnit,RESOURCE_ENERGY);
+      if(nearestStoreUnit && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestStoreUnit, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       return;
     }
@@ -967,6 +934,27 @@ export class Carrier {
     }
   }
 
+  private static getNearestStoreUnit(creep:Creep):StructureTerminal | StructureStorage | StructureContainer | StructureLink | null {
+    const nearestStoreUnit: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
+      FIND_STRUCTURES,
+      {
+        filter: structure => {
+          return (
+            (structure.structureType === STRUCTURE_TERMINAL
+              || structure.structureType === STRUCTURE_STORAGE
+              || structure.structureType === STRUCTURE_CONTAINER 
+              || structure.structureType === STRUCTURE_LINK 
+              || structure.structureType === STRUCTURE_SPAWN
+            ) &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
+            structure.room?.controller?.my
+          );
+        }
+      }
+    );
+
+    return nearestStoreUnit
+  }
 
   private static simpleCarrierSequence(creep: Creep,extensions:StructureExtension[]) {
 
@@ -987,24 +975,13 @@ export class Carrier {
     if(creep.memory.carrying) {
 
       if(creep.memory.hauling) {
-        const nearestStorageOrTerminal: StructureTerminal | StructureStorage | StructureContainer | StructureLink | null = creep.pos.findClosestByPath(
-          FIND_STRUCTURES,
-          {
-            filter: structure => {
-              return (
-                ((structure.structureType === STRUCTURE_TERMINAL) || structure.structureType === STRUCTURE_STORAGE || (creep.memory.hauling && ((structure.structureType === STRUCTURE_CONTAINER && !structure.room.storage) || structure.structureType === STRUCTURE_LINK || structure.structureType === STRUCTURE_SPAWN))) &&
-                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-                structure.room?.controller?.my
-              );
-            }
-          }
-        );
+        const nearestStoreUnit = this.getNearestStoreUnit(creep);
 
-        if (nearestStorageOrTerminal) {
+        if (nearestStoreUnit) {
           creep.say("🚚P");
-          transferCode = creep.transfer(nearestStorageOrTerminal,RESOURCE_ENERGY);
-          if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
-            creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+          transferCode = creep.transfer(nearestStoreUnit,RESOURCE_ENERGY);
+          if(nearestStoreUnit && transferCode === ERR_NOT_IN_RANGE) {
+            creep.moveTo(nearestStoreUnit, { visualizePathStyle: { stroke: "#ffaa00" } });
           }
           return;
         }

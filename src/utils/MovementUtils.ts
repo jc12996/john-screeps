@@ -770,6 +770,17 @@ export class MovementUtils {
 
     }
 
+    if (Game.flags.attackFlag && creep.memory.role === 'attacker') {
+
+      if (Game.flags.attackFlag.room == creep.room) {
+        return true;
+      }
+
+      MovementUtils.goToFlag(creep, Game.flags.attackFlag);
+      return false;
+
+    }
+
     if (creep.memory.role !== "settler" && creep.memory.role !== "claimer" && creep.memory.role !== "attackClaimer") {
       return true;
     }
