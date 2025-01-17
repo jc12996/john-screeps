@@ -404,8 +404,12 @@ export class AutoSpawn {
       numberOfNeededCarriers = 8;
     }
 
-    if(spawn.energyCapacityAvailable > 1700 && numberOfNeededUpgraders >= 2) {
-      numberOfNeededUpgraders = 2;
+    if(spawn.energyCapacityAvailable > 1700 && numberOfNeededUpgraders >= 4) {
+      numberOfNeededUpgraders = 4;
+    }
+
+    if(spawn.energyCapacityAvailable > 1700 && numberOfNeededHarvesters >= 7) {
+      numberOfNeededHarvesters = 4;
     }
 
       //Suicide scripts
