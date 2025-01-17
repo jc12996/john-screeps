@@ -642,7 +642,8 @@ export class Carrier {
       ) {
         creep.say("🚚S");
         creep.moveTo(storage);
-      } else {
+      }
+      else if(creep.room.energyCapacityAvailable === creep.room.energyAvailable) {
         creep.moveTo(spawn.pos.x - 3, spawn.pos.y + 3);
       }
       return;
@@ -710,7 +711,7 @@ export class Carrier {
       ) {
         creep.say("🚚TR");
         creep.moveTo(terminal);
-      } else {
+      } else if(creep.room.energyCapacityAvailable === creep.room.energyAvailable){
         const extensionFarm2Flag = spawn.room.find(FIND_FLAGS,{
           filter: (fff:any) => fff.color === COLOR_PURPLE
         })[0]?? null

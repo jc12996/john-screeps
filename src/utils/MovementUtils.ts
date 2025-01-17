@@ -906,7 +906,10 @@ export class MovementUtils {
         return;
       }
 
-      creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+      if(creep.room.energyCapacityAvailable === creep.room.energyAvailable) {
+        creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+      }
+
 
       return;
     }
@@ -977,8 +980,10 @@ export class MovementUtils {
       }
 
 
-      creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
 
+      if(creep.room.energyCapacityAvailable === creep.room.energyAvailable) {
+        creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
+      }
 
 
       return;
