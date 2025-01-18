@@ -404,11 +404,11 @@ export class AutoSpawn {
       numberOfNeededCarriers = 8;
     }
 
-    if(spawn.energyCapacityAvailable > 1700 && numberOfNeededUpgraders >= 4) {
+    if(spawn.energyCapacity > 1700 && numberOfNeededUpgraders >= 4) {
       numberOfNeededUpgraders = 4;
     }
 
-    if(spawn.energyCapacityAvailable > 1700 && numberOfNeededHarvesters >= 8) {
+    if(spawn.energyCapacity > 1700 && numberOfNeededHarvesters >= 8) {
       numberOfNeededHarvesters = 5;
     }
 

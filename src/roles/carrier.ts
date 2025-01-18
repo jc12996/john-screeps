@@ -353,7 +353,7 @@ export class Carrier {
                     ? workCreep.room.energyCapacityAvailable
                     : 1000
                   : 800))) &&
-          workCreep.store[RESOURCE_ENERGY] < 40 &&
+          workCreep.store.getFreeCapacity() > 0 &&
           !creep.memory.hauling &&
           (commandLevel > 4 || creep.room.energyAvailable >= 650)
         );
@@ -942,8 +942,8 @@ export class Carrier {
           return (
             (structure.structureType === STRUCTURE_TERMINAL
               || structure.structureType === STRUCTURE_STORAGE
-              || structure.structureType === STRUCTURE_CONTAINER 
-              || structure.structureType === STRUCTURE_LINK 
+              || structure.structureType === STRUCTURE_CONTAINER
+              || structure.structureType === STRUCTURE_LINK
               || structure.structureType === STRUCTURE_SPAWN
             ) &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&

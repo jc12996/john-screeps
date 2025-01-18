@@ -267,7 +267,7 @@ export class ScaffoldingUtils {
         let layout = `
 -REEEE
 QERTRE
-OELRSE
+OESRLE
 XERTRE
 EREEEE
 `;
@@ -294,7 +294,7 @@ EREEEE
             layout = `
 -REEEE
 QERTRE
-FELRPE
+FEPRLE
 NERTRE
 EREEEE
 `;
