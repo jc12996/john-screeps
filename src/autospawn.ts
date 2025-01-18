@@ -408,80 +408,76 @@ export class AutoSpawn {
       numberOfNeededUpgraders = 4;
     }
 
-    if(spawn.energyCapacity > 1700 && numberOfNeededHarvesters >= 8) {
-      numberOfNeededHarvesters = 5;
-    }
+    //Suicide scripts
 
-      //Suicide scripts
+    if(energyCapacityAvailable >= 500 && energyAvailable >= 500) {
+      let suicideOccured = false
+      if( harvesters.length > 0 && numberOfNeededHarvesters > 0 && numberOfNeededHarvesters === harvesters.length && suicideOccured === false) {
+        const lowHarvestor = harvesters.filter(harv => {
+          return harv.getActiveBodyparts(WORK) <= 1
+        })[0] ?? null;
 
-      if(energyCapacityAvailable >= 500 && energyAvailable >= 500) {
-        let suicideOccured = false
-        if( harvesters.length > 0 && numberOfNeededHarvesters > 0 && numberOfNeededHarvesters === harvesters.length && suicideOccured === false) {
-          const lowHarvestor = harvesters.filter(harv => {
-            return harv.getActiveBodyparts(WORK) <= 1
-          })[0] ?? null;
-
-          if(lowHarvestor) {
-            console.log('suicide harvest!')
-            suicideOccured = true;
-            lowHarvestor.suicide();
-            harvesters = _.filter(
-              Game.creeps,
-              creep => creep.memory.role == "harvester" && creep.room.name == spawn.room.name
-            );
-          }
+        if(lowHarvestor) {
+          console.log('suicide harvest!')
+          suicideOccured = true;
+          lowHarvestor.suicide();
+          harvesters = _.filter(
+            Game.creeps,
+            creep => creep.memory.role == "harvester" && creep.room.name == spawn.room.name
+          );
         }
-
-        if( carriers.length > 0 && numberOfNeededCarriers > 0 && numberOfNeededCarriers === carriers.length && suicideOccured === false) {
-          const lowCarrier = carriers.filter(harv => {
-            return harv.getActiveBodyparts(CARRY) <= 3
-          })[0] ?? null;
-
-          if(lowCarrier) {
-            console.log('suicide carry!')
-            suicideOccured = true;
-            lowCarrier.suicide();
-            carriers = _.filter(
-              Game.creeps,
-              creep => creep.memory.role == "carrier" && creep.room.name == spawn.room.name
-            );
-          }
-        }
-
-        if( upgraders.length > 0 && numberOfNeededUpgraders > 0 && numberOfNeededUpgraders === upgraders.length && suicideOccured === false) {
-          const lowUpgrade = upgraders.filter(harv => {
-            return harv.getActiveBodyparts(WORK) <= 2
-          })[0] ?? null;
-
-          if(lowUpgrade) {
-            console.log('suicide upgrade!')
-            suicideOccured = true;
-            lowUpgrade.suicide();
-            upgraders = _.filter(
-              Game.creeps,
-              creep => creep.memory.role == "upgrader" && creep.room.name == spawn.room.name
-            );
-          }
-        }
-
-        if( builders.length > 0 && numberOfNeededBuilders > 0 && numberOfNeededBuilders === builders.length && suicideOccured === false) {
-          const lowUpgrade = builders.filter(harv => {
-            return harv.getActiveBodyparts(WORK) <= 2
-          })[0] ?? null;
-
-          if(lowUpgrade) {
-            console.log('suicide builder!')
-            suicideOccured = true;
-            lowUpgrade.suicide();
-            builders = _.filter(
-              Game.creeps,
-              creep => creep.memory.role == "builder" && creep.room.name == spawn.room.name
-            );
-          }
-        }
-
-
       }
+
+      if( carriers.length > 0 && numberOfNeededCarriers > 0 && numberOfNeededCarriers === carriers.length && suicideOccured === false) {
+        const lowCarrier = carriers.filter(harv => {
+          return harv.getActiveBodyparts(CARRY) <= 3
+        })[0] ?? null;
+
+        if(lowCarrier) {
+          console.log('suicide carry!')
+          suicideOccured = true;
+          lowCarrier.suicide();
+          carriers = _.filter(
+            Game.creeps,
+            creep => creep.memory.role == "carrier" && creep.room.name == spawn.room.name
+          );
+        }
+      }
+
+      if( upgraders.length > 0 && numberOfNeededUpgraders > 0 && numberOfNeededUpgraders === upgraders.length && suicideOccured === false) {
+        const lowUpgrade = upgraders.filter(harv => {
+          return harv.getActiveBodyparts(WORK) <= 2
+        })[0] ?? null;
+
+        if(lowUpgrade) {
+          console.log('suicide upgrade!')
+          suicideOccured = true;
+          lowUpgrade.suicide();
+          upgraders = _.filter(
+            Game.creeps,
+            creep => creep.memory.role == "upgrader" && creep.room.name == spawn.room.name
+          );
+        }
+      }
+
+      if( builders.length > 0 && numberOfNeededBuilders > 0 && numberOfNeededBuilders === builders.length && suicideOccured === false) {
+        const lowUpgrade = builders.filter(harv => {
+          return harv.getActiveBodyparts(WORK) <= 2
+        })[0] ?? null;
+
+        if(lowUpgrade) {
+          console.log('suicide builder!')
+          suicideOccured = true;
+          lowUpgrade.suicide();
+          builders = _.filter(
+            Game.creeps,
+            creep => creep.memory.role == "builder" && creep.room.name == spawn.room.name
+          );
+        }
+      }
+
+
+    }
 
 
     if (

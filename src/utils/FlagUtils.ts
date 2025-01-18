@@ -10,9 +10,9 @@ export class FlagUtils {
           const claimFlag = Game.flags[flag];
           if(claimFlag && claimFlag.room) {
             if (claimFlag.room.controller && claimFlag.room.controller.my && !!claimFlag) {
-              const extensionFarm2Flag = claimFlag.room.find(FIND_FLAGS,{
+              const extensionFarm2Flags = claimFlag.room.find(FIND_FLAGS,{
                 filter: (fff:any) => fff.color === COLOR_PURPLE
-              })[0]?? null;
+              });
               const labFarmFlag = claimFlag.room.find(FIND_FLAGS,{
                 filter: (fff:any) => fff.color === COLOR_BROWN
               })[0]?? null;
@@ -21,26 +21,34 @@ export class FlagUtils {
               if(mySpawn) {
 
                 if(Game.time % 7) {
-                  if (claimFlag.room.controller.level >= 5 && !!extensionFarm2Flag) {
-                    ScaffoldingUtils.createExtensionFarm2(mySpawn, extensionFarm2Flag);
+                  if(extensionFarm2Flags) {
+                    let extensionFarmNumber = 1;
+                    for(const extensionFarm2Flag of extensionFarm2Flags) {
+
+                      if (claimFlag.room.controller.level >= 5 && !!extensionFarm2Flag) {
+                        ScaffoldingUtils.createExtensionFarm2(mySpawn, extensionFarm2Flag);
+                      }
+                      ScaffoldingUtils.visualizeExtensionPlacement(extensionFarm2Flag,extensionFarmNumber > 1); // Visualize where extensions will be placed
+                      extensionFarmNumber++;
+                    }
+
                   }
 
-                  if (claimFlag.room.controller.level >= 5 && !!extensionFarm2Flag) {
+
+                  if (claimFlag.room.controller.level >= 5 && mySpawn) {
                     ScaffoldingUtils.createExtensionFarm1(mySpawn);
                   }
-                }
 
-                if(extensionFarm2Flag){
-
-                  ScaffoldingUtils.visualizeExtensionPlacement(extensionFarm2Flag); // Visualize where extensions will be placed
-
-                }
-
-                if(labFarmFlag){
+                  if(labFarmFlag){
 
                     ScaffoldingUtils.visualizeExtensionPlacement(labFarmFlag); // Visualize where extensions will be placed
 
+                  }
                 }
+
+
+
+
               }
 
             }

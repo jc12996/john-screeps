@@ -255,7 +255,7 @@ export class ScaffoldingUtils {
     }
 
     // Function to visualize the extension placements based on the provided string layout
-    public static visualizeExtensionPlacement(flag:Flag) {
+    public static visualizeExtensionPlacement(flag:Flag,extraFarm:boolean = false) {
 
         const flagPos = flag.pos;
 
@@ -265,11 +265,11 @@ export class ScaffoldingUtils {
 
         // Define the string layout
         let layout = `
--REEEE
-QERTRE
-OESRLE
+-REEER
+OERTRE
+-ESRLE
 XERTRE
-EREEEE
+EREEER
 `;
         if(!flag.room) {
             return;
@@ -292,11 +292,11 @@ EREEEE
         if(flag.color === COLOR_PURPLE) {
             farmNumber = 2;
             layout = `
--REEEE
-QERTRE
-FEPRLE
+-REEER
+FERTRE
+-EPRLE
 NERTRE
-EREEEE
+EREEER
 `;
         }
         if(flag.color === COLOR_BROWN) {
@@ -306,6 +306,17 @@ EREEEE
 -BRBB
 -BBRB
 --BBR
+`;
+        }
+
+        if(extraFarm) {
+            farmNumber = 2;
+            layout = `
+-REEER
+-ERQRE
+-EEREE
+-ERQRE
+EREEER
 `;
         }
         const extensionPositions = this.getExtensionPositionsFromLayout(roomPosition, layout,farmNumber);
