@@ -207,15 +207,6 @@ export class AutoSpawn {
       }
     }
 
-    if (
-      commandLevel >= 7 &&
-      energyAvailable > 1000 &&
-      energyCapacityAvailable > 1000 &&
-      numberOfNeededHarvesters >= 6
-    ) {
-      numberOfNeededHarvesters = numberOfNeededHarvesters - 2;
-    }
-
     if (commandLevel >= 8 && numberOfNeededCarriers >= 3) {
       numberOfNeededCarriers = 3;
     }
@@ -375,10 +366,6 @@ export class AutoSpawn {
       });
     }
 
-    if (harvesters.length > 3 && commandLevel >= 3 && numberOfNeededHarvesters > 0) {
-      numberOfNeededHarvesters = numberOfNeededHarvesters - 1;
-
-    }
     if (Game.flags.startScouting && isSquadPatrol) {
       isSquadPatrol = Game.flags.scoutFlag || Game.flags.attackFlag;
     }
@@ -408,6 +395,10 @@ export class AutoSpawn {
       numberOfNeededUpgraders = 4;
     }
 
+    // if(spawn.room.name === 'E27S36') {
+    //   spawn.room.memory.numberOfNeededHarvestorSlots = 5
+    //   console.log('numberOfNeededHarvesters',numberOfNeededHarvesters)
+    // }
     //Suicide scripts
 
     if(energyCapacityAvailable >= 500 && energyAvailable >= 500) {

@@ -191,6 +191,10 @@ export class Builder {
         Repairer.run(creep);
       }
     } else {
+      if(creep.memory.role === 'upgrader' && creep.room.controller) {
+        creep.moveTo(creep.room.controller)
+        return;
+      }
       MovementUtils.generalGatherMovement(creep);
     }
   }
