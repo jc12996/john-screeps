@@ -494,11 +494,10 @@ export class MovementUtils {
     }) as StructureContainer | StructureTerminal | StructureStorage;
 
     if (
-      creep.memory.role !== "carrier" &&
       nearestStoreStructure &&
       nearestStoreStructure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
     ) {
-      transferCode = creep.withdraw(nearestStoreStructure,RESOURCE_ENERGY);
+      transferCode = creep.withdraw(nearestStoreStructure, RESOURCE_ENERGY);
       if(nearestStoreStructure && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(nearestStoreStructure, { visualizePathStyle: { stroke: "#ffffff" } });
       }
@@ -535,16 +534,7 @@ export class MovementUtils {
       return;
     }
 
-    if (
-      nearestStoreStructure &&
-      nearestStoreStructure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
-    ) {
-      transferCode = creep.withdraw(nearestStoreStructure, RESOURCE_ENERGY);
-      if(nearestStoreStructure && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(nearestStoreStructure, { visualizePathStyle: { stroke: "#ffffff" } });
-      }
-      return;
-    }
+
 
 
     const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
