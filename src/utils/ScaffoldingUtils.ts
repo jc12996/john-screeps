@@ -267,7 +267,7 @@ export class ScaffoldingUtils {
         let layout = `
 -REEER
 OERTRE
--ESRLE
+-RSRLE
 XERTRE
 EREEER
 `;
@@ -294,7 +294,7 @@ EREEER
             layout = `
 -REEER
 FERTRE
--EPRLE
+-RPRLE
 NERTRE
 EREEER
 `;
@@ -314,7 +314,7 @@ EREEER
             layout = `
 -REEER
 -ERQRE
--EEREE
+-RUREE
 -ERQRE
 EREEER
 `;
@@ -402,6 +402,9 @@ EREEER
                 break;
             case 'T':
                 pos.position.createConstructionSite(STRUCTURE_TOWER)
+                break;
+            case 'U':
+                pos.position.createConstructionSite(STRUCTURE_CONTAINER)
                 break;
             case 'L':
                 if(pos.farmNumber == 1 && !Game.flags[pos.position.roomName+'ExtensionLink'] && roomLevel >= 5) {
