@@ -271,7 +271,7 @@ export class MovementUtils {
         filter: structure => {
           return (
             (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE) &&
-            (structure.store[RESOURCE_ENERGY] > 10000 || creep.memory.extensionFarm !== undefined) &&
+            (structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity() || creep.memory.extensionFarm !== undefined) &&
             structure.room?.controller?.my
           );
         }
@@ -321,6 +321,7 @@ export class MovementUtils {
 
 
        if (
+        creep.memory.role === 'upgrader' &&
         creep.room.controller &&
         creep.room.controller.pos.findInRange(FIND_STRUCTURES, 7, {
           filter: s => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
@@ -367,7 +368,6 @@ export class MovementUtils {
       }) as StructureContainer | StructureTerminal | StructureStorage;
 
       if (
-        creep.memory.role === "builder" &&
         nearestStoreStructure
       ) {
         transferCode = creep.withdraw(nearestStoreStructure,RESOURCE_ENERGY);
@@ -535,6 +535,18 @@ export class MovementUtils {
       return;
     }
 
+    if (
+      nearestStoreStructure &&
+      nearestStoreStructure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
+    ) {
+      transferCode = creep.withdraw(nearestStoreStructure, RESOURCE_ENERGY);
+      if(nearestStoreStructure && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestStoreStructure, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+
     const droppedSources = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
       filter: source => {
         return source.amount >= 50 && source.room?.controller?.my && source.resourceType === RESOURCE_ENERGY;
@@ -552,16 +564,6 @@ export class MovementUtils {
       return;
     }
 
-    if (
-      nearestStoreStructure &&
-      nearestStoreStructure.store[RESOURCE_ENERGY] >= creep.store.getCapacity()
-    ) {
-      transferCode = creep.withdraw(nearestStoreStructure, RESOURCE_ENERGY);
-      if(nearestStoreStructure && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(nearestStoreStructure, { visualizePathStyle: { stroke: "#ffffff" } });
-      }
-      return;
-    }
 
     const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: structure => {
