@@ -314,7 +314,7 @@ EREEER
             layout = `
 -REEER
 -ERQRE
--RUREE
+-REREE
 -ERQRE
 EREEER
 `;
