@@ -313,9 +313,9 @@ EREEER
             farmNumber = 2;
             layout = `
 -REEER
--ERQRE
+EERQRE
 -REREE
--ERQRE
+EERQRE
 EREEER
 `;
         }
@@ -330,6 +330,10 @@ EREEER
                         this.createConstructionSites(pos,roomLevel)
                     }
                     if(flag.name.includes('claimFlag')) {
+                        this.createConstructionSites(pos,roomLevel)
+                    }
+
+                    if (roomLevel >= 6 && flag.color === COLOR_BROWN) {
                         this.createConstructionSites(pos,roomLevel)
                     }
                 }

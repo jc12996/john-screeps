@@ -256,6 +256,7 @@ export class MovementUtils {
           return (
             structure.structureType == STRUCTURE_TERMINAL &&
             structure.room?.controller?.my &&
+            structure.store[RESOURCE_ENERGY] > 0 &&
             structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
           );
         }
@@ -272,6 +273,7 @@ export class MovementUtils {
           return (
             (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE) &&
             (structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity() || creep.memory.extensionFarm !== undefined) &&
+            structure.store[RESOURCE_ENERGY] > 0 &&
             structure.room?.controller?.my
           );
         }
@@ -565,7 +567,8 @@ export class MovementUtils {
       target_storage &&
       creep.memory.role === "carrier" &&
       creep.memory.extensionFarm === undefined &&
-      target_storage.store[RESOURCE_ENERGY] > 0
+      target_storage.store[RESOURCE_ENERGY] > 0 &&
+      commandLevel < 6
     ) {
       transferCode = creep.withdraw(target_storage, RESOURCE_ENERGY);
       if(target_storage && transferCode === ERR_NOT_IN_RANGE) {

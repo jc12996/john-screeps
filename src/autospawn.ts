@@ -88,8 +88,7 @@ export class AutoSpawn {
     const maxNeededWorkParts = 3;
 
     if (
-      spawn.room.memory?.numberOfNeededHarvestorSlots === undefined ||
-      spawn.room.memory.numberOfNeededHarvestorSlots == 0
+      spawn.room.memory?.numberOfNeededHarvestorSlots === undefined && harvesters.length === 0
     ) {
       spawn.room.memory.numberOfNeededHarvestorSlots =
         RoomUtils.getTotalAmountOfProspectingSlotsInRoomBySpawnOrFlag(spawn);
@@ -378,12 +377,20 @@ export class AutoSpawn {
     }
 
 
+    if(numberOfNeededUpgraders >= 4 && commandLevel >= 6) {
+      numberOfNeededUpgraders = 4;
+    }
+
     if(numberOfNeededUpgraders >= 8) {
       numberOfNeededUpgraders = 8;
     }
 
     if(numberOfNeededHarvesters >= 8) {
       numberOfNeededHarvesters = 8;
+    }
+
+    if(numberOfNeededCarriers >= 4 && commandLevel >= 6) {
+      numberOfNeededCarriers = 4;
     }
 
 
@@ -395,8 +402,8 @@ export class AutoSpawn {
       numberOfNeededUpgraders = 4;
     }
 
-    // if(spawn.room.name === 'E27S36') {
-    //   spawn.room.memory.numberOfNeededHarvestorSlots = 5
+    // if(spawn.room.name === 'E28S37') {
+    //   spawn.room.memory.numberOfNeededHarvestorSlots = 2
     //   console.log('numberOfNeededHarvesters',numberOfNeededHarvesters)
     // }
     //Suicide scripts
