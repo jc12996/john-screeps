@@ -567,8 +567,7 @@ export class MovementUtils {
       target_storage &&
       creep.memory.role === "carrier" &&
       creep.memory.extensionFarm === undefined &&
-      target_storage.store[RESOURCE_ENERGY] > 0 &&
-      commandLevel < 6
+      target_storage.store[RESOURCE_ENERGY] > 0
     ) {
       transferCode = creep.withdraw(target_storage, RESOURCE_ENERGY);
       if(target_storage && transferCode === ERR_NOT_IN_RANGE) {
