@@ -556,6 +556,15 @@ export class MovementUtils {
       return;
     }
 
+    if (container && creep.memory.extensionFarm === undefined && container.store.energy >= 100) {
+      transferCode = creep.withdraw(container, RESOURCE_ENERGY);
+      if(container && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(container, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+
 
     const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: structure => {

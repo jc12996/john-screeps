@@ -847,7 +847,6 @@ export class Carrier {
 
     if (!creep.memory.hauling &&
       creep.room.energyAvailable > maxEnergyNeeded &&
-      creep.room.find(FIND_HOSTILE_CREEPS).length === 0 &&
       creep.memory.extensionFarm === undefined &&
       (creep.room.energyAvailable >= creep.room.energyCapacityAvailable * 0.8 || creep.room.energyAvailable >= 800) &&
       creep.room.controller &&
@@ -856,7 +855,8 @@ export class Carrier {
       const nearestAvailableWorkingRoleCreep = this.getNearestAvailableWorkingRoleCreep(creep, commandLevel);
       if (
         nearestAvailableWorkingRoleCreep &&
-        nearestAvailableWorkingRoleCreep.store.getFreeCapacity() > 0 &&
+        nearestAvailableWorkingRoleCreep.store.getFreeCapacity() > 0  &&
+        creep.room.find(FIND_HOSTILE_CREEPS).length === 0 &&
         creep.transfer(nearestAvailableWorkingRoleCreep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
       ) {
         creep.say("🚚 C");
