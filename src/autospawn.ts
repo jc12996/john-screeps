@@ -402,8 +402,8 @@ export class AutoSpawn {
       numberOfNeededUpgraders = 4;
     }
 
-    // if(spawn.room.name === 'E28S37') {
-    //   spawn.room.memory.numberOfNeededHarvestorSlots = 2
+    // if(spawn.room.name === 'E26S37') {
+    //   spawn.room.memory.numberOfNeededHarvestorSlots = 8
     //   console.log('numberOfNeededHarvesters',numberOfNeededHarvesters)
     // }
     //Suicide scripts

@@ -281,51 +281,21 @@ export function operateLinks(creep: Creep | StructureSpawn) {
       if (creep.room.controller?.my) {
         let targetLink = controllerLink;
 
-        if (extensionLink2 && extensionLink) {
-          const unfilledAroundLink1 = creep.room
-            .lookForAtArea(
-              LOOK_STRUCTURES,
-              extensionLink.pos.y - 3,
-              extensionLink.pos.x - 5,
-              extensionLink.pos.y + 3,
-              extensionLink.pos.x + 3,
-              true
-            )
-            .filter(
-              s =>
-                (s.structure.structureType === STRUCTURE_EXTENSION || s.structure.structureType === STRUCTURE_SPAWN) &&
-                (s.structure as AnyStoreStructure).store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            ).length;
-
-          const unfilledAroundLink2 = creep.room
-            .lookForAtArea(
-              LOOK_STRUCTURES,
-              extensionLink2.pos.y - 3,
-              extensionLink2.pos.x - 5,
-              extensionLink2.pos.y + 3,
-              extensionLink2.pos.x + 3,
-              true
-            )
-            .filter(
-              s =>
-                (s.structure.structureType === STRUCTURE_EXTENSION || s.structure.structureType === STRUCTURE_SPAWN) &&
-                (s.structure as AnyStoreStructure).store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            ).length;
-
-          if (unfilledAroundLink2 > unfilledAroundLink1) {
-            targetLink = extensionLink2;
-          } else {
-            targetLink = extensionLink;
-          }
-        } else if (extensionLink) {
+        if (extensionLink) {
           targetLink = extensionLink;
-        } else if (extensionLink2) {
-          targetLink = extensionLink2;
-        } else if (controllerLink) {
-          targetLink = controllerLink;
+          filledSourceLink.transferEnergy(targetLink,xCapacity/3);
         }
 
-        filledSourceLink.transferEnergy(targetLink);
+        if (extensionLink2) {
+          targetLink = extensionLink2;
+          filledSourceLink.transferEnergy(targetLink,xCapacity/3);
+        }
+
+        // if (controllerLink) {
+        //   targetLink = controllerLink;
+        // }
+
+
       }
     }
   }
