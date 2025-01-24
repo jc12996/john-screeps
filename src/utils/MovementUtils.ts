@@ -609,23 +609,54 @@ export class MovementUtils {
       return;
     }
 
+    const droppedTombstoneAny =
+    creep.room.find(FIND_TOMBSTONES, {
+      filter: tomb => {
+        return tomb.store && tomb.store[RESOURCE_ENERGY] > 0;
+      }
+    })[0] ?? null;
+
+
+
     if (
       terminal &&
       commandLevel >= 7 &&
       creep.memory.role === "carrier" &&
       creep.memory.extensionFarm === undefined &&
-      terminal.store[RESOURCE_ENERGY] > 0 &&
-      creep.withdraw(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
+      terminal.store[RESOURCE_ENERGY] > 0
     ) {
-      creep.moveTo(terminal);
-    } else if (
+      transferCode = creep.withdraw(terminal,RESOURCE_ENERGY);
+      if(terminal && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+    if (
       creep.memory.extensionFarm === undefined &&
       nearestStorageOrTerminal &&
-      creep.room.energyAvailable !== creep.room.energyCapacityAvailable &&
-      creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE
+      creep.room.energyAvailable !== creep.room.energyCapacityAvailable
     ) {
-      creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffffff" } });
-    } else if (targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
+      transferCode = creep.withdraw(nearestStorageOrTerminal,RESOURCE_ENERGY);
+      if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+    if (
+      droppedTombstoneAny &&
+      droppedTombstoneAny.store
+    ) {
+      transferCode = creep.withdraw(droppedTombstoneAny,RESOURCE_ENERGY);
+      if(droppedTombstoneAny && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(droppedTombstoneAny, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
+
+    if (targetSource && creep.harvest(targetSource) == ERR_NOT_IN_RANGE) {
       if (!creep.pos.inRangeTo(targetSource.pos.x, targetSource.pos.y, 1)) {
         creep.moveTo(targetSource);
       }

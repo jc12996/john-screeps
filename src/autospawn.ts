@@ -377,7 +377,7 @@ export class AutoSpawn {
     }
 
 
-    if(numberOfNeededUpgraders >= 4 && commandLevel >= 6) {
+    if(numberOfNeededUpgraders >= 4 && commandLevel >= 5) {
       numberOfNeededUpgraders = 4;
     }
 
