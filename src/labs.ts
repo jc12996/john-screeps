@@ -22,7 +22,8 @@ export const compoundOutputMap: Record<string, ResourceConstant | null> = {
   LH: RESOURCE_LEMERGIUM_HYDRIDE,
   LO: RESOURCE_LEMERGIUM_OXIDE,
   GO: RESOURCE_GHODIUM_OXIDE,
-  KH: RESOURCE_KEANIUM_HYDRIDE
+  KH: RESOURCE_KEANIUM_HYDRIDE,
+  UO: RESOURCE_UTRIUM_OXIDE
 };
 
 export class Labs {
@@ -250,6 +251,19 @@ export class Labs {
         return false;
       }
       productionLab.boostCreep(creep, creep.getActiveBodyparts(ATTACK));
+    }
+
+    if (
+      creep.memory.role === "harvester" &&
+      creep.getActiveBodyparts(WORK) > 0 &&
+      productionLab &&
+      outputCompound === RESOURCE_UTRIUM_OXIDE
+    ) {
+      if (!creep.pos.isNearTo(productionLab)) {
+        creep.moveTo(productionLab);
+        return false;
+      }
+      productionLab.boostCreep(creep, creep.getActiveBodyparts(WORK));
     }
 
     if (

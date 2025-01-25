@@ -253,9 +253,9 @@ export function operateLinks(creep: Creep | StructureSpawn) {
     xCapacity = 700;
   }
 
-  const extensionLink = getLinkByTag(creep, "ExtensionLink");
-  const extensionLink2 = getLinkByTag(creep, "ExtensionLink2");
-  const controllerLink = getLinkByTag(creep, "ControllerLink1");
+  const extensionLink = getLinkByTag(creep, "ExtensionLink", true);
+  const extensionLink2 = getLinkByTag(creep, "ExtensionLink2", true);
+  const controllerLink = getLinkByTag(creep, "ControllerLink1", true);
 
   for (const sourceFlag of sourceFlags) {
     const filledSourceLinks: Array<StructureLink> = creep.room.find(FIND_STRUCTURES, {
@@ -281,27 +281,57 @@ export function operateLinks(creep: Creep | StructureSpawn) {
       if (creep.room.controller?.my) {
         let targetLink = controllerLink;
 
-        if (extensionLink) {
+        if (extensionLink2 && extensionLink) {
+          const unfilledAroundLink1 = creep.room
+            .lookForAtArea(
+              LOOK_STRUCTURES,
+              extensionLink.pos.y - 3,
+              extensionLink.pos.x - 5,
+              extensionLink.pos.y + 3,
+              extensionLink.pos.x + 3,
+              true
+            )
+            .filter(
+              s =>
+                (s.structure.structureType === STRUCTURE_EXTENSION || s.structure.structureType === STRUCTURE_SPAWN) &&
+                (s.structure as AnyStoreStructure).store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            ).length;
+
+          const unfilledAroundLink2 = creep.room
+            .lookForAtArea(
+              LOOK_STRUCTURES,
+              extensionLink2.pos.y - 3,
+              extensionLink2.pos.x - 5,
+              extensionLink2.pos.y + 3,
+              extensionLink2.pos.x + 3,
+              true
+            )
+            .filter(
+              s =>
+                (s.structure.structureType === STRUCTURE_EXTENSION || s.structure.structureType === STRUCTURE_SPAWN) &&
+                (s.structure as AnyStoreStructure).store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            ).length;
+
+          if (unfilledAroundLink2 > unfilledAroundLink1) {
+            targetLink = extensionLink2;
+          } else {
+            targetLink = extensionLink;
+          }
+        } else if (extensionLink) {
           targetLink = extensionLink;
-          filledSourceLink.transferEnergy(targetLink,xCapacity/3);
-        }
-
-        if (extensionLink2) {
+        } else if (extensionLink2) {
           targetLink = extensionLink2;
-          filledSourceLink.transferEnergy(targetLink,xCapacity/3);
+        } else if (controllerLink) {
+          targetLink = controllerLink;
         }
 
-        // if (controllerLink) {
-        //   targetLink = controllerLink;
-        // }
-
-
+        filledSourceLink.transferEnergy(targetLink, xCapacity/2);
       }
     }
   }
 }
 
-export function getLinkByTag(creep: Creep | StructureSpawn, linkTag: string): StructureLink {
+export function getLinkByTag(creep: Creep | StructureSpawn, linkTag: string, noCreep: boolean = false): StructureLink {
   const linkFlag =
     creep.room.find(FIND_FLAGS, {
       filter: link => {
@@ -316,7 +346,8 @@ export function getLinkByTag(creep: Creep | StructureSpawn, linkTag: string): St
         struc &&
         struc.structureType === STRUCTURE_LINK &&
         struc.pos.x == linkFlag.pos.x &&
-        struc.pos.y == linkFlag.pos.y
+        struc.pos.y == linkFlag.pos.y &&
+        (struc.store.energy === 0 || noCreep === false)
       );
     }
   });

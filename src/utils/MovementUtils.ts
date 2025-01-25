@@ -1127,6 +1127,13 @@ export class MovementUtils {
       return false;
     }
 
+    if (terminal && creep.store[RESOURCE_UTRIUM_OXIDE] > 0) {
+      if (creep.transfer(terminal, RESOURCE_UTRIUM_OXIDE) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(terminal);
+      }
+      return false;
+    }
+
     return true;
   }
 }

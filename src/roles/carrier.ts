@@ -89,6 +89,14 @@ export class Carrier {
       }
     });
 
+    const labSetFlags =
+        creep.room.find(FIND_FLAGS, {
+          filter: flag => {
+            return flag.name.includes(creep.room.name + "SetLabs:");
+          }
+        })[0] ?? null;
+
+
     if (
       ((terminal && terminal.store[RESOURCE_ENERGY] > 2000) ||
         (creep.room.energyCapacityAvailable > 1000 && creep.room.energyAvailable > 300)) &&
@@ -117,7 +125,9 @@ export class Carrier {
       creep.name === carriers[2].name &&
       commandLevel >= 6 &&
       creep.room.energyAvailable > 0 &&
-      labs.length > 0
+      labs.length > 0 &&
+      labSetFlags
+
     ) {
       creep.memory.extensionFarm = 3;
 
