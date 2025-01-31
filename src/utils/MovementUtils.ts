@@ -674,7 +674,7 @@ export class MovementUtils {
         return (
           (hostileCreep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) ||
           hostileCreep?.owner?.username === "Invader"
-        );
+        ) && (hostileCreep.getActiveBodyparts(ATTACK) > 0 || hostileCreep.getActiveBodyparts(WORK) > 0 || hostileCreep.getActiveBodyparts(CLAIM) > 0 || hostileCreep.getActiveBodyparts(RANGED_ATTACK) > 0);
       }
     });
 

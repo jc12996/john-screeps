@@ -17,7 +17,7 @@ export class Scout {
             return;
         }
 
-        if(Game.flags['1'] && Game.flags['2'] && scouts.length >= 2 && (creep.name === scouts[1].name || (creep.name === scouts[2].name && Game.flags['3']))) {
+        if(Game.flags['1'] && Game.flags['2'] && scouts.length >= 2 && creep.name !== scouts[0].name) {
 
             if(creep.room === Game.flags['1'].room) {
                 creep.memory.scoutCheckpointNumber = 1;
