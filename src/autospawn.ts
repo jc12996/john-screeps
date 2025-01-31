@@ -305,7 +305,8 @@ export class AutoSpawn {
             energyAvailable >= 650 &&
             currentRoomCreepCounts.miners > 0 &&
             currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers &&
-            !mineFlag.room.controller.my
+            !mineFlag.room.controller.my &&
+            currentRoomCreepCounts.attackClaimers <= 2
           ) {
             name = "AttackClaimer" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("attackClaimer", spawn, commandLevel);
@@ -319,7 +320,8 @@ export class AutoSpawn {
             currentRoomCreepCounts.miners > 0 &&
             !mineFlag.room?.controller.my &&
             ((needsNewAttackClaimer && currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers + 1) ||
-              currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers)
+              currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers) &&
+              currentRoomCreepCounts.attackClaimers <= 2
           ) {
             name = "AttackClaimer" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("attackClaimer", spawn, commandLevel);
