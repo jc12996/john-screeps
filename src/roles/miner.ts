@@ -284,7 +284,7 @@ export class Miner {
 
     ) {
       const nextSources = creep.pos.findClosestByRange(FIND_SOURCES);
-      console.log(creep.name,nextSources,nextSources,creep.room.energyCapacityAvailable,creep.room.energyAvailable)
+      //console.log(creep.name,nextSources,nextSources,creep.room.energyCapacityAvailable,creep.room.energyAvailable)
       if(nextSources && (nextSources?.energy === 0 || !nextSources?.energy) ) {
         return;
       }
