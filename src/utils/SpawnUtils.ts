@@ -233,7 +233,7 @@ export class SpawnUtils {
                     return null;
                 }
             case 'harvester':
-                if(energyAvailable >= 2300 && commandLevel >= 6) {
+                if(energyAvailable >= 1300 && commandLevel >= 6) {
                     for (let i = 0; i < 5; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -241,7 +241,7 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
 
-                    for (let i = 0; i < 20; i++) {
+                    for (let i = 0; i < 10; i++) {
                         partsPattern.push(WORK);
                     }
                     break;
