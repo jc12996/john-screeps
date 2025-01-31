@@ -17,6 +17,7 @@ export class AutoSpawn {
   public static run(): void {
 
     const spawns = Game.spawns;
+
     for (const spawn in spawns) {
       this.spawnSequence(Game.spawns[spawn]);
     }
@@ -404,6 +405,11 @@ export class AutoSpawn {
     if(spawn.energyCapacity > 1700 && numberOfNeededUpgraders >= 4) {
       numberOfNeededUpgraders = 4;
     }
+
+    if(spawn.energyCapacity > 1700 && commandLevel >= 6 && numberOfNeededUpgraders >= 1) {
+      numberOfNeededUpgraders = 1;
+    }
+
 
     if(numberOfNeededHarvesters >= RoomSources.length && commandLevel >= 6) {
       numberOfNeededHarvesters = RoomSources.length;

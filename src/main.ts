@@ -74,6 +74,13 @@ export const loop = ErrorMapper.wrapLoop(() => {
     }
   }
 
+  if(!Game.spawns && Game.creeps) {
+    FlagUtils.run();
+    CreepUtils.run();
+    return;
+  }
+
+
   AutoSpawn.run();
 
   FlagUtils.run();

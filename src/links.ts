@@ -157,6 +157,9 @@ export function transferEnergyToOriginSpawn(room: Room) {
 }
 
 export function sendEnergyFromOriginSpawn() {
+  if(!Game.spawns["Spawn1"]) {
+    return;
+  }
   if(Game.time % 7) {
     // Find the room with Spawn1
     const spawn1Room = Game.spawns["Spawn1"].room;

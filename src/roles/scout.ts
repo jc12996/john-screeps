@@ -8,7 +8,9 @@ export class Scout {
 
 
 
-
+        if(creep.name === 'Scout65989464') {
+            console.log('hello')
+        }
         const scouts = _.filter(Game.creeps, creep => creep.memory.role == "scout");
 
         if(Game.flags['1'] && scouts.length >= 1 && creep.name === scouts[0].name) {
