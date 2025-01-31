@@ -406,7 +406,7 @@ export class AutoSpawn {
       numberOfNeededUpgraders = 4;
     }
 
-    if(spawn.energyCapacity > 1700 && commandLevel >= 6 && numberOfNeededUpgraders >= 1) {
+    if(spawn.energyCapacityAvailable > 1700 && commandLevel >= 6 && numberOfNeededUpgraders >= 1) {
       numberOfNeededUpgraders = 1;
     }
 
