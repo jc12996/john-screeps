@@ -515,7 +515,21 @@ export class SpawnUtils {
                     break;
                 } else if(energyAvailable >= 1000) {
 
+                    for (let i = 0; i < 20; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    break;
+                } else if(energyAvailable >= 500) {
+
                     for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+
+                    break;
+                } else if(energyAvailable >= 50) {
+
+                    for (let i = 0; i < 1; i++) {
                         partsPattern.push(MOVE);
                     }
 

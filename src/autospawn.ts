@@ -582,10 +582,12 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("settler", spawn, commandLevel);
       options = { memory: { role: "settler" } };
     } else if (
+
+      commandLevel >= 6 &&
+      ((
       Game.flags.startScouting &&
-      commandLevel >= 7 &&
       Game.flags.rallyFlag2 &&
-      !Game.flags.scoutFlag &&
+      !Game.flags.scoutFlag) || Game.flags['1']) &&
       scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE
     ) {
       name = "Scout" + Game.time;

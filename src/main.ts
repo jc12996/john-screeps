@@ -45,6 +45,7 @@ declare global {
     targetContainerId?: Id<StructureContainer>;
     targetContainer?: StructureContainer;
     settled?: boolean;
+    scoutCheckpointNumber?: number;
   }
 
   interface FlagMemory {

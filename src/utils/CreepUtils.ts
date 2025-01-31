@@ -18,6 +18,8 @@ import { Healer } from "roles/healer";
 export class CreepUtils {
 
     public static run() {
+
+        this.scoutMovementPlanReport();
         for (var name in Game.creeps) {
             var creep = Game.creeps[name];
 
@@ -206,6 +208,33 @@ export class CreepUtils {
             //     SquadUtils.assignSquadFormationAndCombat(squad, leadHealer, flag);
             //   }
             // }
+        }
+    }
+
+    private static scoutMovementPlanReport() {
+        const armySquadScoutCreeps = _.filter(Game.creeps, creep => creep.memory.isArmySquad === true && creep.memory.role === 'scout');
+        const flag1 = Game.flags['1'];
+        const flag2 = Game.flags['2']
+        if(armySquadScoutCreeps.length && Game.flags.attackFlag && flag1 && flag2) {
+            for(const creep of armySquadScoutCreeps){
+                if(creep.room === flag1.room) {
+                    if(Game.flags.rallyFlag){
+                        Game.flags.rallyFlag.remove();
+                    }
+                    creep.room.createFlag(flag1.pos,'rallyFlag')
+
+
+                }
+
+                if(creep.room === flag2.room) {
+                    if(Game.flags.rallyFlag2){
+                        Game.flags.rallyFlag2.remove();
+                    }
+                    creep.room.createFlag(flag2.pos,'rallyFlag2')
+
+
+                }
+            }
         }
     }
 
