@@ -540,6 +540,14 @@ export class MovementUtils {
       return;
     }
 
+    if (nearestStorageOrTerminal && creep.memory.role === 'repairer') {
+      transferCode = creep.withdraw(nearestStorageOrTerminal, RESOURCE_ENERGY);
+      if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffffff" } });
+      }
+      return;
+    }
+
     if (droppedSources) {
       transferCode = creep.pickup(droppedSources);
       if(droppedSources && transferCode === ERR_NOT_IN_RANGE) {

@@ -294,19 +294,22 @@ export class Miner {
 
 
 
-    const nearestContainer = creep.pos.findInRange(FIND_STRUCTURES,1, {
+    const nearestContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (sss) => {
 
         const creepsOnContainer = mineFlag.room?.find(FIND_MY_CREEPS,{
           filter: (cccc) => cccc.pos.isEqualTo(sss)
         });
 
-        return sss.structureType === STRUCTURE_CONTAINER && sss.pos.findInRange(FIND_SOURCES_ACTIVE,1) && !creepsOnContainer?.length
+        return sss.structureType === STRUCTURE_CONTAINER && sss.pos.findInRange(FIND_SOURCES,1) && !creepsOnContainer?.length
       }
-    })[0] ?? null;
+    }) ?? null;
 
 
-
+    if(nearestContainer && !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)) {
+      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      return;
+    }
 
 
     if (
@@ -326,11 +329,17 @@ export class Miner {
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
       !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
-      creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      if(nearestContainer) {
+        creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      } else {
+        creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      }
+
       return;
     }
 
     if (!finalSource) {
+
       return;
     }
 
@@ -339,10 +348,13 @@ export class Miner {
       mineCode == ERR_NOT_IN_RANGE &&
       (!nearestContainer || !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)) &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
-      !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y) &&
       !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
-      creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      if(nearestContainer) {
+        creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      } else {
+        creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      }
       return;
     }
 
@@ -395,8 +407,10 @@ export class Miner {
       creep.build(constructionContainers);
     } else if (containers) {
       creep.transfer(containers, RESOURCE_ENERGY);
-    } else {
+    } else if(creep.store.energy > 0) {
       creep.drop(RESOURCE_ENERGY);
+    } else if(nearestContainer) {
+      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
     }
   }
 
