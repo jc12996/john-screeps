@@ -712,7 +712,96 @@ export class MovementUtils {
     }
   }
 
+  private static scoutsSayItsGood(creep: Creep): boolean {
+    const scouts = _.filter(Game.creeps, creep => creep.memory.role == "scout");
+
+    const wayFinderFlags = [];
+      for(const flag in  Game.flags) {
+        if(Game.flags[flag].color === COLOR_GREY) {
+          wayFinderFlags.push(flag);
+        }
+      }
+
+    if(creep.memory.role !== 'scout' && creep.memory.scoutCheckpointNumber && creep.memory.scoutCheckpointNumber >= wayFinderFlags.length - 1) {
+      return true;
+    }
+
+    if(scouts.length >= 2) {
+
+      // WIP
+      // let wayfinderNumber = 1;
+      // for(const wayFinderFlag in wayFinderFlags) {
+      //   if(wayFinderFlag) {
+
+
+      //     wayfinderNumber++;
+      //     creep.say('👀'+wayfinderNumber);
+      //     if(!creep.memory.scoutCheckpointNumber) {
+      //       if(creep.room === Game.flags[wayFinderFlag]?.room) {
+      //           creep.memory.scoutCheckpointNumber = wayfinderNumber;
+      //       }
+      //       creep.moveTo(Game.flags[wayFinderFlag]);
+      //       return false;
+      //     }
+
+      //     if(creep.room === Game.flags[wayFinderFlag]?.room) {
+      //         creep.memory.scoutCheckpointNumber = wayfinderNumber;
+      //     }
+
+      //     if(creep.memory.scoutCheckpointNumber == wayfinderNumber) {
+      //       creep.moveTo(Game.flags[wayFinderFlag]);
+      //       return false;
+      //     }
+      //   }
+      // }
+      if(Game.flags['1']) {
+        if(creep.room === Game.flags['1'].room) {
+            creep.memory.scoutCheckpointNumber = 1;
+        }
+
+        if(!creep.memory.scoutCheckpointNumber) {
+            creep.say('👀1');
+            creep.moveTo(Game.flags['1']);
+            return false;
+        }
+      }
+
+      if(Game.flags['2']) {
+        if(creep.room === Game.flags['2'].room) {
+            creep.memory.scoutCheckpointNumber = 2;
+        }
+
+        if(creep.memory.scoutCheckpointNumber == 1) {
+            creep.say('👀2');
+            creep.moveTo(Game.flags['2']);
+            return false;
+        }
+      }
+
+      if(Game.flags['3']) {
+        if(creep.room === Game.flags['3'].room) {
+            creep.memory.scoutCheckpointNumber = 3;
+        }
+
+        if(creep.memory.scoutCheckpointNumber == 2) {
+            creep.say('👀3');
+            creep.moveTo(Game.flags['3']);
+            return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   public static claimerSettlerMovementSequence(creep: Creep): boolean {
+
+
+    const scoutsSayItsGood = this.scoutsSayItsGood(creep);
+    if(!scoutsSayItsGood) {
+      return false;
+    }
+
 
     if (Game.flags.settlerFlag && creep.memory.role === 'settler') {
 
