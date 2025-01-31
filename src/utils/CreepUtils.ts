@@ -219,18 +219,18 @@ export class CreepUtils {
             for(const creep of armySquadScoutCreeps){
                 if(creep.room === flag1.room) {
                     if(Game.flags.rallyFlag){
-                        Game.flags.rallyFlag.remove();
+                        Game.flags.rallyFlag.setPosition(creep.pos);
                     }
-                    creep.room.createFlag(flag1.pos,'rallyFlag')
+
 
 
                 }
 
                 if(creep.room === flag2.room) {
                     if(Game.flags.rallyFlag2){
-                        Game.flags.rallyFlag2.remove();
+                        Game.flags.rallyFlag2.setPosition(creep.pos);
                     }
-                    creep.room.createFlag(flag2.pos,'rallyFlag2')
+
 
 
                 }

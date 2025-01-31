@@ -17,7 +17,7 @@ export class Scout {
             return;
         }
 
-        if(Game.flags['1'] && Game.flags['2'] && scouts.length >= 2 && creep.name !== scouts[0].name) {
+        if(Game.flags['1'] && Game.flags['2'] && scouts.length >= 2 && (creep.name === scouts[1].name || (creep.name === scouts[2].name && Game.flags['3']))) {
 
             if(creep.room === Game.flags['1'].room) {
                 creep.memory.scoutCheckpointNumber = 1;
@@ -32,6 +32,26 @@ export class Scout {
                 creep.say('👀2');
                 creep.moveTo(Game.flags['2']);
             }
+
+            if(Game.flags['1'] && Game.flags['2'] && Game.flags['3'] && scouts.length >= 3 && creep.name !== scouts[0].name && creep.name !== scouts[1].name) {
+
+                if(creep.room === Game.flags['2'].room) {
+                    creep.memory.scoutCheckpointNumber = 2;
+                }
+
+                if(!creep.memory.scoutCheckpointNumber) {
+                    creep.say('👀2');
+                    creep.moveTo(Game.flags['2']);
+                }
+
+                if(creep.memory.scoutCheckpointNumber === 2) {
+                    creep.say('👀3');
+                    creep.moveTo(Game.flags['3']);
+                }
+
+                return;
+            }
+
 
             return;
         }
