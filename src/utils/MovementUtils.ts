@@ -591,7 +591,7 @@ export class MovementUtils {
 
 
     if (
-      nearestSource && !creep.pos.inRangeTo(nearestSource.pos.x, nearestSource.pos.y, 1)
+      nearestSource && !creep.pos.inRangeTo(nearestSource.pos.x, nearestSource.pos.y, 1) && creep.memory.role !== 'repairer'
     ) {
       transferCode = creep.harvest(nearestSource);
       if(nearestSource && transferCode === ERR_NOT_IN_RANGE) {

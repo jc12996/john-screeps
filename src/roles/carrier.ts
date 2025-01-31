@@ -485,7 +485,7 @@ export class Carrier {
       if (creep.room.controller && creep.room.controller.level >= 6) {
         extensionOrSpawn =
           creep.pos
-            .findInRange(FIND_STRUCTURES, 4, {
+            .findInRange(FIND_STRUCTURES, 15, {
               filter: structure => {
                 return (
                   (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION) &&
@@ -511,7 +511,7 @@ export class Carrier {
           })[0] ?? null;
       }
 
-      const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES, 4, {
+      const extensionsNearMe: StructureExtension[] = creep.pos.findInRange(FIND_STRUCTURES, 15, {
         filter: struc => {
           return struc.structureType === STRUCTURE_EXTENSION && struc.store[RESOURCE_ENERGY] == 0;
         }

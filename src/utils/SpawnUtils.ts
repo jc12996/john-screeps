@@ -200,28 +200,19 @@ export class SpawnUtils {
                     return null;
                 }
             case 'carrier':
-                if(commandLevel >= 8 && energyAvailable >= (PartCosts.MOVE * 25) + (PartCosts.CARRY * 25)) {
-                    for (let i = 0; i < 25; i++) {
+                if(commandLevel >= 6 && energyAvailable >= (PartCosts.MOVE * 15) + (PartCosts.CARRY * 5)) {
+                    for (let i = 0; i < 15; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 25; i++) {
+                    for (let i = 0; i < 5; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
-                }
-                else if(commandLevel >= 6 && energyAvailable >= (PartCosts.MOVE * 10) + (PartCosts.CARRY * 10)) {
-                    for (let i = 0; i < 10; i++) {
+                } else if( energyAvailable >= (PartCosts.MOVE * 12) + (PartCosts.CARRY * 4)) {
+                    for (let i = 0; i < 12; i++) {
                         partsPattern.push(MOVE);
                     }
-                    for (let i = 0; i < 10; i++) {
-                        partsPattern.push(CARRY);
-                    }
-                    break;
-                } else if( energyAvailable >= (PartCosts.MOVE * 8) + (PartCosts.CARRY * 8)) {
-                    for (let i = 0; i < 8; i++) {
-                        partsPattern.push(MOVE);
-                    }
-                    for (let i = 0; i < 8; i++) {
+                    for (let i = 0; i < 4; i++) {
                         partsPattern.push(CARRY);
                     }
                     break;
@@ -242,7 +233,7 @@ export class SpawnUtils {
                     return null;
                 }
             case 'harvester':
-                if(energyAvailable >= 1300 && commandLevel >= 6) {
+                if(energyAvailable >= 2300 && commandLevel >= 6) {
                     for (let i = 0; i < 5; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -250,7 +241,7 @@ export class SpawnUtils {
                         partsPattern.push(CARRY);
                     }
 
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 20; i++) {
                         partsPattern.push(WORK);
                     }
                     break;

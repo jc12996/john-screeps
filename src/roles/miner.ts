@@ -269,23 +269,6 @@ export class Miner {
     }
 
 
-
-
-    // const nearestContainerSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES, {
-    //   filter: (sss) => {
-    //     return sss.structureType === STRUCTURE_CONTAINER && sss.pos.findClosestByPath(FIND_SOURCES_ACTIVE)
-    //   }
-    // });
-
-
-    // if (
-    //   nearestContainerSite &&
-    //   !creep.pos.isNearTo(nearestContainerSite.pos.x, nearestContainerSite.pos.y) &&
-    //   !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
-    // ) {
-    //   creep.moveTo(nearestContainerSite, { visualizePathStyle: { stroke: "#FFFFFF" } });
-    //   return;
-    // }
     if(Game.flags.dismantleHere && Game.flags.dismantleHere.room === creep.room) {
       Dismantler.run(creep);
       return;
@@ -339,6 +322,7 @@ export class Miner {
 
     if (
       finalSource &&
+      (!nearestContainer || !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)) &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
       !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
@@ -353,6 +337,7 @@ export class Miner {
     const mineCode = creep.harvest(finalSource);
     if (
       mineCode == ERR_NOT_IN_RANGE &&
+      (!nearestContainer || !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)) &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
       !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y) &&
       !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
