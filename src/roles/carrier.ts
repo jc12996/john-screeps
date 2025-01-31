@@ -884,7 +884,7 @@ export class Carrier {
     if (
       creep.store[RESOURCE_ENERGY] > 0 &&
       nearestStorageOrTerminal &&
-      nearestStorageOrTerminal.store.energy < (carriers.length * 500)
+      nearestStorageOrTerminal.store.energy < 500
     ) {
       if(nearestStorageOrTerminal.structureType === STRUCTURE_STORAGE)  {
         creep.say("🚚S");
