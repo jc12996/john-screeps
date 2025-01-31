@@ -126,21 +126,12 @@ export class Carrier {
       commandLevel >= 6 &&
       creep.room.energyAvailable > 0 &&
       labs.length > 0 &&
+      creep.room.controller?.my &&
       labSetFlags
 
     ) {
       creep.memory.extensionFarm = 3;
-
-      const labSetFlags =
-        creep.room.find(FIND_FLAGS, {
-          filter: flag => {
-            return flag.name.includes(creep.room.name + "SetLabs:");
-          }
-        })[0] ?? null;
-
-      if (creep.room.controller?.my && creep.room.controller.level >= 6 && labSetFlags) {
-        Labs.setLabMapper(creep.room);
-      }
+      Labs.setLabMapper(creep.room);
     } else {
       creep.memory.extensionFarm = undefined;
     }
