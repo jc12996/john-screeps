@@ -284,7 +284,7 @@ export class Miner {
 
     ) {
       const nextSources = creep.pos.findClosestByRange(FIND_SOURCES);
-      //console.log(creep.name,nextSources,nextSources,creep.room.energyCapacityAvailable,creep.room.energyAvailable)
+      console.log(creep.name,nextSources,nextSources,creep.room.energyCapacityAvailable,creep.room.energyAvailable)
       if(nextSources && (nextSources?.energy === 0 || !nextSources?.energy) ) {
         return;
       }
@@ -294,22 +294,19 @@ export class Miner {
 
 
 
-    const nearestContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    const nearestContainer = creep.pos.findInRange(FIND_STRUCTURES,1, {
       filter: (sss) => {
 
         const creepsOnContainer = mineFlag.room?.find(FIND_MY_CREEPS,{
           filter: (cccc) => cccc.pos.isEqualTo(sss)
         });
 
-        return sss.structureType === STRUCTURE_CONTAINER && sss.pos.findInRange(FIND_SOURCES,1) && !creepsOnContainer?.length
+        return sss.structureType === STRUCTURE_CONTAINER && sss.pos.findInRange(FIND_SOURCES_ACTIVE,1) && !creepsOnContainer?.length
       }
-    }) ?? null;
+    })[0] ?? null;
 
 
-    if(nearestContainer && !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)) {
-      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
-      return;
-    }
+
 
 
     if (
@@ -325,36 +322,25 @@ export class Miner {
 
     if (
       finalSource &&
-      (!nearestContainer || !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)) &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
       !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
-      if(nearestContainer) {
-        creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
-      } else {
-        creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
-      }
-
+      creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
       return;
     }
 
     if (!finalSource) {
-
       return;
     }
 
     const mineCode = creep.harvest(finalSource);
     if (
       mineCode == ERR_NOT_IN_RANGE &&
-      (!nearestContainer || !creep.pos.isEqualTo(nearestContainer.pos.x, nearestContainer.pos.y)) &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
+      !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y) &&
       !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
-      if(nearestContainer) {
-        creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
-      } else {
-        creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
-      }
+      creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
       return;
     }
 
@@ -407,10 +393,8 @@ export class Miner {
       creep.build(constructionContainers);
     } else if (containers) {
       creep.transfer(containers, RESOURCE_ENERGY);
-    } else if(creep.store.energy > 0) {
+    } else {
       creep.drop(RESOURCE_ENERGY);
-    } else if(nearestContainer) {
-      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
     }
   }
 
