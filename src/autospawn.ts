@@ -329,7 +329,8 @@ export class AutoSpawn {
             mineFlags.length > 0 &&
             commandLevel >= 2 &&
             energyCapacityAvailable >= 450 &&
-            currentRoomCreepCounts.miners < numberOfNeededMiners
+            currentRoomCreepCounts.miners < numberOfNeededMiners &&
+            currentRoomCreepCounts.miners <= 2
           ) {
             name = "Miner" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel);
@@ -341,7 +342,7 @@ export class AutoSpawn {
             energyCapacityAvailable >= 450 &&
             currentRoomCreepCounts.haulers < numberOfNeededHaulers &&
             numberOfContainers > 0 &&
-            currentRoomCreepCounts.miners >= numberOfNeededMiners &&
+            (currentRoomCreepCounts.miners >= numberOfNeededMiners || currentRoomCreepCounts.miners >= 2) &&
             mineFlag.room?.find(FIND_STRUCTURES).some(structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0)
           ) {
             name = "Hauler" + "_" + mineFlag.name + "_" + Game.time;
