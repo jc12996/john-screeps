@@ -222,6 +222,10 @@ export class CreepUtils {
                         Game.flags.rallyFlag.setPosition(flag1.pos);
                     }
 
+                    if(!Game.flags.rallyFlag){
+                        creep.room.createFlag(flag1.pos,'rallyFlag');
+                    }
+
 
 
                 }
@@ -229,6 +233,10 @@ export class CreepUtils {
                 if(creep.room === flag2.room) {
                     if(Game.flags.rallyFlag2){
                         Game.flags.rallyFlag2.setPosition(flag2.pos);
+                    }
+
+                    if(!Game.flags.rallyFlag2){
+                        creep.room.createFlag(flag2.pos,'rallyFlag2');
                     }
 
 
