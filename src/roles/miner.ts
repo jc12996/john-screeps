@@ -9,7 +9,7 @@ import { Upgrader } from "./upgrader";
 import { Builder } from "./builder";
 
 export class Miner {
-  public static run(creep: Creep): void {
+  public static run(creep: Creep,isHomeRoomHarvester:boolean = false): void {
     if (!creep.memory.isBoosted) {
       const canContinue = Labs.boostCreep(creep);
       if (!canContinue) {
@@ -113,7 +113,7 @@ export class Miner {
       return;
     }
 
-    this.creepMiner(creep, firstRoom, mineType);
+    this.creepMiner(creep, isHomeRoomHarvester, mineType);
   }
 
   private static creepExtractor(
@@ -189,7 +189,7 @@ export class Miner {
     }
   }
 
-  private static creepMiner(creep: Creep, firstRoom: any, minerType: "mine" | "haul" | "allAround") {
+  private static creepMiner(creep: Creep, isHomeRoomHarvester: boolean=false, minerType: "mine" | "haul" | "allAround") {
     if (!creep.memory.carrying && (creep.store.getFreeCapacity() == 0 || creep.store[RESOURCE_ENERGY] > 500)) {
       creep.memory.carrying = true;
     }
@@ -217,7 +217,7 @@ export class Miner {
     const containers =
       creep.pos.findInRange(FIND_STRUCTURES, 1, {
         filter: struc => {
-          return struc.structureType === STRUCTURE_CONTAINER && minerType === "mine";
+          return struc.structureType === STRUCTURE_CONTAINER
         }
       })[0] ?? null;
 
@@ -240,18 +240,27 @@ export class Miner {
       creep.say("🔨 build");
     }
 
-    if (!creep.memory.assignedMineFlag) {
+    if (!creep.memory.assignedMineFlag && !isHomeRoomHarvester) {
       return;
     }
 
-    const mineFlag = Game.flags[creep.memory.assignedMineFlag] as Flag;
+    let mineFlag = creep.room.find(FIND_FLAGS)[0] ?? null;
+    if(!isHomeRoomHarvester && creep.memory.assignedMineFlag) {
+      mineFlag = Game.flags[creep.memory.assignedMineFlag] as Flag;
+    }
+
 
     if (!!!mineFlag) {
       return;
     }
 
     if (SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
-      creep.say("⛏" + mineFlag.room?.name);
+      if(isHomeRoomHarvester) {
+        creep.say('⛏');
+      }else {
+        creep.say("⛏" + mineFlag.room?.name);
+      }
+
     }
 
     if (creep.room != mineFlag.room) {
@@ -286,6 +295,47 @@ export class Miner {
     const finalSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
 
 
+    if (
+      containers &&
+      creep.pos.isEqualTo(containers.pos.x, containers.pos.y)
+
+    ) {
+      const nextSources = creep.pos.findClosestByRange(FIND_SOURCES);
+      console.log(creep.name,nextSources,nextSources,creep.room.energyCapacityAvailable,creep.room.energyAvailable)
+      if(nextSources && (nextSources?.energy === 0 || !nextSources?.energy) ) {
+        return;
+      }
+
+    }
+
+
+
+
+    const nearestContainer = creep.pos.findInRange(FIND_STRUCTURES,1, {
+      filter: (sss) => {
+
+        const creepsOnContainer = mineFlag.room?.find(FIND_MY_CREEPS,{
+          filter: (cccc) => cccc.pos.isEqualTo(sss)
+        });
+
+        return sss.structureType === STRUCTURE_CONTAINER && sss.pos.findInRange(FIND_SOURCES_ACTIVE,1) && !creepsOnContainer?.length
+      }
+    })[0] ?? null;
+
+
+
+
+
+    if (
+      finalSource &&
+      nearestContainer &&
+      !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y) &&
+      !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)
+    ) {
+      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      return;
+    }
+
 
     if (
       finalSource &&
@@ -300,35 +350,22 @@ export class Miner {
       return;
     }
 
-    const nearestContainer = creep.pos.findInRange(FIND_STRUCTURES,1, {
-      filter: (sss) => {
-
-        const creepsOnContainer = mineFlag.room?.find(FIND_MY_CREEPS,{
-          filter: (cccc) => cccc.pos.isEqualTo(sss)
-        });
-
-        return sss.structureType === STRUCTURE_CONTAINER && sss.pos.findInRange(FIND_SOURCES_ACTIVE,1) && !creepsOnContainer?.length
-      }
-    })[0] ?? null;
-
-
-    if (
-      finalSource &&
-      nearestContainer &&
-      !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y) &&
-      !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y)
-    ) {
-      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
-      return;
-    }
-
     const mineCode = creep.harvest(finalSource);
     if (
       mineCode == ERR_NOT_IN_RANGE &&
       !creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
+      !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y) &&
       !creep.pos.findInRange(FIND_SOURCES_ACTIVE, 1).length
     ) {
       creep.moveTo(finalSource, { visualizePathStyle: { stroke: "#FFFFFF" } });
+      return;
+    }
+
+    if (
+      nearestContainer &&
+      !creep.pos.isNearTo(nearestContainer.pos.x, nearestContainer.pos.y)
+    ) {
+      creep.moveTo(nearestContainer, { visualizePathStyle: { stroke: "#FFFFFF" } });
       return;
     }
 
@@ -337,7 +374,8 @@ export class Miner {
       creep.pos.isNearTo(finalSource.pos.x, finalSource.pos.y) &&
       !creep.pos.findInRange(FIND_STRUCTURES, 1, {
         filter: structure => structure.structureType === STRUCTURE_CONTAINER
-      }).length
+      }).length &&
+      !isHomeRoomHarvester
     ) {
       ScaffoldingUtils.createContainers(creep);
     }
@@ -348,9 +386,27 @@ export class Miner {
       return;
     }
 
-    if (repairContainers && creep.store.energy > 0) {
+    if(isHomeRoomHarvester) {
+      const adjLink = creep.pos.findInRange(FIND_STRUCTURES,1,{
+          filter: (struc) => {
+              return struc.structureType === STRUCTURE_LINK
+          }
+      })[0] as StructureLink ?? null;
+      if(adjLink && adjLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && containers) {
+        if(containers) {
+          creep.withdraw(containers,RESOURCE_ENERGY);
+        }
+        if(adjLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+          creep.transfer(adjLink, RESOURCE_ENERGY);
+          return;
+        }
+      }
+    }
+
+
+    if (repairContainers && creep.store.energy > 0 && !isHomeRoomHarvester) {
       creep.repair(repairContainers);
-    } else if (constructionContainers && creep.store.energy > 0) {
+    } else if (constructionContainers && creep.store.energy > 0 && !isHomeRoomHarvester) {
       creep.build(constructionContainers);
     } else if (containers) {
       creep.transfer(containers, RESOURCE_ENERGY);

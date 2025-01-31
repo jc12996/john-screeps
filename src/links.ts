@@ -249,9 +249,7 @@ export function operateLinks(creep: Creep | StructureSpawn) {
       xCapacity = xCreepCapacity;
     }
   }
-  if (xCapacity > 400) {
-    xCapacity = 700;
-  }
+
 
   const extensionLink = getLinkByTag(creep, "ExtensionLink", true);
   const extensionLink2 = getLinkByTag(creep, "ExtensionLink2", true);
@@ -272,7 +270,13 @@ export function operateLinks(creep: Creep | StructureSpawn) {
       }
     });
 
+
+
+
     for (const filledSourceLink of filledSourceLinks) {
+      if(creep.room.find(FIND_SOURCES_ACTIVE).length === 0 && filledSourceLink.store.energy > 0) {
+        xCapacity = filledSourceLink.store.energy;
+      }
       if (!filledSourceLink || filledSourceLink.structureType !== STRUCTURE_LINK) {
         return;
       }
@@ -325,7 +329,7 @@ export function operateLinks(creep: Creep | StructureSpawn) {
           targetLink = controllerLink;
         }
 
-        filledSourceLink.transferEnergy(targetLink, xCapacity/2);
+        filledSourceLink.transferEnergy(targetLink, xCapacity);
       }
     }
   }

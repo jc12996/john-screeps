@@ -2,15 +2,22 @@ import { SpawnUtils } from "utils/SpawnUtils";
 import { RoomUtils } from "utils/RoomUtils";
 import { ScaffoldingUtils } from "utils/ScaffoldingUtils";
 import { placeSourceLinks } from "links";
+import { Miner } from "./miner";
 
 export class Harvester {
 
     public static run(creep: Creep): void {
 
+        if(creep.room.controller && creep.room.controller.my && creep.room.controller.level >= 6) {
+            Miner.run(creep,true);
+            return;
+        }
 
         if(SpawnUtils.SHOW_VISUAL_CREEP_ICONS) {
             creep.say('🔄');
         }
+
+
 
 
         var container = creep.pos.findClosestByRange(FIND_STRUCTURES, {

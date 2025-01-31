@@ -143,10 +143,6 @@ export class CreepUtils {
             if (creep.memory.role == "miner") {
                 MovementUtils.callForHelp(creep);
 
-                if (!creep.memory.assignedMineFlag) {
-                creep.memory.assignedMineFlag = "W18N3MineFlag";
-                }
-
                 if (creep.getActiveBodyparts(WORK) === 0) {
                 Hauler.run(creep);
                 continue;

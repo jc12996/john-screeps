@@ -242,7 +242,19 @@ export class SpawnUtils {
                     return null;
                 }
             case 'harvester':
-                if(energyAvailable >= ((PartCosts.MOVE * 2) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 6))) {
+                if(energyAvailable >= 1300 && commandLevel >= 6) {
+                    for (let i = 0; i < 5; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CARRY);
+                    }
+
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(WORK);
+                    }
+                    break;
+                }else if(energyAvailable >= ((PartCosts.MOVE * 2) + (PartCosts.CARRY * 1) + (PartCosts.WORK * 6))) {
                     for (let i = 0; i < 2; i++) {
                         partsPattern.push(MOVE);
                     }

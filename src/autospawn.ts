@@ -402,6 +402,10 @@ export class AutoSpawn {
       numberOfNeededUpgraders = 4;
     }
 
+    if(numberOfNeededHarvesters >= RoomSources.length && commandLevel >= 6) {
+      numberOfNeededHarvesters = RoomSources.length;
+    }
+
     // if(spawn.room.name === 'E26S37') {
     //   spawn.room.memory.numberOfNeededHarvestorSlots = 8
     //   console.log('numberOfNeededHarvesters',numberOfNeededHarvesters)
