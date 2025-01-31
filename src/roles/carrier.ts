@@ -877,28 +877,33 @@ export class Carrier {
       }
     }
 
-    if (
-      creep.store[RESOURCE_ENERGY] > 0 &&
-      storage &&
-      storage.store.energy < 500
-    ) {
-      creep.say("🚚S");
-      transferCode = creep.transfer(storage,RESOURCE_ENERGY);
-      if(storage && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffaa00" } });
+    const nearestStorageOrTerminal: StructureTerminal | StructureStorage | null = creep.pos.findClosestByPath(
+      FIND_STRUCTURES,
+      {
+        filter: structure => {
+          return (
+            (structure.structureType === STRUCTURE_TERMINAL || structure.structureType === STRUCTURE_STORAGE) &&
+            structure.store.getFreeCapacity() > 0 &&
+            structure.room?.controller?.my
+          );
+        }
       }
-      return;
-    }
+    );
 
     if (
       creep.store[RESOURCE_ENERGY] > 0 &&
-      terminal &&
-      terminal.store.energy < 500
+      nearestStorageOrTerminal &&
+      nearestStorageOrTerminal.store.energy < (carriers.length * 500)
     ) {
-      creep.say("🚚TR");
-      transferCode = creep.transfer(terminal,RESOURCE_ENERGY);
-      if(terminal && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffaa00" } });
+      if(nearestStorageOrTerminal.structureType === STRUCTURE_STORAGE)  {
+        creep.say("🚚S");
+      } else if(nearestStorageOrTerminal.structureType === STRUCTURE_TERMINAL) {
+        creep.say("🚚TR");
+      }
+
+      transferCode = creep.transfer(nearestStorageOrTerminal,RESOURCE_ENERGY);
+      if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestStorageOrTerminal, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       return;
     }
@@ -967,6 +972,14 @@ export class Carrier {
     }
 
 
+    if (storage) {
+      creep.say("🚚S");
+      transferCode = creep.transfer(storage,RESOURCE_ENERGY);
+      if(storage && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
 
     const nearestStoreUnit = this.getNearestStoreUnit(creep);
 
@@ -975,15 +988,6 @@ export class Carrier {
       transferCode = creep.transfer(nearestStoreUnit,RESOURCE_ENERGY);
       if(nearestStoreUnit && transferCode === ERR_NOT_IN_RANGE) {
         creep.moveTo(nearestStoreUnit, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-      return;
-    }
-
-    if (storage) {
-      creep.say("🚚S");
-      transferCode = creep.transfer(storage,RESOURCE_ENERGY);
-      if(storage && transferCode === ERR_NOT_IN_RANGE) {
-        creep.moveTo(storage, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       return;
     }
