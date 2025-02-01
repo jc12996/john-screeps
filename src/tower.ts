@@ -93,9 +93,11 @@ export class Tower {
                 if (hostileCreeps.length > 0 || hostileCreeps[0].owner.username === 'Invader') {
                     // Separate healers from attackers
                     const healers = hostileCreeps.filter(creep => creep.getActiveBodyparts(HEAL) > 0);
-                    const attackers = hostileCreeps.filter(creep => creep.getActiveBodyparts(ATTACK) > 0);
+                    const attackers = hostileCreeps.filter(creep => creep.getActiveBodyparts(ATTACK) > 0 || creep.getActiveBodyparts(RANGED_ATTACK) > 0);
                     const dismantlers = hostileCreeps.filter(creep => creep.getActiveBodyparts(WORK) > 0);
-
+                    if(healers.length > 0 && attackers.length === 0 && dismantlers.length === 0) {
+                        return;
+                    }
                     // Sort healers and attackers by their distance from the tower
                     healers.sort((a, b) => tower.pos.getRangeTo(a) - tower.pos.getRangeTo(b));
                     attackers.sort((a, b) => tower.pos.getRangeTo(a) - tower.pos.getRangeTo(b));
