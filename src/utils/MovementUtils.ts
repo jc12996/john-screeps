@@ -672,9 +672,15 @@ export class MovementUtils {
     const hostileCreeps = creep.room.find(FIND_HOSTILE_CREEPS, {
       filter: hostileCreep => {
         return (
-          (hostileCreep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner)) &&
-          hostileCreep?.owner?.username !== "Invader"
-        ) && (hostileCreep.getActiveBodyparts(ATTACK) > 0 || hostileCreep.getActiveBodyparts(WORK) > 0 || hostileCreep.getActiveBodyparts(CLAIM) > 0 || hostileCreep.getActiveBodyparts(RANGED_ATTACK) > 0);
+          (hostileCreep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner))
+        ) &&
+        (hostileCreep.getActiveBodyparts(ATTACK) > 0 || hostileCreep.getActiveBodyparts(WORK) > 0 || hostileCreep.getActiveBodyparts(CLAIM) > 0 || hostileCreep.getActiveBodyparts(RANGED_ATTACK) > 0)
+         &&
+         (hostileCreep.room.find(FIND_MY_STRUCTURES, {
+           filter: (hostileRoom) => {
+             return hostileRoom.structureType === STRUCTURE_TOWER && hostileRoom.store.energy > 0
+           }
+         }).length === 0);
       }
     });
 
@@ -798,7 +804,7 @@ export class MovementUtils {
 
 
     const scoutsSayItsGood = this.scoutsSayItsGood(creep);
-    if(!scoutsSayItsGood) {
+    if(!scoutsSayItsGood && creep.memory.role !== 'defender' && creep.memory.role !== 'attackClaimer') {
       return false;
     }
 

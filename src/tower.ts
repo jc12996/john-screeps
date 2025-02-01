@@ -101,23 +101,24 @@ export class Tower {
                     attackers.sort((a, b) => tower.pos.getRangeTo(a) - tower.pos.getRangeTo(b));
 
                     // Prioritize healers if they are within the tower's effective range
-                    /**if (healers.length > 0) {
+                    if (tower === towers[0] && healers.length > 0) {
                         const closestHealer = healers[0];
                         const rangeToHealer = tower.pos.getRangeTo(closestHealer);
 
                         // Check if the healer is within the tower's range (30 units)
                         if (rangeToHealer <= 30) {
                             tower.attack(closestHealer);
+                            return;
                         } else {
                             // Optional: Handle healers that are out of range
                             console.log(`Healers are out of range: ${closestHealer.name} (${rangeToHealer} units away)`);
                         }
-                    } else
-                     */
-                     if (attackers.length > 0) {
+                    }
+
+                    if (attackers.length > 0) {
                         // If no healers, attack the closest attacker
                         const closestAttacker = attackers[0];
-                        tower.attack(closestAttacker);
+                        tower.attack(closestAttacker,);
                     } else if (dismantlers.length > 0) {
                         // If no healers, attack the closest attacker
                         const dismantler = dismantlers[0];

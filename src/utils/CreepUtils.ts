@@ -217,6 +217,9 @@ export class CreepUtils {
         const flag2 = Game.flags['2']
         if(armySquadScoutCreeps.length && Game.flags.attackFlag && flag1 && flag2) {
             for(const creep of armySquadScoutCreeps){
+                if(creep.memory.role === 'defender') {
+                    continue;
+                }
                 if(creep.room === flag1.room) {
                     if(Game.flags.rallyFlag){
                         Game.flags.rallyFlag.setPosition(flag1.pos);
