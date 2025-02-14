@@ -472,6 +472,42 @@ export class SpawnUtils {
                 } else {
                     return null;
                 }
+            case 'shooter':
+                if(energyAvailable >= 3250) {
+
+                    for (let i = 0; i < 25; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 13; i++) {
+                        partsPattern.push(RANGED_ATTACK);
+                    }
+
+                    break;
+                }else if(commandLevel < 7 && energyAvailable >= 1140) {
+
+                    for (let i = 0; i < 10; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        partsPattern.push(RANGED_ATTACK);
+                    }
+
+                    break;
+                }
+                else if(commandLevel < 6 && energyAvailable >= 570) {
+
+                    for (let i = 0; i < 5; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 2; i++) {
+                        partsPattern.push(RANGED_ATTACK);
+                    }
+
+                    break;
+                }
+                else {
+                return null;
+                }
             case 'attacker':
                 if(energyAvailable >= 3250) {
 

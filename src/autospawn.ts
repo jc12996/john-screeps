@@ -264,11 +264,11 @@ export class AutoSpawn {
 
         let numberOfNeededHaulers = numberOfSourcesInMineFlagRoom >= 2 ? 4 : 2;
         let numberOfNeededAttackClaimers = LowUpkeep.AttackClaimers * 1;
-
+/*
         if(numberOfActiveSourcesInMineFlagRoom == 0) {
           numberOfNeededMiners = 0;
           numberOfNeededHaulers = numberOfSourcesInMineFlagRoom * 2;
-        }
+        }*/
 
 
         // Check if any attackClaimer has 100 ticks or less left to live
@@ -332,8 +332,7 @@ export class AutoSpawn {
             mineFlags.length > 0 &&
             commandLevel >= 2 &&
             energyCapacityAvailable >= 450 &&
-            currentRoomCreepCounts.miners < numberOfNeededMiners &&
-            currentRoomCreepCounts.miners <= 2
+            currentRoomCreepCounts.miners < numberOfNeededMiners
           ) {
             name = "Miner" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel);
@@ -608,6 +607,12 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("defender", spawn, commandLevel);
       options = { memory: { role: "defender" } };
     } else if (isSquadPatrol && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE) {
+      name = "Attacker" + Game.time;
+      bodyParts = SpawnUtils.getBodyPartsForArchetype("attacker", spawn, commandLevel);
+      if(attackers.length % 2) {
+        name = "Shooter" + Game.time;
+        bodyParts = SpawnUtils.getBodyPartsForArchetype("shooter", spawn, commandLevel);
+      }
       name = "Attacker" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("attacker", spawn, commandLevel);
       options = { memory: { role: "attacker", isArmySquad: true } };

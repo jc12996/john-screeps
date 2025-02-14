@@ -23,7 +23,13 @@ export class Attacker {
                 creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
             }
 
-            const attackResult = creep.attack(target)
+            let attackResult = null;
+            if(creep.getActiveBodyparts(RANGED_ATTACK) > 0) {
+                attackResult = creep.rangedAttack(target)
+            } else {
+                attackResult = creep.attack(target)
+            }
+
 
             if(attackResult === OK) {
                 return;
@@ -45,6 +51,12 @@ export class Attacker {
             creep.say('⚔');
         }
 
+        // if(creep.room.name === 'E29S36') {
+        //     for(const flag of creep.room.find(FIND_FLAGS)) {
+        //       flag.remove();
+        //     }
+        //    }
+
         if(!creep.memory.isBoosted) {
             const canContinue = Labs.boostCreep(creep)
             if(!canContinue) {
@@ -62,12 +74,6 @@ export class Attacker {
             return;
         }
 
-        const walls = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter:  (creep) => {
-                return  creep.structureType == STRUCTURE_WALL
-            }
-        });
-
         var hostileInvaderStructures = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES,
             {
                 filter: hostileCreep => {
@@ -80,14 +86,7 @@ export class Attacker {
             invaderCore = hostileInvaderStructures;
         }
 
-
-
         const isSafeRoom = creep.room.controller?.safeMode ?? false;
-
-
-        const wall = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.structureType === STRUCTURE_WALL
-        });
 
 
         const nearestHostileTower = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
@@ -134,7 +133,21 @@ export class Attacker {
 
         if(!isSafeRoom && structures.length > 0 && badStructures && Game.flags?.attackFlag) {
             creep.say('⚔ 🚧');
-            Attacker.attackTarget(creep,badStructures);
+
+            const dismantleHere = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter:  (struc) => {
+                    return  !!Game.flags.dismantleHere && Game.flags.dismantleHere?.pos && struc.pos.x == Game.flags.dismantleHere.pos.x && struc.pos.y == Game.flags.dismantleHere.pos.y
+                }
+            });
+
+            if(dismantleHere) {
+                creep.say('🧱 T');
+                Attacker.attackTarget(creep,dismantleHere);
+            } else {
+                Attacker.attackTarget(creep,badStructures);
+            }
+
+
             return;
         }
 

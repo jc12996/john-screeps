@@ -673,8 +673,8 @@ export class MovementUtils {
       filter: hostileCreep => {
         return (
           (hostileCreep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner))
-        ) &&
-        (hostileCreep.getActiveBodyparts(ATTACK) > 0 || hostileCreep.getActiveBodyparts(WORK) > 0 || hostileCreep.getActiveBodyparts(CLAIM) > 0 || hostileCreep.getActiveBodyparts(RANGED_ATTACK) > 0)
+        )
+        // && (hostileCreep.getActiveBodyparts(ATTACK) > 0 || hostileCreep.getActiveBodyparts(WORK) > 0 || hostileCreep.getActiveBodyparts(CLAIM) > 0 || hostileCreep.getActiveBodyparts(RANGED_ATTACK) > 0)
          &&
          (hostileCreep.room.find(FIND_MY_STRUCTURES, {
            filter: (hostileRoom) => {
@@ -698,21 +698,23 @@ export class MovementUtils {
     if (hostileCreeps.length > 0) {
       creep.say("📞", true);
 
-      if (creep.memory.role === "scout" && !Game.flags.attackFlag && !creep.room.controller?.safeMode) {
+      if (creep.memory.role === "scout" && !Game.flags.scoutFlag && !Game.flags.attackFlag && !creep.room.controller?.safeMode) {
         creep.room.createFlag(hostileCreeps[0].pos, "scoutFlag");
       }
 
 
       if (!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
-        if (hostileCreeps[0]) {
-          creep.room.createFlag(hostileCreeps[0].pos, "attackFlag");
-        } else if (hostileStructures[0]) {
+        if (hostileStructures[0] && !Game.flags.attackFlag) {
           creep.room.createFlag(hostileStructures[0].pos, "attackFlag");
         }
 
         if (Game.flags.startScouting) {
           Game.flags.startScouting.remove();
         }
+      }
+
+      if(Game.flags.attackFlag && Game.flags.attackFlag.room === creep.room && creep.room.controller?.safeMode) {
+        Game.flags.attackFlag.remove();
       }
 
     }
@@ -760,6 +762,16 @@ export class MovementUtils {
       //     }
       //   }
       // }
+/*
+      const host = creep.room.find(FIND_HOSTILE_CREEPS)
+      if(host.length) {
+        return true;
+      }*/
+    //  if(creep.room.name === 'E29S36') {
+    //   for(const flag of creep.room.find(FIND_FLAGS)) {
+    //     flag.remove();
+    //   }
+    //  }
       if(Game.flags['1']) {
         if(creep.room === Game.flags['1'].room) {
             creep.memory.scoutCheckpointNumber = 1;

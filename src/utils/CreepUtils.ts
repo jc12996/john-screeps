@@ -19,7 +19,7 @@ export class CreepUtils {
 
     public static run() {
 
-        this.scoutMovementPlanReport();
+        //this.scoutMovementPlanReport();
         for (var name in Game.creeps) {
             var creep = Game.creeps[name];
 

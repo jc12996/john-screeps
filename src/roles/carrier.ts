@@ -1155,7 +1155,7 @@ export class Carrier {
 
       const extensionCarriers = _.filter(
         Game.creeps,
-        extensionCreep => extensionCreep.memory.role == "carrier" && extensionCreep.room.name == spawn?.room.name && extensionCreep.memory.extensionFarm === 1
+        extensionCreep => extensionCreep.memory.role == "carrier" && extension && extensionCreep.room.name == extension?.room.name && extensionCreep.memory.extensionFarm === 1
       );
       if (extensions.length > 0 && extension && extensionCarriers.length === 0) {
         creep.say("🚚E");

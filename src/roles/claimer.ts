@@ -86,7 +86,11 @@ export class Claimer {
 
             if(creep.memory.building && creep.room?.controller) {
                 creep.say('🚩' + creep.room?.controller.room.name)
-                creep.reserveController(creep.room?.controller);
+                if(creep.room?.controller.reservation && creep.room?.controller.reservation?.username !== 'Xarroc') {
+                    creep.attackController(creep.room?.controller);
+                } else {
+                    creep.reserveController(creep.room?.controller);
+                }
                 return;
             }
 
@@ -110,7 +114,14 @@ export class Claimer {
                         return;
                     }
 
-                    const reservationCode = creep.reserveController(mineRoom?.controller);
+                    let reservationCode = null
+
+                    if(creep.room?.controller && creep.room?.controller.reservation && creep.room?.controller.reservation?.username !== 'Xarroc') {
+                        reservationCode =  creep.attackController(creep.room?.controller);
+                    } else {
+                        reservationCode = creep.reserveController(mineRoom?.controller);
+                    }
+
                     if(reservationCode == OK) {
                         creep.say('🚩'+mineRoom.name)
                         creep.memory.building = true;

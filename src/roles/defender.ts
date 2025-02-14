@@ -27,6 +27,12 @@ export class Defender {
             }
         });
 
+        var hostileSites = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
+            filter:  (creep) => {
+                return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
+            }
+        });
+
         var badSpawns = creep.room.find(FIND_HOSTILE_SPAWNS, {
             filter:  (creep) => {
                 return creep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner)
@@ -56,7 +62,7 @@ export class Defender {
 
         if(!Game.flags.attackFlag && hostileActiveTowers.length > 0 && nearestExit) {
             creep.moveTo(nearestExit);
-        } else if (hostileCreeps.length > 0 || hostileStructures.length > 0 || (badSpawns.length > 0 && hostileStructures.length < 3)) {
+        } else if (hostileCreeps.length > 0 || hostileStructures.length > 0 || hostileSites.length > 0 || (badSpawns.length > 0 && hostileStructures.length < 3)) {
             Attacker.run(creep);
         } else if(Game.flags?.draftFlag) {
             MovementUtils.goToFlag(creep,Game.flags?.draftFlag)

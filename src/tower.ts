@@ -128,7 +128,7 @@ export class Tower {
                     } else if(hostileCreeps[0].owner.username === 'Invader') {
                         tower.attack(hostileCreeps[0])
                     } else {
-                        tower.attack(attackers[0])
+                        tower.attack(hostileCreeps[0])
                     }
                 }
             });
