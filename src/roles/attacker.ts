@@ -193,7 +193,7 @@ export class Attacker {
                 }
 
             }
-            if(creep.room === Game.flags.attackFlag?.room && !hostileStructures && !hostileCreeps) {
+            if(creep.room === Game.flags.attackFlag?.room  && !hostileCreeps) {
                 Game.flags.attackFlag.remove();
                 if(Game.flags.scoutFlag) {
                     Game.flags.scoutFlag.remove();
