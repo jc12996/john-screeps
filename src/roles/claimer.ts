@@ -88,6 +88,8 @@ export class Claimer {
                 creep.say('🚩' + creep.room?.controller.room.name)
                 if(creep.room?.controller.reservation && creep.room?.controller.reservation?.username !== 'Xarroc') {
                     creep.attackController(creep.room?.controller);
+                } else if(!creep.room?.controller.my && creep.room?.controller.owner && creep.room?.controller.owner?.username !== 'Xarroc') {
+                    creep.attackController(creep.room?.controller);
                 } else {
                     creep.reserveController(creep.room?.controller);
                 }
@@ -118,7 +120,9 @@ export class Claimer {
 
                     if(creep.room?.controller && creep.room?.controller.reservation && creep.room?.controller.reservation?.username !== 'Xarroc') {
                         reservationCode =  creep.attackController(creep.room?.controller);
-                    } else {
+                    } else if(creep.room?.controller &&  !creep.room?.controller.my && creep.room?.controller.owner && creep.room?.controller.owner?.username !== 'Xarroc') {
+                        reservationCode = creep.attackController(creep.room?.controller);
+                    }  else {
                         reservationCode = creep.reserveController(mineRoom?.controller);
                     }
 
