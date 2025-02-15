@@ -118,6 +118,7 @@ export class CreepUtils {
             }
 
             if (creep.memory.role == "settler") {
+                MovementUtils.callForHelp(creep);
                 Settler.run(creep);
                 continue;
             }
@@ -127,6 +128,7 @@ export class CreepUtils {
                 continue;
             }
             if (creep.memory.role == "claimer" || creep.memory.role === "attackClaimer") {
+                MovementUtils.callForHelp(creep);
                 Claimer.run(creep);
                 continue;
             }
