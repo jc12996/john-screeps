@@ -674,7 +674,6 @@ export class MovementUtils {
         return (
           (hostileCreep.owner && !SpawnUtils.FRIENDLY_OWNERS_FILTER(hostileCreep.owner))
         )
-        // && (hostileCreep.getActiveBodyparts(ATTACK) > 0 || hostileCreep.getActiveBodyparts(WORK) > 0 || hostileCreep.getActiveBodyparts(CLAIM) > 0 || hostileCreep.getActiveBodyparts(RANGED_ATTACK) > 0)
          &&
          (hostileCreep.room.find(FIND_MY_STRUCTURES, {
            filter: (hostileRoom) => {
@@ -705,20 +704,21 @@ export class MovementUtils {
       }
     });
 
-    if (hostileCreeps.length > 0) {
-      creep.say("📞", true);
+    if (hostileCreeps.length > 0 || hostileStructures.length > 0 || hostileConstructions.length > 0) {
 
-      if (creep.memory.role === "scout" && !Game.flags.scoutFlag && !Game.flags.attackFlag && !creep.room.controller?.safeMode) {
+      creep.say("📞", true);
+      if (creep.memory.role === "scout" && !Game.flags.scoutFlag && !Game.flags.attackFlag && !creep.room.controller?.safeMode && hostileCreeps[0]?.pos) {
         creep.room.createFlag(hostileCreeps[0].pos, "scoutFlag");
       }
 
 
       if (!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
-        if (hostileStructures[0] && !Game.flags.attackFlag) {
+        console.log('Sending distress signal...')
+        if (hostileStructures[0]?.pos) {
           creep.room.createFlag(hostileStructures[0].pos, "attackFlag");
-        } else if (hostileCreeps[0] && !Game.flags.attackFlag) {
+        } else if (hostileCreeps[0]?.pos) {
           creep.room.createFlag(hostileCreeps[0].pos, "attackFlag");
-        } else if (hostileConstructions[0] && !Game.flags.attackFlag) {
+        } else if (hostileConstructions[0]?.pos) {
           creep.room.createFlag(hostileConstructions[0].pos, "attackFlag");
         }
 
@@ -736,106 +736,7 @@ export class MovementUtils {
     }
   }
 
-  private static scoutsSayItsGood(creep: Creep): boolean {
-    const scouts = _.filter(Game.creeps, creep => creep.memory.role == "scout");
-
-    const wayFinderFlags = [];
-      for(const flag in  Game.flags) {
-        if(Game.flags[flag].color === COLOR_GREY) {
-          wayFinderFlags.push(flag);
-        }
-      }
-
-    if(creep.memory.role !== 'scout' && creep.memory.scoutCheckpointNumber && creep.memory.scoutCheckpointNumber >= wayFinderFlags.length - 1) {
-      return true;
-    }
-
-    if(scouts.length >= 2) {
-
-      // WIP
-      // let wayfinderNumber = 1;
-      // for(const wayFinderFlag in wayFinderFlags) {
-      //   if(wayFinderFlag) {
-
-
-      //     wayfinderNumber++;
-      //     creep.say('👀'+wayfinderNumber);
-      //     if(!creep.memory.scoutCheckpointNumber) {
-      //       if(creep.room === Game.flags[wayFinderFlag]?.room) {
-      //           creep.memory.scoutCheckpointNumber = wayfinderNumber;
-      //       }
-      //       creep.moveTo(Game.flags[wayFinderFlag]);
-      //       return false;
-      //     }
-
-      //     if(creep.room === Game.flags[wayFinderFlag]?.room) {
-      //         creep.memory.scoutCheckpointNumber = wayfinderNumber;
-      //     }
-
-      //     if(creep.memory.scoutCheckpointNumber == wayfinderNumber) {
-      //       creep.moveTo(Game.flags[wayFinderFlag]);
-      //       return false;
-      //     }
-      //   }
-      // }
-/*
-      const host = creep.room.find(FIND_HOSTILE_CREEPS)
-      if(host.length) {
-        return true;
-      }*/
-    //  if(creep.room.name === 'E29S36') {
-    //   for(const flag of creep.room.find(FIND_FLAGS)) {
-    //     flag.remove();
-    //   }
-    //  }
-      if(Game.flags['1']) {
-        if(creep.room === Game.flags['1'].room) {
-            creep.memory.scoutCheckpointNumber = 1;
-        }
-
-        if(!creep.memory.scoutCheckpointNumber) {
-            creep.say('👀1');
-            creep.moveTo(Game.flags['1']);
-            return false;
-        }
-      }
-
-      if(Game.flags['2']) {
-        if(creep.room === Game.flags['2'].room) {
-            creep.memory.scoutCheckpointNumber = 2;
-        }
-
-        if(creep.memory.scoutCheckpointNumber == 1) {
-            creep.say('👀2');
-            creep.moveTo(Game.flags['2']);
-            return false;
-        }
-      }
-
-      if(Game.flags['3']) {
-        if(creep.room === Game.flags['3'].room) {
-            creep.memory.scoutCheckpointNumber = 3;
-        }
-
-        if(creep.memory.scoutCheckpointNumber == 2) {
-            creep.say('👀3');
-            creep.moveTo(Game.flags['3']);
-            return false;
-        }
-      }
-    }
-
-    return true;
-  }
-
   public static claimerSettlerMovementSequence(creep: Creep): boolean {
-
-/*
-    const scoutsSayItsGood = this.scoutsSayItsGood(creep);
-    if(!scoutsSayItsGood && creep.memory.role !== 'defender' && creep.memory.role !== 'attackClaimer') {
-      return false;
-    }*/
-
 
     if (Game.flags.settlerFlag && creep.memory.role === 'settler') {
 
