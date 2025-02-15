@@ -712,8 +712,8 @@ export class MovementUtils {
       }
 
 
-      if (!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
-        console.log('Sending distress signal...')
+      if (!Game.flags.attackFlag && !creep.room.controller?.safeMode && creep.room.name) {
+        console.log('Sending distress signal... '+ creep.room.name)
         if (hostileStructures[0]?.pos) {
           creep.room.createFlag(hostileStructures[0].pos, "attackFlag");
         } else if (hostileCreeps[0]?.pos) {
