@@ -814,11 +814,11 @@ export class MovementUtils {
 
   public static claimerSettlerMovementSequence(creep: Creep): boolean {
 
-
+/*
     const scoutsSayItsGood = this.scoutsSayItsGood(creep);
     if(!scoutsSayItsGood && creep.memory.role !== 'defender' && creep.memory.role !== 'attackClaimer') {
       return false;
-    }
+    }*/
 
 
     if (Game.flags.settlerFlag && creep.memory.role === 'settler') {
