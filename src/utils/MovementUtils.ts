@@ -695,6 +695,16 @@ export class MovementUtils {
       }
     });
 
+    const hostileConstructions = creep.room.find(FIND_HOSTILE_CONSTRUCTION_SITES, {
+      filter: creep => {
+        return (
+          creep.owner &&
+          !SpawnUtils.FRIENDLY_OWNERS_FILTER(creep.owner) &&
+          creep.structureType !== STRUCTURE_RAMPART
+        );
+      }
+    });
+
     if (hostileCreeps.length > 0) {
       creep.say("📞", true);
 
@@ -706,7 +716,13 @@ export class MovementUtils {
       if (!Game.flags.attackFlag && !creep.room.controller?.safeMode) {
         if (hostileStructures[0] && !Game.flags.attackFlag) {
           creep.room.createFlag(hostileStructures[0].pos, "attackFlag");
+        } else if (hostileCreeps[0] && !Game.flags.attackFlag) {
+          creep.room.createFlag(hostileCreeps[0].pos, "attackFlag");
+        } else if (hostileConstructions[0] && !Game.flags.attackFlag) {
+          creep.room.createFlag(hostileConstructions[0].pos, "attackFlag");
         }
+
+
 
         if (Game.flags.startScouting) {
           Game.flags.startScouting.remove();
