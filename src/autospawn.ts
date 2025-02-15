@@ -307,7 +307,7 @@ export class AutoSpawn {
             currentRoomCreepCounts.miners > 0 &&
             currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers &&
             !mineFlag.room.controller.my &&
-            currentRoomCreepCounts.attackClaimers <= 2
+            currentRoomCreepCounts.attackClaimers < 2
           ) {
             name = "AttackClaimer" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("attackClaimer", spawn, commandLevel);
@@ -322,7 +322,7 @@ export class AutoSpawn {
             !mineFlag.room?.controller.my &&
             ((needsNewAttackClaimer && currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers + 1) ||
               currentRoomCreepCounts.attackClaimers < numberOfNeededAttackClaimers) &&
-              currentRoomCreepCounts.attackClaimers <= 2
+              currentRoomCreepCounts.attackClaimers < 2
           ) {
             name = "AttackClaimer" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("attackClaimer", spawn, commandLevel);
@@ -332,7 +332,8 @@ export class AutoSpawn {
             mineFlags.length > 0 &&
             commandLevel >= 2 &&
             energyCapacityAvailable >= 450 &&
-            currentRoomCreepCounts.miners < numberOfNeededMiners
+            currentRoomCreepCounts.miners < numberOfNeededMiners &&
+            (!mineFlag.room?.controller?.owner || (mineFlag.room?.controller?.owner && mineFlag.room?.controller?.owner.username === 'Xarroc'))
           ) {
             name = "Miner" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel);
@@ -345,7 +346,8 @@ export class AutoSpawn {
             currentRoomCreepCounts.haulers < numberOfNeededHaulers &&
             numberOfContainers > 0 &&
             (currentRoomCreepCounts.miners >= numberOfNeededMiners || currentRoomCreepCounts.miners >= 2) &&
-            mineFlag.room?.find(FIND_STRUCTURES).some(structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0)
+            mineFlag.room?.find(FIND_STRUCTURES).some(structure => structure.structureType === STRUCTURE_CONTAINER && structure.store[RESOURCE_ENERGY] > 0) &&
+            (!mineFlag.room?.controller?.owner || (mineFlag.room?.controller?.owner && mineFlag.room?.controller?.owner.username === 'Xarroc'))
           ) {
             name = "Hauler" + "_" + mineFlag.name + "_" + Game.time;
             bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel, true);

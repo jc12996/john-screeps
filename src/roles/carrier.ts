@@ -881,11 +881,13 @@ export class Carrier {
       }
     );
 
+    const constructionSites = creep.room.find(FIND_CONSTRUCTION_SITES);
+
     if (
       creep.store[RESOURCE_ENERGY] > 0 &&
       nearestStorageOrTerminal &&
       nearestStorageOrTerminal.store.energy < 500 &&
-      creep.room.energyAvailable >= 500
+      creep.room.energyAvailable >= 500 && constructionSites.length === 0
     ) {
       if(nearestStorageOrTerminal.structureType === STRUCTURE_STORAGE)  {
         creep.say("🚚S");
