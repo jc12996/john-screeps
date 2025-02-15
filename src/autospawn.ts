@@ -420,7 +420,7 @@ export class AutoSpawn {
     // }
     //Suicide scripts
 
-    if(energyCapacityAvailable >= 500 && energyAvailable >= 500) {
+    if(energyCapacityAvailable >= 450 && energyAvailable >= 450) {
       let suicideOccured = false
       if( harvesters.length > 0 && numberOfNeededHarvesters > 0 && numberOfNeededHarvesters === harvesters.length && suicideOccured === false) {
         const lowHarvestor = harvesters.filter(harv => {
