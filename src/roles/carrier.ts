@@ -106,7 +106,7 @@ export class Carrier {
       carriers.length > 0 &&
       carriers[1] &&
       creep.name === carriers[1].name &&
-      carriers.length > 3
+      carriers.length >= 2
     ) {
       creep.memory.extensionFarm = 2;
     } else if (
@@ -115,7 +115,7 @@ export class Carrier {
       creep.name === carriers[0].name &&
       creep.room.energyAvailable > 0 &&
       links.length >= 2 &&
-      carriers.length > 2
+      carriers.length >= 2
     ) {
       creep.memory.extensionFarm = 1;
     } else if (

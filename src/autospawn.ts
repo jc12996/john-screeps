@@ -413,16 +413,35 @@ export class AutoSpawn {
 
 
     if(numberOfNeededHarvesters >= RoomSources.length && commandLevel >= 6) {
-      numberOfNeededHarvesters = RoomSources.length;
+      numberOfNeededHarvesters = RoomSources.length >=  2 ?  RoomSources.length : 2;
     }
 
-    // if(spawn.room.name === 'E26S37') {
-    //   spawn.room.memory.numberOfNeededHarvestorSlots = 8
+    if(RoomSources.length === 1) {
+      if(numberOfNeededUpgraders >= 1) {
+        numberOfNeededUpgraders = 1;
+      }
+      if(numberOfNeededHarvesters >= 2) {
+        numberOfNeededHarvesters = 2;
+      }
+      if(numberOfNeededRepairers >= 1 && commandLevel <= 4 && energyAvailable < 800) {
+          numberOfNeededRepairers = 0;
+      }
+
+      if(numberOfNeededCarriers >= 1 && commandLevel <= 4 && energyAvailable < 800) {
+        numberOfNeededCarriers = 1;
+      }
+
+    }
+
+
+    // if(spawn.room.name === 'E28S37') {
+    //   spawn.room.memory.numberOfNeededHarvestorSlots = 2
+    //   numberOfNeededHarvesters = 2;
     //   console.log('numberOfNeededHarvesters',numberOfNeededHarvesters)
     // }
     //Suicide scripts
 
-    if(energyCapacityAvailable >= 450 && energyAvailable >= 450) {
+    if(energyCapacityAvailable >= 500 && energyAvailable >= 500) {
       let suicideOccured = false
       if( harvesters.length > 0 && numberOfNeededHarvesters > 0 && numberOfNeededHarvesters === harvesters.length && suicideOccured === false) {
         const lowHarvestor = harvesters.filter(harv => {
