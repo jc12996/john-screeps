@@ -308,6 +308,8 @@ export class MovementUtils {
       });
 
       let transferCode = undefined;
+
+
       if (
         (creep.memory.role === "builder" ||
           (creep.room.controller && creep.room.controller.level <= 2) ||
@@ -347,10 +349,11 @@ export class MovementUtils {
         return;
       }
 
+
       if (
         nearestStorageOrTerminal &&
         nearestStorageOrTerminal.store &&
-        (creep.memory.extensionFarm !== undefined)
+        (creep.memory.extensionFarm !== undefined || nearestStorageOrTerminal.store.energy > 2000)
       ) {
         transferCode = creep.withdraw(nearestStorageOrTerminal,RESOURCE_ENERGY);
         if(nearestStorageOrTerminal && transferCode === ERR_NOT_IN_RANGE) {
@@ -358,6 +361,7 @@ export class MovementUtils {
         }
         return;
       }
+
 
       const nearestContainer = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: struc => {

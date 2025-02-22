@@ -273,7 +273,7 @@ export class AutoSpawn {
 
         // Check if any attackClaimer has 100 ticks or less left to live
         const needsNewAttackClaimer = attackClaimers.some(
-          creep => creep.ticksToLive && creep.ticksToLive <= 300 && creep.memory.assignedMineFlag == mineFlag.name
+          creep => creep.ticksToLive && creep.ticksToLive <= 100 && creep.memory.assignedMineFlag == mineFlag.name
         );
 
         if (numberOfNeededMiners > 0 || numberOfNeededHaulers > 0 || numberOfNeededAttackClaimers > 0) {

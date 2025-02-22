@@ -195,6 +195,7 @@ export class Builder {
         creep.moveTo(creep.room.controller)
         return;
       }
+      //console.log('hhhhh')
       MovementUtils.generalGatherMovement(creep);
     }
   }
