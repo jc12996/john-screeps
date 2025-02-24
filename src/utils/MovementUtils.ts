@@ -612,6 +612,19 @@ export class MovementUtils {
       return;
     }
 
+    const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: structure => {
+        return structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 900000;
+      }
+    }) as StructureStorage;
+    if (target_storage) {
+      creep.say("🚚 S");
+      transferCode = creep.withdraw(target_storage,RESOURCE_ENERGY);
+      if(target_storage && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(target_storage, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
 
 
     if (roomRallyPointFlag[0]) {

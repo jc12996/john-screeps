@@ -550,6 +550,13 @@ export class Carrier {
           filter: s => s.structureType === STRUCTURE_STORAGE
         })[0] as StructureStorage | null;
 
+        if (storage && storage.store[RESOURCE_ENERGY] > 900000 && workCreep.memory.extensionFarm === undefined) {
+          return (
+            workCreep.memory.role === "upgrader" &&
+            workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity()
+          );
+        }
+
         if (storage && storage.store[RESOURCE_ENERGY] > 10000 && workCreep.memory.extensionFarm === undefined) {
           return (
             workCreep.memory.role === "upgrader" &&
@@ -1068,6 +1075,16 @@ export class Carrier {
       return;
     }
 
+
+
+    if (nearestAvailableWorkingRoleCreep) {
+      creep.say("🚚 C");
+      transferCode = creep.transfer(nearestAvailableWorkingRoleCreep,RESOURCE_ENERGY);
+      if(nearestAvailableWorkingRoleCreep && transferCode === ERR_NOT_IN_RANGE) {
+        creep.moveTo(nearestAvailableWorkingRoleCreep, { visualizePathStyle: { stroke: "#ffaa00" } });
+      }
+      return;
+    }
 
     if (roomRallyPointFlag) {
       creep.moveTo(roomRallyPointFlag);
