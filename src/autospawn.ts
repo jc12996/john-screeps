@@ -183,9 +183,9 @@ export class AutoSpawn {
       }
     }
 
-    if(commandLevel >= 6 && spawn.room.storage.energy > 900000) {
-      numberOfNeededCarriers++;
-      numberOfNeededUpgraders++;
+    if(commandLevel >= 6 && storage && storage.store.energy > 900000 && commandLevel < 8) {
+      numberOfNeededCarriers = numberOfNeededCarriers + 3;
+      numberOfNeededUpgraders  = numberOfNeededUpgraders + 3;
     }
 
     // if (harvesters.length < upgraders.length) {
@@ -400,7 +400,12 @@ export class AutoSpawn {
     }
 
     if(numberOfNeededCarriers >= 4 && commandLevel >= 6) {
-      numberOfNeededCarriers = 4;
+      const tempNumberOfNeededCarriers = numberOfNeededCarriers;
+      if(storage && storage.store.energy >= 900000) {
+        numberOfNeededCarriers = tempNumberOfNeededCarriers + 2;
+      } else {
+        numberOfNeededCarriers = 4;
+      }
     }
 
 
@@ -413,7 +418,13 @@ export class AutoSpawn {
     }
 
     if(spawn.energyCapacityAvailable > 1700 && commandLevel >= 6 && numberOfNeededUpgraders >= 1) {
-      numberOfNeededUpgraders = 1;
+      const tempNumberOfNeededUpgraders = numberOfNeededUpgraders;
+      if(storage && storage.store.energy < 900000) {
+        numberOfNeededUpgraders = 1;
+      } else {
+        numberOfNeededUpgraders = tempNumberOfNeededUpgraders + 1;
+      }
+
     }
 
 
@@ -423,7 +434,15 @@ export class AutoSpawn {
 
     if(RoomSources.length === 1) {
       if(numberOfNeededUpgraders >= 1) {
-        numberOfNeededUpgraders = 1;
+        const tempNumberOfNeededUpgraders = numberOfNeededUpgraders;
+
+        if(storage && storage.store.energy >= 900000) {
+          numberOfNeededUpgraders = tempNumberOfNeededUpgraders + 1;
+          console.log('big storage full: '+storage.store.energy,'upgraders: '+numberOfNeededUpgraders,'carriers: '+numberOfNeededCarriers)
+        } else {
+          numberOfNeededUpgraders = 1;
+        }
+
       }
       if(numberOfNeededHarvesters >= 2) {
         numberOfNeededHarvesters = 2;
