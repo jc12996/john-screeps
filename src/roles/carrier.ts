@@ -420,6 +420,7 @@ export class Carrier {
       } else if (
         terminal &&
         creep.store.energy > 0 &&
+        creep.store.energy < 200000 &&
         extensionsNearMe.length === 0 &&
         creep.transfer(terminal, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE
       ) {

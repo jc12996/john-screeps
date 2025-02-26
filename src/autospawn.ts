@@ -183,6 +183,11 @@ export class AutoSpawn {
       }
     }
 
+    if(commandLevel >= 6 && spawn.room.storage.energy > 900000) {
+      numberOfNeededCarriers++;
+      numberOfNeededUpgraders++;
+    }
+
     // if (harvesters.length < upgraders.length) {
     //   numberOfNeededUpgraders = 2;
     // }
