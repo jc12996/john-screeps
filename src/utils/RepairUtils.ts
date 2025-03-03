@@ -57,8 +57,8 @@ export class RepairUtils {
                 }
             });
 
-            if(largeStorages.length > 0 && maxWallStrength < WALL_HITS_MAX) {
-                maxWallStrength = WALL_HITS_MAX;
+            if(largeStorages.length > 0 && maxWallStrength < 1000000) {
+                maxWallStrength = 1000000;
             }
 
 

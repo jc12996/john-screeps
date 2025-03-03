@@ -844,7 +844,13 @@ export class Carrier {
       }
     });
 
-    if(nearestTower) {
+    const xCreeps = creep.room.find(FIND_MY_CREEPS, {
+      filter: (myCreep) => {
+        return myCreep.memory.extensionFarm !== undefined
+      }
+    })
+
+    if(nearestTower && xCreeps.length < 2) {
       creep.say("🚚T");
       transferCode = creep.transfer(nearestTower,RESOURCE_ENERGY);
       if(nearestTower && transferCode === ERR_NOT_IN_RANGE) {

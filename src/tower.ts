@@ -151,20 +151,20 @@ export class Tower {
         }
         else if(largeStorages.length > 0) {
             console.log('largeStorages wall repair sequence... ',walls.length, ramparts.length)
-            if(walls.length > 0 && room.controller?.my) {
+            const defences = room.find(FIND_STRUCTURES, {
+                filter:  (structure) => {
+                    return (structure.structureType === STRUCTURE_RAMPART || structure.structureType === STRUCTURE_WALL) && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength) && room.energyAvailable > 550 && (room.energyAvailable >= room.energyCapacityAvailable || largeStorages.length  > 0 ) && room.find(FIND_HOSTILE_CREEPS).length === 0
+                }
+            });
+
+            if(defences.length > 0 && room.controller?.my) {
                 // Find the rampart with the lowest health
-                const weakestWall = walls.reduce((weakest, rampart) => {
+                const weakestDefence = defences.reduce((weakest, rampart) => {
                     return (rampart.hits < weakest.hits) ? rampart : weakest;
                 });
-                towers.forEach(tower => tower.repair(weakestWall));
+                towers.forEach(tower => tower.repair(weakestDefence));
             }
-            else if(ramparts.length > 0 && room.controller?.my) {
-                // Find the rampart with the lowest health
-                const weakestRampart = ramparts.reduce((weakest, rampart) => {
-                    return (rampart.hits < weakest.hits) ? rampart : weakest;
-                });
-                towers.forEach(tower => tower.repair(weakestRampart));
-            }
+
         }
         else if(superWeakRamparts.length > 0 && room.controller?.my) {
             // Find the rampart with the lowest health
