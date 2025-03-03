@@ -38,18 +38,29 @@ export class RepairUtils {
                     maxContainerStrengthRepairer = 10000;
                     break;
                 case 7:
-                    maxWallStrength = 250000;
+                    maxWallStrength = 1000000;
                     maxRoadStrength = 3000;
                     maxRoadStrengthRepairer = 4800;
                     maxContainerStrengthRepairer = 50000;
                     break;
                 case 8:
-                    maxWallStrength = 1000000;
+                    maxWallStrength = 2000000;
                     maxRoadStrength = 4000;
                     maxRoadStrengthRepairer = 4900;
                     maxContainerStrengthRepairer = 50000;
                     break;
             }
+
+            const largeStorages = target.room.find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return ((structure.structureType === STRUCTURE_STORAGE && structure.store.energy > 900000) || (structure.structureType === STRUCTURE_TERMINAL&& structure.store.energy > 200000))
+                }
+            });
+
+            if(largeStorages.length > 0 && maxWallStrength < 2000000) {
+                maxWallStrength = 1000000;
+            }
+
 
         }
 

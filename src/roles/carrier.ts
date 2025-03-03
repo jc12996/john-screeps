@@ -554,6 +554,7 @@ export class Carrier {
         if (storage && storage.store[RESOURCE_ENERGY] > 900000 && workCreep.memory.extensionFarm === undefined) {
           return (
             workCreep.memory.role === "upgrader" &&
+            workCreep.store.energy < 100 &&
             workCreep.store[RESOURCE_ENERGY] < workCreep.store.getCapacity()
           );
         }

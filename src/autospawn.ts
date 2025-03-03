@@ -577,7 +577,7 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("carrier", spawn, commandLevel);
       options = { memory: { role: "carrier" } };
     } else if (
-      commandLevel < 6 &&
+      (commandLevel < 6 || (commandLevel < 8 && storage.store.energy > 900000)) &&
       spawn.room.energyCapacityAvailable > 250 &&
       hostileCreeps.length == 0 &&
       carriers.length >= 2 &&
@@ -679,7 +679,7 @@ export class AutoSpawn {
       bodyParts = SpawnUtils.getBodyPartsForArchetype("meatGrinder", spawn, commandLevel);
       options = { memory: { role: "meatGrinder", isArmySquad: true } };
     }  else if (
-      commandLevel < 6 &&
+      (commandLevel < 6 || (commandLevel < 8 && storage.store.energy > 900000)) &&
       spawn.room.energyAvailable > 400 &&
       hostileCreeps.length == 0 &&
       (spawn.room.controller.level < 2 || extensions.length >= 4) &&

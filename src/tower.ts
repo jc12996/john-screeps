@@ -49,10 +49,15 @@ export class Tower {
                 return structure.structureType === STRUCTURE_CONTAINER && structure.hits < (RepairUtils.buildingRatios(structure).maxContainerStrength)
             }
         });
+        const largeStorages = room.find(FIND_MY_STRUCTURES, {
+            filter: (structure) => {
+                return ((structure.structureType === STRUCTURE_STORAGE && structure.store.energy > 900000) || (structure.structureType === STRUCTURE_TERMINAL&& structure.store.energy > 200000))
+            }
+        });
 
         const ramparts = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength) && room.energyAvailable > 550 && room.energyAvailable >= room.energyCapacityAvailable && room.find(FIND_HOSTILE_CREEPS).length === 0
+                return structure.structureType === STRUCTURE_RAMPART && structure.hits < (RepairUtils.buildingRatios(structure).maxRampartStrength) && room.energyAvailable > 550 && (room.energyAvailable >= room.energyCapacityAvailable || largeStorages.length  > 0 ) && room.find(FIND_HOSTILE_CREEPS).length === 0
             }
         });
 
@@ -64,7 +69,7 @@ export class Tower {
 
         const walls = room.find(FIND_STRUCTURES, {
             filter:  (structure) => {
-                return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength) && room.energyAvailable > 550 && room.energyAvailable >= room.energyCapacityAvailable && room.find(FIND_HOSTILE_CREEPS).length === 0
+                return structure.structureType === STRUCTURE_WALL && structure.hits < (RepairUtils.buildingRatios(structure).maxWallStrength) && room.energyAvailable > 550 && (room.energyAvailable >= room.energyCapacityAvailable || largeStorages.length  > 0 ) && room.find(FIND_HOSTILE_CREEPS).length === 0
             }
         });
 
@@ -144,7 +149,17 @@ export class Tower {
             });
             towers.forEach(tower => tower.repair(weakestContainer));
         }
-
+        else if(largeStorages.length > 0) {
+            console.log('largeStorages wall repair sequence',walls.length, ramparts.length)
+            if(walls.length > 0 && room.controller?.my) {
+                // Find the rampart with the lowest health
+                towers.forEach(tower => tower.repair(walls[0]));
+            }
+            else if(ramparts.length > 0 && room.controller?.my) {
+                // Find the rampart with the lowest health
+                towers.forEach(tower => tower.repair(ramparts[0]));
+            }
+        }
         else if(superWeakRamparts.length > 0 && room.controller?.my) {
             // Find the rampart with the lowest health
             const weakestRampart = superWeakRamparts.reduce((weakest, rampart) => {
@@ -180,5 +195,8 @@ export class Tower {
             });
             towers.forEach(tower => tower.repair(weakestRampart));
         }
+
+
+
     }
 }
