@@ -150,14 +150,20 @@ export class Tower {
             towers.forEach(tower => tower.repair(weakestContainer));
         }
         else if(largeStorages.length > 0) {
-            console.log('largeStorages wall repair sequence',walls.length, ramparts.length)
+            console.log('largeStorages wall repair sequence... ',walls.length, ramparts.length)
             if(walls.length > 0 && room.controller?.my) {
                 // Find the rampart with the lowest health
-                towers.forEach(tower => tower.repair(walls[0]));
+                const weakestWall = walls.reduce((weakest, rampart) => {
+                    return (rampart.hits < weakest.hits) ? rampart : weakest;
+                });
+                towers.forEach(tower => tower.repair(weakestWall));
             }
             else if(ramparts.length > 0 && room.controller?.my) {
                 // Find the rampart with the lowest health
-                towers.forEach(tower => tower.repair(ramparts[0]));
+                const weakestRampart = ramparts.reduce((weakest, rampart) => {
+                    return (rampart.hits < weakest.hits) ? rampart : weakest;
+                });
+                towers.forEach(tower => tower.repair(weakestRampart));
             }
         }
         else if(superWeakRamparts.length > 0 && room.controller?.my) {
