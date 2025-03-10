@@ -101,9 +101,9 @@ export class Miner {
     }
 
     if (
-      creep.memory.extractorMiner === true &&
+      (creep.memory.extractorMiner === true &&
       terminal?.store?.getFreeCapacity() > 0 &&
-      creep.getActiveBodyparts(WORK) > 0
+      creep.getActiveBodyparts(WORK) > 0) || (creep.memory.assignedMineFlag === undefined && creep.memory.role === 'miner')
     ) {
       if (creep.store[RESOURCE_ENERGY] > 0) {
         this.dropOffStuff(creep, firstRoom);

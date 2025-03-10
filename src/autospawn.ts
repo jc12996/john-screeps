@@ -45,6 +45,10 @@ export class AutoSpawn {
       roomCreeps,
       creep => creep.memory.role == "upgrader"
     );
+    let homeMineralMiners = _.filter(
+      roomCreeps,
+      creep => creep.memory.role == "miner" && creep.memory.assignedMineFlag === undefined
+    );
     let builders = _.filter(
       roomCreeps,
       creep => creep.memory.role == "builder"
@@ -688,6 +692,15 @@ export class AutoSpawn {
       name = "Upgrader" + Game.time + 1;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("upgrader", spawn, commandLevel);
       options = { memory: { role: "upgrader" } };
+    }
+    else if (
+      homeMineralMiners.length === 0 &&
+      !spawn.spawning &&
+      commandLevel >= 6
+    ) {
+      name = "Miner" + "_Minerals_" + spawn.room.name + "_" + Game.time;
+      bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel);
+      options = { memory: { role: "miner" } };
     }
     // console.log(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
     this.startSpawningSequence(spawn, name, bodyParts, options, energyAvailable, extensionFarm2Flag, labFarmFlag);
