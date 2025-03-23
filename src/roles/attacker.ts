@@ -176,6 +176,19 @@ export class Attacker {
             return;
         }
 
+        if (Game.flags.attackHere && Game.flags.attackHere.room && creep.room.name === Game.flags.attackHere.room.name) {
+            creep.say('⚔ 🚧');
+
+            const hereStrucs = Game.flags.attackHere.pos.findInRange(FIND_STRUCTURES,1).filter(sss => {
+                return sss.structureType !== STRUCTURE_CONTROLLER
+            });
+            if(hereStrucs.length === 0 && Game.flags.attackHere) {
+                Game.flags.attackHere.remove();
+            }
+            Attacker.attackTarget(creep,hereStrucs[0])
+            return;
+        }
+
 
 
         if(invaderCore) {
