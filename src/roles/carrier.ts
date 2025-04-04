@@ -99,7 +99,7 @@ export class Carrier {
 
     if (
       ((terminal && terminal.store[RESOURCE_ENERGY] > 2000) ||
-        (creep.room.energyCapacityAvailable > 1000 && creep.room.energyAvailable > 300)) &&
+        (creep.room.energyAvailable > 350 && creep.room.energyCapacityAvailable > 1000)) &&
       extensionLinkFlag2 &&
       creep.room.energyAvailable > 0 &&
       links.length >= 3 &&
@@ -110,7 +110,7 @@ export class Carrier {
     ) {
       creep.memory.extensionFarm = 2;
     } else if (
-      ((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) &&
+      ((storage && storage.store[RESOURCE_ENERGY] > 2000) || (creep.room.energyAvailable > 350 && creep.room.energyCapacityAvailable > 1000)) &&
       carriers[0] &&
       creep.name === carriers[0].name &&
       creep.room.energyAvailable > 0 &&
@@ -119,7 +119,7 @@ export class Carrier {
     ) {
       creep.memory.extensionFarm = 1;
     } else if (
-      ((storage && storage.store[RESOURCE_ENERGY] > 2000) || creep.room.energyCapacityAvailable > 1000) &&
+      ((storage && storage.store[RESOURCE_ENERGY] > 2000) || (creep.room.energyAvailable > 350 && creep.room.energyCapacityAvailable > 1000)) &&
       carriers.length > 2 &&
       carriers[2] &&
       creep.name === carriers[2].name &&
@@ -1108,11 +1108,12 @@ export class Carrier {
         {
           filter: structure => {
             return (
-              (structure.structureType === STRUCTURE_TERMINAL
-                || structure.structureType === STRUCTURE_STORAGE
+              structure.room?.controller?.my &&
+              ((structure.structureType === STRUCTURE_TERMINAL && (structure.store.getUsedCapacity() < 200000 ))
+                || (structure.structureType === STRUCTURE_STORAGE && (structure.store.getUsedCapacity() < 800000 ))
               ) &&
-              structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 &&
-              structure.room?.controller?.my
+              structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+
             );
           }
         }

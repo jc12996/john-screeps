@@ -14,6 +14,11 @@ export class Repairer {
       return;
     }
 
+    if(creep.room.energyAvailable < 400) {
+      Carrier.run(creep);
+      return;
+    }
+
     if (creep.memory.repairing && creep.store[RESOURCE_ENERGY] == 0) {
       creep.memory.repairing = false;
       creep.say("🔄 harvest");
