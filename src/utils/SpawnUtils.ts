@@ -17,13 +17,13 @@ export enum PartCosts {
 
 const myFriends = [
     // 'gnat',
-    'ZeNeR',
+    //'ZeNeR',
     'Xarroc',
-    'techdeck',
+    //'techdeck',
     // 'Matticus',
-    'Dreamlane',
+    //'Dreamlane',
     // 'legendeck',
-    'kailin-limble',
+    //'kailin-limble',
     // 'Redfro',
     // 'Matticus',
     'Source Keeper'
