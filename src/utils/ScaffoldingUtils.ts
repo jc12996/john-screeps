@@ -433,7 +433,7 @@ EREEER
                 pos.position.createConstructionSite(STRUCTURE_SPAWN)
                 break;
             case 'F':
-                if(roomLevel === 8) {
+                if(roomLevel >= 7) {
                     pos.position.createConstructionSite(STRUCTURE_FACTORY)
                 }
                 break;

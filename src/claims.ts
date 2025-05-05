@@ -26,7 +26,6 @@ export function getNextClaimFlag(room:Room,extensionFarm2Flag:Flag): Flag | unde
             if(roomSpawn?.length && claimRoom?.controller && claimRoom?.controller.owner) {
                 continue;
             }
-
             return claimFlag;
         }
     }
