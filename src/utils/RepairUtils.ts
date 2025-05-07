@@ -44,9 +44,9 @@ export class RepairUtils {
                     maxContainerStrengthRepairer = 50000;
                     break;
                 case 8:
-                    maxWallStrength = 2000000;
-                    maxRoadStrength = 4000;
-                    maxRoadStrengthRepairer = 4900;
+                    maxWallStrength = 1000000;
+                    maxRoadStrength = 3000;
+                    maxRoadStrengthRepairer = 4800;
                     maxContainerStrengthRepairer = 50000;
                     break;
             }
