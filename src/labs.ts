@@ -228,7 +228,7 @@ export class Labs {
   }
 
   public static boostCreep(creep: Creep): boolean {
-    creep.say("✨")
+
     const outputCompound = Labs.MAP.output as MineralBoostConstant;
     const productionLab = creep.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: structure => {
@@ -242,6 +242,8 @@ export class Labs {
     if (!productionLab) {
       return true;
     }
+
+       creep.say("✨")
 
     if (
       creep.memory.role === "attacker" &&
