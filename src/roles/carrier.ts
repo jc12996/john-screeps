@@ -143,6 +143,9 @@ export class Carrier {
         creep.say("🚚 X2");
       } else if (creep.memory?.extensionFarm === 3) {
         creep.say("🔬");
+        if(creep.store[RESOURCE_ENERGY] > 0) {
+          creep.drop(RESOURCE_ENERGY);
+        }
       } else {
         creep.say("🚚");
       }
@@ -172,11 +175,13 @@ export class Carrier {
       creep.memory.carrying = true;
     }
 
+
     if (
       (!creep.memory.carrying &&
         creep.memory.extensionFarm === 3 &&
         creep.store[Labs.MAP.input1 as MineralBaseCompoundsConstant | MineralCompoundConstant] > 0) ||
-      creep.store[Labs.MAP.input2 as MineralBaseCompoundsConstant | MineralCompoundConstant] > 0
+      creep.store[Labs.MAP.input2 as MineralBaseCompoundsConstant | MineralCompoundConstant] > 0 ||
+      creep.store.getFreeCapacity() === 0
     ) {
       creep.memory.carrying = true;
     }
@@ -188,6 +193,7 @@ export class Carrier {
     if (
       creep.memory.carrying &&
       creep.memory.extensionFarm === 3 &&
+      creep.store.getFreeCapacity() !== 0 &&
       creep.store[Labs.MAP.input1 as MineralBaseCompoundsConstant | MineralCompoundConstant] === 0 &&
       creep.store[Labs.MAP.input2 as MineralBaseCompoundsConstant | MineralCompoundConstant] === 0
     ) {
@@ -223,6 +229,18 @@ export class Carrier {
               terminal
             );
           }
+
+          const mineral = creep.room.find(FIND_MINERALS)[0];
+          if(mineral && terminal && terminal.store[mineral.mineralType] > 200000) {
+            let transferCode = creep.withdraw(terminal, mineral.mineralType);
+            if(terminal && transferCode === ERR_NOT_IN_RANGE) {
+              creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
+            }
+
+            if(transferCode == OK) {
+              creep.drop(mineral.mineralType);
+            }
+          }
           return;
         }
 
@@ -240,11 +258,27 @@ export class Carrier {
 
       MovementUtils.generalGatherMovement(creep);
     } else if (creep.memory.carrying) {
-      if (creep.memory.extensionFarm === 3 && terminal && labs.length > 0) {
-        const canContinue = this.scienceCarrierSequence(creep, labs, terminal);
-        if (!canContinue) {
-          return;
+
+      if (creep.memory.extensionFarm === 3 && labs.length > 0 && creep.store[RESOURCE_ENERGY] === 0) {
+         const terminalLabs: StructureTerminal | null =
+      creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: structure => {
+          return (
+            structure.structureType == STRUCTURE_TERMINAL &&
+            structure.room?.controller?.my
+          );
         }
+      }) ?? null;
+
+         console.log(creep.memory.extensionFarm === 3 , terminalLabs , labs.length > 0);
+
+        if(terminalLabs)  {
+          const canContinue = this.scienceCarrierSequence(creep, labs, terminalLabs);
+          if (!canContinue) {
+            return;
+          }
+        }
+
       }
 
       if (creep.memory.extensionFarm !== undefined && commandLevel >= 6) {
@@ -270,6 +304,7 @@ export class Carrier {
       }
 
       if(creep.memory.extensionFarm === 3) {
+        console.log('here')
         this.labFarmCarrierSequence(creep,terminal);
         return;
       }
@@ -285,7 +320,8 @@ export class Carrier {
         terminal,
         roomRallyPointFlag,
         storage,
-        spawn
+        spawn,
+        labs
       );
     } else if (
       creep.room.controller &&
@@ -306,7 +342,12 @@ export class Carrier {
         }
         creep.moveTo(nearestAvailableWorkingRoleCreep);
       }
-    } else if (roomRallyPointFlag) {
+    }
+    else if(creep.memory.extensionFarm === 3 && !creep.memory.carrying) {
+      console.log('here2')
+      MovementUtils.generalGatherMovement(creep);
+    }
+    else if (roomRallyPointFlag) {
       creep.moveTo(roomRallyPointFlag);
     }
   }
@@ -404,6 +445,8 @@ export class Carrier {
         }
       });
 
+
+      const mineral = creep.room.find(FIND_MINERALS)[0];
       if (nearestTower && creep.transfer(nearestTower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.say("🚚X2T");
         creep.moveTo(nearestTower);
@@ -426,7 +469,16 @@ export class Carrier {
       ) {
         creep.say("🚚TR");
         creep.moveTo(terminal);
-      } else if(spawn && creep.room.energyCapacityAvailable === creep.room.energyAvailable){
+      }else if(mineral && terminal && terminal.store[mineral.mineralType] > 200000) {
+        let transferCode = creep.withdraw(terminal, mineral.mineralType);
+        if(terminal && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+
+        if(transferCode == OK) {
+          creep.drop(mineral.mineralType);
+        }
+      }else if(spawn && creep.room.energyCapacityAvailable === creep.room.energyAvailable){
         const extensionFarm2Flag = spawn.room.find(FIND_FLAGS,{
           filter: (fff:any) => fff.color === COLOR_PURPLE
         })[0]?? null
@@ -776,6 +828,10 @@ export class Carrier {
 
     if (creep.memory.extensionFarm === 3) {
 
+      if(creep.store[RESOURCE_ENERGY] > 0) {
+        creep.drop(RESOURCE_ENERGY);
+      }
+
       const nearestStorage: StructureStorage | null = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: structure => {
           return (
@@ -819,7 +875,8 @@ export class Carrier {
     terminal: StructureTerminal | null = null,
     roomRallyPointFlag: Flag | null = null,
     storage: StructureStorage  | null = null,
-    spawn: AnyStructure  | null  = null
+    spawn: AnyStructure  | null  = null,
+    labs: StructureLab[] | null = null
   ) {
 
     const commandLevel = creep.room?.controller?.level ?? 1;
@@ -952,6 +1009,19 @@ export class Carrier {
         creep.moveTo(nearestSpawn, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
       return;
+    }
+
+    if(labs?.length && commandLevel >= 8) {
+      for(const lab of Labs.outputLabs) {
+        if(lab.store.energy <= 1500) {
+          creep.say("🚚L");
+          transferCode = creep.transfer(lab,RESOURCE_ENERGY);
+          if(lab && transferCode === ERR_NOT_IN_RANGE) {
+            creep.moveTo(lab, { visualizePathStyle: { stroke: "#ffaa00" } });
+          }
+          return;
+        }
+      }
     }
 
     if (

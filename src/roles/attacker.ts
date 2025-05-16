@@ -59,6 +59,7 @@ export class Attacker {
 
         if(!creep.memory.isBoosted) {
             const canContinue = Labs.boostCreep(creep)
+
             if(!canContinue) {
                 return;
             }

@@ -106,11 +106,12 @@ export class Miner {
       creep.getActiveBodyparts(WORK) > 0) || (creep.memory.assignedMineFlag === undefined && creep.memory.role === 'miner'))
     ) {
 
-      if((terminal && terminal.store && !terminal.store.getFreeCapacity())) {
+      if((terminal && terminal.store && (!terminal.store.getFreeCapacity() || terminal.store.getUsedCapacity() > 200000))) {
         if (creep.store[mineral.mineralType] > 0) {
           creep.drop(mineral.mineralType);
           return;
         }
+
         Carrier.run(creep);// I WILL WANT THIS TO BE THE SCIENTIST EVENTUALLY
         return;
       }

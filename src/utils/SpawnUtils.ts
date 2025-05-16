@@ -59,7 +59,15 @@ export class SpawnUtils {
 
             case 'attackClaimer':
             case 'claimer':
-                if(commandLevel >= 5 && energyAvailable >= 1600 && archetype === 'claimer') {
+                if(commandLevel >= 8 && energyAvailable >= 3050 && archetype === 'claimer') {
+                    for (let i = 0; i < 49; i++) {
+                        partsPattern.push(MOVE);
+                    }
+                    for (let i = 0; i < 1; i++) {
+                        partsPattern.push(CLAIM);
+                    }
+                    break;
+                } else if(commandLevel >= 5 && energyAvailable >= 1600 && archetype === 'claimer') {
                     for (let i = 0; i < 20; i++) {
                         partsPattern.push(MOVE);
                     }
@@ -67,7 +75,7 @@ export class SpawnUtils {
                         partsPattern.push(CLAIM);
                     }
                     break;
-                }else if(commandLevel >= 5 && energyAvailable >= 1100 && archetype === 'claimer') {
+                } else if(commandLevel >= 5 && energyAvailable >= 1100 && archetype === 'claimer') {
                     for (let i = 0; i < 10; i++) {
                         partsPattern.push(MOVE);
                     }

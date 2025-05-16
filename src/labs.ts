@@ -62,16 +62,17 @@ export class Labs {
       compoundOutputMap[this.MAP.input1 + this.MAP.input2] ??
       ("" as MineralCompoundConstant | MineralBaseCompoundsConstant | MineralBoostConstant);
 
+
     this.inputLabs = room.find(FIND_STRUCTURES, {
       filter: lab => {
         return (
           lab.structureType === STRUCTURE_LAB &&
           ((lab.pos.x === labFarmFlag.pos.x && lab.pos.y === labFarmFlag.pos.y) ||
-            (lab.pos.x === labFarmFlag.pos.x + 1 && lab.pos.y === labFarmFlag.pos.y + 1))
+            (lab.pos.x === labFarmFlag.pos.x - 1 && lab.pos.y === labFarmFlag.pos.y + 1))
         );
       }
     }) as StructureLab[];
-
+      // console.log(this.inputLabs)
     if (this.inputLabs.length !== 2) {
       return;
     }
@@ -99,7 +100,7 @@ export class Labs {
     const inputLab1 = Game.getObjectById(this.inputLabs[0].id) as StructureLab;
     const inputLab2 = Game.getObjectById(this.inputLabs[1].id) as StructureLab;
     const outputLab = Game.getObjectById(this.outputLabs[this.outputLabs.length - 1].id) as StructureLab;
-    console.log(inputLab1, inputLab2, outputLab);
+    // console.log(inputLab1, inputLab2, outputLab);
     if (!inputLab1 || !inputLab2 || !outputLab) {
       return;
     }
@@ -107,7 +108,7 @@ export class Labs {
     const input1MineralConstant = this.MAP.input1 as MineralConstant | MineralCompoundConstant | null;
     const input2MineralConstant = this.MAP.input2 as MineralConstant | MineralCompoundConstant | null;
     const outputCompoundConstant = this.MAP.output as MineralConstant | MineralCompoundConstant | null;
-    console.log(input1MineralConstant, input2MineralConstant, outputCompoundConstant);
+    // console.log(input1MineralConstant, input2MineralConstant, outputCompoundConstant);
     if (!input1MineralConstant || !input2MineralConstant || !outputCompoundConstant) {
       return;
     }
@@ -116,7 +117,7 @@ export class Labs {
     const inputLab2Ready = inputLab2.store && inputLab2.store[input2MineralConstant] > 300;
 
     for (const outputLab of this.outputLabs) {
-      console.log(outputLab);
+      // console.log(outputLab);
       const outputLabReady = outputLab.store && outputLab.store[outputCompoundConstant] < 2700;
       if (outputLab && !!inputLab1 && !!inputLab2 && !!outputLabReady && inputLab1Ready && inputLab2Ready) {
         outputLab.runReaction(inputLab1, inputLab2);
@@ -227,6 +228,7 @@ export class Labs {
   }
 
   public static boostCreep(creep: Creep): boolean {
+    creep.say("✨")
     const outputCompound = Labs.MAP.output as MineralBoostConstant;
     const productionLab = creep.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: structure => {
@@ -234,9 +236,10 @@ export class Labs {
       }
     }) as StructureLab;
 
+
+
     // Boost Labs
     if (!productionLab) {
-      creep.memory.isBoosted = true;
       return true;
     }
 

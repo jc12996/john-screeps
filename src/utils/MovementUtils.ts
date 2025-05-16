@@ -256,8 +256,8 @@ export class MovementUtils {
           return (
             structure.structureType == STRUCTURE_TERMINAL &&
             structure.room?.controller?.my &&
-            structure.store[RESOURCE_ENERGY] > 0 &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            (structure.store[RESOURCE_ENERGY] > 0 || creep.memory.extensionFarm === 3) &&
+            (structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0 || creep.memory.extensionFarm === 3)
           );
         }
       }) ?? null;
@@ -288,6 +288,32 @@ export class MovementUtils {
 
 
     const commandLevel = creep.room?.controller?.level ?? 1;
+
+     if (creep && terminal && creep.memory.extensionFarm === 3) {
+      const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
+        filter: structure => {
+          return structure.structureType === STRUCTURE_LAB;
+        }
+      });
+
+      const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: structure => {
+          return structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0;
+        }
+      }) as StructureStorage;
+      console.log('generalScientistGather')
+      const canContinue = this.generalScientistGather(
+        creep,
+        terminal,
+        commandLevel,
+        labs,
+        target_storage,
+        nearestStorageOrTerminal
+      );
+      if (!canContinue) {
+        return;
+      }
+    }
 
     if (creep.memory.role === "upgrader" || creep.memory.role === "builder") {
       if (
@@ -423,31 +449,7 @@ export class MovementUtils {
 
 
 
-    if (creep && terminal && creep.memory.extensionFarm === 3) {
-      const labs: StructureLab[] = creep.room.find(FIND_STRUCTURES, {
-        filter: structure => {
-          return structure.structureType === STRUCTURE_LAB;
-        }
-      });
 
-      const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: structure => {
-          return structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 0;
-        }
-      }) as StructureStorage;
-
-      const canContinue = this.generalScientistGather(
-        creep,
-        terminal,
-        commandLevel,
-        labs,
-        target_storage,
-        nearestStorageOrTerminal
-      );
-      if (!canContinue) {
-        return;
-      }
-    }
 
 
     const target_storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -650,6 +652,11 @@ export class MovementUtils {
     if (!Labs.inputLabs) {
       return true;
     }
+
+     if(creep.store[RESOURCE_ENERGY] > 0) {
+        creep.drop(RESOURCE_ENERGY);
+      }
+
     const inputLab1 = Labs.inputLabs[0] ?? null;
     const inputLab2 = Labs.inputLabs[1] ?? null;
 
@@ -657,7 +664,7 @@ export class MovementUtils {
     const input2Mineral = Labs.MAP.input2 as MineralCompoundConstant | MineralConstant | null;
 
     const droppedMineral = creep.room.find(FIND_DROPPED_RESOURCES)[0] ?? null;
-
+    console.log('here gather scientist')
     if (
       input1Mineral &&
       inputLab1 &&
@@ -756,6 +763,38 @@ export class MovementUtils {
   }
 
   public static claimerSettlerMovementSequence(creep: Creep): boolean {
+
+     // If not yet marked as "portalRoom", look for a portal in the room
+
+/*
+    const portal = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: s => s.structureType === STRUCTURE_PORTAL
+  });
+
+     if (!creep.memory.isOnPortal) {
+
+
+        if (portal) {
+          console.log("creep.memory.isOnPortal",creep.memory.isOnPortal)
+            // Move to portal and go through it
+            if (creep.pos.isEqualTo(portal.pos)) {
+              creep.memory.isOnPortal = true;
+                // Wait to be transported
+                // The game will automatically move the creep to the destination
+            } else {
+                creep.moveTo(portal, { visualizePathStyle: { stroke: '#ffaa00' } });
+            }
+            return false;
+        }
+    }
+
+    if(portal) {
+      if(!creep.memory.isOnPortal) {
+        creep.memory.isOnPortal = true;
+      }
+      console.log("creep.memory.isOnPortal",creep.memory.isOnPortal)
+    }
+*/
 
     if (Game.flags.settlerFlag && creep.memory.role === 'settler') {
 
@@ -931,6 +970,17 @@ export class MovementUtils {
 
       let transferCode = null;
 
+       const mineral = creep.room.find(FIND_MINERALS)[0];
+      if(mineral && terminal && terminal.store[mineral.mineralType] > 200000) {
+        transferCode = creep.withdraw(terminal, mineral.mineralType);
+        if(terminal && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+
+         creep.drop(mineral.mineralType);
+
+        return;
+      }
 
        if (extensionLink && extensionLink.store.energy > 0) {
         transferCode = creep.withdraw(extensionLink, RESOURCE_ENERGY);
@@ -988,6 +1038,7 @@ export class MovementUtils {
         return;
       }
 
+
       creep.moveTo(xTarget.pos.x - 3, xTarget.pos.y + 3);
       return;
     }
@@ -1022,6 +1073,18 @@ export class MovementUtils {
   }
 
   public static dropOffInTerminal(creep: Creep, terminal: StructureTerminal | null): boolean {
+
+     const mineral = creep.room.find(FIND_MINERALS)[0];
+      if(mineral && terminal && terminal.store[mineral.mineralType] > 210000) {
+       let transferCode = creep.withdraw(terminal, mineral.mineralType);
+        if(terminal && transferCode === ERR_NOT_IN_RANGE) {
+          creep.moveTo(terminal, { visualizePathStyle: { stroke: "#ffffff" } });
+        }
+
+         creep.drop(mineral.mineralType);
+
+        return false;
+      }
     if (terminal && creep.store[RESOURCE_LEMERGIUM] > 0) {
       if (creep.transfer(terminal, RESOURCE_LEMERGIUM) === ERR_NOT_IN_RANGE) {
         creep.moveTo(terminal);

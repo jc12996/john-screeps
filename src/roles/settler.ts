@@ -73,6 +73,13 @@ export class Settler {
         if(creep.room?.controller && creep.room?.controller.my && (creep.room?.controller.level < 2 || (creep.room.controller?.ticksToDowngrade && creep.room.controller.ticksToDowngrade < 2000) || creep.memory.upgrading)
         ) {
 
+            if(creep.room.controller.sign?.username && creep.room.controller.sign?.username !== 'Xarroc') {
+                const moveCode = creep.signController(creep.room.controller, "X");
+                if( moveCode === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: "#ffffff" } });
+                }
+                return;
+            }
             const moveCode = creep.upgradeController(creep.room.controller);
             creep.say("⚡ upgrade");
             if((creep.room.controller?.ticksToDowngrade && creep.room.controller.ticksToDowngrade >= 6000) || !creep.room.controller?.ticksToDowngrade) {

@@ -29,6 +29,7 @@ declare global {
     delivering?: boolean;
     carrying?: boolean;
     isArmySquad?: boolean;
+    isOnPortal?: boolean;
     // hitWaypointFlag?: boolean;
     // hitWaypointFlag2?: boolean;
     extensionFarm?: number;

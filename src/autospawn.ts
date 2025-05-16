@@ -18,12 +18,18 @@ export class AutoSpawn {
 
     const spawns = Game.spawns;
 
+    let hasEightBase = false;
     for (const spawn in spawns) {
-      this.spawnSequence(Game.spawns[spawn]);
+      if(Game.spawns[spawn].room.controller?.level === 8) {
+        hasEightBase = true;
+      }
+    }
+    for (const spawn in spawns) {
+      this.spawnSequence(Game.spawns[spawn],hasEightBase);
     }
   }
 
-  private static spawnSequence(spawn: any): void {
+  private static spawnSequence(spawn: any,hasEightBase:boolean): void {
     let bodyParts = null;
     let name = null;
     let options = undefined;
@@ -503,7 +509,7 @@ export class AutoSpawn {
         }
       }
 
-      if( upgraders.length > 0 && numberOfNeededUpgraders > 0 && numberOfNeededUpgraders === upgraders.length && suicideOccured === false) {
+      if( commandLevel < 8 && upgraders.length > 0 && numberOfNeededUpgraders > 0 && numberOfNeededUpgraders === upgraders.length && suicideOccured === false) {
         const lowUpgrade = upgraders.filter(harv => {
           return harv.getActiveBodyparts(WORK) <= 2
         })[0] ?? null;
@@ -643,7 +649,7 @@ export class AutoSpawn {
       Game.flags.startScouting &&
       Game.flags.rallyFlag2 &&
       !Game.flags.scoutFlag) || Game.flags['1']) &&
-      scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE
+      scouts.length < PeaceTimeEconomy.TOTAL_SCOUT_SIZE && (!hasEightBase || (hasEightBase && commandLevel === 8))
     ) {
       name = "Scout" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("scout", spawn, commandLevel);
@@ -655,7 +661,7 @@ export class AutoSpawn {
       name = "Defender" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("defender", spawn, commandLevel);
       options = { memory: { role: "defender" } };
-    } else if (isSquadPatrol && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE) {
+    } else if (isSquadPatrol && attackers.length < SpawnUtils.TOTAL_ATTACKER_SIZE && (!hasEightBase || (hasEightBase && commandLevel === 8))) {
       name = "Attacker" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("attacker", spawn, commandLevel);
       if(attackers.length % 2) {
@@ -665,11 +671,11 @@ export class AutoSpawn {
       name = "Attacker" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("attacker", spawn, commandLevel);
       options = { memory: { role: "attacker", isArmySquad: true } };
-    } else if (isSquadPatrol && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE) {
+    } else if (isSquadPatrol && dismantlers.length < SpawnUtils.TOTAL_DISMANTLER_SIZE && (!hasEightBase || (hasEightBase && commandLevel === 8))) {
       name = "Dismantler" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("dismantler", spawn, commandLevel);
       options = { memory: { role: "dismantler", isArmySquad: true } };
-    } else if (isSquadPatrol && healers.length < SpawnUtils.TOTAL_HEALER_SIZE) {
+    } else if (isSquadPatrol && healers.length < SpawnUtils.TOTAL_HEALER_SIZE && (!hasEightBase || (hasEightBase && commandLevel === 8))) {
       name = "Healer" + Game.time;
 
       const leadHealer = Game.creeps["LeadHealer"];
@@ -678,7 +684,7 @@ export class AutoSpawn {
       }
       bodyParts = SpawnUtils.getBodyPartsForArchetype("healer", spawn, commandLevel);
       options = { memory: { role: "healer", isArmySquad: true } };
-    } else if (isSquadPatrol && !Game.flags.rallyFlag2 && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS) {
+    } else if (isSquadPatrol && !Game.flags.rallyFlag2 && meatGrinders.length < SpawnUtils.TOTAL_MEAT_GRINDERS && (!hasEightBase || (hasEightBase && commandLevel === 8))) {
       name = "MeatGrinder" + Game.time + 1;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("meatGrinder", spawn, commandLevel);
       options = { memory: { role: "meatGrinder", isArmySquad: true } };
@@ -697,6 +703,7 @@ export class AutoSpawn {
       homeMineralMiners.length === 0 &&
       !spawn.spawning &&
       commandLevel >= 6
+
     ) {
       name = "Miner" + "_Minerals_" + spawn.room.name + "_" + Game.time;
       bodyParts = SpawnUtils.getBodyPartsForArchetype("miner", spawn, commandLevel);
